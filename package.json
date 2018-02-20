@@ -1,0 +1,23 @@
+{
+  "name": "doric-components",
+  "version": "0.1.0",
+  "description": "a set of components made with react",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/axel669/doric-components.git"
+  },
+  "keywords": [
+    "react",
+    "components"
+  ],
+  "author": "Axel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/axel669/doric-components/issues"
+  },
+  "homepage": "https://github.com/axel669/doric-components#readme"
+}
