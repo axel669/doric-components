@@ -1,23 +1,23 @@
 {
   "name": "doric-components",
   "version": "0.1.0",
-  "description": "a set of components made with react",
+  "description": "Set of react components",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pack": "webpack"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/axel669/doric-components.git"
-  },
-  "keywords": [
-    "react",
-    "components"
-  ],
-  "author": "Axel",
+  "author": "",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/axel669/doric-components/issues"
-  },
-  "homepage": "https://github.com/axel669/doric-components#readme"
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "gesturesjs": "^0.1.0",
+    "ssjs": "^0.2.0",
+    "url-loader": "^0.6.2",
+    "webpack": "^3.11.0"
+  }
 }
