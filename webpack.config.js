@@ -13,7 +13,7 @@ module.exports = {
                 }
             },
             {
-                test: /\.gif$/,
+                test: /\.(gif|woff)$/,
                 loader: 'url-loader'
             }
         ]

@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "pack": "webpack"
+    "pack": "webpack",
+    "minify": "uglifyjs release/app.js -o release/app.min.js",
+    "all": "run-s pack minify"
   },
   "author": "",
   "license": "MIT",
@@ -16,7 +18,9 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "gesturesjs": "^0.1.0",
+    "npm-run-all": "^4.1.2",
     "ssjs": "^0.2.0",
+    "uglify-js": "^3.3.13",
     "url-loader": "^0.6.2",
     "webpack": "^3.11.0"
   }
