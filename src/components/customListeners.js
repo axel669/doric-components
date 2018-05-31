@@ -8,10 +8,12 @@ const registerGlobalListener = (type, elem, handler) => {
             type,
             evt => {
                 const handlers = globalListeners[type];
-                for (const listener of handlers.keys()) {
-                    if (listener.contains(evt.target) === true) {
-                        handlers.get(listener)(evt);
+                let current = evt.target;
+                while (current !== null) {
+                    if (handlers.has(current) === true) {
+                        handlers.get(current)(evt);
                     }
+                    current = current.parentNode;
                 }
             }
         );
@@ -24,25 +26,27 @@ const removeGlobalListener = (type, elem) => {
 };
 
 
-style.add({
-    "custom-listener": {
-        display: 'none'
-    }
-});
 class CustomListeners extends React.Component {
     constructor(props) {
         super(props);
     }
 
     componentDidMount = () => {
-        const {listeners} = this.props;
+        const {listeners = {}} = this.props;
         this.elem = ReactDOM.findDOMNode(this).parentNode;
         this.types = [];
 
         for (const type of Object.keys(listeners)) {
             const evtType = type.slice(2).toLowerCase();
-            registerGlobalListener(evtType, this.elem, listeners[type]);
+            registerGlobalListener(
+                evtType,
+                this.elem,
+                evt => this.props.listeners[type](evt)
+            );
             this.types.push(evtType);
+        }
+        if (this.types.length === 0) {
+            console.warn("0 custom listeners added. check the spelling of the 'listeners' property");
         }
     }
 
@@ -53,7 +57,7 @@ class CustomListeners extends React.Component {
     }
 
     render = () => {
-        return <custom-listener />;
+        return <custom-listener style={{display: 'none'}} />;
     }
 }
 

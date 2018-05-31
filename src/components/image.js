@@ -5,15 +5,15 @@ style.add({
     "doric-image": {
         display: 'block',
         backgroundPosition: 'center center',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'contain'
+        backgroundRepeat: 'no-repeat'
     }
 });
 
-export default ({source, height}) => {
+export default ({source, height, imageSize = 'contain'}) => {
     const style = {
         backgroundImage: `url("${source}")`,
-        height
+        height,
+        backgroundSize: imageSize
     };
     return <doric-image style={style} />;
 };

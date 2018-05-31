@@ -49,8 +49,12 @@ const deepMerge = (a, b) => {
     return obj;
 };
 
+const niceBlue = '#1d62d5';
 const theme = deepMerge(
     {
+        __global: {
+            hl: false
+        },
         body: {
             bg: '#f0f0f0'
         },
@@ -60,6 +64,27 @@ const theme = deepMerge(
             text: {
                 normal: 'black',
                 disabled: '#acacac'
+            }
+        },
+        card: {
+            title: {
+                bg: niceBlue,
+                color: 'white'
+            }
+        },
+        checkbox: {
+            checkColor: niceBlue,
+            hl: 'rgba(0, 0, 0, 0.4)'
+        },
+        toggle: {
+            hl: 'rgba(0, 0, 0, 0.4)',
+            thumb: {
+                onColor: niceBlue,
+                offColor: '#666768'
+            },
+            track: {
+                onColor: '#79aafb',
+                offColor: 'lightgray'
             }
         }
     },

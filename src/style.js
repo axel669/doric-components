@@ -7,7 +7,7 @@ const style = {
         width: '100%',
         height: '100%',
         backgroundColor: theme.body.bg,
-        fontFamily: "Roboto",
+        fontFamily: "Roboto"
     },
     "*": {
         boxSizing: 'border-box'
