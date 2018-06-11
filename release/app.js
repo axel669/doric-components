@@ -1395,30 +1395,24 @@ var Main = function (_React$Component) {
                 React.createElement(
                     doric.card,
                     null,
-                    'Testing'
-                ),
-                React.createElement(
-                    doric.card,
-                    { sideImage: images.boxxy },
-                    'Testing'
-                ),
-                React.createElement(
-                    doric.select,
-                    null,
                     React.createElement(
-                        'option',
+                        doric.select,
                         null,
-                        'A'
-                    ),
-                    React.createElement(
-                        'option',
-                        null,
-                        'B'
-                    ),
-                    React.createElement(
-                        'option',
-                        null,
-                        'C'
+                        React.createElement(
+                            'option',
+                            null,
+                            'A'
+                        ),
+                        React.createElement(
+                            'option',
+                            null,
+                            'B'
+                        ),
+                        React.createElement(
+                            'option',
+                            null,
+                            'C'
+                        )
                     )
                 )
             );
