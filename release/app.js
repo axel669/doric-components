@@ -237,182 +237,6 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _style = __webpack_require__(0);
-
-var _style2 = _interopRequireDefault(_style);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var globalListeners = {};
-var registerGlobalListener = function registerGlobalListener(type, elem, handler) {
-    if (globalListeners.hasOwnProperty(type) === false) {
-        globalListeners[type] = new Map();
-        window.addEventListener(type, function (evt) {
-            var handlers = globalListeners[type];
-            var current = evt.target;
-            while (current !== null) {
-                if (handlers.has(current) === true) {
-                    handlers.get(current)(evt);
-                }
-                current = current.parentNode;
-            }
-        });
-    }
-
-    globalListeners[type].set(elem, handler);
-};
-var removeGlobalListener = function removeGlobalListener(type, elem) {
-    globalListeners[type].delete(elem);
-};
-
-var CustomListeners = function (_React$Component) {
-    _inherits(CustomListeners, _React$Component);
-
-    function CustomListeners(props) {
-        _classCallCheck(this, CustomListeners);
-
-        var _this = _possibleConstructorReturn(this, (CustomListeners.__proto__ || Object.getPrototypeOf(CustomListeners)).call(this, props));
-
-        _this.componentDidMount = function () {
-            var _this$props$listeners = _this.props.listeners,
-                listeners = _this$props$listeners === undefined ? {} : _this$props$listeners;
-
-            _this.elem = ReactDOM.findDOMNode(_this).parentNode;
-            _this.types = [];
-
-            var _loop = function _loop(type) {
-                var evtType = type.slice(2).toLowerCase();
-                registerGlobalListener(evtType, _this.elem, function (evt) {
-                    return _this.props.listeners[type](evt);
-                });
-                _this.types.push(evtType);
-            };
-
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
-
-            try {
-                for (var _iterator = Object.keys(listeners)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var type = _step.value;
-
-                    _loop(type);
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
-            }
-
-            if (_this.types.length === 0) {
-                console.warn("0 custom listeners added. check the spelling of the 'listeners' property");
-            }
-        };
-
-        _this.componentWillUnmount = function () {
-            var _iteratorNormalCompletion2 = true;
-            var _didIteratorError2 = false;
-            var _iteratorError2 = undefined;
-
-            try {
-                for (var _iterator2 = _this.types[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var type = _step2.value;
-
-                    removeGlobalListener(type, _this.elem);
-                }
-            } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                        _iterator2.return();
-                    }
-                } finally {
-                    if (_didIteratorError2) {
-                        throw _iteratorError2;
-                    }
-                }
-            }
-        };
-
-        _this.render = function () {
-            return React.createElement('custom-listener', { style: { display: 'none' } });
-        };
-
-        return _this;
-    }
-
-    return CustomListeners;
-}(React.Component);
-
-exports.default = CustomListeners;
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _theme = __webpack_require__(1);
-
-var _theme2 = _interopRequireDefault(_theme);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    background: {
-        after: {
-            base: {
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-                top: 0,
-                left: 0,
-                content: '""',
-                transition: 'background-color 250ms linear'
-            },
-            colorize: function colorize(color) {
-                return {
-                    backgroundColor: _theme2.default.__global.hl || color,
-                    transition: 'none'
-                };
-            }
-        }
-    }
-};
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _style = __webpack_require__(0);
@@ -1191,6 +1015,182 @@ Icon.icons = icons;
 exports.default = Icon;
 
 /***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _style = __webpack_require__(0);
+
+var _style2 = _interopRequireDefault(_style);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var globalListeners = {};
+var registerGlobalListener = function registerGlobalListener(type, elem, handler) {
+    if (globalListeners.hasOwnProperty(type) === false) {
+        globalListeners[type] = new Map();
+        window.addEventListener(type, function (evt) {
+            var handlers = globalListeners[type];
+            var current = evt.target;
+            while (current !== null) {
+                if (handlers.has(current) === true) {
+                    handlers.get(current)(evt);
+                }
+                current = current.parentNode;
+            }
+        });
+    }
+
+    globalListeners[type].set(elem, handler);
+};
+var removeGlobalListener = function removeGlobalListener(type, elem) {
+    globalListeners[type].delete(elem);
+};
+
+var CustomListeners = function (_React$Component) {
+    _inherits(CustomListeners, _React$Component);
+
+    function CustomListeners(props) {
+        _classCallCheck(this, CustomListeners);
+
+        var _this = _possibleConstructorReturn(this, (CustomListeners.__proto__ || Object.getPrototypeOf(CustomListeners)).call(this, props));
+
+        _this.componentDidMount = function () {
+            var _this$props$listeners = _this.props.listeners,
+                listeners = _this$props$listeners === undefined ? {} : _this$props$listeners;
+
+            _this.elem = ReactDOM.findDOMNode(_this).parentNode;
+            _this.types = [];
+
+            var _loop = function _loop(type) {
+                var evtType = type.slice(2).toLowerCase();
+                registerGlobalListener(evtType, _this.elem, function (evt) {
+                    return _this.props.listeners[type](evt);
+                });
+                _this.types.push(evtType);
+            };
+
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = Object.keys(listeners)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var type = _step.value;
+
+                    _loop(type);
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            if (_this.types.length === 0) {
+                console.warn("0 custom listeners added. check the spelling of the 'listeners' property");
+            }
+        };
+
+        _this.componentWillUnmount = function () {
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+                for (var _iterator2 = _this.types[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var type = _step2.value;
+
+                    removeGlobalListener(type, _this.elem);
+                }
+            } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
+                    }
+                } finally {
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
+                    }
+                }
+            }
+        };
+
+        _this.render = function () {
+            return React.createElement('custom-listener', { style: { display: 'none' } });
+        };
+
+        return _this;
+    }
+
+    return CustomListeners;
+}(React.Component);
+
+exports.default = CustomListeners;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _theme = __webpack_require__(1);
+
+var _theme2 = _interopRequireDefault(_theme);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    background: {
+        after: {
+            base: {
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                top: 0,
+                left: 0,
+                content: '""',
+                transition: 'background-color 250ms linear'
+            },
+            colorize: function colorize(color) {
+                return {
+                    backgroundColor: _theme2.default.__global.hl || color,
+                    transition: 'none'
+                };
+            }
+        }
+    }
+};
+
+/***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1266,7 +1266,7 @@ var _checkbox = __webpack_require__(11);
 
 var _checkbox2 = _interopRequireDefault(_checkbox);
 
-var _icon = __webpack_require__(4);
+var _icon = __webpack_require__(2);
 
 var _icon2 = _interopRequireDefault(_icon);
 
@@ -1274,11 +1274,15 @@ var _image = __webpack_require__(5);
 
 var _image2 = _interopRequireDefault(_image);
 
-var _slider = __webpack_require__(13);
+var _select = __webpack_require__(13);
+
+var _select2 = _interopRequireDefault(_select);
+
+var _slider = __webpack_require__(14);
 
 var _slider2 = _interopRequireDefault(_slider);
 
-var _toggle = __webpack_require__(14);
+var _toggle = __webpack_require__(15);
 
 var _toggle2 = _interopRequireDefault(_toggle);
 
@@ -1304,6 +1308,7 @@ var doric = {
     checkbox: _checkbox2.default,
     icon: _icon2.default,
     image: _image2.default,
+    select: _select2.default,
     slider: _slider2.default,
     toggle: _toggle2.default
 };
@@ -1386,7 +1391,7 @@ var Main = function (_React$Component) {
 
             return React.createElement(
                 'div',
-                { style: { overflow: 'hidden' }, onChange: cblog },
+                { style: { overflow: 'hidden' } },
                 React.createElement(
                     doric.card,
                     null,
@@ -1398,7 +1403,7 @@ var Main = function (_React$Component) {
                     'Testing'
                 ),
                 React.createElement(
-                    'select',
+                    doric.select,
                     null,
                     React.createElement(
                         'option',
@@ -1985,11 +1990,11 @@ var _style = __webpack_require__(0);
 
 var _style2 = _interopRequireDefault(_style);
 
-var _customListeners = __webpack_require__(2);
+var _customListeners = __webpack_require__(3);
 
 var _customListeners2 = _interopRequireDefault(_customListeners);
 
-var _util = __webpack_require__(3);
+var _util = __webpack_require__(4);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -2226,15 +2231,15 @@ var _style = __webpack_require__(0);
 
 var _style2 = _interopRequireDefault(_style);
 
-var _icon = __webpack_require__(4);
+var _icon = __webpack_require__(2);
 
 var _icon2 = _interopRequireDefault(_icon);
 
-var _customListeners = __webpack_require__(2);
+var _customListeners = __webpack_require__(3);
 
 var _customListeners2 = _interopRequireDefault(_customListeners);
 
-var _util = __webpack_require__(3);
+var _util = __webpack_require__(4);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -2288,9 +2293,6 @@ _style2.default.add({
     "doric-checkbox[alignRight]": {
         textAlign: 'right'
     }
-});
-window.addEventListener('change', function (evt) {
-    return console.log(evt);
 });
 
 exports.default = function (props) {
@@ -2352,6 +2354,66 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _icon = __webpack_require__(2);
+
+var _icon2 = _interopRequireDefault(_icon);
+
+var _style = __webpack_require__(0);
+
+var _style2 = _interopRequireDefault(_style);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_style2.default.add({
+    "doric-select": {
+        display: 'block',
+        margin: 2,
+        position: 'relative'
+    },
+    "doric-select > select": {
+        width: '100%',
+        WebkitAppearance: 'none',
+        MozAppearance: 'none',
+        padding: '3px 5px',
+        textAlign: 'center',
+        backgroundColor: 'transparent',
+        borderWidth: 0,
+        borderBottom: '1px solid #666',
+        height: 30
+    },
+    "doric-select::after": {
+        content: '"' + _icon2.default.icons["ion-arrow-down-b"] + '"',
+        fontFamily: "Ionic",
+        fontSize: 16,
+        position: 'absolute',
+        left: 'auto',
+        top: '50%',
+        right: 5,
+        color: '#666',
+        transform: 'translateY(-50%)'
+    }
+});
+var Select = function Select(props) {
+    return React.createElement(
+        'doric-select',
+        null,
+        React.createElement('select', props)
+    );
+};
+
+exports.default = Select;
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _theme = __webpack_require__(1);
@@ -2401,7 +2463,7 @@ exports.default = function (props) {
 };
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2421,15 +2483,15 @@ var _style = __webpack_require__(0);
 
 var _style2 = _interopRequireDefault(_style);
 
-var _icon = __webpack_require__(4);
+var _icon = __webpack_require__(2);
 
 var _icon2 = _interopRequireDefault(_icon);
 
-var _customListeners = __webpack_require__(2);
+var _customListeners = __webpack_require__(3);
 
 var _customListeners2 = _interopRequireDefault(_customListeners);
 
-var _util = __webpack_require__(3);
+var _util = __webpack_require__(4);
 
 var _util2 = _interopRequireDefault(_util);
 

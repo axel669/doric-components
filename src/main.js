@@ -7,6 +7,7 @@ import card from './components/card';
 import checkbox from './components/checkbox';
 import icon from './components/icon';
 import image from './components/image';
+import select from './components/select';
 import slider from './components/slider';
 import toggle from './components/toggle';
 
@@ -22,6 +23,7 @@ const doric = {
     checkbox,
     icon,
     image,
+    select,
     slider,
     toggle
 };
@@ -94,11 +96,11 @@ class Main extends React.Component {
                 <doric.card sideImage={images.boxxy}>
                     Testing
                 </doric.card>
-                <select>
+                <doric.select>
                     <option>A</option>
                     <option>B</option>
                     <option>C</option>
-                </select>
+                </doric.select>
                 {/* <doric.toggle on={t1} onChange={this.updateState('t1')} label="Test" />
                 <doric.toggle on={t1} onChange={this.updateState('t1')} label="Test" toggleRight />
                 <doric.toggle on={t2} onChange={this.updateState('t2')} label="Test" alignRight/>
