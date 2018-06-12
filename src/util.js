@@ -19,5 +19,8 @@ export default {
                 }
             }
         }
+    },
+    color: {
+        primaryBlue: "#2196F3"
     }
 };

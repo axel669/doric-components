@@ -5,6 +5,7 @@ import style from './style';
 import button from './components/button';
 import card from './components/card';
 import checkbox from './components/checkbox';
+import collapse from './components/collapse';
 import icon from './components/icon';
 import image from './components/image';
 import select from './components/select';
@@ -21,6 +22,7 @@ const doric = {
     button,
     card,
     checkbox,
+    collapse,
     icon,
     image,
     select,
@@ -30,46 +32,6 @@ const doric = {
 
 window.cblog = console::console.log;
 window.cberr = console::console.error;
-
-style.add({
-    "doric-collapse": {
-        display: 'block',
-        border: '1px solid black'
-    },
-    "doric-collapse-title": {
-        display: 'block',
-        cursor: 'pointer',
-        backgroundColor: 'cyan',
-        padding: '3px 5px'
-    }
-});
-class Collapse extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {open: false};
-    }
-
-    toggle = () => {
-    }
-
-    render() => {
-        const {
-            title,
-            children,
-            ...props
-        } = this.props;
-        const {open} = this.state;
-
-        return (
-            <doric-collapse {...props}>
-                <doric-collapse-title>{title}</doric-collapse-title>
-                <doric-collapse-content>
-                    {children}
-                </doric-collapse-content>
-            </doric-collapse>
-        );
-    }
-}
 
 const sheet = ssjs.create();
 sheet.addStyles(style);
@@ -130,13 +92,16 @@ class Main extends React.Component {
 
         return (
             <div style={{overflow: 'hidden'}}>
-                <doric.card>
+                <doric.collapse title="Test">
+                    <doric.image source={images.boxxy} height={150} />
+                </doric.collapse>
+                {/* <doric.card>
                     <doric.select>
                         <option>A</option>
                         <option>B</option>
                         <option>C</option>
                     </doric.select>
-                </doric.card>
+                </doric.card> */}
                 {/* <doric.toggle on={t1} onChange={this.updateState('t1')} label="Test" />
                 <doric.toggle on={t1} onChange={this.updateState('t1')} label="Test" toggleRight />
                 <doric.toggle on={t2} onChange={this.updateState('t2')} label="Test" alignRight/>
