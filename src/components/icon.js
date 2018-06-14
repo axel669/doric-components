@@ -744,7 +744,7 @@ style.add({
         fontStyle: "normal"
     },
     "doric-icon": {
-        display: 'inline',
+        display: 'inline-block',
         fontSize: 16,
         fontFamily: "Ionic",
         padding: 2
@@ -752,7 +752,7 @@ style.add({
 });
 const Icon = (props) => {
     const {icon, className, ...passThrough} = props;
-    return <doric-icon class={className} {...passThrough}>{icons[icon]}</doric-icon>;
+    return <doric-icon class={className} {...passThrough} data-icon-name={icon}>{icons[icon]}</doric-icon>;
 };
 Icon.icons = icons;
 

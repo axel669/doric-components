@@ -2,6 +2,8 @@ import 'gesturesjs';
 import ssjs from 'ssjs';
 import style from './style';
 
+import BaseComponent from './components/baseComponent';
+
 import button from './components/button';
 import card from './components/card';
 import checkbox from './components/checkbox';
@@ -33,10 +35,54 @@ const doric = {
 window.cblog = console::console.log;
 window.cberr = console::console.error;
 
+// class Radio extends React.Component {
+//     constructor(props) {
+//         super(props);
+//     }
+// }
+style.add({
+    "doric-radio-group": {
+        display: 'block',
+        padding: 2
+    }
+});
+const Radio = props => {
+    const {
+        selectedIndex,
+        children,
+        onChange = (() => {}),
+        ...rest
+    } = props;
+    const changeHandler = index =>
+        evt => {
+            if (index !== selectedIndex) {
+                onChange({selectedIndex: index, type: 'change'});
+            }
+        };
+    const options = React.Children.toArray(children)
+        .map((child, index) => {
+            const icon = (index === selectedIndex)
+                ? "ion-android-radio-button-on"
+                : "ion-android-radio-button-off";
+            return (
+                <doric.button block style={{margin: 0, textAlign: 'left'}} onTap={changeHandler(index)}>
+                    <doric.icon icon={icon} />
+                    {child.props.label}
+                </doric.button>
+            );
+        });
+
+    return (
+        <doric-radio-group {...rest}>
+            {options}
+        </doric-radio-group>
+    );
+};
+
 const sheet = ssjs.create();
 sheet.addStyles(style);
 
-class Main extends React.Component {
+class Main extends BaseComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -44,7 +90,8 @@ class Main extends React.Component {
             c2: false,
             t1: false,
             t2: true,
-            v: 0
+            v: 0,
+            i: 0
         };
     }
 
@@ -52,7 +99,7 @@ class Main extends React.Component {
         evt => this.setState({[name]: evt.value})
 
     render() {
-        const {c1, c2, v, t1, t2} = this.state;
+        const {c1, c2, v, t1, t2, i} = this.state;
         // const names = [
         //     'disabled',
         //     'flat',
@@ -91,10 +138,18 @@ class Main extends React.Component {
         // const buttons = makeAll(names);
 
         return (
-            <div style={{overflow: 'hidden'}}>
+            <div style={{paddingTop: 3}}>
                 <doric.collapse title="Test">
                     <doric.image source={images.boxxy} height={150} />
                 </doric.collapse>
+                <Radio selectedIndex={i} onChange={this.linkState('i', 'selectedIndex')}>
+                    <option label="Bayonetta" />
+                    <option label="Bayonetta 2" />
+                    <option label="Bayonetta: Bloody Fate" />
+                </Radio>
+                {/* {Object.keys(doric.icon.icons).map(
+                    icon => <doric.icon icon={icon} />
+                )} */}
                 {/* <doric.card>
                     <doric.select>
                         <option>A</option>

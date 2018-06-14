@@ -1,5 +1,6 @@
 import CustomListeners from './customListeners';
 import Icon from './icon';
+import Button from './button';
 
 import util from '../util';
 import style from '../style';
@@ -16,8 +17,9 @@ style.add({
         display: 'block',
         cursor: 'pointer',
         backgroundColor: util.color.primaryBlue,
-        padding: '3px 5px',
-        position: 'relative'
+        // padding: '3px 5px',
+        position: 'relative',
+        boxShadow: '0px 2px 2px rgba(0, 0, 0, 0.2)'
     },
     "doric-collapse-title::after": {
         content: `"${Icon.icons["ion-plus"]}"`,
@@ -62,8 +64,9 @@ class Collapse extends React.Component {
         return (
             <doric-collapse {...props} open={open}>
                 <doric-collapse-title>
-                    <CustomListeners listeners={{onTap: this.toggle}} />
-                    {title}
+                    {/* <CustomListeners listeners={{onTap: this.toggle}} />
+                    {title} */}
+                    <Button text={title} style={{textAlign: 'left'}} onTap={this.toggle} block flush />
                 </doric-collapse-title>
                 <doric-collapse-content>
                     {children}

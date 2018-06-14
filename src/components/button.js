@@ -28,7 +28,9 @@ style.add({
         minWidth: 69,
         minHeight: 30,
         color: theme.button.text.normal,
-        backgroundColor: theme.button.bg
+        backgroundColor: theme.button.bg,
+        textAlign: 'center',
+        cursor: 'pointer'
     },
     "doric-button[block='true']": {
         display: 'flex'
@@ -39,18 +41,20 @@ style.add({
     "doric-button[snug='true']": {
         padding: 0
     },
+    "doric-button[flush='true']": {
+        margin: 0
+    },
     "doric-button[disabled='true']": {
         opacity: 0.7
     },
     "doric-button::after": {
         ...util.background.after.base
     },
-    "doric-button[data-touch-active]:not([disabled='true'])::after": {
+    "doric-button[data-tap-active]:not([disabled='true'])::after": {
         ...util.background.after.colorize(theme.toggle.hl)
     },
     "doric-button-content": {
-        flexGrow: 1,
-        textAlign: 'center'
+        flexGrow: 1
     },
     "doric-button[primary='true']": {
         backgroundColor: "#2196F3"
@@ -77,7 +81,7 @@ style.add({
 
 export default (props) => {
     const {
-        onTap:tapHandler = (() => {}),
+        onTap: tapHandler = (() => {}),
         onKeyDown: passedOKD = (() => {}),
         text,
         children,

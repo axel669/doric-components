@@ -10,7 +10,11 @@ const style = {
         fontFamily: "Roboto"
     },
     "*": {
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        WebkitTapHighlightColor: 'transparent'
+    },
+    ":focus": {
+        outline: theme.__global.outline
     }
 };
 

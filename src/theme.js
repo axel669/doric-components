@@ -53,7 +53,8 @@ const niceBlue = '#1d62d5';
 const theme = deepMerge(
     {
         __global: {
-            hl: false
+            hl: false,
+            outline: `2px solid ${niceBlue}55`
         },
         body: {
             bg: '#f0f0f0'
