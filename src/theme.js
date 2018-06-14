@@ -77,6 +77,14 @@ const theme = deepMerge(
             checkColor: niceBlue,
             hl: 'rgba(0, 0, 0, 0.4)'
         },
+        input: {
+            normal: {
+                borderColor: 'lightgray'
+            },
+            focus: {
+                borderColor: niceBlue
+            }
+        },
         toggle: {
             hl: 'rgba(0, 0, 0, 0.4)',
             thumb: {

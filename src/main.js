@@ -10,6 +10,7 @@ import checkbox from './components/checkbox';
 import collapse from './components/collapse';
 import icon from './components/icon';
 import image from './components/image';
+import radio from './components/radio';
 import select from './components/select';
 import slider from './components/slider';
 import toggle from './components/toggle';
@@ -27,6 +28,7 @@ const doric = {
     collapse,
     icon,
     image,
+    radio,
     select,
     slider,
     toggle
@@ -40,44 +42,53 @@ window.cberr = console::console.error;
 //         super(props);
 //     }
 // }
+
+import theme from './theme';
+
 style.add({
-    "doric-radio-group": {
-        display: 'block',
-        padding: 2
-    }
+    "doric-input": {
+        margin: 2,
+        display: 'block'
+    },
+    "doric-input > input": {
+        width: '100%'
+    },
+    "doric-input[type='text'] > input": {
+        border: '2px solid transparent',
+        borderBottom: `2px solid ${theme.input.normal.borderColor}`,
+        backgroundColor: 'transparent',
+        padding: '3px 5px'
+    },
+    // "doric-input[type='text'] > input:focus": {
+    //     borderBottomColor: theme.input.focus.borderColor
+    // }
 });
-const Radio = props => {
+const TextInput = (props, type) => {
     const {
-        selectedIndex,
-        children,
+        wrapperStyle,
+        wrapperClassName,
+        value,
         onChange = (() => {}),
-        ...rest
+        ...passThrough
     } = props;
-    const changeHandler = index =>
-        evt => {
-            if (index !== selectedIndex) {
-                onChange({selectedIndex: index, type: 'change'});
-            }
-        };
-    const options = React.Children.toArray(children)
-        .map((child, index) => {
-            const icon = (index === selectedIndex)
-                ? "ion-android-radio-button-on"
-                : "ion-android-radio-button-off";
-            return (
-                <doric.button block style={{margin: 0, textAlign: 'left'}} onTap={changeHandler(index)}>
-                    <doric.icon icon={icon} />
-                    {child.props.label}
-                </doric.button>
-            );
-        });
 
     return (
-        <doric-radio-group {...rest}>
-            {options}
-        </doric-radio-group>
+        <doric-input type={type} class={wrapperClassName} style={wrapperStyle}>
+            <input {...passThrough} type={type} value={value} onChange={onChange} />
+        </doric-input>
     );
 };
+
+doric.input = {
+    text: props => TextInput(props, 'text'),
+    number: props => TextInput(props, 'number'),
+    tel: props => TextInput(props, 'tel')
+};
+// class TextInput extends React.Component {
+//     constructor(props) {
+//         super(props);
+//     }
+// }
 
 const sheet = ssjs.create();
 sheet.addStyles(style);
@@ -91,7 +102,11 @@ class Main extends BaseComponent {
             t1: false,
             t2: true,
             v: 0,
-            i: 0
+            i: 0,
+            input: {
+                text: '',
+                number: ''
+            }
         };
     }
 
@@ -99,7 +114,7 @@ class Main extends BaseComponent {
         evt => this.setState({[name]: evt.value})
 
     render() {
-        const {c1, c2, v, t1, t2, i} = this.state;
+        const {c1, c2, v, t1, t2, i, text} = this.state;
         // const names = [
         //     'disabled',
         //     'flat',
@@ -139,14 +154,18 @@ class Main extends BaseComponent {
 
         return (
             <div style={{paddingTop: 3}}>
-                <doric.collapse title="Test">
+                <doric.input.text value={text} onChange={this.linkState('text')} />
+                {/* <doric.collapse title="Test">
                     <doric.image source={images.boxxy} height={150} />
-                </doric.collapse>
-                <Radio selectedIndex={i} onChange={this.linkState('i', 'selectedIndex')}>
+                </doric.collapse> */}
+                {/* <doric.radio selectedIndex={i} onChange={this.linkState('i', 'target.selectedIndex')}>
                     <option label="Bayonetta" />
                     <option label="Bayonetta 2" />
                     <option label="Bayonetta: Bloody Fate" />
-                </Radio>
+                    <option>
+                        <doric.image source={images.boxxy} height={150} />
+                    </option>
+                </doric.radio> */}
                 {/* {Object.keys(doric.icon.icons).map(
                     icon => <doric.icon icon={icon} />
                 )} */}

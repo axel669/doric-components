@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "pack": "webpack",
     "minify": "uglifyjs release/app.js -o release/app.min.js",
-    "all": "run-s pack minify"
+    "all": "run-s pack minify",
+    "server": "node server.js"
   },
   "author": "",
   "license": "MIT",

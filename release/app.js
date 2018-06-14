@@ -216,6 +216,14 @@ var theme = deepMerge({
         checkColor: niceBlue,
         hl: 'rgba(0, 0, 0, 0.4)'
     },
+    input: {
+        normal: {
+            borderColor: 'lightgray'
+        },
+        focus: {
+            borderColor: niceBlue
+        }
+    },
     toggle: {
         hl: 'rgba(0, 0, 0, 0.4)',
         thumb: {
@@ -1391,6 +1399,8 @@ exports.default = function (_ref) {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _context;
 
 __webpack_require__(8);
@@ -1431,17 +1441,25 @@ var _image = __webpack_require__(6);
 
 var _image2 = _interopRequireDefault(_image);
 
-var _select = __webpack_require__(15);
+var _radio = __webpack_require__(15);
+
+var _radio2 = _interopRequireDefault(_radio);
+
+var _select = __webpack_require__(16);
 
 var _select2 = _interopRequireDefault(_select);
 
-var _slider = __webpack_require__(16);
+var _slider = __webpack_require__(17);
 
 var _slider2 = _interopRequireDefault(_slider);
 
-var _toggle = __webpack_require__(17);
+var _toggle = __webpack_require__(18);
 
 var _toggle2 = _interopRequireDefault(_toggle);
+
+var _theme = __webpack_require__(1);
+
+var _theme2 = _interopRequireDefault(_theme);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1468,6 +1486,7 @@ var doric = {
     collapse: _collapse2.default,
     icon: _icon2.default,
     image: _image2.default,
+    radio: _radio2.default,
     select: _select2.default,
     slider: _slider2.default,
     toggle: _toggle2.default
@@ -1481,42 +1500,56 @@ window.cberr = (_context = console, console.error).bind(_context);
 //         super(props);
 //     }
 // }
+
 _style2.default.add({
-    "doric-radio-group": {
-        display: 'block',
-        padding: 2
+    "doric-input": {
+        margin: 2,
+        display: 'block'
+    },
+    "doric-input > input": {
+        width: '100%'
+    },
+    "doric-input[type='text'] > input": {
+        border: '2px solid transparent',
+        borderBottom: '2px solid ' + _theme2.default.input.normal.borderColor,
+        backgroundColor: 'transparent',
+        padding: '3px 5px'
     }
+    // "doric-input[type='text'] > input:focus": {
+    //     borderBottomColor: theme.input.focus.borderColor
+    // }
 });
-var Radio = function Radio(props) {
-    var selectedIndex = props.selectedIndex,
-        children = props.children,
+var TextInput = function TextInput(props, type) {
+    var wrapperStyle = props.wrapperStyle,
+        wrapperClassName = props.wrapperClassName,
+        value = props.value,
         _props$onChange = props.onChange,
         onChange = _props$onChange === undefined ? function () {} : _props$onChange,
-        rest = _objectWithoutProperties(props, ['selectedIndex', 'children', 'onChange']);
-
-    var changeHandler = function changeHandler(index) {
-        return function (evt) {
-            if (index !== selectedIndex) {
-                onChange({ selectedIndex: index, type: 'change' });
-            }
-        };
-    };
-    var options = React.Children.toArray(children).map(function (child, index) {
-        var icon = index === selectedIndex ? "ion-android-radio-button-on" : "ion-android-radio-button-off";
-        return React.createElement(
-            doric.button,
-            { block: true, style: { margin: 0, textAlign: 'left' }, onTap: changeHandler(index) },
-            React.createElement(doric.icon, { icon: icon }),
-            child.props.label
-        );
-    });
+        passThrough = _objectWithoutProperties(props, ['wrapperStyle', 'wrapperClassName', 'value', 'onChange']);
 
     return React.createElement(
-        'doric-radio-group',
-        rest,
-        options
+        'doric-input',
+        { type: type, 'class': wrapperClassName, style: wrapperStyle },
+        React.createElement('input', _extends({}, passThrough, { type: type, value: value, onChange: onChange }))
     );
 };
+
+doric.input = {
+    text: function text(props) {
+        return TextInput(props, 'text');
+    },
+    number: function number(props) {
+        return TextInput(props, 'number');
+    },
+    tel: function tel(props) {
+        return TextInput(props, 'tel');
+    }
+};
+// class TextInput extends React.Component {
+//     constructor(props) {
+//         super(props);
+//     }
+// }
 
 var sheet = _ssjs2.default.create();
 sheet.addStyles(_style2.default);
@@ -1541,7 +1574,8 @@ var Main = function (_BaseComponent) {
             t1: false,
             t2: true,
             v: 0,
-            i: 0
+            i: 0,
+            text: ''
         };
         return _this;
     }
@@ -1555,7 +1589,8 @@ var Main = function (_BaseComponent) {
                 v = _state.v,
                 t1 = _state.t1,
                 t2 = _state.t2,
-                i = _state.i;
+                i = _state.i,
+                text = _state.text;
             // const names = [
             //     'disabled',
             //     'flat',
@@ -1596,18 +1631,7 @@ var Main = function (_BaseComponent) {
             return React.createElement(
                 'div',
                 { style: { paddingTop: 3 } },
-                React.createElement(
-                    doric.collapse,
-                    { title: 'Test' },
-                    React.createElement(doric.image, { source: images.boxxy, height: 150 })
-                ),
-                React.createElement(
-                    Radio,
-                    { selectedIndex: i, onChange: this.linkState('i', 'selectedIndex') },
-                    React.createElement('option', { label: 'Bayonetta' }),
-                    React.createElement('option', { label: 'Bayonetta 2' }),
-                    React.createElement('option', { label: 'Bayonetta: Bloody Fate' })
-                )
+                React.createElement(doric.input.text, { value: text, onChange: this.linkState('text') })
             );
         }
     }]);
@@ -2588,6 +2612,89 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _button = __webpack_require__(5);
+
+var _button2 = _interopRequireDefault(_button);
+
+var _icon = __webpack_require__(2);
+
+var _icon2 = _interopRequireDefault(_icon);
+
+var _style = __webpack_require__(0);
+
+var _style2 = _interopRequireDefault(_style);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+_style2.default.add({
+    "doric-radio-group": {
+        display: 'block',
+        padding: 2
+    },
+    ".doric-radio-item": {
+        margin: 0,
+        textAlign: 'left',
+        paddingLeft: 20
+    },
+    ".doric-radio-item doric-icon": {
+        position: 'absolute',
+        left: 0,
+        top: '50%',
+        transform: 'translateY(-50%)'
+    }
+});
+var Radio = function Radio(props) {
+    var selectedIndex = props.selectedIndex,
+        children = props.children,
+        _props$onChange = props.onChange,
+        onChange = _props$onChange === undefined ? function () {} : _props$onChange,
+        rest = _objectWithoutProperties(props, ['selectedIndex', 'children', 'onChange']);
+
+    var changeHandler = function changeHandler(index, value) {
+        return function (evt) {
+            if (index !== selectedIndex) {
+                onChange({
+                    target: {
+                        selectedIndex: index,
+                        value: value
+                    },
+                    type: 'change'
+                });
+            }
+        };
+    };
+    var options = React.Children.toArray(children).map(function (child, index) {
+        var icon = index === selectedIndex ? "ion-android-radio-button-on" : "ion-android-radio-button-off";
+        return React.createElement(
+            _button2.default,
+            { key: index, className: 'doric-radio-item', block: true, onTap: changeHandler(index, child.props.value) },
+            React.createElement(_icon2.default, { icon: icon }),
+            child.props.label || child.props.children
+        );
+    });
+
+    return React.createElement(
+        'doric-radio-group',
+        rest,
+        options
+    );
+};
+
+exports.default = Radio;
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _icon = __webpack_require__(2);
 
 var _icon2 = _interopRequireDefault(_icon);
@@ -2638,7 +2745,7 @@ var Select = function Select(props) {
 exports.default = Select;
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2697,7 +2804,7 @@ exports.default = function (props) {
 };
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
