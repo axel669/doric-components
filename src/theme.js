@@ -62,6 +62,7 @@ const theme = deepMerge(
         button: {
             bg: 'transparent',
             hl: 'rgba(0, 0, 0, 0.4)',
+            focusHL: 'rgba(29, 98, 213, 0.1)',
             text: {
                 normal: 'black',
                 disabled: '#acacac'

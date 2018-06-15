@@ -14,7 +14,7 @@ const style = {
         WebkitTapHighlightColor: 'transparent'
     },
     ":focus": {
-        outline: theme.__global.outline
+        outline: 'none'
     }
 };
 

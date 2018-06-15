@@ -50,6 +50,9 @@ style.add({
     "doric-button::after": {
         ...util.background.after.base
     },
+    "doric-button:focus::after": {
+        backgroundColor: theme.button.focusHL
+    },
     "doric-button[data-tap-active]:not([disabled='true'])::after": {
         ...util.background.after.colorize(theme.toggle.hl)
     },

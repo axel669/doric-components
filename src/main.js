@@ -1,6 +1,7 @@
 import 'gesturesjs';
 import ssjs from 'ssjs';
 import style from './style';
+import update from './update';
 
 import BaseComponent from './components/baseComponent';
 
@@ -45,25 +46,37 @@ window.cberr = console::console.error;
 
 import theme from './theme';
 
+const inputTypes = [
+    'text',
+    'number',
+    'password',
+    'tel',
+    'email'
+];
+const inputSelectors = inputTypes.map(type => `doric-input[type='${type}'] > input`).join(', ');
 style.add({
     "doric-input": {
         margin: 2,
         display: 'block'
     },
-    "doric-input > input": {
-        width: '100%'
+    "doric-input > input, doric-input > textarea": {
+        width: '100%',
+        fontFamily: "Roboto, Arial"
     },
-    "doric-input[type='text'] > input": {
+    "doric-input > textarea": {
+        height: 75
+    },
+    [`${inputSelectors}, doric-input > textarea`]: {
         border: '2px solid transparent',
         borderBottom: `2px solid ${theme.input.normal.borderColor}`,
         backgroundColor: 'transparent',
-        padding: '3px 5px'
+        padding: '5px 7px'
     },
-    // "doric-input[type='text'] > input:focus": {
-    //     borderBottomColor: theme.input.focus.borderColor
-    // }
+    "doric-input > input:focus, doric-input > textarea:focus": {
+        borderBottomColor: theme.input.focus.borderColor
+    }
 });
-const TextInput = (props, type) => {
+const TextInput = (props, type, Element) => {
     const {
         wrapperStyle,
         wrapperClassName,
@@ -74,16 +87,17 @@ const TextInput = (props, type) => {
 
     return (
         <doric-input type={type} class={wrapperClassName} style={wrapperStyle}>
-            <input {...passThrough} type={type} value={value} onChange={onChange} />
+            <Element {...passThrough} type={type} value={value} onChange={onChange} />
         </doric-input>
     );
 };
 
 doric.input = {
-    text: props => TextInput(props, 'text'),
-    number: props => TextInput(props, 'number'),
-    tel: props => TextInput(props, 'tel')
+    textarea: props => TextInput(props, 'textarea', 'textarea')
 };
+for (const type of inputTypes) {
+    doric.input[type] = props => TextInput(props, type, 'input');
+}
 // class TextInput extends React.Component {
 //     constructor(props) {
 //         super(props);
@@ -105,16 +119,29 @@ class Main extends BaseComponent {
             i: 0,
             input: {
                 text: '',
-                number: ''
+                number: '',
+                tel: '',
+                password: '',
+                textarea: ''
             }
         };
     }
 
     updateState = (name) =>
         evt => this.setState({[name]: evt.value})
+    linkMoar = (name, prop = 'target.value') => {
+        const getValue = new Function('evt', `return evt.${prop};`);
+        return evt => {
+            const state = this.state;
+            const value = getValue(evt);
+            this.setState(() =>
+                update(state, {[`${name}.$set`]: value})
+            );
+        };
+    };
 
     render() {
-        const {c1, c2, v, t1, t2, i, text} = this.state;
+        const {c1, c2, v, t1, t2, i, input} = this.state;
         // const names = [
         //     'disabled',
         //     'flat',
@@ -154,7 +181,13 @@ class Main extends BaseComponent {
 
         return (
             <div style={{paddingTop: 3}}>
-                <doric.input.text value={text} onChange={this.linkState('text')} />
+                <doric.button text="Testing" />
+                <doric.input.text value={input.text} onChange={this.linkMoar('input.text')} />
+                <doric.input.number value={input.number} onChange={this.linkMoar('input.number')} />
+                <doric.input.password value={input.password} onChange={this.linkMoar('input.password')} />
+                <doric.input.tel value={input.tel} onChange={this.linkMoar('input.tel')} />
+                <doric.input.email value={input.email} onChange={this.linkMoar('input.email')} />
+                <doric.input.textarea value={input.textarea} onChange={this.linkMoar('input.textarea')} />
                 {/* <doric.collapse title="Test">
                     <doric.image source={images.boxxy} height={150} />
                 </doric.collapse> */}
