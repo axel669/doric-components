@@ -14,10 +14,15 @@ style.add({
         display: 'flex',
         alignItems: 'center',
         padding: 3,
-        paddingLeft: 25
+        paddingLeft: 25,
+        userSelect: 'none',
+        cursor: 'pointer'
     },
     "doric-checkbox::after": {
         ...util.background.after.base
+    },
+    "doric-checkbox:focus::after": {
+        backgroundColor: theme.checkbox.focusHL
     },
     "doric-checkbox[disabled='true']": {
         opacity: 0.7

@@ -54,7 +54,10 @@ const theme = deepMerge(
     {
         __global: {
             hl: false,
-            outline: `2px solid ${niceBlue}55`
+            border: {
+                color: 'lightgray',
+                focusColor: niceBlue
+            }
         },
         body: {
             bg: '#f0f0f0'
@@ -62,7 +65,7 @@ const theme = deepMerge(
         button: {
             bg: 'transparent',
             hl: 'rgba(0, 0, 0, 0.4)',
-            focusHL: 'rgba(29, 98, 213, 0.1)',
+            focusHL: 'rgba(10, 10, 10, 0.15)',
             text: {
                 normal: 'black',
                 disabled: '#acacac'
@@ -76,7 +79,8 @@ const theme = deepMerge(
         },
         checkbox: {
             checkColor: niceBlue,
-            hl: 'rgba(0, 0, 0, 0.4)'
+            hl: 'rgba(0, 0, 0, 0.4)',
+            focusHL: 'rgba(10, 10, 10, 0.15)'
         },
         input: {
             normal: {
@@ -84,6 +88,11 @@ const theme = deepMerge(
             },
             focus: {
                 borderColor: niceBlue
+            }
+        },
+        tabs: {
+            title: {
+                hl: 'rgba(0, 0, 0, 0.4)',
             }
         },
         toggle: {

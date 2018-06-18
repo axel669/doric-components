@@ -30,7 +30,8 @@ style.add({
         color: theme.button.text.normal,
         backgroundColor: theme.button.bg,
         textAlign: 'center',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        userSelect: 'none'
     },
     "doric-button[block='true']": {
         display: 'flex'

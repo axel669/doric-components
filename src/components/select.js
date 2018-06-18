@@ -1,5 +1,7 @@
 import icon from '../components/icon';
 import style from '../style';
+import theme from '../theme';
+import util from '../util';
 
 style.add({
     "doric-select": {
@@ -15,8 +17,9 @@ style.add({
         textAlign: 'center',
         backgroundColor: 'transparent',
         borderWidth: 0,
-        borderBottom: '1px solid #666',
-        height: 30
+        borderBottom: `2px solid ${theme.__global.border.color}`,
+        height: 30,
+        borderRadius: 0
     },
     "doric-select::after": {
         content: `"${icon.icons["ion-arrow-down-b"]}"`,
@@ -26,14 +29,22 @@ style.add({
         left: 'auto',
         top: '50%',
         right: 5,
-        color: '#666',
+        color: '#000',
         transform: 'translateY(-50%)'
+    },
+    "doric-select > select:focus": {
+        borderBottomColor: theme.__global.border.focusColor
     }
 });
 const Select = props => {
+    const {
+        wrapperStyle,
+        wrapperClassName,
+        ...selectProps
+    } = props;
     return (
-        <doric-select>
-            <select {...props} />
+        <doric-select style={wrapperStyle} class={wrapperClassName}>
+            <select {...selectProps} />
         </doric-select>
     );
 };

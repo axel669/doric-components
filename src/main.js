@@ -11,14 +11,18 @@ import checkbox from './components/checkbox';
 import collapse from './components/collapse';
 import icon from './components/icon';
 import image from './components/image';
+import input from './components/input';
 import radio from './components/radio';
 import select from './components/select';
 import slider from './components/slider';
+import {Tabs as tabs, Tab as tab} from './components/tabs';
 import toggle from './components/toggle';
 
 window.images = {
     boxxy: "http://axel669.net/images/boxxy.png"
 };
+
+window.update = update;
 
 // import loaderGIF from './images/double-ring.gif';
 
@@ -29,80 +33,17 @@ const doric = {
     collapse,
     icon,
     image,
+    input,
     radio,
     select,
     slider,
+    tab,
+    tabs,
     toggle
 };
 
 window.cblog = console::console.log;
 window.cberr = console::console.error;
-
-// class Radio extends React.Component {
-//     constructor(props) {
-//         super(props);
-//     }
-// }
-
-import theme from './theme';
-
-const inputTypes = [
-    'text',
-    'number',
-    'password',
-    'tel',
-    'email'
-];
-const inputSelectors = inputTypes.map(type => `doric-input[type='${type}'] > input`).join(', ');
-style.add({
-    "doric-input": {
-        margin: 2,
-        display: 'block'
-    },
-    "doric-input > input, doric-input > textarea": {
-        width: '100%',
-        fontFamily: "Roboto, Arial"
-    },
-    "doric-input > textarea": {
-        height: 75
-    },
-    [`${inputSelectors}, doric-input > textarea`]: {
-        border: '2px solid transparent',
-        borderBottom: `2px solid ${theme.input.normal.borderColor}`,
-        backgroundColor: 'transparent',
-        padding: '5px 7px'
-    },
-    "doric-input > input:focus, doric-input > textarea:focus": {
-        borderBottomColor: theme.input.focus.borderColor
-    }
-});
-const TextInput = (props, type, Element) => {
-    const {
-        wrapperStyle,
-        wrapperClassName,
-        value,
-        onChange = (() => {}),
-        ...passThrough
-    } = props;
-
-    return (
-        <doric-input type={type} class={wrapperClassName} style={wrapperStyle}>
-            <Element {...passThrough} type={type} value={value} onChange={onChange} />
-        </doric-input>
-    );
-};
-
-doric.input = {
-    textarea: props => TextInput(props, 'textarea', 'textarea')
-};
-for (const type of inputTypes) {
-    doric.input[type] = props => TextInput(props, type, 'input');
-}
-// class TextInput extends React.Component {
-//     constructor(props) {
-//         super(props);
-//     }
-// }
 
 const sheet = ssjs.create();
 sheet.addStyles(style);
@@ -117,13 +58,15 @@ class Main extends BaseComponent {
             t2: true,
             v: 0,
             i: 0,
+            o: '',
             input: {
                 text: '',
                 number: '',
                 tel: '',
                 password: '',
                 textarea: ''
-            }
+            },
+            tab: 0
         };
     }
 
@@ -141,7 +84,7 @@ class Main extends BaseComponent {
     };
 
     render() {
-        const {c1, c2, v, t1, t2, i, input} = this.state;
+        const {c1, c2, v, t1, t2, i, input, o, tab} = this.state;
         // const names = [
         //     'disabled',
         //     'flat',
@@ -181,13 +124,38 @@ class Main extends BaseComponent {
 
         return (
             <div style={{paddingTop: 3}}>
-                <doric.button text="Testing" />
+                <doric.card>
+                    <doric.tabs selectedIndex={tab} onChange={this.linkState('tab', 'target.selectedIndex')}>
+                        <doric.tab label="First">
+                            <doric.image source={images.boxxy} height={200} />
+                        </doric.tab>
+                        <doric.tab label="Second">Second</doric.tab>
+                        <doric.tab label="Third">Third</doric.tab>
+                    </doric.tabs>
+                </doric.card>
+                {/* <doric.button block raised text="Test" />
+                <doric.checkbox label="Checkbox Demo" checked={c1} onChange={this.linkState('c1', 'value')} />
                 <doric.input.text value={input.text} onChange={this.linkMoar('input.text')} />
                 <doric.input.number value={input.number} onChange={this.linkMoar('input.number')} />
                 <doric.input.password value={input.password} onChange={this.linkMoar('input.password')} />
                 <doric.input.tel value={input.tel} onChange={this.linkMoar('input.tel')} />
                 <doric.input.email value={input.email} onChange={this.linkMoar('input.email')} />
-                <doric.input.textarea value={input.textarea} onChange={this.linkMoar('input.textarea')} />
+                <doric.input.textarea value={input.textarea} onChange={this.linkMoar('input.textarea')} /> */}
+
+                {/* <doric.radio value={o} onChange={this.linkState('o')}>
+                    <option value='A' label='A' />
+                    <option value='B' label='B' />
+                    <option value='C' label='C' />
+                    <option value='D' label='D' />
+                    <option value='E' label='E' />
+                </doric.radio> */}
+                {/* <doric.select value={o} onChange={this.linkState('o')}>
+                    <option value='A'>A</option>
+                    <option value='B'>B</option>
+                    <option value='C'>C</option>
+                    <option value='D'>D</option>
+                    <option value='E'>E</option>
+                </doric.select> */}
                 {/* <doric.collapse title="Test">
                     <doric.image source={images.boxxy} height={150} />
                 </doric.collapse> */}
@@ -196,7 +164,7 @@ class Main extends BaseComponent {
                     <option label="Bayonetta 2" />
                     <option label="Bayonetta: Bloody Fate" />
                     <option>
-                        <doric.image source={images.boxxy} height={150} />
+                        <doric.image source={images.boxxy} height={50} />
                     </option>
                 </doric.radio> */}
                 {/* {Object.keys(doric.icon.icons).map(

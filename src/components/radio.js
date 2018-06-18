@@ -23,6 +23,7 @@ style.add({
 const Radio = props => {
     const {
         selectedIndex,
+        value,
         children,
         onChange = (() => {}),
         ...rest
@@ -39,11 +40,20 @@ const Radio = props => {
                 });
             }
         };
+    let selected = false;
     const options = React.Children.toArray(children)
         .map((child, index) => {
-            const icon = (index === selectedIndex)
-                ? "ion-android-radio-button-on"
-                : "ion-android-radio-button-off";
+            let icon = "ion-android-radio-button-off";
+
+            const valueMatch = (value !== undefined && value === child.props.value);
+            if (selected === false && (index === selectedIndex || valueMatch === true)) {
+                icon = "ion-android-radio-button-on";
+                selected = true;
+            }
+            // const icon = ((index === selectedIndex || child.props.value === value) && selected)
+            //     ? "ion-android-radio-button-on"
+            //     : "ion-android-radio-button-off";
+
             return (
                 <Button key={index} className="doric-radio-item" block onTap={changeHandler(index, child.props.value)}>
                     <Icon icon={icon} />
