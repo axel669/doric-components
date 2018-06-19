@@ -34,7 +34,8 @@ style.add({
         userSelect: 'none'
     },
     "doric-button[block='true']": {
-        display: 'flex'
+        display: 'flex',
+        minWidth: 0
     },
     "doric-button[raised='true']": {
         boxShadow: '2px 2px 3px rgba(0, 0, 0, 0.4)'
