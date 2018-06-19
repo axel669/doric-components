@@ -9,6 +9,7 @@ import button from './components/button';
 import card from './components/card';
 import checkbox from './components/checkbox';
 import collapse from './components/collapse';
+import {Grid as grid, Col as col, GridBreak as gridBreak} from './components/grid';
 import icon from './components/icon';
 import image from './components/image';
 import input from './components/input';
@@ -31,6 +32,9 @@ const doric = {
     card,
     checkbox,
     collapse,
+    grid,
+    col,
+    gridBreak,
     icon,
     image,
     input,
@@ -124,7 +128,7 @@ class Main extends BaseComponent {
 
         return (
             <div style={{paddingTop: 3}}>
-                <doric.card>
+                {/* <doric.card>
                     <doric.tabs selectedIndex={tab} onChange={this.linkState('tab', 'target.selectedIndex')}>
                         <doric.tab label="First">
                             <doric.image source={images.boxxy} height={200} />
@@ -132,7 +136,7 @@ class Main extends BaseComponent {
                         <doric.tab label="Second">Second</doric.tab>
                         <doric.tab label="Third">Third</doric.tab>
                     </doric.tabs>
-                </doric.card>
+                </doric.card> */}
                 {/* <doric.button block raised text="Test" />
                 <doric.checkbox label="Checkbox Demo" checked={c1} onChange={this.linkState('c1', 'value')} />
                 <doric.input.text value={input.text} onChange={this.linkMoar('input.text')} />
@@ -142,13 +146,20 @@ class Main extends BaseComponent {
                 <doric.input.email value={input.email} onChange={this.linkMoar('input.email')} />
                 <doric.input.textarea value={input.textarea} onChange={this.linkMoar('input.textarea')} /> */}
 
-                {/* <doric.radio value={o} onChange={this.linkState('o')}>
+                <doric.radio value={o} onChange={this.linkState('o')} layout={{container: doric.grid, itemProps: props => ({key: props.key, size: 2})}}>
                     <option value='A' label='A' />
                     <option value='B' label='B' />
                     <option value='C' label='C' />
                     <option value='D' label='D' />
                     <option value='E' label='E' />
-                </doric.radio> */}
+                </doric.radio>
+                <doric.radio value={o} onChange={this.linkState('o')}>
+                    <option value='A' label='A' />
+                    <option value='B' label='B' />
+                    <option value='C' label='C' />
+                    <option value='D' label='D' />
+                    <option value='E' label='E' />
+                </doric.radio>
                 {/* <doric.select value={o} onChange={this.linkState('o')}>
                     <option value='A'>A</option>
                     <option value='B'>B</option>

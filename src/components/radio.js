@@ -1,7 +1,9 @@
 import Button from './button';
 import Icon from './icon';
+import {Grid, Col} from './grid';
 
 import style from '../style';
+import {keySplit} from '../util';
 
 style.add({
     "doric-radio-group": {
@@ -20,12 +22,16 @@ style.add({
         transform: 'translateY(-50%)'
     }
 });
+
+const defaultContainer = props => <React.Fragment>{props.children}</React.Fragment>;
+defaultContainer.RadioItem = props => <React.Fragment>{props.children}</React.Fragment>;
 const Radio = props => {
     const {
         selectedIndex,
         value,
         children,
         onChange = (() => {}),
+        layout = {container: defaultContainer, itemProps: props => props},
         ...rest
     } = props;
     const changeHandler = (index, value) =>
@@ -40,33 +46,46 @@ const Radio = props => {
                 });
             }
         };
+    // const Container = layout.container || (props => <React.Fragment>{props.children}</React.Fragment>);
+    const Container = layout.container;
+    const Item = Container.RadioItem;
+    const itemPropsFunc = layout.itemProps;
     let selected = false;
     const options = React.Children.toArray(children)
         .map((child, index) => {
             let icon = "ion-android-radio-button-off";
 
             const valueMatch = (value !== undefined && value === child.props.value);
-            if (selected === false && (index === selectedIndex || valueMatch === true)) {
+            const isSelected = selected === false && (index === selectedIndex || valueMatch === true);
+            if (isSelected === true) {
                 icon = "ion-android-radio-button-on";
                 selected = true;
             }
-            // const icon = ((index === selectedIndex || child.props.value === value) && selected)
-            //     ? "ion-android-radio-button-on"
-            //     : "ion-android-radio-button-off";
+            const itemProps = itemPropsFunc(
+                {index, key: index, selected: isSelected},
+                rest
+            );
+            // console.log(Item, itemProps);
 
             return (
-                <Button key={index} className="doric-radio-item" block onTap={changeHandler(index, child.props.value)}>
-                    <Icon icon={icon} />
-                    {child.props.label || child.props.children}
-                </Button>
+                <Item {...itemProps}>
+                    <Button className="doric-radio-item" block onTap={changeHandler(index, child.props.value)}>
+                        <Icon icon={icon} />
+                        {child.props.label || child.props.children}
+                    </Button>
+                </Item>
             );
         });
 
     return (
         <doric-radio-group {...rest}>
-            {options}
+            <Container>
+                {options}
+            </Container>
         </doric-radio-group>
     );
 };
+
+Grid.RadioItem = props => <Col {...props}>{props.children}</Col>;
 
 export default Radio;
