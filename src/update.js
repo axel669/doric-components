@@ -19,9 +19,12 @@ const checks = {
         }
     }
 };
-const internal_copyObject = obj => {
+const internal_copyObject = (obj, create = false) => {
     if (Array.isArray(obj) === true) {
         return [...obj];
+    }
+    if (obj === undefined && create === true) {
+        return {};
     }
     if (typeof obj !== 'object' || obj === null) {
         return obj;
@@ -37,21 +40,21 @@ const internal_copyObject = obj => {
     }
     return {...obj};
 };
-const internal_setValues = (dest, key, n, value) => {
+const internal_setValues = (dest, key, n, value, create) => {
     const name = key[n];
     if (n === (key.length - 1)) {
         checks[name](dest, value);
         return verbs[name](dest, value);
     }
     else {
-        dest = internal_copyObject(dest);
-        dest[name] = internal_setValues(dest[name], key, n + 1, value);
+        dest = internal_copyObject(dest, create);
+        dest[name] = internal_setValues(dest[name], key, n + 1, value, create);
     }
     return dest;
 };
-const update = (source, obj) => {
+const update = (source, obj, create = false) => {
     for (const key of Object.keys(obj)) {
-        source = internal_setValues(source, key.split('.'), 0, obj[key]);
+        source = internal_setValues(source, key.split('.'), 0, obj[key], create);
     }
 
     return source;
