@@ -1,5 +1,17 @@
 import theme from './theme';
 
+Number.prototype.to = function (end) {
+    const array = [];
+    let current = this + 0;
+
+    while (current < end) {
+        array.push(current);
+        current += 1;
+    }
+
+    return array;
+};
+
 export default {
     background: {
         after: {
