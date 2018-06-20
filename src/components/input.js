@@ -23,13 +23,13 @@ style.add({
     },
     [`${inputSelectors}, doric-input > textarea`]: {
         border: '2px solid transparent',
-        borderBottom: `2px solid ${theme.input.normal.borderColor}`,
+        borderBottom: `2px solid ${theme.input.border.normal}`,
         backgroundColor: 'transparent',
         padding: '5px 7px',
         fontSize: 13
     },
     "doric-input > input:focus, doric-input > textarea:focus": {
-        borderBottomColor: theme.input.focus.borderColor
+        borderBottomColor: theme.input.border.normal
     }
 });
 const TextInput = (props, type, Element) => {

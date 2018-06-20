@@ -22,13 +22,13 @@ style.add({
         ...util.background.after.base
     },
     "doric-checkbox:focus::after": {
-        backgroundColor: theme.checkbox.focusHL
+        backgroundColor: theme.checkbox.hl.focus
     },
     "doric-checkbox[disabled='true']": {
         opacity: 0.7
     },
     "doric-checkbox[data-tap-active]:not([disabled='true'])::after": {
-        ...util.background.after.colorize(theme.toggle.hl)
+        ...util.background.after.colorize(theme.checkbox.hl.normal)
     },
     "doric-checkbox::before": {
         position: 'absolute',
