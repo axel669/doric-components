@@ -30,6 +30,7 @@ style.add({
         transform: 'translateY(-50%)',
         fontFamily: "Ionic",
         fontSize: 16,
+        color: theme.collapse.title.text.normal,
         transition: 'transform 100ms linear'
     },
     "doric-collapse[open='true'] doric-collapse-title::after": {

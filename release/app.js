@@ -86,7 +86,7 @@ var style = {
         margin: 0,
         width: '100%',
         height: '100%',
-        backgroundColor: _theme2.default.body.bg,
+        backgroundColor: _theme2.default.body.bg.normal,
         fontFamily: "Roboto"
     },
     "*": {
@@ -200,7 +200,7 @@ var niceBlue = '#1d62d5';
 var normalHL = 'rgba(0, 0, 0, 0.4)';
 var focusHL = 'rgba(0, 0, 0, 0.125)';
 var baseTheme = {
-    'body.bg': '#f0f0f0',
+    'body.bg.normal': '#f0f0f0',
 
     'button.hl.normal': normalHL,
     'button.hl.focus': focusHL,
@@ -219,8 +219,8 @@ var baseTheme = {
     'checkbox.hl.normal': normalHL,
     'checkbox.hl.focus': focusHL,
 
-    'collapse.title.bg': niceBlue,
-    'collapse.title.text': 'white',
+    'collapse.title.bg.normal': niceBlue,
+    'collapse.title.text.normal': 'white',
 
     'divider.color': 'lightgray',
 
@@ -364,7 +364,7 @@ exports.default = {
             },
             colorize: function colorize(color) {
                 return {
-                    backgroundColor: _theme2.default.__global.hl || color,
+                    backgroundColor: color,
                     transition: 'none'
                 };
             }
@@ -2927,7 +2927,7 @@ _style2.default.add({
     "doric-collapse-title": {
         display: 'block',
         cursor: 'pointer',
-        backgroundColor: _theme2.default.collapse.title.bg,
+        backgroundColor: _theme2.default.collapse.title.bg.normal,
         position: 'relative',
         boxShadow: '0px 2px 2px rgba(0, 0, 0, 0.2)'
     },
@@ -2940,6 +2940,7 @@ _style2.default.add({
         transform: 'translateY(-50%)',
         fontFamily: "Ionic",
         fontSize: 16,
+        color: _theme2.default.collapse.title.text.normal,
         transition: 'transform 100ms linear'
     },
     "doric-collapse[open='true'] doric-collapse-title::after": {
@@ -2955,7 +2956,7 @@ _style2.default.add({
     "doric-collapse-title > doric-button": {
         borderRadius: 0,
         textAlign: 'left',
-        color: _theme2.default.collapse.title.text
+        color: _theme2.default.collapse.title.text.normal
     }
 });
 

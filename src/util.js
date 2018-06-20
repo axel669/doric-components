@@ -26,7 +26,7 @@ export default {
             },
             colorize(color) {
                 return {
-                    backgroundColor: theme.__global.hl || color,
+                    backgroundColor: color,
                     transition: 'none'
                 }
             }
