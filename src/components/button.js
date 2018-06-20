@@ -25,8 +25,6 @@ style.add({
         top: 0,
         left: 0,
         overflow: 'hidden',
-        // minWidth: 69,
-        // minHeight: 30,
         color: theme.button.text.normal,
         backgroundColor: theme.button.bg.normal,
         textAlign: 'center',

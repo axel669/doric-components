@@ -79,7 +79,7 @@ const baseTheme = {
     'checkbox.hl.focus': focusHL,
 
     'collapse.title.bg': niceBlue,
-    'collapse.title.text.color': 'white',
+    'collapse.title.text': 'white',
 
     'divider.color': 'lightgray',
 

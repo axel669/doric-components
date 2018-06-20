@@ -4,41 +4,48 @@ import Button from './button';
 
 import util from '../util';
 import style from '../style';
+import theme from '../theme';
 
 style.add({
     "doric-collapse": {
         display: 'block',
         border: '1px solid black',
-        borderRadius: 3,
-        margin: 3,
+        borderRadius: 2,
+        margin: 4,
         overflow: 'hidden'
     },
     "doric-collapse-title": {
         display: 'block',
         cursor: 'pointer',
-        backgroundColor: util.color.primaryBlue,
+        backgroundColor: theme.collapse.title.bg,
         position: 'relative',
         boxShadow: '0px 2px 2px rgba(0, 0, 0, 0.2)'
     },
     "doric-collapse-title::after": {
-        content: `"${Icon.icons["ion-plus"]}"`,
+        content: `"${Icon.icons["ion-chevron-left"]}"`,
         position: 'absolute',
         top: '50%',
         left: 'auto',
-        right: 5,
+        right: 12,
         transform: 'translateY(-50%)',
         fontFamily: "Ionic",
-        fontSize: 16
+        fontSize: 16,
+        transition: 'transform 100ms linear'
     },
     "doric-collapse[open='true'] doric-collapse-title::after": {
-        content: `"${Icon.icons["ion-minus"]}"`
+        transform: 'translateY(-50%) rotate(-90deg)'
     },
     "doric-collapse-content": {
         display: 'block',
-        marginTop: 2
+        marginTop: 4
     },
     "doric-collapse[open='false'] > doric-collapse-content": {
         display: 'none'
+    },
+    "doric-collapse-title > doric-button": {
+        borderRadius: 0,
+        textAlign: 'left',
+        color: theme.collapse.title.text
     }
 });
 class Collapse extends React.Component {
@@ -63,9 +70,7 @@ class Collapse extends React.Component {
         return (
             <doric-collapse {...props} open={open}>
                 <doric-collapse-title>
-                    {/* <CustomListeners listeners={{onTap: this.toggle}} />
-                    {title} */}
-                    <Button text={title} style={{textAlign: 'left'}} onTap={this.toggle} block flush />
+                    <Button text={title} onTap={this.toggle} block flush />
                 </doric-collapse-title>
                 <doric-collapse-content>
                     {children}

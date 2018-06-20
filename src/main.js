@@ -178,6 +178,10 @@ class Main extends BaseComponent {
                     </doric.card>
                 </div> */}
 
+                <doric.collapse title="Test">
+                    <doric.image source={images.bayoBG} height={200} />
+                </doric.collapse>
+
                 {/* <div>
                     <doric.checkbox label="Test A" checked={check.a} onChange={this.linkMoar('check.a', 'value')} />
                     <doric.checkbox label="Test B" checked={check.a} onChange={this.linkMoar('check.a', 'value')} checkRight />

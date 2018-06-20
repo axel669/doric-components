@@ -224,7 +224,7 @@ var baseTheme = {
     'checkbox.hl.focus': focusHL,
 
     'collapse.title.bg': niceBlue,
-    'collapse.title.text.color': 'white',
+    'collapse.title.text': 'white',
 
     'divider.color': 'lightgray',
 
@@ -1928,51 +1928,9 @@ var Main = function (_BaseComponent) {
                 'div',
                 { style: { paddingTop: 3 } },
                 React.createElement(
-                    'div',
-                    null,
-                    React.createElement(
-                        doric.card,
-                        null,
-                        'Stuff'
-                    ),
-                    React.createElement(
-                        doric.card,
-                        null,
-                        React.createElement(doric.card.title, { main: 'Main Title', subtitle: 'Subtitle', icon: images.laughingMan }),
-                        React.createElement(
-                            doric.card.media,
-                            null,
-                            React.createElement(doric.image, { source: images.bayoBG, height: '100%' })
-                        ),
-                        'More Stuff',
-                        React.createElement(doric.divider, null),
-                        'Wat Again?',
-                        React.createElement(
-                            doric.card.actions,
-                            { divider: true },
-                            React.createElement(doric.button, { text: 'Nope', primary: true, flat: true }),
-                            React.createElement(doric.button, { text: 'Maybe?', primary: true, flat: true })
-                        )
-                    ),
-                    React.createElement(
-                        doric.card,
-                        null,
-                        React.createElement(
-                            doric.card.media,
-                            null,
-                            React.createElement(doric.image, { source: images.bayoBG, height: '100%' })
-                        ),
-                        React.createElement(doric.card.title, { main: 'Main Title', subtitle: 'Subtitle', icon: images.laughingMan }),
-                        'More Stuff',
-                        React.createElement(doric.divider, null),
-                        'Wat Again?',
-                        React.createElement(
-                            doric.card.actions,
-                            null,
-                            React.createElement(doric.button, { text: 'Nope', primary: true, flat: true }),
-                            React.createElement(doric.button, { text: 'Maybe?', primary: true, flat: true })
-                        )
-                    )
+                    doric.collapse,
+                    { title: 'Test' },
+                    React.createElement(doric.image, { source: images.bayoBG, height: 200 })
                 )
             );
         }
@@ -2918,6 +2876,10 @@ var _style = __webpack_require__(0);
 
 var _style2 = _interopRequireDefault(_style);
 
+var _theme = __webpack_require__(1);
+
+var _theme2 = _interopRequireDefault(_theme);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
@@ -2932,36 +2894,42 @@ _style2.default.add({
     "doric-collapse": {
         display: 'block',
         border: '1px solid black',
-        borderRadius: 3,
-        margin: 3,
+        borderRadius: 2,
+        margin: 4,
         overflow: 'hidden'
     },
     "doric-collapse-title": {
         display: 'block',
         cursor: 'pointer',
-        backgroundColor: _util2.default.color.primaryBlue,
+        backgroundColor: _theme2.default.collapse.title.bg,
         position: 'relative',
         boxShadow: '0px 2px 2px rgba(0, 0, 0, 0.2)'
     },
     "doric-collapse-title::after": {
-        content: '"' + _icon2.default.icons["ion-plus"] + '"',
+        content: '"' + _icon2.default.icons["ion-chevron-left"] + '"',
         position: 'absolute',
         top: '50%',
         left: 'auto',
-        right: 5,
+        right: 12,
         transform: 'translateY(-50%)',
         fontFamily: "Ionic",
-        fontSize: 16
+        fontSize: 16,
+        transition: 'transform 100ms linear'
     },
     "doric-collapse[open='true'] doric-collapse-title::after": {
-        content: '"' + _icon2.default.icons["ion-minus"] + '"'
+        transform: 'translateY(-50%) rotate(-90deg)'
     },
     "doric-collapse-content": {
         display: 'block',
-        marginTop: 2
+        marginTop: 4
     },
     "doric-collapse[open='false'] > doric-collapse-content": {
         display: 'none'
+    },
+    "doric-collapse-title > doric-button": {
+        borderRadius: 0,
+        textAlign: 'left',
+        color: _theme2.default.collapse.title.text
     }
 });
 
@@ -3007,7 +2975,7 @@ var _initialiseProps = function _initialiseProps() {
             React.createElement(
                 'doric-collapse-title',
                 null,
-                React.createElement(_button2.default, { text: title, style: { textAlign: 'left' }, onTap: _this2.toggle, block: true, flush: true })
+                React.createElement(_button2.default, { text: title, onTap: _this2.toggle, block: true, flush: true })
             ),
             React.createElement(
                 'doric-collapse-content',
