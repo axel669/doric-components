@@ -17,7 +17,7 @@ style.add({
     "doric-collapse-title": {
         display: 'block',
         cursor: 'pointer',
-        backgroundColor: theme.collapse.title.bg,
+        backgroundColor: theme.collapse.title.bg.normal,
         position: 'relative',
         boxShadow: '0px 2px 2px rgba(0, 0, 0, 0.2)'
     },
@@ -45,7 +45,7 @@ style.add({
     "doric-collapse-title > doric-button": {
         borderRadius: 0,
         textAlign: 'left',
-        color: theme.collapse.title.text
+        color: theme.collapse.title.text.normal
     }
 });
 class Collapse extends React.Component {

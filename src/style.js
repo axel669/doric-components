@@ -6,7 +6,7 @@ const style = {
         margin: 0,
         width: '100%',
         height: '100%',
-        backgroundColor: theme.body.bg,
+        backgroundColor: theme.body.bg.normal,
         fontFamily: "Roboto"
     },
     "*": {

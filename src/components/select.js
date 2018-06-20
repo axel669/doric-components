@@ -17,7 +17,7 @@ style.add({
         textAlign: 'center',
         backgroundColor: 'transparent',
         borderWidth: 0,
-        borderBottom: `2px solid ${theme.__global.border.color}`,
+        borderBottom: `2px solid ${theme.select.border.normal}`,
         height: 30,
         borderRadius: 0
     },
@@ -33,7 +33,7 @@ style.add({
         transform: 'translateY(-50%)'
     },
     "doric-select > select:focus": {
-        borderBottomColor: theme.__global.border.focusColor
+        borderBottomColor: theme.select.border.focus
     }
 });
 const Select = props => {

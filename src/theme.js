@@ -55,11 +55,7 @@ const niceBlue = '#1d62d5';
 const normalHL = 'rgba(0, 0, 0, 0.4)';
 const focusHL = 'rgba(0, 0, 0, 0.125)';
 const baseTheme = {
-    '__global.hl': normalHL,
-    '__global.border.color': 'lightgray',
-    '__global.border.focusColor': niceBlue,
-
-    'body.bg': '#f0f0f0',
+    'body.bg.normal': '#f0f0f0',
 
     'button.hl.normal': normalHL,
     'button.hl.focus': focusHL,
@@ -78,15 +74,24 @@ const baseTheme = {
     'checkbox.hl.normal': normalHL,
     'checkbox.hl.focus': focusHL,
 
-    'collapse.title.bg': niceBlue,
-    'collapse.title.text': 'white',
+    'collapse.title.bg.normal': niceBlue,
+    'collapse.title.text.normal': 'white',
 
     'divider.color': 'lightgray',
 
     'input.border.normal': 'lightgray',
     'input.border.focus': niceBlue,
 
-    'tabs.title.hl': normalHL,
+    'select.border.normal': 'lightgray',
+    'select.border.focus': niceBlue,
+
+    'tabs.tab.hl': normalHL,
+    'tabs.tab.bg.normal': 'white',
+    'tabs.tab.bg.active': 'white',
+    'tabs.tab.border.normal': 'lightgray',
+    'tabs.tab.border.active': niceBlue,
+    'tabs.tab.text.normal': 'black',
+    'tabs.tab.text.active': niceBlue,
 
     'toggle.hl': normalHL,
     'toggle.thumb.on': niceBlue,

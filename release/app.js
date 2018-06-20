@@ -200,10 +200,6 @@ var niceBlue = '#1d62d5';
 var normalHL = 'rgba(0, 0, 0, 0.4)';
 var focusHL = 'rgba(0, 0, 0, 0.125)';
 var baseTheme = {
-    '__global.hl': normalHL,
-    '__global.border.color': 'lightgray',
-    '__global.border.focusColor': niceBlue,
-
     'body.bg': '#f0f0f0',
 
     'button.hl.normal': normalHL,
@@ -231,7 +227,16 @@ var baseTheme = {
     'input.border.normal': 'lightgray',
     'input.border.focus': niceBlue,
 
-    'tabs.title.hl': normalHL,
+    'select.border.normal': 'lightgray',
+    'select.border.focus': niceBlue,
+
+    'tabs.tab.hl': normalHL,
+    'tabs.tab.bg.normal': 'white',
+    'tabs.tab.bg.active': 'white',
+    'tabs.tab.border.normal': 'lightgray',
+    'tabs.tab.border.active': niceBlue,
+    'tabs.tab.text.normal': 'black',
+    'tabs.tab.text.active': niceBlue,
 
     'toggle.hl': normalHL,
     'toggle.thumb.on': niceBlue,
@@ -1348,8 +1353,6 @@ _style2.default.add({
         top: 0,
         left: 0,
         overflow: 'hidden',
-        // minWidth: 69,
-        // minHeight: 30,
         color: _theme2.default.button.text.normal,
         backgroundColor: _theme2.default.button.bg.normal,
         textAlign: 'center',
@@ -1863,22 +1866,24 @@ var Main = function (_BaseComponent) {
             check: {
                 a: true,
                 b: false
-                // c1: true,
-                // c2: false,
-                // t1: false,
-                // t2: true,
-                // v: 0,
-                // i: 0,
-                // o: '',
-                // input: {
-                //     text: '',
-                //     number: '',
-                //     tel: '',
-                //     password: '',
-                //     textarea: ''
-                // },
-                // tab: 0
-            } };
+            },
+            tab: 0
+            // c1: true,
+            // c2: false,
+            // t1: false,
+            // t2: true,
+            // v: 0,
+            // i: 0,
+            // o: '',
+            // input: {
+            //     text: '',
+            //     number: '',
+            //     tel: '',
+            //     password: '',
+            //     textarea: ''
+            // },
+            // tab: 0
+        };
         return _this;
     }
 
@@ -1886,7 +1891,9 @@ var Main = function (_BaseComponent) {
         key: 'render',
         value: function render() {
             // const {c1, c2, v, t1, t2, i, input, o, tab} = this.state;
-            var check = this.state.check;
+            var _state = this.state,
+                check = _state.check,
+                tab = _state.tab;
             // const names = [
             //     'disabled',
             //     'flat',
@@ -1931,6 +1938,25 @@ var Main = function (_BaseComponent) {
                     doric.collapse,
                     { title: 'Test' },
                     React.createElement(doric.image, { source: images.bayoBG, height: 200 })
+                ),
+                React.createElement(
+                    doric.tabs,
+                    { selectedIndex: tab, onChange: this.linkState('tab', 'target.selectedIndex') },
+                    React.createElement(
+                        doric.tab,
+                        { label: 'A' },
+                        'A'
+                    ),
+                    React.createElement(
+                        doric.tab,
+                        { label: 'B' },
+                        'B'
+                    ),
+                    React.createElement(
+                        doric.tab,
+                        { label: 'C' },
+                        'C'
+                    )
                 )
             );
         }
@@ -3314,7 +3340,7 @@ _style2.default.add({
         textAlign: 'center',
         backgroundColor: 'transparent',
         borderWidth: 0,
-        borderBottom: '2px solid ' + _theme2.default.__global.border.color,
+        borderBottom: '2px solid ' + _theme2.default.select.border.normal,
         height: 30,
         borderRadius: 0
     },
@@ -3330,7 +3356,7 @@ _style2.default.add({
         transform: 'translateY(-50%)'
     },
     "doric-select > select:focus": {
-        borderBottomColor: _theme2.default.__global.border.focusColor
+        borderBottomColor: _theme2.default.select.border.focus
     }
 });
 var Select = function Select(props) {
@@ -3452,7 +3478,9 @@ _style2.default.add({
     },
     "doric-tab-title": {
         display: 'table-cell',
-        borderBottom: '2px solid ' + _theme2.default.__global.border.color,
+        borderBottom: '2px solid ' + _theme2.default.tabs.tab.border.normal,
+        color: _theme2.default.tabs.tab.text.normal,
+        backgroundColor: _theme2.default.tabs.tab.bg.normal,
         textAlign: 'center',
         verticalAlign: 'middle',
         padding: 7,
@@ -3466,11 +3494,12 @@ _style2.default.add({
         display: 'none'
     },
     "doric-tab-title[active='true']": {
-        color: _theme2.default.__global.border.focusColor,
-        borderBottomColor: _theme2.default.__global.border.focusColor
+        borderBottomColor: _theme2.default.tabs.tab.border.active,
+        color: _theme2.default.tabs.tab.text.active,
+        backgroundColor: _theme2.default.tabs.tab.bg.active
     },
     "doric-tab-title::after": _extends({}, _util2.default.background.after.base),
-    "doric-tab-title[data-tap-active]::after": _extends({}, _util2.default.background.after.colorize(_theme2.default.tabs.title.hl))
+    "doric-tab-title[data-tap-active]::after": _extends({}, _util2.default.background.after.colorize(_theme2.default.tabs.tab.hl))
 });
 
 var Tabs = function (_React$Component) {

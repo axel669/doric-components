@@ -12,7 +12,9 @@ style.add({
     },
     "doric-tab-title": {
         display: 'table-cell',
-        borderBottom: `2px solid ${theme.__global.border.color}`,
+        borderBottom: `2px solid ${theme.tabs.tab.border.normal}`,
+        color: theme.tabs.tab.text.normal,
+        backgroundColor: theme.tabs.tab.bg.normal,
         textAlign: 'center',
         verticalAlign: 'middle',
         padding: 7,
@@ -26,14 +28,15 @@ style.add({
         display: 'none'
     },
     "doric-tab-title[active='true']": {
-        color: theme.__global.border.focusColor,
-        borderBottomColor: theme.__global.border.focusColor
+        borderBottomColor: theme.tabs.tab.border.active,
+        color: theme.tabs.tab.text.active,
+        backgroundColor: theme.tabs.tab.bg.active
     },
     "doric-tab-title::after": {
         ...util.background.after.base
     },
     "doric-tab-title[data-tap-active]::after": {
-        ...util.background.after.colorize(theme.tabs.title.hl)
+        ...util.background.after.colorize(theme.tabs.tab.hl)
     }
 });
 class Tabs extends React.Component {

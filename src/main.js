@@ -64,7 +64,8 @@ class Main extends BaseComponent {
             check: {
                 a: true,
                 b: false
-            }
+            },
+            tab: 0
             // c1: true,
             // c2: false,
             // t1: false,
@@ -98,7 +99,7 @@ class Main extends BaseComponent {
 
     render() {
         // const {c1, c2, v, t1, t2, i, input, o, tab} = this.state;
-        const {check} = this.state;
+        const {check, tab} = this.state;
         // const names = [
         //     'disabled',
         //     'flat',
@@ -181,6 +182,12 @@ class Main extends BaseComponent {
                 <doric.collapse title="Test">
                     <doric.image source={images.bayoBG} height={200} />
                 </doric.collapse>
+
+                <doric.tabs selectedIndex={tab} onChange={this.linkState('tab', 'target.selectedIndex')}>
+                    <doric.tab label="A">A</doric.tab>
+                    <doric.tab label="B">B</doric.tab>
+                    <doric.tab label="C">C</doric.tab>
+                </doric.tabs>
 
                 {/* <div>
                     <doric.checkbox label="Test A" checked={check.a} onChange={this.linkMoar('check.a', 'value')} />
