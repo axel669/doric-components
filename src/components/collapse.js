@@ -17,7 +17,6 @@ style.add({
         display: 'block',
         cursor: 'pointer',
         backgroundColor: util.color.primaryBlue,
-        // padding: '3px 5px',
         position: 'relative',
         boxShadow: '0px 2px 2px rgba(0, 0, 0, 0.2)'
     },

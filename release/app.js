@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 8);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -119,6 +119,13 @@ exports.default = style;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _update = __webpack_require__(6);
+
+var _update2 = _interopRequireDefault(_update);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var _typeof = new Function('obj', 'return typeof obj');
 var deepMerge = function deepMerge(a, b) {
     var t1 = _typeof(a);
@@ -190,62 +197,122 @@ var deepMerge = function deepMerge(a, b) {
 };
 
 var niceBlue = '#1d62d5';
-var theme = deepMerge({
-    __global: {
-        hl: false,
-        border: {
-            color: 'lightgray',
-            focusColor: niceBlue
-        }
-    },
-    body: {
-        bg: '#f0f0f0'
-    },
-    button: {
-        bg: 'transparent',
-        hl: 'rgba(0, 0, 0, 0.4)',
-        focusHL: 'rgba(10, 10, 10, 0.15)',
-        text: {
-            normal: 'black',
-            disabled: '#acacac'
-        }
-    },
-    card: {
-        title: {
-            bg: niceBlue,
-            color: 'white'
-        }
-    },
-    checkbox: {
-        checkColor: niceBlue,
-        hl: 'rgba(0, 0, 0, 0.4)',
-        focusHL: 'rgba(10, 10, 10, 0.15)'
-    },
-    input: {
-        normal: {
-            borderColor: 'lightgray'
-        },
-        focus: {
-            borderColor: niceBlue
-        }
-    },
-    tabs: {
-        title: {
-            hl: 'rgba(0, 0, 0, 0.4)'
-        }
-    },
-    toggle: {
-        hl: 'rgba(0, 0, 0, 0.4)',
-        thumb: {
-            onColor: niceBlue,
-            offColor: '#666768'
-        },
-        track: {
-            onColor: '#79aafb',
-            offColor: 'lightgray'
-        }
-    }
-}, window.DoricTheme);
+var normalHL = 'rgba(0, 0, 0, 0.4)';
+var focusHL = 'rgba(0, 0, 0, 0.125)';
+var baseTheme = {
+    '__global.hl': normalHL,
+    '__global.border.color': 'lightgray',
+    '__global.border.focusColor': niceBlue,
+
+    'body.bg': '#f0f0f0',
+
+    'button.hl.normal': normalHL,
+    'button.hl.focus': focusHL,
+    'button.bg.normal': 'transparent',
+    'button.text.normal': 'black',
+    'button.bg.primary': niceBlue,
+    'button.text.primary': 'white',
+    'button.bg.danger': '#F44336',
+    'button.text.danger': 'white',
+    'button.bg.accent': '#FF4081',
+    'button.text.accent': 'white',
+
+    'card.bg': 'white',
+
+    'checkbox.checkColor': niceBlue,
+    'checkbox.hl.normal': normalHL,
+    'checkbox.hl.focus': focusHL,
+
+    'collapse.title.bg': niceBlue,
+    'collapse.title.text.color': 'white',
+
+    'divider.color': 'lightgray',
+
+    'input.border.normal': 'lightgray',
+    'input.border.focus': niceBlue,
+
+    'tabs.title.hl': normalHL,
+
+    'toggle.hl': normalHL,
+    'toggle.thumb.on': niceBlue,
+    'toggle.thumb.off': '#666768',
+    'toggle.track.on': '#79aafb',
+    'toggle.track.off': 'lightgray'
+};
+var defaultTheme = (0, _update2.default)({}, Object.keys(baseTheme).reduce(function (theme, key) {
+    theme[key + '.$set'] = baseTheme[key];
+    return theme;
+}, {}), true);
+// console.log(defaultTheme);
+// const wat = {
+//     __global: {
+//         hl: false,
+//         border: {
+//             color: 'lightgray',
+//             focusColor: niceBlue
+//         }
+//     },
+//     body: {
+//         bg: '#f0f0f0'
+//     },
+//     button: {
+//         bg: 'transparent',
+//         hl: 'rgba(0, 0, 0, 0.4)',
+//         focusHL: 'rgba(10, 10, 10, 0.15)',
+//         text: {
+//             normal: 'black',
+//             disabled: '#acacac'
+//         }
+//     },
+//     card: {
+//         title: {
+//             bg: niceBlue,
+//             color: 'white'
+//         }
+//     },
+//     checkbox: {
+//         checkColor: niceBlue,
+//         hl: 'rgba(0, 0, 0, 0.4)',
+//         focusHL: 'rgba(10, 10, 10, 0.15)'
+//     },
+//     input: {
+//         normal: {
+//             borderColor: 'lightgray'
+//         },
+//         focus: {
+//             borderColor: niceBlue
+//         }
+//     },
+//     tabs: {
+//         title: {
+//             hl: 'rgba(0, 0, 0, 0.4)',
+//         }
+//     },
+//     toggle: {
+//         hl: 'rgba(0, 0, 0, 0.4)',
+//         thumb: {
+//             onColor: niceBlue,
+//             offColor: '#666768'
+//         },
+//         track: {
+//             onColor: '#79aafb',
+//             offColor: 'lightgray'
+//         }
+//     }
+// // };
+// const wat2 = Object.keys(baseTheme).reduce(
+//     (theme, key) => {
+//         theme[`${key}.$set`] = baseTheme[key];
+//         return theme;
+//     },
+//     {}
+// );
+var theme = defaultTheme;
+// const theme = update({}, wat2, true);
+// const theme = deepMerge(
+//     update(wat, wat2, true),
+//     window.DoricTheme
+// );
 
 exports.default = theme;
 
@@ -259,7 +326,6 @@ exports.default = theme;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.keySplit = undefined;
 
 var _theme = __webpack_require__(1);
 
@@ -277,40 +343,6 @@ Number.prototype.to = function (end) {
     }
 
     return array;
-};
-
-var keySplit = exports.keySplit = function keySplit(list, keyFunc, map) {
-    var items = {};
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
-
-    try {
-        for (var _iterator = list[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var item = _step.value;
-
-            var key = keyFunc(item);
-            if (items[key] === undefined) {
-                items[key] = {};
-            }
-            items[key][item] = map(item);
-        }
-    } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-    } finally {
-        try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-                _iterator.return();
-            }
-        } finally {
-            if (_didIteratorError) {
-                throw _iteratorError;
-            }
-        }
-    }
-
-    return items;
 };
 
 exports.default = {
@@ -1310,16 +1342,16 @@ _style2.default.add({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 3,
-        padding: '4px 8px',
-        margin: '3px 4px',
+        padding: '8px 16px',
+        margin: 4,
         position: 'relative',
         top: 0,
         left: 0,
         overflow: 'hidden',
-        minWidth: 69,
-        minHeight: 30,
+        // minWidth: 69,
+        // minHeight: 30,
         color: _theme2.default.button.text.normal,
-        backgroundColor: _theme2.default.button.bg,
+        backgroundColor: _theme2.default.button.bg.normal,
         textAlign: 'center',
         cursor: 'pointer',
         userSelect: 'none'
@@ -1338,36 +1370,42 @@ _style2.default.add({
         margin: 0
     },
     "doric-button[disabled='true']": {
-        opacity: 0.7
+        opacity: 0.6
     },
     "doric-button::after": _extends({}, _util2.default.background.after.base),
     "doric-button:focus::after": {
-        backgroundColor: _theme2.default.button.focusHL
+        backgroundColor: _theme2.default.button.hl.focus
     },
-    "doric-button[data-tap-active]:not([disabled='true'])::after": _extends({}, _util2.default.background.after.colorize(_theme2.default.toggle.hl)),
+    "doric-button[data-tap-active]:not([disabled='true'])::after": _extends({}, _util2.default.background.after.colorize(_theme2.default.button.hl.normal)),
     "doric-button-content": {
         flexGrow: 1
     },
     "doric-button[primary='true']": {
-        backgroundColor: "#2196F3"
+        backgroundColor: _theme2.default.button.bg.primary,
+        color: _theme2.default.button.text.primary
     },
     "doric-button[danger='true']": {
-        backgroundColor: "#F44336"
+        backgroundColor: _theme2.default.button.bg.danger,
+        color: _theme2.default.button.text.danger
     },
     "doric-button[accent='true']": {
-        backgroundColor: "#FF4081"
+        backgroundColor: _theme2.default.button.bg.accent,
+        color: _theme2.default.button.text.danger
     },
     "doric-button[flat='true'][primary='true']": {
         backgroundColor: 'transparent',
-        color: "#2196F3"
+        color: _theme2.default.button.bg.primary
     },
     "doric-button[flat='true'][danger='true']": {
         backgroundColor: 'transparent',
-        color: "#F44336"
+        color: _theme2.default.button.bg.danger
     },
     "doric-button[flat='true'][accent='true']": {
         backgroundColor: 'transparent',
-        color: "#FF4081"
+        color: _theme2.default.button.bg.accent
+    },
+    "doric-button[action='true']": {
+        borderRadius: 500
     }
 });
 
@@ -1420,6 +1458,120 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var verbs = {
+    $set: function $set(prev, value) {
+        return value;
+    },
+    $push: function $push(prev, value) {
+        return [].concat(_toConsumableArray(prev), _toConsumableArray(value));
+    },
+    $apply: function $apply(prev, value) {
+        return value(prev);
+    }
+};
+var checks = {
+    $set: function $set(prev, value) {},
+    $push: function $push(prev, value) {
+        if (Array.isArray(prev) === false) {
+            throw new Error("Can only push to arrays");
+        }
+        if (Array.isArray(value) === false) {
+            throw new Error("Push value must be an array");
+        }
+    },
+    $apply: function $apply(prev, value) {
+        if (typeof value !== 'function') {
+            throw new Error("Value must be a function");
+        }
+    }
+};
+var internal_copyObject = function internal_copyObject(obj) {
+    var create = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+    if (Array.isArray(obj) === true) {
+        return [].concat(_toConsumableArray(obj));
+    }
+    if (obj === undefined && create === true) {
+        return {};
+    }
+    if ((typeof obj === "undefined" ? "undefined" : _typeof(obj)) !== 'object' || obj === null) {
+        return obj;
+    }
+    if (obj instanceof Map) {
+        return new Map(obj);
+    }
+    if (obj instanceof Set) {
+        return new Set(obj);
+    }
+    if (obj.constructor !== Object) {
+        return obj;
+    }
+    return _extends({}, obj);
+};
+var internal_setValues = function internal_setValues(dest, key, n, value, create) {
+    var name = key[n];
+    if (n === key.length - 1) {
+        checks[name](dest, value);
+        return verbs[name](dest, value);
+    } else {
+        dest = internal_copyObject(dest, create);
+        dest[name] = internal_setValues(dest[name], key, n + 1, value, create);
+    }
+    return dest;
+};
+var update = function update(source, obj) {
+    var create = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+        for (var _iterator = Object.keys(obj)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var key = _step.value;
+
+            source = internal_setValues(source, key.split('.'), 0, obj[key], create);
+        }
+    } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+                _iterator.return();
+            }
+        } finally {
+            if (_didIteratorError) {
+                throw _iteratorError;
+            }
+        }
+    }
+
+    return source;
+};
+update.addVerb = function (verb, method, check) {
+    verbs[verb] = method;
+    checks[verb] = check;
+};
+
+exports.default = update;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _theme = __webpack_require__(1);
 
 var _theme2 = _interopRequireDefault(_theme);
@@ -1453,7 +1605,7 @@ exports.default = function (_ref) {
 };
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1553,7 +1705,7 @@ var GridBreak = exports.GridBreak = function GridBreak() {
 };
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1563,9 +1715,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _context;
 
-__webpack_require__(9);
+__webpack_require__(10);
 
-var _ssjs = __webpack_require__(10);
+var _ssjs = __webpack_require__(11);
 
 var _ssjs2 = _interopRequireDefault(_ssjs);
 
@@ -1573,7 +1725,7 @@ var _style = __webpack_require__(0);
 
 var _style2 = _interopRequireDefault(_style);
 
-var _update2 = __webpack_require__(11);
+var _update2 = __webpack_require__(6);
 
 var _update3 = _interopRequireDefault(_update2);
 
@@ -1597,35 +1749,39 @@ var _collapse = __webpack_require__(16);
 
 var _collapse2 = _interopRequireDefault(_collapse);
 
-var _grid = __webpack_require__(7);
+var _divider = __webpack_require__(17);
+
+var _divider2 = _interopRequireDefault(_divider);
+
+var _grid = __webpack_require__(8);
 
 var _icon = __webpack_require__(3);
 
 var _icon2 = _interopRequireDefault(_icon);
 
-var _image = __webpack_require__(6);
+var _image = __webpack_require__(7);
 
 var _image2 = _interopRequireDefault(_image);
 
-var _input = __webpack_require__(17);
+var _input = __webpack_require__(18);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _radio = __webpack_require__(18);
+var _radio = __webpack_require__(19);
 
 var _radio2 = _interopRequireDefault(_radio);
 
-var _select = __webpack_require__(19);
+var _select = __webpack_require__(20);
 
 var _select2 = _interopRequireDefault(_select);
 
-var _slider = __webpack_require__(20);
+var _slider = __webpack_require__(21);
 
 var _slider2 = _interopRequireDefault(_slider);
 
-var _tabs = __webpack_require__(21);
+var _tabs = __webpack_require__(22);
 
-var _toggle = __webpack_require__(22);
+var _toggle = __webpack_require__(23);
 
 var _toggle2 = _interopRequireDefault(_toggle);
 
@@ -1640,7 +1796,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 window.images = {
-    boxxy: "http://axel669.net/images/boxxy.png"
+    boxxy: "http://axel669.net/images/boxxy.png",
+    bayoBG: "http://backgroundcheckall.com/wp-content/uploads/2017/12/bayonetta-background-5.jpg",
+    laughingMan: "https://pbs.twimg.com/profile_images/796545578507403265/VQMsYXot_400x400.jpg"
 };
 
 window.update = _update3.default;
@@ -1652,6 +1810,7 @@ var doric = {
     card: _card2.default,
     checkbox: _checkbox2.default,
     collapse: _collapse2.default,
+    divider: _divider2.default,
     grid: _grid.Grid,
     col: _grid.Col,
     gridBreak: _grid.GridBreak,
@@ -1665,6 +1824,7 @@ var doric = {
     tabs: _tabs.Tabs,
     toggle: _toggle2.default
 };
+window.doric = doric;
 
 window.cblog = (_context = console, console.log).bind(_context);
 window.cberr = (_context = console, console.error).bind(_context);
@@ -1700,38 +1860,33 @@ var Main = function (_BaseComponent) {
         };
 
         _this.state = {
-            c1: true,
-            c2: false,
-            t1: false,
-            t2: true,
-            v: 0,
-            i: 0,
-            o: '',
-            input: {
-                text: '',
-                number: '',
-                tel: '',
-                password: '',
-                textarea: ''
-            },
-            tab: 0
-        };
+            check: {
+                a: true,
+                b: false
+                // c1: true,
+                // c2: false,
+                // t1: false,
+                // t2: true,
+                // v: 0,
+                // i: 0,
+                // o: '',
+                // input: {
+                //     text: '',
+                //     number: '',
+                //     tel: '',
+                //     password: '',
+                //     textarea: ''
+                // },
+                // tab: 0
+            } };
         return _this;
     }
 
     _createClass(Main, [{
         key: 'render',
         value: function render() {
-            var _state = this.state,
-                c1 = _state.c1,
-                c2 = _state.c2,
-                v = _state.v,
-                t1 = _state.t1,
-                t2 = _state.t2,
-                i = _state.i,
-                input = _state.input,
-                o = _state.o,
-                tab = _state.tab;
+            // const {c1, c2, v, t1, t2, i, input, o, tab} = this.state;
+            var check = this.state.check;
             // const names = [
             //     'disabled',
             //     'flat',
@@ -1743,7 +1898,7 @@ var Main = function (_BaseComponent) {
             //         'accent'
             //     ]
             // ];
-
+            //
             // const make = (base, name, values) =>
             //     values.reduce((list, value) => [...list, <doric.button {...{...base, [name]: value}} text="demo" onTap={() => cblog(base, name, value)} />], []);
             //
@@ -1773,24 +1928,51 @@ var Main = function (_BaseComponent) {
                 'div',
                 { style: { paddingTop: 3 } },
                 React.createElement(
-                    doric.radio,
-                    { value: o, onChange: this.linkState('o'), layout: { container: doric.grid, itemProps: function itemProps(props) {
-                                return { key: props.key, size: 2 };
-                            } } },
-                    React.createElement('option', { value: 'A', label: 'A' }),
-                    React.createElement('option', { value: 'B', label: 'B' }),
-                    React.createElement('option', { value: 'C', label: 'C' }),
-                    React.createElement('option', { value: 'D', label: 'D' }),
-                    React.createElement('option', { value: 'E', label: 'E' })
-                ),
-                React.createElement(
-                    doric.radio,
-                    { value: o, onChange: this.linkState('o') },
-                    React.createElement('option', { value: 'A', label: 'A' }),
-                    React.createElement('option', { value: 'B', label: 'B' }),
-                    React.createElement('option', { value: 'C', label: 'C' }),
-                    React.createElement('option', { value: 'D', label: 'D' }),
-                    React.createElement('option', { value: 'E', label: 'E' })
+                    'div',
+                    null,
+                    React.createElement(
+                        doric.card,
+                        null,
+                        'Stuff'
+                    ),
+                    React.createElement(
+                        doric.card,
+                        null,
+                        React.createElement(doric.card.title, { main: 'Main Title', subtitle: 'Subtitle', icon: images.laughingMan }),
+                        React.createElement(
+                            doric.card.media,
+                            null,
+                            React.createElement(doric.image, { source: images.bayoBG, height: '100%' })
+                        ),
+                        'More Stuff',
+                        React.createElement(doric.divider, null),
+                        'Wat Again?',
+                        React.createElement(
+                            doric.card.actions,
+                            { divider: true },
+                            React.createElement(doric.button, { text: 'Nope', primary: true, flat: true }),
+                            React.createElement(doric.button, { text: 'Maybe?', primary: true, flat: true })
+                        )
+                    ),
+                    React.createElement(
+                        doric.card,
+                        null,
+                        React.createElement(
+                            doric.card.media,
+                            null,
+                            React.createElement(doric.image, { source: images.bayoBG, height: '100%' })
+                        ),
+                        React.createElement(doric.card.title, { main: 'Main Title', subtitle: 'Subtitle', icon: images.laughingMan }),
+                        'More Stuff',
+                        React.createElement(doric.divider, null),
+                        'Wat Again?',
+                        React.createElement(
+                            doric.card.actions,
+                            null,
+                            React.createElement(doric.button, { text: 'Nope', primary: true, flat: true }),
+                            React.createElement(doric.button, { text: 'Maybe?', primary: true, flat: true })
+                        )
+                    )
                 )
             );
         }
@@ -1803,7 +1985,7 @@ sheet.attach();
 ReactDOM.render(React.createElement(Main, null), document.querySelector("div"));
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2167,7 +2349,7 @@ ReactDOM.render(React.createElement(Main, null), document.querySelector("div"));
 })();
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2341,120 +2523,6 @@ ReactDOM.render(React.createElement(Main, null), document.querySelector("div"));
 })();
 
 /***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-var verbs = {
-    $set: function $set(prev, value) {
-        return value;
-    },
-    $push: function $push(prev, value) {
-        return [].concat(_toConsumableArray(prev), _toConsumableArray(value));
-    },
-    $apply: function $apply(prev, value) {
-        return value(prev);
-    }
-};
-var checks = {
-    $set: function $set(prev, value) {},
-    $push: function $push(prev, value) {
-        if (Array.isArray(prev) === false) {
-            throw new Error("Can only push to arrays");
-        }
-        if (Array.isArray(value) === false) {
-            throw new Error("Push value must be an array");
-        }
-    },
-    $apply: function $apply(prev, value) {
-        if (typeof value !== 'function') {
-            throw new Error("Value must be a function");
-        }
-    }
-};
-var internal_copyObject = function internal_copyObject(obj) {
-    var create = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-
-    if (Array.isArray(obj) === true) {
-        return [].concat(_toConsumableArray(obj));
-    }
-    if (obj === undefined && create === true) {
-        return {};
-    }
-    if ((typeof obj === "undefined" ? "undefined" : _typeof(obj)) !== 'object' || obj === null) {
-        return obj;
-    }
-    if (obj instanceof Map) {
-        return new Map(obj);
-    }
-    if (obj instanceof Set) {
-        return new Set(obj);
-    }
-    if (obj.constructor !== Object) {
-        return obj;
-    }
-    return _extends({}, obj);
-};
-var internal_setValues = function internal_setValues(dest, key, n, value, create) {
-    var name = key[n];
-    if (n === key.length - 1) {
-        checks[name](dest, value);
-        return verbs[name](dest, value);
-    } else {
-        dest = internal_copyObject(dest, create);
-        dest[name] = internal_setValues(dest[name], key, n + 1, value, create);
-    }
-    return dest;
-};
-var update = function update(source, obj) {
-    var create = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
-
-    try {
-        for (var _iterator = Object.keys(obj)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var key = _step.value;
-
-            source = internal_setValues(source, key.split('.'), 0, obj[key], create);
-        }
-    } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-    } finally {
-        try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-                _iterator.return();
-            }
-        } finally {
-            if (_didIteratorError) {
-                throw _iteratorError;
-            }
-        }
-    }
-
-    return source;
-};
-update.addVerb = function (verb, method, check) {
-    verbs[verb] = method;
-    checks[verb] = check;
-};
-
-exports.default = update;
-
-/***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2523,7 +2591,7 @@ var _style = __webpack_require__(0);
 
 var _style2 = _interopRequireDefault(_style);
 
-var _image = __webpack_require__(6);
+var _image = __webpack_require__(7);
 
 var _image2 = _interopRequireDefault(_image);
 
@@ -2536,42 +2604,73 @@ _style2.default.add({
         display: 'block',
         margin: 4,
         boxShadow: ['2px 0px 2px rgba(0, 0, 0, 0.25)', '0px 2px 2px rgba(0, 0, 0, 0.25)', '-2px 0px 2px rgba(0, 0, 0, 0.25)', '0px -2px 2px rgba(0, 0, 0, 0.25)'].join(', '),
-        backgroundColor: 'white',
+        backgroundColor: _theme2.default.card.bg,
         overflow: 'hidden',
-        borderRadius: 5,
+        borderRadius: 2,
+        padding: 12,
         position: 'relative',
         top: 0,
         left: 0
     },
-    "doric-card[side-img='true']": {
-        paddingRight: 80
+    "doric-card > :first-child": {
+        marginTop: -12
     },
-    "doric-card > card-content": {
+    "doric-card > :last-child": {
+        marginBottom: -12
+    },
+    "doric-card > [data-card-flush], doric-card-media": {
+        marginLeft: -12,
+        marginRight: -12
+    },
+    "doric-card-title, doric-card-actions": {
         display: 'block',
-        padding: 3
+        margin: '12px 0px',
+        padding: 12
     },
-    "doric-card > card-title": {
+    "doric-card-media + doric-card-title": {
+        marginTop: 0
+    },
+    "doric-card-title + doric-card-media": {
+        marginTop: -12
+    },
+    "doric-card-media": {
+        height: 180,
         display: 'block',
-        padding: 5,
-        fontSize: 20,
-        backgroundColor: _theme2.default.card.title.bg,
-        color: _theme2.default.card.title.color
+        marginBottom: 12
     },
-    "doric-card > card-action": {
-        display: 'block',
-        padding: 5
+    "doric-card-title::before": {
+        content: '" "',
+        display: 'table'
     },
-    "doric-card > doric-card-side-image": {
-        position: 'absolute',
-        left: 'auto',
-        right: 0,
-        top: 0,
-        bottom: 0,
-        width: 80
+    "doric-card-title::after": {
+        content: '" "',
+        display: 'table',
+        clear: 'both'
+    },
+    "doric-card > doric-card-actions[data-divider]": {
+        borderTop: '2px solid ' + _theme2.default.divider.color
+    },
+    "doric-card-actions :first-child": {
+        marginLeft: 0
+    },
+    ".doric-title-main": {
+        fontSize: 22,
+        marginBottom: 8
+    },
+    ".doric-title-subtitle": {
+        float: 'left',
+        color: '#666'
+    },
+    ".doric-title-icon": {
+        width: 48,
+        height: 48,
+        float: 'left',
+        borderRadius: 24,
+        marginRight: 8,
+        overflow: 'hidden'
     }
 });
-
-exports.default = function (props) {
+var Card = function Card(props) {
     var _props$title = props.title,
         title = _props$title === undefined ? null : _props$title,
         _props$sideImage = props.sideImage,
@@ -2605,6 +2704,48 @@ exports.default = function (props) {
         sideImg
     );
 };
+Card.actions = function (props) {
+    var divider = props.divider;
+
+    return React.createElement(
+        'doric-card-actions',
+        { 'data-card-flush': true, 'data-divider': divider },
+        props.children
+    );
+};
+Card.media = function (props) {
+    return React.createElement('doric-card-media', props);
+};
+Card.title = function (props) {
+    var main = props.main,
+        subtitle = props.subtitle,
+        _props$icon = props.icon,
+        icon = _props$icon === undefined ? null : _props$icon;
+
+    var iconElement = icon === null ? null : React.createElement(
+        'div',
+        { className: 'doric-title-icon' },
+        React.createElement(_image2.default, { source: icon, width: '100%', height: '100%', imageSize: 'cover' })
+    );
+
+    return React.createElement(
+        'doric-card-title',
+        { 'data-card-flush': true },
+        iconElement,
+        React.createElement(
+            'div',
+            { className: 'doric-title-main' },
+            main
+        ),
+        React.createElement(
+            'div',
+            { className: 'doric-title-subtitle' },
+            subtitle
+        )
+    );
+};
+
+exports.default = Card;
 
 /***/ }),
 /* 14 */
@@ -2657,12 +2798,12 @@ _style2.default.add({
     },
     "doric-checkbox::after": _extends({}, _util2.default.background.after.base),
     "doric-checkbox:focus::after": {
-        backgroundColor: _theme2.default.checkbox.focusHL
+        backgroundColor: _theme2.default.checkbox.hl.focus
     },
     "doric-checkbox[disabled='true']": {
         opacity: 0.7
     },
-    "doric-checkbox[data-tap-active]:not([disabled='true'])::after": _extends({}, _util2.default.background.after.colorize(_theme2.default.toggle.hl)),
+    "doric-checkbox[data-tap-active]:not([disabled='true'])::after": _extends({}, _util2.default.background.after.colorize(_theme2.default.checkbox.hl.normal)),
     "doric-checkbox::before": {
         position: 'absolute',
         top: 0,
@@ -2799,7 +2940,6 @@ _style2.default.add({
         display: 'block',
         cursor: 'pointer',
         backgroundColor: _util2.default.color.primaryBlue,
-        // padding: '3px 5px',
         position: 'relative',
         boxShadow: '0px 2px 2px rgba(0, 0, 0, 0.2)'
     },
@@ -2891,6 +3031,41 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _style = __webpack_require__(0);
+
+var _style2 = _interopRequireDefault(_style);
+
+var _theme = __webpack_require__(1);
+
+var _theme2 = _interopRequireDefault(_theme);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_style2.default.add({
+    "doric-divide": {
+        display: 'block',
+        height: 0,
+        borderBottom: '2px solid ' + _theme2.default.divider.color,
+        margin: '12px 0px'
+    }
+});
+var Divider = function Divider(props) {
+    return React.createElement('doric-divide', props);
+};
+
+exports.default = Divider;
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _style$add;
@@ -2927,12 +3102,12 @@ _style2.default.add((_style$add = {
     }
 }, _defineProperty(_style$add, inputSelectors + ', doric-input > textarea', {
     border: '2px solid transparent',
-    borderBottom: '2px solid ' + _theme2.default.input.normal.borderColor,
+    borderBottom: '2px solid ' + _theme2.default.input.border.normal,
     backgroundColor: 'transparent',
     padding: '5px 7px',
     fontSize: 13
 }), _defineProperty(_style$add, "doric-input > input:focus, doric-input > textarea:focus", {
-    borderBottomColor: _theme2.default.input.focus.borderColor
+    borderBottomColor: _theme2.default.input.border.normal
 }), _style$add));
 var TextInput = function TextInput(props, type, Element) {
     var wrapperStyle = props.wrapperStyle,
@@ -2989,7 +3164,7 @@ try {
 exports.default = inputs;
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3007,7 +3182,7 @@ var _icon = __webpack_require__(3);
 
 var _icon2 = _interopRequireDefault(_icon);
 
-var _grid = __webpack_require__(7);
+var _grid = __webpack_require__(8);
 
 var _style = __webpack_require__(0);
 
@@ -3127,7 +3302,7 @@ _grid.Grid.RadioItem = function (props) {
 exports.default = Radio;
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3205,7 +3380,7 @@ var Select = function Select(props) {
 exports.default = Select;
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3264,7 +3439,7 @@ exports.default = function (props) {
 };
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3418,7 +3593,7 @@ exports.Tabs = Tabs;
 exports.Tab = Tab;
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

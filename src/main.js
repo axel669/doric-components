@@ -9,6 +9,7 @@ import button from './components/button';
 import card from './components/card';
 import checkbox from './components/checkbox';
 import collapse from './components/collapse';
+import divider from './components/divider';
 import {Grid as grid, Col as col, GridBreak as gridBreak} from './components/grid';
 import icon from './components/icon';
 import image from './components/image';
@@ -20,7 +21,9 @@ import {Tabs as tabs, Tab as tab} from './components/tabs';
 import toggle from './components/toggle';
 
 window.images = {
-    boxxy: "http://axel669.net/images/boxxy.png"
+    boxxy: "http://axel669.net/images/boxxy.png",
+    bayoBG: "http://backgroundcheckall.com/wp-content/uploads/2017/12/bayonetta-background-5.jpg",
+    laughingMan: "https://pbs.twimg.com/profile_images/796545578507403265/VQMsYXot_400x400.jpg"
 };
 
 window.update = update;
@@ -32,6 +35,7 @@ const doric = {
     card,
     checkbox,
     collapse,
+    divider,
     grid,
     col,
     gridBreak,
@@ -45,6 +49,7 @@ const doric = {
     tabs,
     toggle
 };
+window.doric = doric;
 
 window.cblog = console::console.log;
 window.cberr = console::console.error;
@@ -56,21 +61,25 @@ class Main extends BaseComponent {
     constructor(props) {
         super(props);
         this.state = {
-            c1: true,
-            c2: false,
-            t1: false,
-            t2: true,
-            v: 0,
-            i: 0,
-            o: '',
-            input: {
-                text: '',
-                number: '',
-                tel: '',
-                password: '',
-                textarea: ''
-            },
-            tab: 0
+            check: {
+                a: true,
+                b: false
+            }
+            // c1: true,
+            // c2: false,
+            // t1: false,
+            // t2: true,
+            // v: 0,
+            // i: 0,
+            // o: '',
+            // input: {
+            //     text: '',
+            //     number: '',
+            //     tel: '',
+            //     password: '',
+            //     textarea: ''
+            // },
+            // tab: 0
         };
     }
 
@@ -88,7 +97,8 @@ class Main extends BaseComponent {
     };
 
     render() {
-        const {c1, c2, v, t1, t2, i, input, o, tab} = this.state;
+        // const {c1, c2, v, t1, t2, i, input, o, tab} = this.state;
+        const {check} = this.state;
         // const names = [
         //     'disabled',
         //     'flat',
@@ -100,7 +110,7 @@ class Main extends BaseComponent {
         //         'accent'
         //     ]
         // ];
-
+        //
         // const make = (base, name, values) =>
         //     values.reduce((list, value) => [...list, <doric.button {...{...base, [name]: value}} text="demo" onTap={() => cblog(base, name, value)} />], []);
         //
@@ -128,6 +138,52 @@ class Main extends BaseComponent {
 
         return (
             <div style={{paddingTop: 3}}>
+                {/* {buttons} */}
+
+                {/* <div>
+                    <doric.card>
+                        Stuff
+                    </doric.card>
+
+                    <doric.card>
+                        <doric.card.title main="Main Title" subtitle="Subtitle" icon={images.laughingMan} />
+                        <doric.card.media>
+                            <doric.image source={images.bayoBG} height="100%" />
+                        </doric.card.media>
+
+                        More Stuff
+                        <doric.divider />
+                        Wat Again?
+
+                        <doric.card.actions divider>
+                            <doric.button text="Nope" primary flat />
+                            <doric.button text="Maybe?" primary flat />
+                        </doric.card.actions>
+                    </doric.card>
+
+                    <doric.card>
+                        <doric.card.media>
+                            <doric.image source={images.bayoBG} height="100%" />
+                        </doric.card.media>
+                        <doric.card.title main="Main Title" subtitle="Subtitle" icon={images.laughingMan} />
+
+                        More Stuff
+                        <doric.divider />
+                        Wat Again?
+
+                        <doric.card.actions>
+                            <doric.button text="Nope" primary flat />
+                            <doric.button text="Maybe?" primary flat />
+                        </doric.card.actions>
+                    </doric.card>
+                </div> */}
+
+                {/* <div>
+                    <doric.checkbox label="Test A" checked={check.a} onChange={this.linkMoar('check.a', 'value')} />
+                    <doric.checkbox label="Test B" checked={check.a} onChange={this.linkMoar('check.a', 'value')} checkRight />
+                    <doric.checkbox label="Test C" checked={check.a} onChange={this.linkMoar('check.a', 'value')} checkRight alignRight />
+                    <doric.checkbox label="Test D" checked={check.a} onChange={this.linkMoar('check.a', 'value')} alignRight />
+                </div> */}
                 {/* <doric.card>
                     <doric.tabs selectedIndex={tab} onChange={this.linkState('tab', 'target.selectedIndex')}>
                         <doric.tab label="First">
@@ -137,8 +193,8 @@ class Main extends BaseComponent {
                         <doric.tab label="Third">Third</doric.tab>
                     </doric.tabs>
                 </doric.card> */}
+                {/* <doric.checkbox label="Checkbox Demo" checked={c1} onChange={this.linkState('c1', 'value')} /> */}
                 {/* <doric.button block raised text="Test" />
-                <doric.checkbox label="Checkbox Demo" checked={c1} onChange={this.linkState('c1', 'value')} />
                 <doric.input.text value={input.text} onChange={this.linkMoar('input.text')} />
                 <doric.input.number value={input.number} onChange={this.linkMoar('input.number')} />
                 <doric.input.password value={input.password} onChange={this.linkMoar('input.password')} />
@@ -146,7 +202,7 @@ class Main extends BaseComponent {
                 <doric.input.email value={input.email} onChange={this.linkMoar('input.email')} />
                 <doric.input.textarea value={input.textarea} onChange={this.linkMoar('input.textarea')} /> */}
 
-                <doric.radio value={o} onChange={this.linkState('o')} layout={{container: doric.grid, itemProps: props => ({key: props.key, size: 2})}}>
+                {/* <doric.radio value={o} onChange={this.linkState('o')} layout={{container: doric.grid, itemProps: props => ({key: props.key, size: 2})}}>
                     <option value='A' label='A' />
                     <option value='B' label='B' />
                     <option value='C' label='C' />
@@ -159,7 +215,7 @@ class Main extends BaseComponent {
                     <option value='C' label='C' />
                     <option value='D' label='D' />
                     <option value='E' label='E' />
-                </doric.radio>
+                </doric.radio> */}
                 {/* <doric.select value={o} onChange={this.linkState('o')}>
                     <option value='A'>A</option>
                     <option value='B'>B</option>
@@ -195,7 +251,6 @@ class Main extends BaseComponent {
                 <doric.toggle on={t2} onChange={this.updateState('t2')} toggleRight alignRight>
                     <doric.image source="http://axel669.net/images/boxxy.png" height={150} />
                 </doric.toggle> */}
-                {/* {buttons} */}
                 {/* <doric.toggle label="Testing" on={c1} onChange={this.updateState('c1')} />
                 <doric.toggle label="Testing" on={c1} onChange={this.updateState('c1')} alignRight />
                 <doric.toggle label="Testing" on={c1} onChange={this.updateState('c1')} toggleRight />
