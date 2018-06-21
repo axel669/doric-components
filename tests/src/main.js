@@ -67,6 +67,20 @@ import ReactDOM from 'react-dom';
 
 import doric from '../../dist/index.js';
 
+const loaders = [
+    'Audio',
+    'Ball-Triangle',
+    'Bars',
+    'Circles',
+    'Grid',
+    'Hearts',
+    'Oval',
+    'Puff',
+    'Rings',
+    'TailSpin',
+    'ThreeDots'
+];
+
 class Main extends doric.baseComponent {
     constructor(props) {
         super(props);
@@ -149,7 +163,6 @@ class Main extends doric.baseComponent {
 
         return (
             <div style={{paddingTop: 3}}>
-                <doric.ext.loader type="Oval" width={100} height={100} />
                 {/* {buttons} */}
 
                 <doric.card>
@@ -158,9 +171,15 @@ class Main extends doric.baseComponent {
                         <doric.image source={images.bayoBG} height="100%" />
                     </doric.card.media>
 
-                    More Stuff
-                    <doric.divider />
-                    Wat Again?
+                    <div style={{textAlign: 'center'}}>
+                        {/* <doric.ext.loader type="Oval" width={100} height={100} /> */}
+                        {/* {loaders.map(
+                            type => <doric.ext.loader type={type} width={80} height={80} />
+                        )} */}
+                        <div>
+                            Loading?
+                        </div>
+                    </div>
 
                     <doric.card.actions divider>
                         <doric.button text="Nope" primary flat />
@@ -328,9 +347,53 @@ class Main extends doric.baseComponent {
     }
 }
 
+// const Functional = () => {
+//     console.log('functional');
+//     return <div>Functional!</div>;
+// };
+class Functional extends React.PureComponent {
+    constructor(props) {
+        super(props);
+    }
+
+    render = () => {
+        console.log('functional');
+        return <div>Functional!</div>;
+    }
+}
+class Test extends doric.baseComponent {
+    constructor(props) {
+        super(props);
+        this.state = {
+            i: 0,
+            t: ''
+        };
+    }
+
+    add = () => {
+        let {i} = this.state;
+        i += 1;
+        this.setState((...args) => {
+            console.log(args);
+            return {i};
+        });
+    }
+
+    render = () => {
+        return (
+            <div>
+                <doric.button text="Test" onTap={this.add} />
+                {this.state.i}
+                <Functional />
+                <doric.input.text value={this.state.t} onChange={this.linkState('t')} />
+            </div>
+        );
+    }
+}
+
 // sheet.attach();
 // ReactDOM.render(
 doric.init(
-    <Main />,
+    <Test />,
     document.querySelector("div")
 );

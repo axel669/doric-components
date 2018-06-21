@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.PureBaseComponent = exports.BaseComponent = undefined;
 
 var _react = require('react');
 
@@ -18,7 +19,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var BaseComponent = function (_React$Component) {
+var BaseComponent = exports.BaseComponent = function (_React$Component) {
     _inherits(BaseComponent, _React$Component);
 
     function BaseComponent(props) {
@@ -44,5 +45,32 @@ var BaseComponent = function (_React$Component) {
     return BaseComponent;
 }(_react2.default.Component);
 
-exports.default = BaseComponent;
+;
+
+var PureBaseComponent = exports.PureBaseComponent = function (_React$PureComponent) {
+    _inherits(PureBaseComponent, _React$PureComponent);
+
+    function PureBaseComponent(props) {
+        _classCallCheck(this, PureBaseComponent);
+
+        var _this2 = _possibleConstructorReturn(this, (PureBaseComponent.__proto__ || Object.getPrototypeOf(PureBaseComponent)).call(this, props));
+
+        _this2.linkState = function (name) {
+            var prop = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'target.value';
+
+            var getValue = new Function('evt', 'return evt.' + prop);
+            return function (evt) {
+                var value = getValue(evt);
+                _this2.setState(function () {
+                    return _defineProperty({}, name, value);
+                });
+            };
+        };
+
+        return _this2;
+    }
+
+    return PureBaseComponent;
+}(_react2.default.PureComponent);
+
 ;

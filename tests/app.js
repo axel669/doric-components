@@ -2881,6 +2881,9 @@ window.images = {
 // const sheet = ssjs.create();
 // sheet.addStyles(style);
 
+
+var loaders = ['Audio', 'Ball-Triangle', 'Bars', 'Circles', 'Grid', 'Hearts', 'Oval', 'Puff', 'Rings', 'TailSpin', 'ThreeDots'];
+
 var Main = function (_doric$baseComponent) {
     _inherits(Main, _doric$baseComponent);
 
@@ -2980,7 +2983,6 @@ var Main = function (_doric$baseComponent) {
             return _react2.default.createElement(
                 "div",
                 { style: { paddingTop: 3 } },
-                _react2.default.createElement(_index2.default.ext.loader, { type: "Oval", width: 100, height: 100 }),
                 _react2.default.createElement(
                     _index2.default.card,
                     null,
@@ -2990,9 +2992,15 @@ var Main = function (_doric$baseComponent) {
                         null,
                         _react2.default.createElement(_index2.default.image, { source: images.bayoBG, height: "100%" })
                     ),
-                    "More Stuff",
-                    _react2.default.createElement(_index2.default.divider, null),
-                    "Wat Again?",
+                    _react2.default.createElement(
+                        "div",
+                        { style: { textAlign: 'center' } },
+                        _react2.default.createElement(
+                            "div",
+                            null,
+                            "Loading?"
+                        )
+                    ),
                     _react2.default.createElement(
                         _index2.default.card.actions,
                         { divider: true },
@@ -3007,11 +3015,83 @@ var Main = function (_doric$baseComponent) {
     return Main;
 }(_index2.default.baseComponent);
 
+// const Functional = () => {
+//     console.log('functional');
+//     return <div>Functional!</div>;
+// };
+
+
+var Functional = function (_React$PureComponent) {
+    _inherits(Functional, _React$PureComponent);
+
+    function Functional(props) {
+        _classCallCheck(this, Functional);
+
+        var _this2 = _possibleConstructorReturn(this, (Functional.__proto__ || Object.getPrototypeOf(Functional)).call(this, props));
+
+        _this2.render = function () {
+            console.log('functional');
+            return _react2.default.createElement(
+                "div",
+                null,
+                "Functional!"
+            );
+        };
+
+        return _this2;
+    }
+
+    return Functional;
+}(_react2.default.PureComponent);
+
+var Test = function (_doric$baseComponent2) {
+    _inherits(Test, _doric$baseComponent2);
+
+    function Test(props) {
+        _classCallCheck(this, Test);
+
+        var _this3 = _possibleConstructorReturn(this, (Test.__proto__ || Object.getPrototypeOf(Test)).call(this, props));
+
+        _this3.add = function () {
+            var i = _this3.state.i;
+
+            i += 1;
+            _this3.setState(function () {
+                for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                    args[_key] = arguments[_key];
+                }
+
+                console.log(args);
+                return { i: i };
+            });
+        };
+
+        _this3.render = function () {
+            return _react2.default.createElement(
+                "div",
+                null,
+                _react2.default.createElement(_index2.default.button, { text: "Test", onTap: _this3.add }),
+                _this3.state.i,
+                _react2.default.createElement(Functional, null),
+                _react2.default.createElement(_index2.default.input.text, { value: _this3.state.t, onChange: _this3.linkState('t') })
+            );
+        };
+
+        _this3.state = {
+            i: 0,
+            t: ''
+        };
+        return _this3;
+    }
+
+    return Test;
+}(_index2.default.baseComponent);
+
 // sheet.attach();
 // ReactDOM.render(
 
 
-_index2.default.init(_react2.default.createElement(Main, null), document.querySelector("div"));
+_index2.default.init(_react2.default.createElement(Test, null), document.querySelector("div"));
 
 /***/ }),
 /* 24 */
@@ -22464,8 +22544,6 @@ var _update2 = _interopRequireDefault(_update);
 
 var _baseComponent = __webpack_require__(37);
 
-var _baseComponent2 = _interopRequireDefault(_baseComponent);
-
 var _button = __webpack_require__(14);
 
 var _button2 = _interopRequireDefault(_button);
@@ -22527,7 +22605,8 @@ function _interopRequireDefault(obj) {
 }
 
 var doric = {
-    baseComponent: _baseComponent2.default,
+    baseComponent: _baseComponent.BaseComponent,
+    pureBaseComponent: _baseComponent.PureBaseComponent,
     button: _button2.default,
     card: _card2.default,
     checkbox: _checkbox2.default,
@@ -23115,6 +23194,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.PureBaseComponent = exports.BaseComponent = undefined;
 
 var _react = __webpack_require__(0);
 
@@ -23150,7 +23230,7 @@ function _inherits(subClass, superClass) {
     }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var BaseComponent = function (_React$Component) {
+var BaseComponent = exports.BaseComponent = function (_React$Component) {
     _inherits(BaseComponent, _React$Component);
 
     function BaseComponent(props) {
@@ -23176,7 +23256,34 @@ var BaseComponent = function (_React$Component) {
     return BaseComponent;
 }(_react2.default.Component);
 
-exports.default = BaseComponent;
+;
+
+var PureBaseComponent = exports.PureBaseComponent = function (_React$PureComponent) {
+    _inherits(PureBaseComponent, _React$PureComponent);
+
+    function PureBaseComponent(props) {
+        _classCallCheck(this, PureBaseComponent);
+
+        var _this2 = _possibleConstructorReturn(this, (PureBaseComponent.__proto__ || Object.getPrototypeOf(PureBaseComponent)).call(this, props));
+
+        _this2.linkState = function (name) {
+            var prop = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'target.value';
+
+            var getValue = new Function('evt', 'return evt.' + prop);
+            return function (evt) {
+                var value = getValue(evt);
+                _this2.setState(function () {
+                    return _defineProperty({}, name, value);
+                });
+            };
+        };
+
+        return _this2;
+    }
+
+    return PureBaseComponent;
+}(_react2.default.PureComponent);
+
 ;
 
 /***/ }),

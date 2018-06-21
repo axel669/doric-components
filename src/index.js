@@ -5,7 +5,10 @@ import ssjs from 'ssjs';
 import style from './style';
 import update from './update';
 
-import baseComponent from './components/baseComponent';
+import {
+    BaseComponent as baseComponent,
+    PureBaseComponent as pureBaseComponent
+} from './components/baseComponent';
 
 import button from './components/button';
 import card from './components/card';
@@ -26,6 +29,7 @@ import loader from 'react-loader-spinner';
 
 const doric = {
     baseComponent,
+    pureBaseComponent,
     button,
     card,
     checkbox,

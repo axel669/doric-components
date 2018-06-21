@@ -24,8 +24,6 @@ var _update2 = _interopRequireDefault(_update);
 
 var _baseComponent = require('./components/baseComponent');
 
-var _baseComponent2 = _interopRequireDefault(_baseComponent);
-
 var _button = require('./components/button');
 
 var _button2 = _interopRequireDefault(_button);
@@ -85,7 +83,8 @@ var _reactLoaderSpinner2 = _interopRequireDefault(_reactLoaderSpinner);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var doric = {
-    baseComponent: _baseComponent2.default,
+    baseComponent: _baseComponent.BaseComponent,
+    pureBaseComponent: _baseComponent.PureBaseComponent,
     button: _button2.default,
     card: _card2.default,
     checkbox: _checkbox2.default,
