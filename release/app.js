@@ -87,6 +87,7 @@ var style = {
         width: '100%',
         height: '100%',
         backgroundColor: _theme2.default.body.bg.normal,
+        color: _theme2.default.body.text.normal,
         fontFamily: "Roboto"
     },
     "*": {
@@ -120,11 +121,19 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _update = __webpack_require__(6);
 
 var _update2 = _interopRequireDefault(_update);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 var _typeof = new Function('obj', 'return typeof obj');
 var deepMerge = function deepMerge(a, b) {
@@ -201,6 +210,7 @@ var normalHL = 'rgba(0, 0, 0, 0.4)';
 var focusHL = 'rgba(0, 0, 0, 0.125)';
 var baseTheme = {
     'body.bg.normal': '#f0f0f0',
+    'body.text.normal': 'black',
 
     'button.hl.normal': normalHL,
     'button.hl.focus': focusHL,
@@ -213,7 +223,7 @@ var baseTheme = {
     'button.bg.accent': '#FF4081',
     'button.text.accent': 'white',
 
-    'card.bg': 'white',
+    'card.bg.normal': 'white',
 
     'checkbox.checkColor': niceBlue,
     'checkbox.hl.normal': normalHL,
@@ -221,8 +231,9 @@ var baseTheme = {
 
     'collapse.title.bg.normal': niceBlue,
     'collapse.title.text.normal': 'white',
+    'collapse.border.normal': 'lightgray',
 
-    'divider.color': 'lightgray',
+    'divider.border.normal': 'lightgray',
 
     'input.border.normal': 'lightgray',
     'input.border.focus': niceBlue,
@@ -230,7 +241,7 @@ var baseTheme = {
     'select.border.normal': 'lightgray',
     'select.border.focus': niceBlue,
 
-    'tabs.tab.hl': normalHL,
+    'tabs.tab.hl.normal': normalHL,
     'tabs.tab.bg.normal': 'white',
     'tabs.tab.bg.active': 'white',
     'tabs.tab.border.normal': 'lightgray',
@@ -244,10 +255,98 @@ var baseTheme = {
     'toggle.track.on': '#79aafb',
     'toggle.track.off': 'lightgray'
 };
-var defaultTheme = (0, _update2.default)({}, Object.keys(baseTheme).reduce(function (theme, key) {
-    theme[key + '.$set'] = baseTheme[key];
-    return theme;
-}, {}), true);
+
+var themeValues = function () {
+    if (typeof DoricTheme !== 'undefined') {
+        var _ret = function () {
+            var _DoricTheme = DoricTheme,
+                __global = _DoricTheme.__global,
+                customTheme = _objectWithoutProperties(_DoricTheme, ['__global']);
+
+            var endsWithOne = function endsWithOne(str, values) {
+                var _iteratorNormalCompletion2 = true;
+                var _didIteratorError2 = false;
+                var _iteratorError2 = undefined;
+
+                try {
+                    for (var _iterator2 = values[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                        var value = _step2.value;
+
+                        if (str.endsWith(value) === true) {
+                            return value;
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError2 = true;
+                    _iteratorError2 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                            _iterator2.return();
+                        }
+                    } finally {
+                        if (_didIteratorError2) {
+                            throw _iteratorError2;
+                        }
+                    }
+                }
+
+                return undefined;
+            };
+
+            var values = {};
+            var globalNames = Object.keys(__global);
+            var keyList = new Set([].concat(_toConsumableArray(Object.keys(baseTheme)), _toConsumableArray(Object.keys(customTheme))));
+
+            var _loop = function _loop(key) {
+                var globalValue = function () {
+                    var keyName = endsWithOne(key, globalNames);
+                    if (keyName !== undefined) {
+                        return __global[keyName];
+                    }
+                    return undefined;
+                }();
+                var value = customTheme[key] || globalValue;
+                if (value !== undefined) {
+                    customTheme[key] = value;
+                }
+            };
+
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
+
+            try {
+                for (var _iterator3 = keyList[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var key = _step3.value;
+
+                    _loop(key);
+                }
+            } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                        _iterator3.return();
+                    }
+                } finally {
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
+                    }
+                }
+            }
+
+            return {
+                v: _extends({}, baseTheme, customTheme)
+            };
+        }();
+
+        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof2(_ret)) === "object") return _ret.v;
+    }
+    return baseTheme;
+}();
+
 // console.log(defaultTheme);
 // const wat = {
 //     __global: {
@@ -312,7 +411,10 @@ var defaultTheme = (0, _update2.default)({}, Object.keys(baseTheme).reduce(funct
 //     },
 //     {}
 // );
-var theme = defaultTheme;
+var theme = (0, _update2.default)({}, Object.keys(themeValues).reduce(function (theme, key) {
+    theme[key + '.$set'] = themeValues[key];
+    return theme;
+}, {}), true);
 // const theme = update({}, wat2, true);
 // const theme = deepMerge(
 //     update(wat, wat2, true),
@@ -1788,6 +1890,10 @@ var _toggle = __webpack_require__(23);
 
 var _toggle2 = _interopRequireDefault(_toggle);
 
+var _reactLoaderSpinner = __webpack_require__(24);
+
+var _reactLoaderSpinner2 = _interopRequireDefault(_reactLoaderSpinner);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -1825,7 +1931,11 @@ var doric = {
     slider: _slider2.default,
     tab: _tabs.Tab,
     tabs: _tabs.Tabs,
-    toggle: _toggle2.default
+    toggle: _toggle2.default,
+
+    ext: {
+        laoder: laoder
+    }
 };
 window.doric = doric;
 
@@ -1934,30 +2044,7 @@ var Main = function (_BaseComponent) {
             return React.createElement(
                 'div',
                 { style: { paddingTop: 3 } },
-                React.createElement(
-                    doric.collapse,
-                    { title: 'Test' },
-                    React.createElement(doric.image, { source: images.bayoBG, height: 200 })
-                ),
-                React.createElement(
-                    doric.tabs,
-                    { selectedIndex: tab, onChange: this.linkState('tab', 'target.selectedIndex') },
-                    React.createElement(
-                        doric.tab,
-                        { label: 'A' },
-                        'A'
-                    ),
-                    React.createElement(
-                        doric.tab,
-                        { label: 'B' },
-                        'B'
-                    ),
-                    React.createElement(
-                        doric.tab,
-                        { label: 'C' },
-                        'C'
-                    )
-                )
+                React.createElement(doric.ext.loader, { type: 'Oval', width: 100, height: 100 })
             );
         }
     }]);
@@ -2919,7 +3006,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 _style2.default.add({
     "doric-collapse": {
         display: 'block',
-        border: '1px solid black',
+        border: '1px solid ' + _theme2.default.collapse.border.normal,
         borderRadius: 2,
         margin: 4,
         overflow: 'hidden'
@@ -3040,7 +3127,7 @@ _style2.default.add({
     "doric-divide": {
         display: 'block',
         height: 0,
-        borderBottom: '2px solid ' + _theme2.default.divider.color,
+        borderBottom: '2px solid ' + _theme2.default.divider.border.normal,
         margin: '12px 0px'
     }
 });
@@ -3500,7 +3587,7 @@ _style2.default.add({
         backgroundColor: _theme2.default.tabs.tab.bg.active
     },
     "doric-tab-title::after": _extends({}, _util2.default.background.after.base),
-    "doric-tab-title[data-tap-active]::after": _extends({}, _util2.default.background.after.colorize(_theme2.default.tabs.tab.hl))
+    "doric-tab-title[data-tap-active]::after": _extends({}, _util2.default.background.after.colorize(_theme2.default.tabs.tab.hl.normal))
 });
 
 var Tabs = function (_React$Component) {
@@ -3739,6 +3826,857 @@ exports.default = function (props) {
         )
     );
 };
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = __webpack_require__(25);
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function (global, factory) {
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, !(function webpackMissingModule() { var e = new Error("Cannot find module \"react\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()), !(function webpackMissingModule() { var e = new Error("Cannot find module \"prop-types\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()), __webpack_require__(26), __webpack_require__(27), __webpack_require__(28), __webpack_require__(36), __webpack_require__(29), __webpack_require__(30), __webpack_require__(31), __webpack_require__(32), __webpack_require__(33), __webpack_require__(34), __webpack_require__(35)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+        factory(exports, require('react'), require('prop-types'), require('./loading/audio'), require('./loading/ball-triangle'), require('./loading/bars'), require('./loading/circles'), require('./loading/grid'), require('./loading/hearts'), require('./loading/oval'), require('./loading/puff'), require('./loading/rings'), require('./loading/tail-spin'), require('./loading/three-dots'));
+    } else {
+        var mod = {
+            exports: {}
+        };
+        factory(mod.exports, global.react, global.propTypes, global.audio, global.ballTriangle, global.bars, global.circles, global.grid, global.hearts, global.oval, global.puff, global.rings, global.tailSpin, global.threeDots);
+        global.index = mod.exports;
+    }
+})(undefined, function (exports, _react, _propTypes, _audio, _ballTriangle, _bars, _circles, _grid, _hearts, _oval, _puff, _rings, _tailSpin, _threeDots) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+
+    var _react2 = _interopRequireDefault(_react);
+
+    var _propTypes2 = _interopRequireDefault(_propTypes);
+
+    function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : {
+            default: obj
+        };
+    }
+
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+
+    var _createClass = function () {
+        function defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+                var descriptor = props[i];
+                descriptor.enumerable = descriptor.enumerable || false;
+                descriptor.configurable = true;
+                if ("value" in descriptor) descriptor.writable = true;
+                Object.defineProperty(target, descriptor.key, descriptor);
+            }
+        }
+
+        return function (Constructor, protoProps, staticProps) {
+            if (protoProps) defineProperties(Constructor.prototype, protoProps);
+            if (staticProps) defineProperties(Constructor, staticProps);
+            return Constructor;
+        };
+    }();
+
+    function _possibleConstructorReturn(self, call) {
+        if (!self) {
+            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }
+
+        return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+    }
+
+    function _inherits(subClass, superClass) {
+        if (typeof superClass !== "function" && superClass !== null) {
+            throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+        }
+
+        subClass.prototype = Object.create(superClass && superClass.prototype, {
+            constructor: {
+                value: subClass,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+        if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+    }
+
+    var Loader = function (_React$Component) {
+        _inherits(Loader, _React$Component);
+
+        function Loader() {
+            var _ref;
+
+            var _temp, _this, _ret;
+
+            _classCallCheck(this, Loader);
+
+            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                args[_key] = arguments[_key];
+            }
+
+            return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Loader.__proto__ || Object.getPrototypeOf(Loader)).call.apply(_ref, [this].concat(args))), _this), _this.svg = function (type, visible) {
+                if (type === 'Audio') {
+                    return (0, _audio.audio)(_this.props);
+                } else if (type === 'Ball-Triangle') {
+                    return (0, _ballTriangle.ballTrangle)(_this.props);
+                } else if (type === 'Bars') {
+                    return (0, _bars.bars)(_this.props);
+                } else if (type === 'Circles') {
+                    return (0, _circles.circles)(_this.props);
+                } else if (type === 'Grid') {
+                    return (0, _grid.grid)(_this.props);
+                } else if (type === 'Hearts') {
+                    return (0, _hearts.hearts)(_this.props);
+                } else if (type === 'Oval') {
+                    return (0, _oval.oval)(_this.props);
+                } else if (type === 'Puff') {
+                    return (0, _puff.puff)(_this.props);
+                } else if (type === 'Rings') {
+                    return (0, _rings.rings)(_this.props);
+                } else if (type === 'TailSpin') {
+                    return (0, _tailSpin.tailSpin)(_this.props);
+                } else if (type === 'ThreeDots') {
+                    return (0, _threeDots.threeDots)(_this.props);
+                }
+
+                return _react2.default.createElement('div', null, _react2.default.createElement('p', null, 'Loading...Please Wait'), _react2.default.createElement('small', null, _react2.default.createElement('i', null, 'Note:No specfic svg type exist')));
+            }, _temp), _possibleConstructorReturn(_this, _ret);
+        }
+
+        _createClass(Loader, [{
+            key: 'render',
+            value: function render() {
+                var _props = this.props,
+                    color = _props.color,
+                    type = _props.type,
+                    height = _props.height,
+                    width = _props.width;
+
+                var style = {
+                    fill: color,
+                    height: height,
+                    width: width
+                };
+                return _react2.default.createElement('div', null, this.svg(type));
+            }
+        }]);
+
+        return Loader;
+    }(_react2.default.Component);
+
+    Loader.propTypes = {
+        color: _propTypes2.default.string,
+        type: _propTypes2.default.string,
+        height: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
+        width: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string])
+    };
+    Loader.defaultProps = {
+        color: 'blue',
+        type: 'audio',
+        height: 80,
+        width: 80,
+        visible: true
+    };
+    exports.default = Loader;
+});
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+(function (global, factory) {
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, !(function webpackMissingModule() { var e = new Error("Cannot find module \"react\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+        factory(exports, require("react"));
+    } else {
+        var mod = {
+            exports: {}
+        };
+        factory(mod.exports, global.react);
+        global.audio = mod.exports;
+    }
+})(undefined, function (exports, _react) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.audio = audio;
+
+    var _react2 = _interopRequireDefault(_react);
+
+    function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : {
+            default: obj
+        };
+    }
+
+    function audio(svg) {
+        return _react2.default.createElement("svg", { height: svg.height, width: svg.width, fill: svg.color, viewBox: "0 0 55 80", xmlns: "http://www.w3.org/2000/svg" }, _react2.default.createElement("g", { transform: "matrix(1 0 0 -1 0 80)" }, _react2.default.createElement("rect", { width: "10", height: "20", rx: "3" }, _react2.default.createElement("animate", { attributeName: "height",
+            begin: "0s", dur: "4.3s",
+            values: "20;45;57;80;64;32;66;45;64;23;66;13;64;56;34;34;2;23;76;79;20", calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("rect", { x: "15", width: "10", height: "80", rx: "3" }, _react2.default.createElement("animate", { attributeName: "height",
+            begin: "0s", dur: "2s",
+            values: "80;55;33;5;75;23;73;33;12;14;60;80", calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("rect", { x: "30", width: "10", height: "50", rx: "3" }, _react2.default.createElement("animate", { attributeName: "height",
+            begin: "0s", dur: "1.4s",
+            values: "50;34;78;23;56;23;34;76;80;54;21;50", calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("rect", { x: "45", width: "10", height: "30", rx: "3" }, _react2.default.createElement("animate", { attributeName: "height",
+            begin: "0s", dur: "2s",
+            values: "30;45;13;80;56;72;45;76;34;23;67;30", calcMode: "linear",
+            repeatCount: "indefinite" }))));
+    };
+});
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+(function (global, factory) {
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, !(function webpackMissingModule() { var e = new Error("Cannot find module \"react\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+        factory(exports, require("react"));
+    } else {
+        var mod = {
+            exports: {}
+        };
+        factory(mod.exports, global.react);
+        global.ballTriangle = mod.exports;
+    }
+})(undefined, function (exports, _react) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.ballTrangle = ballTrangle;
+
+    var _react2 = _interopRequireDefault(_react);
+
+    function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : {
+            default: obj
+        };
+    }
+
+    function ballTrangle(svg) {
+        return _react2.default.createElement("svg", { height: svg.height, width: svg.width, stroke: svg.color, viewBox: "0 0 57 57", xmlns: "http://www.w3.org/2000/svg" }, _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("g", { transform: "translate(1 1)", strokeWidth: "2" }, _react2.default.createElement("circle", { cx: "5", cy: "50", r: "5" }, _react2.default.createElement("animate", { attributeName: "cy",
+            begin: "0s", dur: "2.2s",
+            values: "50;5;50;50",
+            calcMode: "linear",
+            repeatCount: "indefinite" }), _react2.default.createElement("animate", { attributeName: "cx",
+            begin: "0s", dur: "2.2s",
+            values: "5;27;49;5",
+            calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("circle", { cx: "27", cy: "5", r: "5" }, _react2.default.createElement("animate", { attributeName: "cy",
+            begin: "0s", dur: "2.2s",
+            from: "5", to: "5",
+            values: "5;50;50;5",
+            calcMode: "linear",
+            repeatCount: "indefinite" }), _react2.default.createElement("animate", { attributeName: "cx",
+            begin: "0s", dur: "2.2s",
+            from: "27", to: "27",
+            values: "27;49;5;27",
+            calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("circle", { cx: "49", cy: "50", r: "5" }, _react2.default.createElement("animate", { attributeName: "cy",
+            begin: "0s", dur: "2.2s",
+            values: "50;50;5;50",
+            calcMode: "linear",
+            repeatCount: "indefinite" }), _react2.default.createElement("animate", { attributeName: "cx",
+            from: "49", to: "49",
+            begin: "0s", dur: "2.2s",
+            values: "49;5;27;49",
+            calcMode: "linear",
+            repeatCount: "indefinite" })))));
+    }
+});
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+(function (global, factory) {
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, !(function webpackMissingModule() { var e = new Error("Cannot find module \"react\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+        factory(exports, require("react"));
+    } else {
+        var mod = {
+            exports: {}
+        };
+        factory(mod.exports, global.react);
+        global.bars = mod.exports;
+    }
+})(undefined, function (exports, _react) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.bars = bars;
+
+    var _react2 = _interopRequireDefault(_react);
+
+    function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : {
+            default: obj
+        };
+    }
+
+    function bars(svg) {
+        return _react2.default.createElement("svg", { width: svg.height, height: svg.width, fill: svg.color, viewBox: "0 0 135 140", xmlns: "http://www.w3.org/2000/svg" }, _react2.default.createElement("rect", { y: "10", width: "15", height: "120", rx: "6" }, _react2.default.createElement("animate", { attributeName: "height",
+            begin: "0.5s", dur: "1s",
+            values: "120;110;100;90;80;70;60;50;40;140;120", calcMode: "linear",
+            repeatCount: "indefinite" }), _react2.default.createElement("animate", { attributeName: "y",
+            begin: "0.5s", dur: "1s",
+            values: "10;15;20;25;30;35;40;45;50;0;10", calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("rect", { x: "30", y: "10", width: "15", height: "120", rx: "6" }, _react2.default.createElement("animate", { attributeName: "height",
+            begin: "0.25s", dur: "1s",
+            values: "120;110;100;90;80;70;60;50;40;140;120", calcMode: "linear",
+            repeatCount: "indefinite" }), _react2.default.createElement("animate", { attributeName: "y",
+            begin: "0.25s", dur: "1s",
+            values: "10;15;20;25;30;35;40;45;50;0;10", calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("rect", { x: "60", width: "15", height: "140", rx: "6" }, _react2.default.createElement("animate", { attributeName: "height",
+            begin: "0s", dur: "1s",
+            values: "120;110;100;90;80;70;60;50;40;140;120", calcMode: "linear",
+            repeatCount: "indefinite" }), _react2.default.createElement("animate", { attributeName: "y",
+            begin: "0s", dur: "1s",
+            values: "10;15;20;25;30;35;40;45;50;0;10", calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("rect", { x: "90", y: "10", width: "15", height: "120", rx: "6" }, _react2.default.createElement("animate", { attributeName: "height",
+            begin: "0.25s", dur: "1s",
+            values: "120;110;100;90;80;70;60;50;40;140;120", calcMode: "linear",
+            repeatCount: "indefinite" }), _react2.default.createElement("animate", { attributeName: "y",
+            begin: "0.25s", dur: "1s",
+            values: "10;15;20;25;30;35;40;45;50;0;10", calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("rect", { x: "120", y: "10", width: "15", height: "120", rx: "6" }, _react2.default.createElement("animate", { attributeName: "height",
+            begin: "0.5s", dur: "1s",
+            values: "120;110;100;90;80;70;60;50;40;140;120", calcMode: "linear",
+            repeatCount: "indefinite" }), _react2.default.createElement("animate", { attributeName: "y",
+            begin: "0.5s", dur: "1s",
+            values: "10;15;20;25;30;35;40;45;50;0;10", calcMode: "linear",
+            repeatCount: "indefinite" })));
+    }
+});
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+(function (global, factory) {
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, !(function webpackMissingModule() { var e = new Error("Cannot find module \"react\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+        factory(exports, require("react"));
+    } else {
+        var mod = {
+            exports: {}
+        };
+        factory(mod.exports, global.react);
+        global.grid = mod.exports;
+    }
+})(undefined, function (exports, _react) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.grid = grid;
+
+    var _react2 = _interopRequireDefault(_react);
+
+    function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : {
+            default: obj
+        };
+    }
+
+    function grid(svg) {
+        return _react2.default.createElement("svg", { width: svg.width, height: svg.height, viewBox: "0 0 105 105", fill: svg.color }, _react2.default.createElement("circle", { cx: "12.5", cy: "12.5", r: "12.5" }, _react2.default.createElement("animate", { attributeName: "fillOpacity",
+            begin: "0s", dur: "1s",
+            values: "1;.2;1", calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("circle", { cx: "12.5", cy: "52.5", r: "12.5" }, _react2.default.createElement("animate", { attributeName: "fill-opacity",
+            begin: "100ms", dur: "1s",
+            values: "1;.2;1", calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("circle", { cx: "52.5", cy: "12.5", r: "12.5" }, _react2.default.createElement("animate", { attributeName: "fill-opacity",
+            begin: "300ms", dur: "1s",
+            values: "1;.2;1", calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("circle", { cx: "52.5", cy: "52.5", r: "12.5" }, _react2.default.createElement("animate", { attributeName: "fill-opacity",
+            begin: "600ms", dur: "1s",
+            values: "1;.2;1", calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("circle", { cx: "92.5", cy: "12.5", r: "12.5" }, _react2.default.createElement("animate", { attributeName: "fill-opacity",
+            begin: "800ms", dur: "1s",
+            values: "1;.2;1", calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("circle", { cx: "92.5", cy: "52.5", r: "12.5" }, _react2.default.createElement("animate", { attributeName: "fill-opacity",
+            begin: "400ms", dur: "1s",
+            values: "1;.2;1", calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("circle", { cx: "12.5", cy: "92.5", r: "12.5" }, _react2.default.createElement("animate", { attributeName: "fill-opacity",
+            begin: "700ms", dur: "1s",
+            values: "1;.2;1", calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("circle", { cx: "52.5", cy: "92.5", r: "12.5" }, _react2.default.createElement("animate", { attributeName: "fill-opacity",
+            begin: "500ms", dur: "1s",
+            values: "1;.2;1", calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("circle", { cx: "92.5", cy: "92.5", r: "12.5" }, _react2.default.createElement("animate", { attributeName: "fill-opacity",
+            begin: "200ms", dur: "1s",
+            values: "1;.2;1", calcMode: "linear",
+            repeatCount: "indefinite" })));
+    }
+});
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+(function (global, factory) {
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, !(function webpackMissingModule() { var e = new Error("Cannot find module \"react\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+        factory(exports, require("react"));
+    } else {
+        var mod = {
+            exports: {}
+        };
+        factory(mod.exports, global.react);
+        global.hearts = mod.exports;
+    }
+})(undefined, function (exports, _react) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.hearts = hearts;
+
+    var _react2 = _interopRequireDefault(_react);
+
+    function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : {
+            default: obj
+        };
+    }
+
+    function hearts(svg) {
+        return _react2.default.createElement("svg", { width: svg.width, height: svg.height, viewBox: "0 0 140 64", xmlns: "http://www.w3.org/2000/svg", fill: svg.color }, _react2.default.createElement("path", { d: "M30.262 57.02L7.195 40.723c-5.84-3.976-7.56-12.06-3.842-18.063 3.715-6 11.467-7.65 17.306-3.68l4.52 3.76 2.6-5.274c3.717-6.002 11.47-7.65 17.305-3.68 5.84 3.97 7.56 12.054 3.842 18.062L34.49 56.118c-.897 1.512-2.793 1.915-4.228.9z", attributeName: "fill-opacity", from: "0", to: ".5" }, _react2.default.createElement("animate", { attributeName: "fill-opacity",
+            begin: "0s", dur: "1.4s",
+            values: "0.5;1;0.5",
+            calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("path", { d: "M105.512 56.12l-14.44-24.272c-3.716-6.008-1.996-14.093 3.843-18.062 5.835-3.97 13.588-2.322 17.306 3.68l2.6 5.274 4.52-3.76c5.84-3.97 13.592-2.32 17.307 3.68 3.718 6.003 1.998 14.088-3.842 18.064L109.74 57.02c-1.434 1.014-3.33.61-4.228-.9z", attributeName: "fill-opacity", from: "0", to: ".5" }, _react2.default.createElement("animate", { attributeName: "fill-opacity",
+            begin: "0.7s", dur: "1.4s",
+            values: "0.5;1;0.5",
+            calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("path", { d: "M67.408 57.834l-23.01-24.98c-5.864-6.15-5.864-16.108 0-22.248 5.86-6.14 15.37-6.14 21.234 0L70 16.168l4.368-5.562c5.863-6.14 15.375-6.14 21.235 0 5.863 6.14 5.863 16.098 0 22.247l-23.007 24.98c-1.43 1.556-3.757 1.556-5.188 0z" }));
+    }
+});
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+(function (global, factory) {
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, !(function webpackMissingModule() { var e = new Error("Cannot find module \"react\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+        factory(exports, require("react"));
+    } else {
+        var mod = {
+            exports: {}
+        };
+        factory(mod.exports, global.react);
+        global.oval = mod.exports;
+    }
+})(undefined, function (exports, _react) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.oval = oval;
+
+    var _react2 = _interopRequireDefault(_react);
+
+    function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : {
+            default: obj
+        };
+    }
+
+    function oval(svg) {
+        return _react2.default.createElement("svg", { width: svg.width, height: svg.height, viewBox: "0 0 38 38", xmlns: "http://www.w3.org/2000/svg", stroke: svg.color }, _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("g", { transform: "translate(1 1)", strokeWidth: "2" }, _react2.default.createElement("circle", { strokeOpacity: ".5", cx: "18", cy: "18", r: "18" }), _react2.default.createElement("path", { d: "M36 18c0-9.94-8.06-18-18-18" }, _react2.default.createElement("animateTransform", {
+            attributeName: "transform",
+            type: "rotate",
+            from: "0 18 18",
+            to: "360 18 18",
+            dur: "1s",
+            repeatCount: "indefinite" })))));
+    }
+});
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+(function (global, factory) {
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, !(function webpackMissingModule() { var e = new Error("Cannot find module \"react\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+        factory(exports, require("react"));
+    } else {
+        var mod = {
+            exports: {}
+        };
+        factory(mod.exports, global.react);
+        global.puff = mod.exports;
+    }
+})(undefined, function (exports, _react) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.puff = puff;
+
+    var _react2 = _interopRequireDefault(_react);
+
+    function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : {
+            default: obj
+        };
+    }
+
+    function puff(svg) {
+        return _react2.default.createElement("svg", { width: svg.width, height: svg.height, viewBox: "0 0 44 44", xmlns: "http://www.w3.org/2000/svg", stroke: svg.color }, _react2.default.createElement("g", { fill: "none", fillRule: "evenodd", strokeWidth: "2" }, _react2.default.createElement("circle", { cx: "22", cy: "22", r: "1" }, _react2.default.createElement("animate", { attributeName: "r",
+            begin: "0s", dur: "1.8s",
+            values: "1; 20",
+            calcMode: "spline",
+            keyTimes: "0; 1",
+            keySplines: "0.165, 0.84, 0.44, 1",
+            repeatCount: "indefinite" }), _react2.default.createElement("animate", { attributeName: "strokeOpacity",
+            begin: "0s", dur: "1.8s",
+            values: "1; 0",
+            calcMode: "spline",
+            keyTimes: "0; 1",
+            keySplines: "0.3, 0.61, 0.355, 1",
+            repeatCount: "indefinite" })), _react2.default.createElement("circle", { cx: "22", cy: "22", r: "1" }, _react2.default.createElement("animate", { attributeName: "r",
+            begin: "-0.9s", dur: "1.8s",
+            values: "1; 20",
+            calcMode: "spline",
+            keyTimes: "0; 1",
+            keySplines: "0.165, 0.84, 0.44, 1",
+            repeatCount: "indefinite" }), _react2.default.createElement("animate", { attributeName: "strokeOpacity",
+            begin: "-0.9s", dur: "1.8s",
+            values: "1; 0",
+            calcMode: "spline",
+            keyTimes: "0; 1",
+            keySplines: "0.3, 0.61, 0.355, 1",
+            repeatCount: "indefinite" }))));
+    }
+});
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+(function (global, factory) {
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, !(function webpackMissingModule() { var e = new Error("Cannot find module \"react\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+        factory(exports, require("react"));
+    } else {
+        var mod = {
+            exports: {}
+        };
+        factory(mod.exports, global.react);
+        global.rings = mod.exports;
+    }
+})(undefined, function (exports, _react) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.rings = rings;
+
+    var _react2 = _interopRequireDefault(_react);
+
+    function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : {
+            default: obj
+        };
+    }
+
+    function rings(svg) {
+        return _react2.default.createElement("svg", { width: svg.width, height: svg.height, viewBox: "0 0 45 45", xmlns: "http://www.w3.org/2000/svg", stroke: svg.color }, _react2.default.createElement("g", { fill: "none", fillRule: "evenodd", transform: "translate(1 1)", strokeWidth: "2" }, _react2.default.createElement("circle", { cx: "22", cy: "22", r: "6", strokeOpacity: "0" }, _react2.default.createElement("animate", { attributeName: "r",
+            begin: "1.5s", dur: "3s",
+            values: "6;22",
+            calcMode: "linear",
+            repeatCount: "indefinite" }), _react2.default.createElement("animate", { attributeName: "stroke-opacity",
+            begin: "1.5s", dur: "3s",
+            values: "1;0", calcMode: "linear",
+            repeatCount: "indefinite" }), _react2.default.createElement("animate", { attributeName: "stroke-width",
+            begin: "1.5s", dur: "3s",
+            values: "2;0", calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("circle", { cx: "22", cy: "22", r: "6", strokeOpacity: "0" }, _react2.default.createElement("animate", { attributeName: "r",
+            begin: "3s", dur: "3s",
+            values: "6;22",
+            calcMode: "linear",
+            repeatCount: "indefinite" }), _react2.default.createElement("animate", { attributeName: "strokeOpacity",
+            begin: "3s", dur: "3s",
+            values: "1;0", calcMode: "linear",
+            repeatCount: "indefinite" }), _react2.default.createElement("animate", { attributeName: "strokeWidth",
+            begin: "3s", dur: "3s",
+            values: "2;0", calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("circle", { cx: "22", cy: "22", r: "8" }, _react2.default.createElement("animate", { attributeName: "r",
+            begin: "0s", dur: "1.5s",
+            values: "6;1;2;3;4;5;6",
+            calcMode: "linear",
+            repeatCount: "indefinite" }))));
+    }
+});
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+(function (global, factory) {
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, !(function webpackMissingModule() { var e = new Error("Cannot find module \"react\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+        factory(exports, require("react"));
+    } else {
+        var mod = {
+            exports: {}
+        };
+        factory(mod.exports, global.react);
+        global.tailSpin = mod.exports;
+    }
+})(undefined, function (exports, _react) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.tailSpin = tailSpin;
+
+    var _react2 = _interopRequireDefault(_react);
+
+    function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : {
+            default: obj
+        };
+    }
+
+    function tailSpin(svg) {
+        return _react2.default.createElement("svg", { width: svg.width, height: svg.height, viewBox: "0 0 38 38", xmlns: "http://www.w3.org/2000/svg" }, _react2.default.createElement("defs", null, _react2.default.createElement("linearGradient", { x1: "8.042%", y1: "0%", x2: "65.682%", y2: "23.865%", id: "a" }, _react2.default.createElement("stop", { stopColor: svg.color, stopOpacity: "0", offset: "0%" }), _react2.default.createElement("stop", { stopColor: svg.color, stopOpacity: ".631", offset: "63.146%" }), _react2.default.createElement("stop", { stopColor: svg.color, offset: "100%" }))), _react2.default.createElement("g", { fill: "none", fillRule: "evenodd" }, _react2.default.createElement("g", { transform: "translate(1 1)" }, _react2.default.createElement("path", { d: "M36 18c0-9.94-8.06-18-18-18", id: "Oval-2", stroke: "url(#a)", strokeWidth: "2" }, _react2.default.createElement("animateTransform", {
+            attributeName: "transform",
+            type: "rotate",
+            from: "0 18 18",
+            to: "360 18 18",
+            dur: "0.9s",
+            repeatCount: "indefinite" })), _react2.default.createElement("circle", { fill: "#fff", cx: "36", cy: "18", r: "1" }, _react2.default.createElement("animateTransform", {
+            attributeName: "transform",
+            type: "rotate",
+            from: "0 18 18",
+            to: "360 18 18",
+            dur: "0.9s",
+            repeatCount: "indefinite" })))));
+    }
+});
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+(function (global, factory) {
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, !(function webpackMissingModule() { var e = new Error("Cannot find module \"react\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+        factory(exports, require("react"));
+    } else {
+        var mod = {
+            exports: {}
+        };
+        factory(mod.exports, global.react);
+        global.threeDots = mod.exports;
+    }
+})(undefined, function (exports, _react) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.threeDots = threeDots;
+
+    var _react2 = _interopRequireDefault(_react);
+
+    function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : {
+            default: obj
+        };
+    }
+
+    function threeDots(svg) {
+        return _react2.default.createElement("svg", { width: svg.width, height: svg.height, viewBox: "0 0 120 30", xmlns: "http://www.w3.org/2000/svg", fill: svg.color }, _react2.default.createElement("circle", { cx: "15", cy: "15", r: "15" }, _react2.default.createElement("animate", { attributeName: "r", from: "15", to: "15",
+            begin: "0s", dur: "0.8s",
+            values: "15;9;15", calcMode: "linear",
+            repeatCount: "indefinite" }), _react2.default.createElement("animate", { attributeName: "fillOpacity", from: "1", to: "1",
+            begin: "0s", dur: "0.8s",
+            values: "1;.5;1", calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("circle", { cx: "60", cy: "15", r: "9", attributeName: "fillOpacity", from: "1", to: "0.3" }, _react2.default.createElement("animate", { attributeName: "r", from: "9", to: "9",
+            begin: "0s", dur: "0.8s",
+            values: "9;15;9", calcMode: "linear",
+            repeatCount: "indefinite" }), _react2.default.createElement("animate", { attributeName: "fillOpacity", from: "0.5", to: "0.5",
+            begin: "0s", dur: "0.8s",
+            values: ".5;1;.5", calcMode: "linear",
+            repeatCount: "indefinite" })), _react2.default.createElement("circle", { cx: "105", cy: "15", r: "15" }, _react2.default.createElement("animate", { attributeName: "r", from: "15", to: "15",
+            begin: "0s", dur: "0.8s",
+            values: "15;9;15", calcMode: "linear",
+            repeatCount: "indefinite" }), _react2.default.createElement("animate", { attributeName: "fillOpacity", from: "1", to: "1",
+            begin: "0s", dur: "0.8s",
+            values: "1;.5;1", calcMode: "linear",
+            repeatCount: "indefinite" })));
+    }
+});
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+(function (global, factory) {
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, !(function webpackMissingModule() { var e = new Error("Cannot find module \"react\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+        factory(exports, require("react"));
+    } else {
+        var mod = {
+            exports: {}
+        };
+        factory(mod.exports, global.react);
+        global.circles = mod.exports;
+    }
+})(undefined, function (exports, _react) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.circles = circles;
+
+    var _react2 = _interopRequireDefault(_react);
+
+    function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : {
+            default: obj
+        };
+    }
+
+    function circles(svg) {
+        return _react2.default.createElement("svg", { width: svg.width, height: svg.height, viewBox: "0 0 135 135", xmlns: "http://www.w3.org/2000/svg", fill: svg.color }, _react2.default.createElement("path", { d: "M67.447 58c5.523 0 10-4.477 10-10s-4.477-10-10-10-10 4.477-10 10 4.477 10 10 10zm9.448 9.447c0 5.523 4.477 10 10 10 5.522 0 10-4.477 10-10s-4.478-10-10-10c-5.523 0-10 4.477-10 10zm-9.448 9.448c-5.523 0-10 4.477-10 10 0 5.522 4.477 10 10 10s10-4.478 10-10c0-5.523-4.477-10-10-10zM58 67.447c0-5.523-4.477-10-10-10s-10 4.477-10 10 4.477 10 10 10 10-4.477 10-10z" }, _react2.default.createElement("animateTransform", {
+            attributeName: "transform",
+            type: "rotate",
+            from: "0 67 67",
+            to: "-360 67 67",
+            dur: "2.5s",
+            repeatCount: "indefinite" })), _react2.default.createElement("path", { d: "M28.19 40.31c6.627 0 12-5.374 12-12 0-6.628-5.373-12-12-12-6.628 0-12 5.372-12 12 0 6.626 5.372 12 12 12zm30.72-19.825c4.686 4.687 12.284 4.687 16.97 0 4.686-4.686 4.686-12.284 0-16.97-4.686-4.687-12.284-4.687-16.97 0-4.687 4.686-4.687 12.284 0 16.97zm35.74 7.705c0 6.627 5.37 12 12 12 6.626 0 12-5.373 12-12 0-6.628-5.374-12-12-12-6.63 0-12 5.372-12 12zm19.822 30.72c-4.686 4.686-4.686 12.284 0 16.97 4.687 4.686 12.285 4.686 16.97 0 4.687-4.686 4.687-12.284 0-16.97-4.685-4.687-12.283-4.687-16.97 0zm-7.704 35.74c-6.627 0-12 5.37-12 12 0 6.626 5.373 12 12 12s12-5.374 12-12c0-6.63-5.373-12-12-12zm-30.72 19.822c-4.686-4.686-12.284-4.686-16.97 0-4.686 4.687-4.686 12.285 0 16.97 4.686 4.687 12.284 4.687 16.97 0 4.687-4.685 4.687-12.283 0-16.97zm-35.74-7.704c0-6.627-5.372-12-12-12-6.626 0-12 5.373-12 12s5.374 12 12 12c6.628 0 12-5.373 12-12zm-19.823-30.72c4.687-4.686 4.687-12.284 0-16.97-4.686-4.686-12.284-4.686-16.97 0-4.687 4.686-4.687 12.284 0 16.97 4.686 4.687 12.284 4.687 16.97 0z" }, _react2.default.createElement("animateTransform", {
+            attributeName: "transform",
+            type: "rotate",
+            from: "0 67 67",
+            to: "360 67 67",
+            dur: "8s",
+            repeatCount: "indefinite" })));
+    }
+});
 
 /***/ })
 /******/ ]);

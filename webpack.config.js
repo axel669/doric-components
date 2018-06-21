@@ -1,12 +1,13 @@
 module.exports = {
-    entry: './src/main.js',
+    entry: './tests/src/main.js',
     output: {
-        filename: './release/app.js'
+        filename: './tests/app.js'
     },
     module: {
         loaders: [
             {
                 test: /\.js$/,
+                exclude: /node_modules/,
                 loader: 'babel-loader',
                 query: {
                     presets: ['env', 'react', 'stage-0']

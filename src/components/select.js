@@ -1,3 +1,5 @@
+import React from 'react';
+
 import icon from '../components/icon';
 import style from '../style';
 import theme from '../theme';

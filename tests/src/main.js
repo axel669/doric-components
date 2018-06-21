@@ -1,63 +1,73 @@
-import 'gesturesjs';
-import ssjs from 'ssjs';
-import style from './style';
-import update from './update';
-
-import BaseComponent from './components/baseComponent';
-
-import button from './components/button';
-import card from './components/card';
-import checkbox from './components/checkbox';
-import collapse from './components/collapse';
-import divider from './components/divider';
-import {Grid as grid, Col as col, GridBreak as gridBreak} from './components/grid';
-import icon from './components/icon';
-import image from './components/image';
-import input from './components/input';
-import radio from './components/radio';
-import select from './components/select';
-import slider from './components/slider';
-import {Tabs as tabs, Tab as tab} from './components/tabs';
-import toggle from './components/toggle';
-
+// import 'gesturesjs';
+// import ssjs from 'ssjs';
+// import style from './style';
+// import update from './update';
+//
+// import BaseComponent from './components/baseComponent';
+//
+// import button from './components/button';
+// import card from './components/card';
+// import checkbox from './components/checkbox';
+// import collapse from './components/collapse';
+// import divider from './components/divider';
+// import {Grid as grid, Col as col, GridBreak as gridBreak} from './components/grid';
+// import icon from './components/icon';
+// import image from './components/image';
+// import input from './components/input';
+// import radio from './components/radio';
+// import select from './components/select';
+// import slider from './components/slider';
+// import {Tabs as tabs, Tab as tab} from './components/tabs';
+// import toggle from './components/toggle';
+//
+// import loader from 'react-loader-spinner';
+//
 window.images = {
     boxxy: "http://axel669.net/images/boxxy.png",
     bayoBG: "http://backgroundcheckall.com/wp-content/uploads/2017/12/bayonetta-background-5.jpg",
     laughingMan: "https://pbs.twimg.com/profile_images/796545578507403265/VQMsYXot_400x400.jpg"
 };
+//
+// window.update = update;
+//
+// // import loaderGIF from './images/double-ring.gif';
+//
+// const doric = {
+//     button,
+//     card,
+//     checkbox,
+//     collapse,
+//     divider,
+//     grid,
+//     col,
+//     gridBreak,
+//     icon,
+//     image,
+//     input,
+//     radio,
+//     select,
+//     slider,
+//     tab,
+//     tabs,
+//     toggle,
+//
+//     ext: {
+//         laoder
+//     }
+// };
+// window.doric = doric;
+//
+// window.cblog = console::console.log;
+// window.cberr = console::console.error;
+//
+// const sheet = ssjs.create();
+// sheet.addStyles(style);
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-window.update = update;
+import doric from '../../dist/index.js';
 
-// import loaderGIF from './images/double-ring.gif';
-
-const doric = {
-    button,
-    card,
-    checkbox,
-    collapse,
-    divider,
-    grid,
-    col,
-    gridBreak,
-    icon,
-    image,
-    input,
-    radio,
-    select,
-    slider,
-    tab,
-    tabs,
-    toggle
-};
-window.doric = doric;
-
-window.cblog = console::console.log;
-window.cberr = console::console.error;
-
-const sheet = ssjs.create();
-sheet.addStyles(style);
-
-class Main extends BaseComponent {
+class Main extends doric.baseComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -139,7 +149,24 @@ class Main extends BaseComponent {
 
         return (
             <div style={{paddingTop: 3}}>
+                <doric.ext.loader type="Oval" width={100} height={100} />
                 {/* {buttons} */}
+
+                <doric.card>
+                    <doric.card.title main="Main Title" subtitle="Subtitle" icon={images.laughingMan} />
+                    <doric.card.media>
+                        <doric.image source={images.bayoBG} height="100%" />
+                    </doric.card.media>
+
+                    More Stuff
+                    <doric.divider />
+                    Wat Again?
+
+                    <doric.card.actions divider>
+                        <doric.button text="Nope" primary flat />
+                        <doric.button text="Maybe?" primary flat />
+                    </doric.card.actions>
+                </doric.card>
 
                 {/* <div>
                     <doric.card>
@@ -179,15 +206,17 @@ class Main extends BaseComponent {
                     </doric.card>
                 </div> */}
 
-                <doric.collapse title="Test">
+                {/* <doric.collapse title="Test">
                     <doric.image source={images.bayoBG} height={200} />
                 </doric.collapse>
 
-                <doric.tabs selectedIndex={tab} onChange={this.linkState('tab', 'target.selectedIndex')}>
-                    <doric.tab label="A">A</doric.tab>
-                    <doric.tab label="B">B</doric.tab>
-                    <doric.tab label="C">C</doric.tab>
-                </doric.tabs>
+                <doric.card>
+                    <doric.tabs selectedIndex={tab} onChange={this.linkState('tab', 'target.selectedIndex')}>
+                        <doric.tab label="A">A</doric.tab>
+                        <doric.tab label="B">B</doric.tab>
+                        <doric.tab label="C">C</doric.tab>
+                    </doric.tabs>
+                </doric.card> */}
 
                 {/* <div>
                     <doric.checkbox label="Test A" checked={check.a} onChange={this.linkMoar('check.a', 'value')} />
@@ -299,8 +328,9 @@ class Main extends BaseComponent {
     }
 }
 
-sheet.attach();
-ReactDOM.render(
+// sheet.attach();
+// ReactDOM.render(
+doric.init(
     <Main />,
     document.querySelector("div")
 );

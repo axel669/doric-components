@@ -4,8 +4,33 @@ providers: [
     config:
       commands: [
         {
-          project: "C:\\Users\\Axel\\Documents\\programming\\github\\doric-components"
-          source: "C:\\Users\\Axel\\Documents\\programming\\github\\doric-components\\.build-tools.cson"
+          project: "C:\\Users\\cmorgan\\Documents\\git\\doric-components"
+          source: "C:\\Users\\cmorgan\\Documents\\git\\doric-components\\.build-tools.cson"
+          name: "Prep Test"
+          command: "npm run prep-test -s"
+          wd: "."
+          env: {}
+          modifier:
+            save_all: {}
+          environment:
+            name: "child_process"
+            config:
+              stdoe: "both"
+          stdout:
+            pipeline: []
+          stderr:
+            pipeline: []
+          output:
+            console:
+              close_success: true
+              queue_in_buffer: true
+              colors: false
+              stdin: false
+          version: 2
+        }
+        {
+          project: "C:\\Users\\cmorgan\\Documents\\git\\doric-components"
+          source: "C:\\Users\\cmorgan\\Documents\\git\\doric-components\\.build-tools.cson"
           name: "Build?"
           command: "npm run pack"
           wd: "."
@@ -29,8 +54,8 @@ providers: [
           version: 2
         }
         {
-          project: "C:\\Users\\Axel\\Documents\\programming\\github\\doric-components"
-          source: "C:\\Users\\Axel\\Documents\\programming\\github\\doric-components\\.build-tools.cson"
+          project: "C:\\Users\\cmorgan\\Documents\\git\\doric-components"
+          source: "C:\\Users\\cmorgan\\Documents\\git\\doric-components\\.build-tools.cson"
           name: "Prep Release"
           command: "npm run all"
           wd: "."

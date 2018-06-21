@@ -7,6 +7,7 @@ const style = {
         width: '100%',
         height: '100%',
         backgroundColor: theme.body.bg.normal,
+        color: theme.body.text.normal,
         fontFamily: "Roboto"
     },
     "*": {

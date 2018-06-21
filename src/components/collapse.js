@@ -1,3 +1,5 @@
+import React from 'react';
+
 import CustomListeners from './customListeners';
 import Icon from './icon';
 import Button from './button';
@@ -9,7 +11,7 @@ import theme from '../theme';
 style.add({
     "doric-collapse": {
         display: 'block',
-        border: '1px solid black',
+        border: `1px solid ${theme.collapse.border.normal}`,
         borderRadius: 2,
         margin: 4,
         overflow: 'hidden'

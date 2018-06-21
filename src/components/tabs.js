@@ -1,3 +1,5 @@
+import React from 'react';
+
 import CustomListeners from './customListeners';
 
 import theme from '../theme';
@@ -36,7 +38,7 @@ style.add({
         ...util.background.after.base
     },
     "doric-tab-title[data-tap-active]::after": {
-        ...util.background.after.colorize(theme.tabs.tab.hl)
+        ...util.background.after.colorize(theme.tabs.tab.hl.normal)
     }
 });
 class Tabs extends React.Component {
