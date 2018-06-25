@@ -92,6 +92,10 @@ const baseTheme = {
     'select.border.normal': 'lightgray',
     'select.border.focus': niceBlue,
 
+    'slider.track.bg.normal': 'lightgray',
+    'slider.track.bg.value': niceBlue,
+    'slider.thumb.normal': niceBlue,
+
     'tabs.tab.hl.normal': normalHL,
     'tabs.tab.bg.normal': 'white',
     'tabs.tab.bg.active': 'white',

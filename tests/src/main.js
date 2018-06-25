@@ -90,7 +90,7 @@ class Functional extends React.PureComponent {
 // }
 
 doric.style.add({
-    "dialog-base": {
+    "doric-dialog-base": {
         position: 'absolute',
         top: 0,
         left: 0,
@@ -98,16 +98,17 @@ doric.style.add({
         width: 0,
         height: 0
     },
-    "dialog-wrapper": {
+    "doric-dialog-wrapper": {
         position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        zIndex: 1000
+        zIndex: 1000,
+        animationName: 'doric-dialog-fade-in'
     },
-    "dialog-container": {
+    "doric-dialog-container": {
         position: 'absolute',
         top: '10vh',
         left: '50%',
@@ -139,11 +140,11 @@ class DialogManager extends doric.baseComponent {
         const dialog = {
             id,
             element: (
-                <dialog-wrapper>
-                    <dialog-container>
+                <doric-dialog-wrapper key={id}>
+                    <doric-dialog-container>
                         <Component close={close} />
-                    </dialog-container>
-                </dialog-wrapper>
+                    </doric-dialog-container>
+                </doric-dialog-wrapper>
             )
         };
         const dialogs = doric.util.update(
@@ -171,7 +172,7 @@ class DialogManager extends doric.baseComponent {
     }
 }
 const dialog = (() => {
-    const container = document.createElement("dialog-base");
+    const container = document.createElement("doric-dialog-base");
 
     document.body.appendChild(container);
 
@@ -195,7 +196,8 @@ class Test extends doric.baseComponent {
             t: '',
             o: false,
             rv: null,
-            c: false
+            c: false,
+            n: 0
         };
     }
 
@@ -223,12 +225,7 @@ class Test extends doric.baseComponent {
     render = () => {
         return (
             <div>
-                <doric.button text="Add" onTap={this.add} />
-                <doric.button text="Test" onTap={this.dialogTest} />
-
-                {(0).to(40).map(
-                    i => <div>{i}</div>
-                )}
+                <doric.slider value={this.state.n} onChange={this.linkState('n')} />
             </div>
         );
     }

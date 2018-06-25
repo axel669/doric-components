@@ -272,6 +272,10 @@ var baseTheme = {
     'select.border.normal': 'lightgray',
     'select.border.focus': niceBlue,
 
+    'slider.track.bg.normal': 'lightgray',
+    'slider.track.bg.value': niceBlue,
+    'slider.thumb.normal': niceBlue,
+
     'tabs.tab.hl.normal': normalHL,
     'tabs.tab.bg.normal': 'white',
     'tabs.tab.bg.active': 'white',
@@ -2849,7 +2853,7 @@ var Functional = function (_React$PureComponent) {
 // }
 
 _index2.default.style.add({
-    "dialog-base": {
+    "doric-dialog-base": {
         position: 'absolute',
         top: 0,
         left: 0,
@@ -2857,16 +2861,17 @@ _index2.default.style.add({
         width: 0,
         height: 0
     },
-    "dialog-wrapper": {
+    "doric-dialog-wrapper": {
         position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        zIndex: 1000
+        zIndex: 1000,
+        animationName: 'doric-dialog-fade-in'
     },
-    "dialog-container": {
+    "doric-dialog-container": {
         position: 'absolute',
         top: '10vh',
         left: '50%',
@@ -2896,10 +2901,10 @@ var DialogManager = function (_doric$baseComponent) {
             var dialog = {
                 id: id,
                 element: _react2.default.createElement(
-                    'dialog-wrapper',
-                    null,
+                    'doric-dialog-wrapper',
+                    { key: id },
                     _react2.default.createElement(
-                        'dialog-container',
+                        'doric-dialog-container',
                         null,
                         _react2.default.createElement(Component, { close: close })
                     )
@@ -2937,7 +2942,7 @@ var DialogManager = function (_doric$baseComponent) {
 }(_index2.default.baseComponent);
 
 var dialog = function () {
-    var container = document.createElement("dialog-base");
+    var container = document.createElement("doric-dialog-base");
 
     document.body.appendChild(container);
 
@@ -2993,15 +2998,7 @@ var Test = function (_doric$baseComponent2) {
             return _react2.default.createElement(
                 'div',
                 null,
-                _react2.default.createElement(_index2.default.button, { text: 'Add', onTap: _this3.add }),
-                _react2.default.createElement(_index2.default.button, { text: 'Test', onTap: _this3.dialogTest }),
-                0 .to(40).map(function (i) {
-                    return _react2.default.createElement(
-                        'div',
-                        null,
-                        i
-                    );
-                })
+                _react2.default.createElement(_index2.default.slider, { value: _this3.state.n, onChange: _this3.linkState('n') })
             );
         };
 
@@ -3010,7 +3007,8 @@ var Test = function (_doric$baseComponent2) {
             t: '',
             o: false,
             rv: null,
-            c: false
+            c: false,
+            n: 0
         };
         return _this3;
     }
@@ -24087,6 +24085,8 @@ exports.default = Select;
 "use strict";
 
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -24117,41 +24117,100 @@ function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : { default: obj };
 }
 
-function _objectWithoutProperties(obj, keys) {
-    var target = {};for (var i in obj) {
-        if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
-    }return target;
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
 }
 
-var thumbOverride = {
-    "WebkitAppearance": 'none',
-    width: 20,
-    height: 20,
-    border: '1px solid black'
-};
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 _style2.default.add({
-    "doric-slider > input[type='range']::-webkit-slider-thumb": thumbOverride,
-    "doric-slider > input[type='range']::-moz-range-thumb": thumbOverride
+    "doric-slider": {
+        margin: '4px 12px',
+        display: 'block',
+        height: 20
+    },
+    "doric-slider > input[type='range']": {
+        WebkitAppearance: 'none',
+        backgroundColor: 'transparent',
+        margin: 0,
+        padding: 0,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: '+1',
+        opacity: 0.5
+    },
+    'doric-slider > doric-slider-track-bg': {
+        position: 'absolute',
+        top: 8,
+        left: 10,
+        bottom: 8,
+        right: 10,
+        backgroundColor: _theme2.default.slider.track.bg.normal
+    },
+    'doric-slider doric-slider-track': {
+        backgroundColor: _theme2.default.slider.track.bg.value,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        height: '100%'
+    },
+    'doric-slider doric-slider-track::after': {
+        content: '""',
+        position: 'absolute',
+        left: '100%',
+        top: '50%',
+        width: 16,
+        height: 16,
+        borderRadius: 10,
+        backgroundColor: _theme2.default.slider.thumb.normal,
+        transform: 'translate(-50%, -50%)'
+    }
 });
 
-exports.default = function (props) {
-    var _props$min = props.min,
-        min = _props$min === undefined ? 0 : _props$min,
-        _props$max = props.max,
-        max = _props$max === undefined ? 100 : _props$max,
-        _props$value = props.value,
-        value = _props$value === undefined ? min : _props$value,
-        _props$onChange = props.onChange,
-        onChange = _props$onChange === undefined ? function () {} : _props$onChange,
-        passThrough = _objectWithoutProperties(props, ['min', 'max', 'value', 'onChange']);
+var Slider = function (_React$PureComponent) {
+    _inherits(Slider, _React$PureComponent);
 
-    var changeHandler = function changeHandler(evt) {
-        return onChange(evt.target.value);
-    };
+    function Slider(props) {
+        _classCallCheck(this, Slider);
 
-    return _react2.default.createElement('doric-slider', passThrough, _react2.default.createElement('input', _extends({ type: 'range' }, { min: min, max: max, value: value }, { onChange: changeHandler })));
-};
+        var _this = _possibleConstructorReturn(this, (Slider.__proto__ || Object.getPrototypeOf(Slider)).call(this, props));
+
+        _this.render = function () {
+            var _this$props = _this.props,
+                _this$props$min = _this$props.min,
+                min = _this$props$min === undefined ? 0 : _this$props$min,
+                _this$props$max = _this$props.max,
+                max = _this$props$max === undefined ? 10 : _this$props$max,
+                _this$props$value = _this$props.value,
+                value = _this$props$value === undefined ? 0 : _this$props$value,
+                _this$props$onChange = _this$props.onChange,
+                onChange = _this$props$onChange === undefined ? function () {} : _this$props$onChange;
+
+            return _react2.default.createElement('doric-slider', { style: { position: 'relative' } }, _react2.default.createElement('input', _extends({ type: 'range' }, { min: min, max: max }, { value: value, onChange: onChange })), _react2.default.createElement('doric-slider-track-bg', null, _react2.default.createElement('doric-slider-track', { style: { width: value * 10 + '%' } })));
+        };
+
+        return _this;
+    }
+
+    return Slider;
+}(_react2.default.PureComponent);
+
+exports.default = Slider;
 
 /***/ }),
 /* 46 */
