@@ -53,6 +53,12 @@ const doric = {
     ext: {
         loader
     },
+    util: {
+        update,
+        setState(component, value) {
+            component.setState(() => value);
+        }
+    },
 
     init(main, target) {
         const sheet = ssjs.create();

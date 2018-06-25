@@ -39,6 +39,12 @@ var BaseComponent = exports.BaseComponent = function (_React$Component) {
             };
         };
 
+        _this.setStatef = function (value) {
+            return _this.setState(function () {
+                return value;
+            });
+        };
+
         return _this;
     }
 
@@ -65,6 +71,12 @@ var PureBaseComponent = exports.PureBaseComponent = function (_React$PureCompone
                     return _defineProperty({}, name, value);
                 });
             };
+        };
+
+        _this2.setStatef = function (value) {
+            return _this2.setState(function () {
+                return value;
+            });
         };
 
         return _this2;

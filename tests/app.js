@@ -134,16 +134,16 @@ exports.default = style;
 "use strict";
 
 
-var _typeof3 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _typeof2 = typeof Symbol === "function" && _typeof3(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof3(obj);
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+    return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
 } : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof3(obj);
+    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
 };
 
 var _extends = Object.assign || function (target) {
@@ -180,75 +180,56 @@ function _objectWithoutProperties(obj, keys) {
     }return target;
 }
 
-var _typeof = new Function('obj', 'return typeof obj');
-var deepMerge = function deepMerge(a, b) {
-    var t1 = _typeof(a);
-    var t2 = _typeof(b);
-    var a1 = Array.isArray(a);
-    var a2 = Array.isArray(b);
-
-    if (t1 === 'boolean' || t1 === 'function' || t1 === 'number' || t1 === 'string') {
-        if (t2 === 'object') {
-            if (a2 === true) {
-                return [].concat(b);
-            }
-            return deepMerge({}, b);
-        }
-        if (b === undefined) {
-            return a;
-        }
-        return b;
-    }
-
-    if (a1 === true) {
-        if (a2 === true) {
-            return a.concat(b);
-        }
-        return a.concat([b]);
-    }
-
-    if (b === undefined) {
-        b = {};
-    }
-    var obj = {};
-    var keys = new Set(Object.keys(a).concat(Object.keys(b)));
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
-
-    try {
-        for (var _iterator = keys[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var key = _step.value;
-
-            switch (true) {
-                case a[key] === undefined && b[key] !== undefined:
-                    obj[key] = deepMerge(b[key]);
-                    break;
-                case a[key] !== undefined && b[key] === undefined:
-                    obj[key] = deepMerge(a[key]);
-                    break;
-
-                default:
-                    obj[key] = deepMerge(a[key], b[key]);
-            }
-        }
-    } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-    } finally {
-        try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-                _iterator.return();
-            }
-        } finally {
-            if (_didIteratorError) {
-                throw _iteratorError;
-            }
-        }
-    }
-
-    return obj;
-};
+// const _typeof = new Function('obj', 'return typeof obj');
+// const deepMerge = (a, b) => {
+//     const t1 = _typeof(a);
+//     const t2 = _typeof(b);
+//     const a1 = Array.isArray(a);
+//     const a2 = Array.isArray(b);
+//
+//     if (t1 === 'boolean' || t1 === 'function' || t1 === 'number' || t1 === 'string') {
+//         if (t2 === 'object') {
+//             if (a2 === true) {
+//                 return [].concat(b);
+//             }
+//             return deepMerge({}, b);
+//         }
+//         if (b === undefined) {
+//             return a;
+//         }
+//         return b;
+//     }
+//
+//     if (a1 === true) {
+//         if (a2 === true) {
+//             return a.concat(b);
+//         }
+//         return a.concat([b]);
+//     }
+//
+//     if (b === undefined) {
+//         b = {};
+//     }
+//     const obj = {};
+//     const keys = new Set(
+//         Object.keys(a)
+//         .concat(Object.keys(b))
+//     );
+//     for (const key of keys) {
+//         switch (true) {
+//             case (a[key] === undefined && b[key] !== undefined):
+//                 obj[key] = deepMerge(b[key]);
+//                 break;
+//             case (a[key] !== undefined && b[key] === undefined):
+//                 obj[key] = deepMerge(a[key]);
+//                 break;
+//
+//             default:
+//                 obj[key] = deepMerge(a[key], b[key]);
+//         }
+//     }
+//     return obj;
+// };
 
 var niceBlue = '#1d62d5';
 var normalHL = 'rgba(0, 0, 0, 0.4)';
@@ -269,6 +250,7 @@ var baseTheme = {
     'button.text.accent': 'white',
 
     'card.bg.normal': 'white',
+    'card.border.normal': 'white',
 
     'checkbox.checkColor': niceBlue,
     'checkbox.hl.normal': normalHL,
@@ -282,6 +264,10 @@ var baseTheme = {
 
     'input.border.normal': 'lightgray',
     'input.border.focus': niceBlue,
+    'input.text.normal': 'black',
+
+    'radio.circleColor': niceBlue,
+    'radio.text.normal': 'black',
 
     'select.border.normal': 'lightgray',
     'select.border.focus': niceBlue,
@@ -294,7 +280,8 @@ var baseTheme = {
     'tabs.tab.text.normal': 'black',
     'tabs.tab.text.active': niceBlue,
 
-    'toggle.hl': normalHL,
+    'toggle.hl.normal': normalHL,
+    'toggle.hl.focus': focusHL,
     'toggle.thumb.on': niceBlue,
     'toggle.thumb.off': '#666768',
     'toggle.track.on': '#79aafb',
@@ -309,29 +296,29 @@ var themeValues = function () {
                 customTheme = _objectWithoutProperties(_DoricTheme, ['__global']);
 
             var endsWithOne = function endsWithOne(str, values) {
-                var _iteratorNormalCompletion2 = true;
-                var _didIteratorError2 = false;
-                var _iteratorError2 = undefined;
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
 
                 try {
-                    for (var _iterator2 = values[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                        var value = _step2.value;
+                    for (var _iterator = values[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var value = _step.value;
 
                         if (str.endsWith(value) === true) {
                             return value;
                         }
                     }
                 } catch (err) {
-                    _didIteratorError2 = true;
-                    _iteratorError2 = err;
+                    _didIteratorError = true;
+                    _iteratorError = err;
                 } finally {
                     try {
-                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                            _iterator2.return();
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
                         }
                     } finally {
-                        if (_didIteratorError2) {
-                            throw _iteratorError2;
+                        if (_didIteratorError) {
+                            throw _iteratorError;
                         }
                     }
                 }
@@ -357,27 +344,27 @@ var themeValues = function () {
                 }
             };
 
-            var _iteratorNormalCompletion3 = true;
-            var _didIteratorError3 = false;
-            var _iteratorError3 = undefined;
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
 
             try {
-                for (var _iterator3 = keyList[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                    var key = _step3.value;
+                for (var _iterator2 = keyList[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var key = _step2.value;
 
                     _loop(key);
                 }
             } catch (err) {
-                _didIteratorError3 = true;
-                _iteratorError3 = err;
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
             } finally {
                 try {
-                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                        _iterator3.return();
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
                     }
                 } finally {
-                    if (_didIteratorError3) {
-                        throw _iteratorError3;
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
                     }
                 }
             }
@@ -387,84 +374,15 @@ var themeValues = function () {
             };
         }();
 
-        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof2(_ret)) === "object") return _ret.v;
+        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
     }
     return baseTheme;
 }();
 
-// console.log(defaultTheme);
-// const wat = {
-//     __global: {
-//         hl: false,
-//         border: {
-//             color: 'lightgray',
-//             focusColor: niceBlue
-//         }
-//     },
-//     body: {
-//         bg: '#f0f0f0'
-//     },
-//     button: {
-//         bg: 'transparent',
-//         hl: 'rgba(0, 0, 0, 0.4)',
-//         focusHL: 'rgba(10, 10, 10, 0.15)',
-//         text: {
-//             normal: 'black',
-//             disabled: '#acacac'
-//         }
-//     },
-//     card: {
-//         title: {
-//             bg: niceBlue,
-//             color: 'white'
-//         }
-//     },
-//     checkbox: {
-//         checkColor: niceBlue,
-//         hl: 'rgba(0, 0, 0, 0.4)',
-//         focusHL: 'rgba(10, 10, 10, 0.15)'
-//     },
-//     input: {
-//         normal: {
-//             borderColor: 'lightgray'
-//         },
-//         focus: {
-//             borderColor: niceBlue
-//         }
-//     },
-//     tabs: {
-//         title: {
-//             hl: 'rgba(0, 0, 0, 0.4)',
-//         }
-//     },
-//     toggle: {
-//         hl: 'rgba(0, 0, 0, 0.4)',
-//         thumb: {
-//             onColor: niceBlue,
-//             offColor: '#666768'
-//         },
-//         track: {
-//             onColor: '#79aafb',
-//             offColor: 'lightgray'
-//         }
-//     }
-// // };
-// const wat2 = Object.keys(baseTheme).reduce(
-//     (theme, key) => {
-//         theme[`${key}.$set`] = baseTheme[key];
-//         return theme;
-//     },
-//     {}
-// );
 var theme = (0, _update2.default)({}, Object.keys(themeValues).reduce(function (theme, key) {
     theme[key + '.$set'] = themeValues[key];
     return theme;
 }, {}), true);
-// const theme = update({}, wat2, true);
-// const theme = deepMerge(
-//     update(wat, wat2, true),
-//     window.DoricTheme
-// );
 
 exports.default = theme;
 
@@ -2534,6 +2452,9 @@ var verbs = {
     },
     $apply: function $apply(prev, value) {
         return value(prev);
+    },
+    $filter: function $filter(prev, value) {
+        return prev.filter(value);
     }
 };
 var checks = {
@@ -2547,6 +2468,14 @@ var checks = {
         }
     },
     $apply: function $apply(prev, value) {
+        if (typeof value !== 'function') {
+            throw new Error("Value must be a function");
+        }
+    },
+    $filter: function $filter(prev, value) {
+        if (Array.isArray(prev) === false) {
+            throw new Error("Can only filter arrays");
+        }
         if (typeof value !== 'function') {
             throw new Error("Value must be a function");
         }
@@ -2792,7 +2721,9 @@ var GridBreak = exports.GridBreak = function GridBreak() {
 "use strict";
 
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _context;
 
 var _react = __webpack_require__(0);
 
@@ -2808,218 +2739,75 @@ var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// import 'gesturesjs';
-// import ssjs from 'ssjs';
-// import style from './style';
-// import update from './update';
-//
-// import BaseComponent from './components/baseComponent';
-//
-// import button from './components/button';
-// import card from './components/card';
-// import checkbox from './components/checkbox';
-// import collapse from './components/collapse';
-// import divider from './components/divider';
-// import {Grid as grid, Col as col, GridBreak as gridBreak} from './components/grid';
-// import icon from './components/icon';
-// import image from './components/image';
-// import input from './components/input';
-// import radio from './components/radio';
-// import select from './components/select';
-// import slider from './components/slider';
-// import {Tabs as tabs, Tab as tab} from './components/tabs';
-// import toggle from './components/toggle';
-//
-// import loader from 'react-loader-spinner';
-//
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 window.images = {
     boxxy: "http://axel669.net/images/boxxy.png",
     bayoBG: "http://backgroundcheckall.com/wp-content/uploads/2017/12/bayonetta-background-5.jpg",
     laughingMan: "https://pbs.twimg.com/profile_images/796545578507403265/VQMsYXot_400x400.jpg"
 };
-//
-// window.update = update;
-//
-// // import loaderGIF from './images/double-ring.gif';
-//
-// const doric = {
-//     button,
-//     card,
-//     checkbox,
-//     collapse,
-//     divider,
-//     grid,
-//     col,
-//     gridBreak,
-//     icon,
-//     image,
-//     input,
-//     radio,
-//     select,
-//     slider,
-//     tab,
-//     tabs,
-//     toggle,
-//
-//     ext: {
-//         laoder
-//     }
-// };
-// window.doric = doric;
-//
-// window.cblog = console::console.log;
-// window.cberr = console::console.error;
-//
-// const sheet = ssjs.create();
-// sheet.addStyles(style);
-
+window.cblog = (_context = console, console.log).bind(_context);
 
 var loaders = ['Audio', 'Ball-Triangle', 'Bars', 'Circles', 'Grid', 'Hearts', 'Oval', 'Puff', 'Rings', 'TailSpin', 'ThreeDots'];
+var buttons = function () {
+    var names = ['disabled', 'flat', 'raised', ['normal', 'primary', 'danger', 'accent']];
 
-var Main = function (_doric$baseComponent) {
-    _inherits(Main, _doric$baseComponent);
+    var make = function make(base, name, values) {
+        return values.reduce(function (list, value) {
+            return [].concat(_toConsumableArray(list), [_react2.default.createElement(_index2.default.button, _extends({}, _extends({}, base, _defineProperty({}, name, value)), { text: 'demo', onTap: function onTap() {
+                    return cblog(base, name, value);
+                } }))]);
+        }, []);
+    };
 
-    function Main(props) {
-        _classCallCheck(this, Main);
+    var makeAll = function makeAll(array) {
+        var base = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-        var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
+        var opt = array[0];
+        var arr = [];
 
-        _this.updateState = function (name) {
-            return function (evt) {
-                return _this.setState(_defineProperty({}, name, evt.value));
-            };
-        };
+        if (Array.isArray(opt) === true) {
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
 
-        _this.linkMoar = function (name) {
-            var prop = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'target.value';
+            try {
+                for (var _iterator = opt[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var op = _step.value;
 
-            var getValue = new Function('evt', "return evt." + prop + ";");
-            return function (evt) {
-                var state = _this.state;
-                var value = getValue(evt);
-                _this.setState(function () {
-                    return update(state, _defineProperty({}, name + ".$set", value));
-                });
-            };
-        };
-
-        _this.state = {
-            check: {
-                a: true,
-                b: false
-            },
-            tab: 0
-            // c1: true,
-            // c2: false,
-            // t1: false,
-            // t2: true,
-            // v: 0,
-            // i: 0,
-            // o: '',
-            // input: {
-            //     text: '',
-            //     number: '',
-            //     tel: '',
-            //     password: '',
-            //     textarea: ''
-            // },
-            // tab: 0
-        };
-        return _this;
-    }
-
-    _createClass(Main, [{
-        key: "render",
-        value: function render() {
-            // const {c1, c2, v, t1, t2, i, input, o, tab} = this.state;
-            var _state = this.state,
-                check = _state.check,
-                tab = _state.tab;
-            // const names = [
-            //     'disabled',
-            //     'flat',
-            //     'raised',
-            //     [
-            //         'normal',
-            //         'primary',
-            //         'danger',
-            //         'accent'
-            //     ]
-            // ];
-            //
-            // const make = (base, name, values) =>
-            //     values.reduce((list, value) => [...list, <doric.button {...{...base, [name]: value}} text="demo" onTap={() => cblog(base, name, value)} />], []);
-            //
-            // const makeAll = (array, base = {}) => {
-            //     const opt = array[0];
-            //     let arr = [];
-            //
-            //     if (Array.isArray(opt) === true) {
-            //         for (const op of opt) {
-            //             // console.log(base, op);
-            //             arr = [...arr, ...make(base, op, [true])];
-            //         }
-            //     }
-            //     else {
-            //         arr = [
-            //             ...arr,
-            //             ...makeAll(array.slice(1), {...base, [opt]: true}),
-            //             ...makeAll(array.slice(1), {...base, [opt]: false})
-            //         ];
-            //     }
-            //
-            //     return arr;
-            // };
-            // const buttons = makeAll(names);
-
-            return _react2.default.createElement(
-                "div",
-                { style: { paddingTop: 3 } },
-                _react2.default.createElement(
-                    _index2.default.card,
-                    null,
-                    _react2.default.createElement(_index2.default.card.title, { main: "Main Title", subtitle: "Subtitle", icon: images.laughingMan }),
-                    _react2.default.createElement(
-                        _index2.default.card.media,
-                        null,
-                        _react2.default.createElement(_index2.default.image, { source: images.bayoBG, height: "100%" })
-                    ),
-                    _react2.default.createElement(
-                        "div",
-                        { style: { textAlign: 'center' } },
-                        _react2.default.createElement(
-                            "div",
-                            null,
-                            "Loading?"
-                        )
-                    ),
-                    _react2.default.createElement(
-                        _index2.default.card.actions,
-                        { divider: true },
-                        _react2.default.createElement(_index2.default.button, { text: "Nope", primary: true, flat: true }),
-                        _react2.default.createElement(_index2.default.button, { text: "Maybe?", primary: true, flat: true })
-                    )
-                )
-            );
+                    // console.log(base, op);
+                    arr = [].concat(_toConsumableArray(arr), _toConsumableArray(make(base, op, [true])));
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+        } else {
+            arr = [].concat(_toConsumableArray(arr), _toConsumableArray(makeAll(array.slice(1), _extends({}, base, _defineProperty({}, opt, true)))), _toConsumableArray(makeAll(array.slice(1), _extends({}, base, _defineProperty({}, opt, false)))));
         }
-    }]);
 
-    return Main;
-}(_index2.default.baseComponent);
-
-// const Functional = () => {
-//     console.log('functional');
-//     return <div>Functional!</div>;
-// };
-
+        return arr;
+    };
+    return makeAll(names);
+}();
 
 var Functional = function (_React$PureComponent) {
     _inherits(Functional, _React$PureComponent);
@@ -3027,22 +2815,140 @@ var Functional = function (_React$PureComponent) {
     function Functional(props) {
         _classCallCheck(this, Functional);
 
-        var _this2 = _possibleConstructorReturn(this, (Functional.__proto__ || Object.getPrototypeOf(Functional)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (Functional.__proto__ || Object.getPrototypeOf(Functional)).call(this, props));
 
-        _this2.render = function () {
+        _this.render = function () {
             console.log('functional');
             return _react2.default.createElement(
-                "div",
+                'div',
                 null,
-                "Functional!"
+                'Functional!'
             );
         };
 
-        return _this2;
+        return _this;
     }
 
     return Functional;
 }(_react2.default.PureComponent);
+
+// class Dialog extends React.Component {
+//     constructor(props) {
+//         super(props);
+//     }
+//
+//     componentDidMount = () => {
+//     }
+//
+//     componentWillUpdate = () => {
+//     }
+//
+//     render = () => {
+//         return null;
+//     }
+// }
+
+_index2.default.style.add({
+    "dialog-base": {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        overflow: 'visible',
+        width: 0,
+        height: 0
+    },
+    "dialog-wrapper": {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        zIndex: 1000
+    },
+    "dialog-container": {
+        position: 'absolute',
+        top: '10vh',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: '70vmin',
+        height: '60vmin'
+    }
+});
+
+var DialogManager = function (_doric$baseComponent) {
+    _inherits(DialogManager, _doric$baseComponent);
+
+    function DialogManager(props) {
+        _classCallCheck(this, DialogManager);
+
+        var _this2 = _possibleConstructorReturn(this, (DialogManager.__proto__ || Object.getPrototypeOf(DialogManager)).call(this, props));
+
+        _this2.addDialog = function (Component) {
+            var id = Date.now();
+            var close = function close() {
+                _this2.setStatef({
+                    dialogs: _index2.default.util.update(_this2.state.dialogs, { $filter: function $filter(dialog) {
+                            return dialog.id !== id;
+                        } })
+                });
+            };
+            var dialog = {
+                id: id,
+                element: _react2.default.createElement(
+                    'dialog-wrapper',
+                    null,
+                    _react2.default.createElement(
+                        'dialog-container',
+                        null,
+                        _react2.default.createElement(Component, { close: close })
+                    )
+                )
+            };
+            var dialogs = _index2.default.util.update(_this2.state.dialogs, { "$push": [dialog] });
+            _this2.setStatef({ dialogs: dialogs });
+        };
+
+        _this2.componentWillUpdate = function (nprops, nstate) {
+            if (nstate.dialogs.length > 0) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        };
+
+        _this2.render = function () {
+            return _react2.default.createElement(
+                _react2.default.Fragment,
+                null,
+                _this2.state.dialogs.map(function (d) {
+                    return d.element;
+                })
+            );
+        };
+
+        _this2.state = {
+            dialogs: []
+        };
+        return _this2;
+    }
+
+    return DialogManager;
+}(_index2.default.baseComponent);
+
+var dialog = function () {
+    var container = document.createElement("dialog-base");
+
+    document.body.appendChild(container);
+
+    var manager = _reactDom2.default.render(_react2.default.createElement(DialogManager, null), container);
+
+    return {
+        show: function show(Container) {
+            manager.addDialog(Container);
+        }
+    };
+}();
 
 var Test = function (_doric$baseComponent2) {
     _inherits(Test, _doric$baseComponent2);
@@ -3066,30 +2972,51 @@ var Test = function (_doric$baseComponent2) {
             });
         };
 
+        _this3.dialogTest = function () {
+            dialog.show(function (_ref) {
+                var close = _ref.close;
+                return _react2.default.createElement(
+                    _index2.default.card,
+                    null,
+                    _react2.default.createElement(_index2.default.card.title, { main: 'Alert?' }),
+                    'Some message',
+                    _react2.default.createElement(
+                        _index2.default.card.actions,
+                        null,
+                        _react2.default.createElement(_index2.default.button, { block: true, text: 'OK', onTap: close })
+                    )
+                );
+            });
+        };
+
         _this3.render = function () {
             return _react2.default.createElement(
-                "div",
+                'div',
                 null,
-                _react2.default.createElement(_index2.default.button, { text: "Test", onTap: _this3.add }),
-                _this3.state.i,
-                _react2.default.createElement(Functional, null),
-                _react2.default.createElement(_index2.default.input.text, { value: _this3.state.t, onChange: _this3.linkState('t') })
+                _react2.default.createElement(_index2.default.button, { text: 'Add', onTap: _this3.add }),
+                _react2.default.createElement(_index2.default.button, { text: 'Test', onTap: _this3.dialogTest }),
+                0 .to(40).map(function (i) {
+                    return _react2.default.createElement(
+                        'div',
+                        null,
+                        i
+                    );
+                })
             );
         };
 
         _this3.state = {
             i: 0,
-            t: ''
+            t: '',
+            o: false,
+            rv: null,
+            c: false
         };
         return _this3;
     }
 
     return Test;
 }(_index2.default.baseComponent);
-
-// sheet.attach();
-// ReactDOM.render(
-
 
 _index2.default.init(_react2.default.createElement(Test, null), document.querySelector("div"));
 
@@ -22630,6 +22557,14 @@ var doric = {
     ext: {
         loader: _reactLoaderSpinner2.default
     },
+    util: {
+        update: _update2.default,
+        setState: function setState(component, value) {
+            component.setState(function () {
+                return value;
+            });
+        }
+    },
 
     init: function init(main, target) {
         var sheet = _ssjs2.default.create();
@@ -23250,6 +23185,12 @@ var BaseComponent = exports.BaseComponent = function (_React$Component) {
             };
         };
 
+        _this.setStatef = function (value) {
+            return _this.setState(function () {
+                return value;
+            });
+        };
+
         return _this;
     }
 
@@ -23276,6 +23217,12 @@ var PureBaseComponent = exports.PureBaseComponent = function (_React$PureCompone
                     return _defineProperty({}, name, value);
                 });
             };
+        };
+
+        _this2.setStatef = function (value) {
+            return _this2.setState(function () {
+                return value;
+            });
         };
 
         return _this2;
@@ -23338,8 +23285,9 @@ _style2.default.add({
         display: 'block',
         margin: 4,
         boxShadow: ['2px 0px 2px rgba(0, 0, 0, 0.25)', '0px 2px 2px rgba(0, 0, 0, 0.25)', '-2px 0px 2px rgba(0, 0, 0, 0.25)', '0px -2px 2px rgba(0, 0, 0, 0.25)'].join(', '),
-        backgroundColor: _theme2.default.card.bg,
+        backgroundColor: _theme2.default.card.bg.normal,
         overflow: 'hidden',
+        border: '1px solid ' + _theme2.default.card.border.normal,
         borderRadius: 2,
         padding: 12,
         position: 'relative',
@@ -23866,9 +23814,10 @@ _style2.default.add((_style$add = {
     borderBottom: '2px solid ' + _theme2.default.input.border.normal,
     backgroundColor: 'transparent',
     padding: '5px 7px',
-    fontSize: 13
+    fontSize: 13,
+    color: _theme2.default.input.text.normal
 }), _defineProperty(_style$add, "doric-input > input:focus, doric-input > textarea:focus", {
-    borderBottomColor: _theme2.default.input.border.normal
+    borderBottomColor: _theme2.default.input.border.focus
 }), _style$add));
 var TextInput = function TextInput(props, type, Element) {
     var wrapperStyle = props.wrapperStyle,
@@ -23949,6 +23898,10 @@ var _style = __webpack_require__(1);
 
 var _style2 = _interopRequireDefault(_style);
 
+var _theme = __webpack_require__(2);
+
+var _theme2 = _interopRequireDefault(_theme);
+
 var _util = __webpack_require__(4);
 
 function _interopRequireDefault(obj) {
@@ -23975,7 +23928,11 @@ _style2.default.add({
         position: 'absolute',
         left: 0,
         top: '50%',
-        transform: 'translateY(-50%)'
+        transform: 'translateY(-50%)',
+        color: _theme2.default.radio.circleColor
+    },
+    "doric-button.doric-radio-item": {
+        color: _theme2.default.radio.text.normal
     }
 });
 
@@ -24027,7 +23984,7 @@ var Radio = function Radio(props) {
         var itemProps = itemPropsFunc({ index: index, key: index, selected: isSelected }, rest);
         // console.log(Item, itemProps);
 
-        return _react2.default.createElement(Item, itemProps, _react2.default.createElement(_button2.default, { className: 'doric-radio-item', block: true, onTap: changeHandler(index, child.props.value) }, _react2.default.createElement(_icon2.default, { icon: icon }), child.props.label || child.props.children));
+        return _react2.default.createElement(Item, itemProps, _react2.default.createElement(_button2.default, { className: 'doric-radio-item', selected: isSelected, block: true, onTap: changeHandler(index, child.props.value) }, _react2.default.createElement(_icon2.default, { icon: icon }), child.props.label || child.props.children));
     });
 
     return _react2.default.createElement('doric-radio-group', rest, _react2.default.createElement(Container, null, options));
@@ -24431,7 +24388,10 @@ _style2.default.add({
         opacity: 0.7
     },
     "doric-toggle::after": _extends({}, _util2.default.background.after.base),
-    "doric-toggle[data-tap-active]:not([disabled='true'])::after": _extends({}, _util2.default.background.after.colorize(_theme2.default.toggle.hl)),
+    "doric-toggle[data-tap-active]:not([disabled='true'])::after": _extends({}, _util2.default.background.after.colorize(_theme2.default.toggle.hl.normal)),
+    "doric-toggle:focus::after": {
+        backgroundColor: _theme2.default.toggle.hl.focus
+    },
     "doric-toggle > doric-toggle-content": {
         flexGrow: 1,
         padding: 5
@@ -24452,7 +24412,7 @@ _style2.default.add({
         left: 0,
         width: size * 2,
         height: 20,
-        backgroundColor: _theme2.default.toggle.track.offColor,
+        backgroundColor: _theme2.default.toggle.track.off,
         transition: 'background-color 100ms linear',
         borderRadius: 5
     },
@@ -24463,15 +24423,15 @@ _style2.default.add({
         left: 0,
         width: size,
         height: 20,
-        backgroundColor: _theme2.default.toggle.thumb.offColor,
+        backgroundColor: _theme2.default.toggle.thumb.off,
         transition: 'transform 100ms linear',
         borderRadius: 5
     },
     "doric-toggle-thumb[on='true'] > div": {
-        backgroundColor: _theme2.default.toggle.track.onColor
+        backgroundColor: _theme2.default.toggle.track.on
     },
     "doric-toggle-thumb[on='true'] > div::after": {
-        backgroundColor: _theme2.default.toggle.thumb.onColor,
+        backgroundColor: _theme2.default.toggle.thumb.on,
         transform: 'translateX(' + size + 'px)'
     },
     "doric-toggle[toggleRight='true']": {

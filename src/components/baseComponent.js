@@ -14,6 +14,9 @@ export class BaseComponent extends React.Component {
             );
         };
     }
+
+    setStatef = value =>
+        this.setState(() => value)
 };
 export class PureBaseComponent extends React.PureComponent {
     constructor(props) {
@@ -29,4 +32,7 @@ export class PureBaseComponent extends React.PureComponent {
             );
         };
     }
+
+    setStatef = value =>
+        this.setState(() => value)
 };

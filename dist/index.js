@@ -108,6 +108,14 @@ var doric = {
     ext: {
         loader: _reactLoaderSpinner2.default
     },
+    util: {
+        update: _update2.default,
+        setState: function setState(component, value) {
+            component.setState(function () {
+                return value;
+            });
+        }
+    },
 
     init: function init(main, target) {
         var sheet = _ssjs2.default.create();

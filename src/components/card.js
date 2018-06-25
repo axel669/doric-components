@@ -15,8 +15,9 @@ style.add({
             '-2px 0px 2px rgba(0, 0, 0, 0.25)',
             '0px -2px 2px rgba(0, 0, 0, 0.25)'
         ].join(', '),
-        backgroundColor: theme.card.bg,
+        backgroundColor: theme.card.bg.normal,
         overflow: 'hidden',
+        border: `1px solid ${theme.card.border.normal}`,
         borderRadius: 2,
         padding: 12,
         position: 'relative',

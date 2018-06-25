@@ -1,7 +1,8 @@
 const verbs = {
     $set: (prev, value) => value,
     $push: (prev, value) => [...prev, ...value],
-    $apply: (prev, value) => value(prev)
+    $apply: (prev, value) => value(prev),
+    $filter: (prev, value) => prev.filter(value)
 };
 const checks = {
     $set: (prev, value) => {},
@@ -14,6 +15,14 @@ const checks = {
         }
     },
     $apply: (prev, value) => {
+        if (typeof value !== 'function') {
+            throw new Error("Value must be a function");
+        }
+    },
+    $filter: (prev, value) => {
+        if (Array.isArray(prev) === false) {
+            throw new Error("Can only filter arrays")
+        }
         if (typeof value !== 'function') {
             throw new Error("Value must be a function");
         }

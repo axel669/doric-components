@@ -5,6 +5,7 @@ import Icon from './icon';
 import {Grid, Col} from './grid';
 
 import style from '../style';
+import theme from '../theme';
 import {keySplit} from '../util';
 
 style.add({
@@ -21,7 +22,11 @@ style.add({
         position: 'absolute',
         left: 0,
         top: '50%',
-        transform: 'translateY(-50%)'
+        transform: 'translateY(-50%)',
+        color: theme.radio.circleColor
+    },
+    "doric-button.doric-radio-item": {
+        color: theme.radio.text.normal
     }
 });
 
@@ -71,7 +76,7 @@ const Radio = props => {
 
             return (
                 <Item {...itemProps}>
-                    <Button className="doric-radio-item" block onTap={changeHandler(index, child.props.value)}>
+                    <Button className="doric-radio-item" selected={isSelected} block onTap={changeHandler(index, child.props.value)}>
                         <Icon icon={icon} />
                         {child.props.label || child.props.children}
                     </Button>

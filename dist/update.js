@@ -19,6 +19,9 @@ var verbs = {
     },
     $apply: function $apply(prev, value) {
         return value(prev);
+    },
+    $filter: function $filter(prev, value) {
+        return prev.filter(value);
     }
 };
 var checks = {
@@ -32,6 +35,14 @@ var checks = {
         }
     },
     $apply: function $apply(prev, value) {
+        if (typeof value !== 'function') {
+            throw new Error("Value must be a function");
+        }
+    },
+    $filter: function $filter(prev, value) {
+        if (Array.isArray(prev) === false) {
+            throw new Error("Can only filter arrays");
+        }
         if (typeof value !== 'function') {
             throw new Error("Value must be a function");
         }

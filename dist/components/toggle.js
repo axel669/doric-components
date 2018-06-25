@@ -48,7 +48,10 @@ _style2.default.add({
         opacity: 0.7
     },
     "doric-toggle::after": _extends({}, _util2.default.background.after.base),
-    "doric-toggle[data-tap-active]:not([disabled='true'])::after": _extends({}, _util2.default.background.after.colorize(_theme2.default.toggle.hl)),
+    "doric-toggle[data-tap-active]:not([disabled='true'])::after": _extends({}, _util2.default.background.after.colorize(_theme2.default.toggle.hl.normal)),
+    "doric-toggle:focus::after": {
+        backgroundColor: _theme2.default.toggle.hl.focus
+    },
     "doric-toggle > doric-toggle-content": {
         flexGrow: 1,
         padding: 5
@@ -69,7 +72,7 @@ _style2.default.add({
         left: 0,
         width: size * 2,
         height: 20,
-        backgroundColor: _theme2.default.toggle.track.offColor,
+        backgroundColor: _theme2.default.toggle.track.off,
         transition: 'background-color 100ms linear',
         borderRadius: 5
     },
@@ -80,15 +83,15 @@ _style2.default.add({
         left: 0,
         width: size,
         height: 20,
-        backgroundColor: _theme2.default.toggle.thumb.offColor,
+        backgroundColor: _theme2.default.toggle.thumb.off,
         transition: 'transform 100ms linear',
         borderRadius: 5
     },
     "doric-toggle-thumb[on='true'] > div": {
-        backgroundColor: _theme2.default.toggle.track.onColor
+        backgroundColor: _theme2.default.toggle.track.on
     },
     "doric-toggle-thumb[on='true'] > div::after": {
-        backgroundColor: _theme2.default.toggle.thumb.onColor,
+        backgroundColor: _theme2.default.toggle.thumb.on,
         transform: 'translateX(' + size + 'px)'
     },
     "doric-toggle[toggleRight='true']": {

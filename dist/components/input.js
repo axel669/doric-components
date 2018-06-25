@@ -47,9 +47,10 @@ _style2.default.add((_style$add = {
     borderBottom: '2px solid ' + _theme2.default.input.border.normal,
     backgroundColor: 'transparent',
     padding: '5px 7px',
-    fontSize: 13
+    fontSize: 13,
+    color: _theme2.default.input.text.normal
 }), _defineProperty(_style$add, "doric-input > input:focus, doric-input > textarea:focus", {
-    borderBottomColor: _theme2.default.input.border.normal
+    borderBottomColor: _theme2.default.input.border.focus
 }), _style$add));
 var TextInput = function TextInput(props, type, Element) {
     var wrapperStyle = props.wrapperStyle,

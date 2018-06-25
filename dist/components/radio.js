@@ -22,6 +22,10 @@ var _style = require('../style');
 
 var _style2 = _interopRequireDefault(_style);
 
+var _theme = require('../theme');
+
+var _theme2 = _interopRequireDefault(_theme);
+
 var _util = require('../util');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -42,7 +46,11 @@ _style2.default.add({
         position: 'absolute',
         left: 0,
         top: '50%',
-        transform: 'translateY(-50%)'
+        transform: 'translateY(-50%)',
+        color: _theme2.default.radio.circleColor
+    },
+    "doric-button.doric-radio-item": {
+        color: _theme2.default.radio.text.normal
     }
 });
 
@@ -107,7 +115,7 @@ var Radio = function Radio(props) {
             itemProps,
             _react2.default.createElement(
                 _button2.default,
-                { className: 'doric-radio-item', block: true, onTap: changeHandler(index, child.props.value) },
+                { className: 'doric-radio-item', selected: isSelected, block: true, onTap: changeHandler(index, child.props.value) },
                 _react2.default.createElement(_icon2.default, { icon: icon }),
                 child.props.label || child.props.children
             )
