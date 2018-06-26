@@ -4,9 +4,9 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -14,7 +14,39 @@ var verbs = {
     $set: function $set(prev, value) {
         return value;
     },
+    $unset: function $unset(prev, value) {
+        var copy = _extends({}, prev);
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+            for (var _iterator = value[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var key = _step.value;
+
+                delete copy[key];
+            }
+        } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                    _iterator.return();
+                }
+            } finally {
+                if (_didIteratorError) {
+                    throw _iteratorError;
+                }
+            }
+        }
+
+        return copy;
+    },
     $push: function $push(prev, value) {
+        return [].concat(_toConsumableArray(prev), [value]);
+    },
+    $append: function $append(prev, value) {
         return [].concat(_toConsumableArray(prev), _toConsumableArray(value));
     },
     $apply: function $apply(prev, value) {
@@ -26,12 +58,25 @@ var verbs = {
 };
 var checks = {
     $set: function $set(prev, value) {},
+    $unset: function $unset(prev, value) {
+        if ((typeof prev === "undefined" ? "undefined" : _typeof(prev)) !== 'object') {
+            throw new Error("Can only remove keys from an object");
+        }
+        if (Array.isArray(value) === false) {
+            throw new Error("List of keys must be an array");
+        }
+    },
     $push: function $push(prev, value) {
         if (Array.isArray(prev) === false) {
             throw new Error("Can only push to arrays");
         }
+    },
+    $append: function $append(prev, value) {
+        if (Array.isArray(prev) === false) {
+            throw new Error("Can only append to arrays");
+        }
         if (Array.isArray(value) === false) {
-            throw new Error("Push value must be an array");
+            throw new Error("Appended value must be an array");
         }
     },
     $apply: function $apply(prev, value) {
@@ -84,27 +129,27 @@ var internal_setValues = function internal_setValues(dest, key, n, value, create
 };
 var update = function update(source, obj) {
     var create = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
+    var _iteratorNormalCompletion2 = true;
+    var _didIteratorError2 = false;
+    var _iteratorError2 = undefined;
 
     try {
-        for (var _iterator = Object.keys(obj)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var key = _step.value;
+        for (var _iterator2 = Object.keys(obj)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var key = _step2.value;
 
             source = internal_setValues(source, key.split('.'), 0, obj[key], create);
         }
     } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
     } finally {
         try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-                _iterator.return();
+            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                _iterator2.return();
             }
         } finally {
-            if (_didIteratorError) {
-                throw _iteratorError;
+            if (_didIteratorError2) {
+                throw _iteratorError2;
             }
         }
     }
