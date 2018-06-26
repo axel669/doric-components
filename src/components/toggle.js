@@ -98,7 +98,10 @@ export default props => {
     const {disabled} = props;
     const onTap = evt => {
         if (disabled !== true) {
-            onChange({...evt, type: 'change', value: on === false});
+            const e = {...evt, type: 'change', on: on === false};
+            e.target = evt.target;
+            e.target.value = e.on;
+            onChange(e);
         }
     };
     const onKeyDown = evt => {

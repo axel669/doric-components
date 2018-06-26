@@ -123,7 +123,10 @@ exports.default = function (props) {
 
     var onTap = function onTap(evt) {
         if (disabled !== true) {
-            onChange(_extends({}, evt, { type: 'change', value: on === false }));
+            var e = _extends({}, evt, { type: 'change', on: on === false });
+            e.target = evt.target;
+            e.target.value = e.on;
+            onChange(e);
         }
     };
     var onKeyDown = function onKeyDown(evt) {

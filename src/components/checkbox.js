@@ -80,8 +80,10 @@ export default (props) => {
             const e = {
                 ...evt,
                 type: 'change',
-                value: checked === false
+                checked: checked === false
             };
+            e.target = evt.target;
+            e.target.value = e.checked;
             onChange(e);
         }
     };
