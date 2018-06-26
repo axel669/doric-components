@@ -63,7 +63,7 @@ _style2.default.add({
         borderBottomColor: _theme2.default.select.border.focus
     }
 });
-var Select = function Select(props) {
+var DoricSelect = function DoricSelect(props) {
     var wrapperStyle = props.wrapperStyle,
         wrapperClassName = props.wrapperClassName,
         selectProps = _objectWithoutProperties(props, ['wrapperStyle', 'wrapperClassName']);
@@ -75,4 +75,4 @@ var Select = function Select(props) {
     );
 };
 
-exports.default = Select;
+exports.default = DoricSelect;

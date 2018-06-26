@@ -544,6 +544,7 @@ process.umask = function() { return 0; };
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.setFunctionName = undefined;
 
 var _theme = __webpack_require__(2);
 
@@ -565,6 +566,10 @@ Number.prototype.to = function (end) {
     return array;
 };
 
+var setFunctionName = function setFunctionName(func, name) {
+    Object.defineProperty(func, 'name', { value: name, writable: false });
+};
+exports.setFunctionName = setFunctionName;
 exports.default = {
     background: {
         after: {
@@ -1946,6 +1951,8 @@ if (process.env.NODE_ENV === 'production') {
 "use strict";
 
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -1988,6 +1995,24 @@ function _objectWithoutProperties(obj, keys) {
     var target = {};for (var i in obj) {
         if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
     }return target;
+}
+
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
+
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
 /*
@@ -2069,34 +2094,90 @@ _style2.default.add({
     }
 });
 
-exports.default = function (props) {
-    var _props$onTap = props.onTap,
-        tapHandler = _props$onTap === undefined ? function () {} : _props$onTap,
-        _props$onKeyDown = props.onKeyDown,
-        passedOKD = _props$onKeyDown === undefined ? function () {} : _props$onKeyDown,
-        text = props.text,
-        children = props.children,
-        className = props.className,
-        _props$tabIndex = props.tabIndex,
-        tabIndex = _props$tabIndex === undefined ? 0 : _props$tabIndex,
-        passThrough = _objectWithoutProperties(props, ['onTap', 'onKeyDown', 'text', 'children', 'className', 'tabIndex']);
+var DoricButton = function (_React$PureComponent) {
+    _inherits(DoricButton, _React$PureComponent);
 
-    var disabled = props.disabled;
+    function DoricButton() {
+        var _ref;
 
-    var onTap = function onTap(evt) {
-        if (disabled !== true) {
-            tapHandler(_extends({}, evt, { type: 'tap' }));
+        var _temp, _this, _ret;
+
+        _classCallCheck(this, DoricButton);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
         }
-    };
-    var onKeyDown = function onKeyDown(evt) {
-        passedOKD(evt);
-        if (evt.key === ' ' || evt.key === 'Enter') {
-            onTap(evt);
-        }
-    };
 
-    return _react2.default.createElement('doric-button', _extends({ tabIndex: disabled === true ? null : tabIndex }, passThrough, { 'class': className, onKeyDown: onKeyDown }), _react2.default.createElement(_customListeners2.default, { target: undefined, listeners: { onTap: onTap } }), _react2.default.createElement('doric-button-content', null, text || children));
-};
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = DoricButton.__proto__ || Object.getPrototypeOf(DoricButton)).call.apply(_ref, [this].concat(args))), _this), _this.render = function () {
+            var props = _this.props;
+
+            var _props$onTap = props.onTap,
+                tapHandler = _props$onTap === undefined ? function () {} : _props$onTap,
+                _props$onKeyDown = props.onKeyDown,
+                passedOKD = _props$onKeyDown === undefined ? function () {} : _props$onKeyDown,
+                text = props.text,
+                children = props.children,
+                className = props.className,
+                _props$tabIndex = props.tabIndex,
+                tabIndex = _props$tabIndex === undefined ? 0 : _props$tabIndex,
+                passThrough = _objectWithoutProperties(props, ['onTap', 'onKeyDown', 'text', 'children', 'className', 'tabIndex']);
+
+            var disabled = props.disabled;
+
+            var onTap = function onTap(evt) {
+                if (disabled !== true) {
+                    tapHandler(_extends({}, evt, { type: 'tap' }));
+                }
+            };
+            var onKeyDown = function onKeyDown(evt) {
+                passedOKD(evt);
+                if (evt.key === ' ' || evt.key === 'Enter') {
+                    onTap(evt);
+                }
+            };
+
+            return _react2.default.createElement('doric-button', _extends({ tabIndex: disabled === true ? null : tabIndex }, passThrough, { 'class': className, onKeyDown: onKeyDown }), _react2.default.createElement(_customListeners2.default, { listeners: { onTap: onTap } }), _react2.default.createElement('doric-button-content', null, text || children));
+        }, _temp), _possibleConstructorReturn(_this, _ret);
+    }
+
+    return DoricButton;
+}(_react2.default.PureComponent);
+
+// export default (props) => {
+//     const {
+//         onTap: tapHandler = (() => {}),
+//         onKeyDown: passedOKD = (() => {}),
+//         text,
+//         children,
+//         className,
+//         tabIndex = 0,
+//         ...passThrough
+//     } = props;
+//     const {disabled} = props;
+//     const onTap =  evt => {
+//         if (disabled !== true) {
+//             tapHandler({...evt, type: 'tap'});
+//         }
+//     };
+//     const onKeyDown = evt => {
+//         passedOKD(evt);
+//         if (evt.key === ' ' || evt.key === 'Enter') {
+//             onTap(evt);
+//         }
+//     };
+//
+//     return (
+//         <doric-button tabIndex={disabled === true ? null : tabIndex} {...passThrough} class={className} onKeyDown={onKeyDown}>
+//             <CustomListeners target={this} listeners={{onTap}} />
+//             <doric-button-content>
+//                 {text || children}
+//             </doric-button-content>
+//         </doric-button>
+//     );
+// };
+
+
+exports.default = DoricButton;
 
 /***/ }),
 /* 15 */
@@ -2572,6 +2653,8 @@ exports.default = update;
 "use strict";
 
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -2592,6 +2675,24 @@ function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : { default: obj };
 }
 
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
+
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
 _style2.default.add({
     "doric-image": {
         display: 'block',
@@ -2600,19 +2701,49 @@ _style2.default.add({
     }
 });
 
-exports.default = function (_ref) {
-    var source = _ref.source,
-        height = _ref.height,
-        _ref$imageSize = _ref.imageSize,
-        imageSize = _ref$imageSize === undefined ? 'contain' : _ref$imageSize;
+var DoricImage = function (_React$PureComponent) {
+    _inherits(DoricImage, _React$PureComponent);
 
-    var style = {
-        backgroundImage: 'url("' + source + '")',
-        height: height,
-        backgroundSize: imageSize
-    };
-    return _react2.default.createElement('doric-image', { style: style });
-};
+    function DoricImage() {
+        var _ref;
+
+        var _temp, _this, _ret;
+
+        _classCallCheck(this, DoricImage);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = DoricImage.__proto__ || Object.getPrototypeOf(DoricImage)).call.apply(_ref, [this].concat(args))), _this), _this.render = function () {
+            var _this$props = _this.props,
+                source = _this$props.source,
+                height = _this$props.height,
+                _this$props$imageSize = _this$props.imageSize,
+                imageSize = _this$props$imageSize === undefined ? 'contain' : _this$props$imageSize;
+
+            var style = {
+                backgroundImage: 'url("' + source + '")',
+                height: height,
+                backgroundSize: imageSize
+            };
+            return _react2.default.createElement('doric-image', { style: style });
+        }, _temp), _possibleConstructorReturn(_this, _ret);
+    }
+
+    return DoricImage;
+}(_react2.default.PureComponent);
+// export default ({source, height, imageSize = 'contain'}) => {
+//     const style = {
+//         backgroundImage: `url("${source}")`,
+//         height,
+//         backgroundSize: imageSize
+//     };
+//     return <doric-image style={style} />;
+// };
+
+
+exports.default = DoricImage;
 
 /***/ }),
 /* 22 */
@@ -2998,9 +3129,9 @@ var Test = function (_doric$baseComponent2) {
             return _react2.default.createElement(
                 'div',
                 { style: { overflow: 'hidden' } },
-                _react2.default.createElement(_index2.default.input.text, { value: _this3.state.t, onChange: _this3.linkState('t'), label: 'Some Label', disabled: true }),
-                _react2.default.createElement(_index2.default.input.text, { value: _this3.state.t, onChange: _this3.linkState('t'), label: 'Some Label', required: true, loader: true }),
-                _react2.default.createElement(_index2.default.input.text, { value: _this3.state.t, onChange: _this3.linkState('t'), label: 'Some Label', optional: true, loader: true, loaderType: 'TailSpin' }),
+                _react2.default.createElement(_index2.default.input.text, { value: _this3.state.t, onChange: _this3.linked.t, label: 'Some Label', disabled: true }),
+                _react2.default.createElement(_index2.default.input.text, { value: _this3.state.t, onChange: _this3.linked.t, label: 'Some Label', required: true, loader: true }),
+                _react2.default.createElement(_index2.default.input.text, { value: _this3.state.t, onChange: _this3.linked.t, label: 'Some Label', optional: true, loader: true, loaderType: 'TailSpin' }),
                 _react2.default.createElement(
                     _index2.default.card,
                     null,
@@ -3038,17 +3169,13 @@ var Test = function (_doric$baseComponent2) {
                 _react2.default.createElement(
                     _index2.default.collapse,
                     { title: 'Collapse' },
-                    _react2.default.createElement(
-                        _index2.default.radio,
-                        { value: _this3.state.rv, onChange: _this3.linkState('rv') },
-                        0 .to(10).map(function (i) {
+                    _react2.default.createElement(_index2.default.radio, { value: _this3.state.rv, onChange: _this3.linked.rv, children: 0 .to(10).map(function (i) {
                             return _react2.default.createElement(
                                 'option',
                                 { value: i },
                                 i
                             );
-                        })
-                    )
+                        }) })
                 ),
                 _react2.default.createElement(_index2.default.slider, { min: -100, max: 100, value: _this3.state.n, onChange: _this3.linkState('n') })
             );
@@ -3061,6 +3188,10 @@ var Test = function (_doric$baseComponent2) {
             rv: null,
             c: false,
             n: 0
+        };
+        _this3.linked = {
+            t: _this3.linkState('t'),
+            rv: _this3.linkState('rv')
         };
         return _this3;
     }
@@ -23290,6 +23421,8 @@ var PureBaseComponent = exports.PureBaseComponent = function (_React$PureCompone
 "use strict";
 
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -23322,6 +23455,24 @@ var _image2 = _interopRequireDefault(_image);
 
 function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
+
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
 function _objectWithoutProperties(obj, keys) {
@@ -23402,7 +23553,8 @@ _style2.default.add({
         overflow: 'hidden'
     }
 });
-var Card = function Card(props) {
+
+var DoricCard = function DoricCard(props) {
     var _props$title = props.title,
         title = _props$title === undefined ? null : _props$title,
         _props$sideImage = props.sideImage,
@@ -23423,26 +23575,48 @@ var Card = function Card(props) {
 
     return _react2.default.createElement('doric-card', _extends({}, passThrough, { 'side-img': sideImage !== null }), props.children, sideImg);
 };
-Card.actions = function (props) {
+
+var DoricCardTitle = function (_React$PureComponent) {
+    _inherits(DoricCardTitle, _React$PureComponent);
+
+    function DoricCardTitle() {
+        var _ref;
+
+        var _temp, _this, _ret;
+
+        _classCallCheck(this, DoricCardTitle);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = DoricCardTitle.__proto__ || Object.getPrototypeOf(DoricCardTitle)).call.apply(_ref, [this].concat(args))), _this), _this.render = function () {
+            var _this$props = _this.props,
+                main = _this$props.main,
+                subtitle = _this$props.subtitle,
+                _this$props$icon = _this$props.icon,
+                icon = _this$props$icon === undefined ? null : _this$props$icon;
+
+            var iconElement = icon === null ? null : _react2.default.createElement('div', { className: 'doric-title-icon' }, _react2.default.createElement(_image2.default, { source: icon, width: '100%', height: '100%', imageSize: 'cover' }));
+
+            return _react2.default.createElement('doric-card-title', { 'data-card-flush': true }, iconElement, _react2.default.createElement('div', { className: 'doric-title-main' }, main), _react2.default.createElement('div', { className: 'doric-title-subtitle' }, subtitle));
+        }, _temp), _possibleConstructorReturn(_this, _ret);
+    }
+
+    return DoricCardTitle;
+}(_react2.default.PureComponent);
+
+DoricCard.actions = function DoricCardActions(props) {
     var divider = props.divider;
 
     return _react2.default.createElement('doric-card-actions', { 'data-card-flush': true, 'data-divider': divider }, props.children);
 };
-Card.media = function (props) {
+DoricCard.media = function DoricCardMedia(props) {
     return _react2.default.createElement('doric-card-media', props);
 };
-Card.title = function (props) {
-    var main = props.main,
-        subtitle = props.subtitle,
-        _props$icon = props.icon,
-        icon = _props$icon === undefined ? null : _props$icon;
+DoricCard.title = DoricCardTitle;
 
-    var iconElement = icon === null ? null : _react2.default.createElement('div', { className: 'doric-title-icon' }, _react2.default.createElement(_image2.default, { source: icon, width: '100%', height: '100%', imageSize: 'cover' }));
-
-    return _react2.default.createElement('doric-card-title', { 'data-card-flush': true }, iconElement, _react2.default.createElement('div', { className: 'doric-title-main' }, main), _react2.default.createElement('div', { className: 'doric-title-subtitle' }, subtitle));
-};
-
-exports.default = Card;
+exports.default = DoricCard;
 
 /***/ }),
 /* 40 */
@@ -23450,6 +23624,8 @@ exports.default = Card;
 
 "use strict";
 
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -23497,6 +23673,24 @@ function _objectWithoutProperties(obj, keys) {
     var target = {};for (var i in obj) {
         if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
     }return target;
+}
+
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
+
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
 _style2.default.add({
@@ -23552,40 +23746,103 @@ _style2.default.add({
     }
 });
 
-exports.default = function (props) {
-    var checked = props.checked,
-        label = props.label,
-        children = props.children,
-        _props$onChange = props.onChange,
-        onChange = _props$onChange === undefined ? function () {} : _props$onChange,
-        _props$onKeyDown = props.onKeyDown,
-        passedOKD = _props$onKeyDown === undefined ? function () {} : _props$onKeyDown,
-        _props$tabIndex = props.tabIndex,
-        tabIndex = _props$tabIndex === undefined ? 0 : _props$tabIndex,
-        passThrough = _objectWithoutProperties(props, ['checked', 'label', 'children', 'onChange', 'onKeyDown', 'tabIndex']);
+var DoricCheckbox = function (_React$PureComponent) {
+    _inherits(DoricCheckbox, _React$PureComponent);
 
-    var disabled = props.disabled;
+    function DoricCheckbox() {
+        var _ref;
 
-    var onTap = function onTap(evt) {
-        if (disabled !== true) {
-            var e = _extends({}, evt, {
-                type: 'change',
-                checked: checked === false
-            });
-            e.target = evt.target;
-            e.target.value = e.checked;
-            onChange(e);
+        var _temp, _this, _ret;
+
+        _classCallCheck(this, DoricCheckbox);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
         }
-    };
-    var onKeyDown = function onKeyDown(evt) {
-        passedOKD(evt);
-        if (evt.key === ' ' || evt.key === 'Enter') {
-            onTap(evt);
-        }
-    };
 
-    return _react2.default.createElement('doric-checkbox', _extends({ tabIndex: disabled === true ? null : tabIndex }, passThrough, { checked: checked, onKeyDown: onKeyDown }), _react2.default.createElement(_customListeners2.default, { listeners: { onTap: onTap } }), _react2.default.createElement('doric-checkbox-content', null, label || children));
-};
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = DoricCheckbox.__proto__ || Object.getPrototypeOf(DoricCheckbox)).call.apply(_ref, [this].concat(args))), _this), _this.render = function () {
+            var props = _this.props;
+
+            var checked = props.checked,
+                label = props.label,
+                children = props.children,
+                _props$onChange = props.onChange,
+                onChange = _props$onChange === undefined ? function () {} : _props$onChange,
+                _props$onKeyDown = props.onKeyDown,
+                passedOKD = _props$onKeyDown === undefined ? function () {} : _props$onKeyDown,
+                _props$tabIndex = props.tabIndex,
+                tabIndex = _props$tabIndex === undefined ? 0 : _props$tabIndex,
+                passThrough = _objectWithoutProperties(props, ['checked', 'label', 'children', 'onChange', 'onKeyDown', 'tabIndex']);
+
+            var disabled = props.disabled;
+
+            var onTap = function onTap(evt) {
+                if (disabled !== true) {
+                    var e = _extends({}, evt, {
+                        type: 'change',
+                        checked: checked === false
+                    });
+                    e.target = evt.target;
+                    e.target.value = e.checked;
+                    onChange(e);
+                }
+            };
+            var onKeyDown = function onKeyDown(evt) {
+                passedOKD(evt);
+                if (evt.key === ' ' || evt.key === 'Enter') {
+                    onTap(evt);
+                }
+            };
+
+            return _react2.default.createElement('doric-checkbox', _extends({ tabIndex: disabled === true ? null : tabIndex }, passThrough, { checked: checked, onKeyDown: onKeyDown }), _react2.default.createElement(_customListeners2.default, { listeners: { onTap: onTap } }), _react2.default.createElement('doric-checkbox-content', null, label || children));
+        }, _temp), _possibleConstructorReturn(_this, _ret);
+    }
+
+    return DoricCheckbox;
+}(_react2.default.PureComponent);
+
+// export default (props) => {
+//     const {
+//         checked,
+//         label,
+//         children,
+//         onChange = (() => {}),
+//         onKeyDown: passedOKD = (() => {}),
+//         tabIndex = 0,
+//         ...passThrough
+//     } = props;
+//     const {disabled} = props;
+//     const onTap = evt => {
+//         if (disabled !== true) {
+//             const e = {
+//                 ...evt,
+//                 type: 'change',
+//                 checked: checked === false
+//             };
+//             e.target = evt.target;
+//             e.target.value = e.checked;
+//             onChange(e);
+//         }
+//     };
+//     const onKeyDown = evt => {
+//         passedOKD(evt);
+//         if (evt.key === ' ' || evt.key === 'Enter') {
+//             onTap(evt);
+//         }
+//     };
+//
+//     return (
+//         <doric-checkbox tabIndex={disabled === true ? null : tabIndex} {...passThrough} checked={checked} onKeyDown={onKeyDown}>
+//             <CustomListeners listeners={{onTap}} />
+//             <doric-checkbox-content>
+//                 {label || children}
+//             </doric-checkbox-content>
+//         </doric-checkbox>
+//     );
+// };
+
+
+exports.default = DoricCheckbox;
 
 /***/ }),
 /* 41 */
@@ -23710,13 +23967,13 @@ _style2.default.add({
     }
 });
 
-var Collapse = function (_React$Component) {
-    _inherits(Collapse, _React$Component);
+var DoricCollapse = function (_React$Component) {
+    _inherits(DoricCollapse, _React$Component);
 
-    function Collapse(props) {
-        _classCallCheck(this, Collapse);
+    function DoricCollapse(props) {
+        _classCallCheck(this, DoricCollapse);
 
-        var _this = _possibleConstructorReturn(this, (Collapse.__proto__ || Object.getPrototypeOf(Collapse)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (DoricCollapse.__proto__ || Object.getPrototypeOf(DoricCollapse)).call(this, props));
 
         _initialiseProps.call(_this);
 
@@ -23724,7 +23981,7 @@ var Collapse = function (_React$Component) {
         return _this;
     }
 
-    return Collapse;
+    return DoricCollapse;
 }(_react2.default.Component);
 
 var _initialiseProps = function _initialiseProps() {
@@ -23749,7 +24006,7 @@ var _initialiseProps = function _initialiseProps() {
     };
 };
 
-exports.default = Collapse;
+exports.default = DoricCollapse;
 
 /***/ }),
 /* 42 */
@@ -23799,6 +24056,8 @@ exports.default = Divider;
 "use strict";
 
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -23831,6 +24090,8 @@ var _style = __webpack_require__(1);
 
 var _style2 = _interopRequireDefault(_style);
 
+var _util = __webpack_require__(4);
+
 function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -23839,6 +24100,24 @@ function _objectWithoutProperties(obj, keys) {
     var target = {};for (var i in obj) {
         if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
     }return target;
+}
+
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
+
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
 function _defineProperty(obj, key, value) {
@@ -23888,38 +24167,68 @@ _style2.default.add((_style$add = {
     backgroundColor: _theme2.default.input.bg.disabled,
     borderColor: _theme2.default.input.bg.disabled
 }), _style$add));
-var TextInput = function TextInput(props, type, Element) {
-    var wrapperStyle = props.wrapperStyle,
-        wrapperClassName = props.wrapperClassName,
-        value = props.value,
-        _props$label = props.label,
-        label = _props$label === undefined ? null : _props$label,
-        required = props.required,
-        optional = props.optional,
-        _props$loader = props.loader,
-        loader = _props$loader === undefined ? false : _props$loader,
-        _props$loaderType = props.loaderType,
-        loaderType = _props$loaderType === undefined ? 'Oval' : _props$loaderType,
-        _props$onChange = props.onChange,
-        onChange = _props$onChange === undefined ? function () {} : _props$onChange,
-        passThrough = _objectWithoutProperties(props, ['wrapperStyle', 'wrapperClassName', 'value', 'label', 'required', 'optional', 'loader', 'loaderType', 'onChange']);
 
-    var labelElem = label === null ? null : _react2.default.createElement('doric-input-label', { required: required, optional: optional }, label);
-    var loaderElem = loader !== true ? null : _react2.default.createElement('div', { style: { position: 'absolute', left: 'auto', right: 4, bottom: 0 } }, _react2.default.createElement(_reactLoaderSpinner2.default, { type: loaderType, width: 20, height: 20 }));
+var DoricInput = function (_React$PureComponent) {
+    _inherits(DoricInput, _React$PureComponent);
 
-    return _react2.default.createElement('doric-input', { type: type, 'class': wrapperClassName, style: wrapperStyle }, labelElem, _react2.default.createElement(Element, _extends({}, passThrough, { type: type, value: value, onChange: onChange })), loaderElem);
-};
+    function DoricInput(props) {
+        _classCallCheck(this, DoricInput);
+
+        var _this = _possibleConstructorReturn(this, (DoricInput.__proto__ || Object.getPrototypeOf(DoricInput)).call(this, props));
+
+        _this.componentWillUpdate = function (nextProps) {
+            if (_this.props.loaderType !== nextProps.loaderType) {
+                _this.refreshLoader(nextProps.loaderType);
+            }
+        };
+
+        _this.refreshLoader = function (type) {
+            _this.loader = _react2.default.createElement('div', { style: { position: 'absolute', left: 'auto', right: 4, bottom: 0 } }, _react2.default.createElement(_reactLoaderSpinner2.default, { type: type, width: 20, height: 20 }));
+        };
+
+        _this.render = function () {
+            var _this$props = _this.props,
+                wrapperStyle = _this$props.wrapperStyle,
+                wrapperClassName = _this$props.wrapperClassName,
+                value = _this$props.value,
+                _this$props$label = _this$props.label,
+                label = _this$props$label === undefined ? null : _this$props$label,
+                required = _this$props.required,
+                optional = _this$props.optional,
+                _this$props$loader = _this$props.loader,
+                loader = _this$props$loader === undefined ? false : _this$props$loader,
+                _this$props$loaderTyp = _this$props.loaderType,
+                loaderType = _this$props$loaderTyp === undefined ? 'Oval' : _this$props$loaderTyp,
+                _this$props$onChange = _this$props.onChange,
+                onChange = _this$props$onChange === undefined ? function () {} : _this$props$onChange,
+                type = _this$props.type,
+                Element = _this$props.Element,
+                passThrough = _objectWithoutProperties(_this$props, ['wrapperStyle', 'wrapperClassName', 'value', 'label', 'required', 'optional', 'loader', 'loaderType', 'onChange', 'type', 'Element']);
+
+            var labelElem = label === null ? null : _react2.default.createElement('doric-input-label', { required: required, optional: optional }, label);
+            var loaderElem = loader !== true ? null : _this.loader;
+
+            return _react2.default.createElement('doric-input', { type: type, 'class': wrapperClassName, style: wrapperStyle }, labelElem, _react2.default.createElement(Element, _extends({}, passThrough, { type: type, value: value, onChange: onChange })), loaderElem);
+        };
+
+        _this.refreshLoader(props.loaderType || "Oval");
+        return _this;
+    }
+
+    return DoricInput;
+}(_react2.default.PureComponent);
 
 var inputs = {
-    textarea: function textarea(props) {
-        return TextInput(props, 'textarea', 'textarea');
+    textarea: function DoricTextarea(props) {
+        return _react2.default.createElement(DoricInput, _extends({}, props, { type: 'textarea', Element: 'textarea' }));
     }
 };
 
 var _loop = function _loop(type) {
     inputs[type] = function (props) {
-        return TextInput(props, type, 'input');
+        return _react2.default.createElement(DoricInput, _extends({}, props, { type: type, Element: 'input' }));
     };
+    (0, _util.setFunctionName)(inputs[type], 'Doric' + type.slice(0, 1).toUpperCase() + type.slice(1) + 'Input');
 };
 
 var _iteratorNormalCompletion = true;
@@ -25724,6 +26033,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 "use strict";
 
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -25762,6 +26073,24 @@ function _objectWithoutProperties(obj, keys) {
     }return target;
 }
 
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
+
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
 _style2.default.add({
     "doric-radio-group": {
         display: 'block',
@@ -25790,59 +26119,206 @@ var defaultContainer = function defaultContainer(props) {
 defaultContainer.RadioItem = function (props) {
     return _react2.default.createElement(_react2.default.Fragment, null, props.children);
 };
-var Radio = function Radio(props) {
-    var selectedIndex = props.selectedIndex,
-        value = props.value,
-        children = props.children,
-        _props$onChange = props.onChange,
-        onChange = _props$onChange === undefined ? function () {} : _props$onChange,
-        _props$layout = props.layout,
-        layout = _props$layout === undefined ? { container: defaultContainer, itemProps: function itemProps(props) {
-            return props;
-        } } : _props$layout,
-        rest = _objectWithoutProperties(props, ['selectedIndex', 'value', 'children', 'onChange', 'layout']);
 
-    var changeHandler = function changeHandler(index, value) {
-        return function (evt) {
-            if (index !== selectedIndex) {
-                onChange({
-                    target: {
-                        selectedIndex: index,
-                        value: value
-                    },
-                    type: 'change'
-                });
+var DoricRadio = function (_React$Component) {
+    _inherits(DoricRadio, _React$Component);
+
+    function DoricRadio(props) {
+        _classCallCheck(this, DoricRadio);
+
+        var _this = _possibleConstructorReturn(this, (DoricRadio.__proto__ || Object.getPrototypeOf(DoricRadio)).call(this, props));
+
+        _initialiseProps.call(_this);
+
+        return _this;
+    }
+
+    return DoricRadio;
+}(_react2.default.Component);
+// const DoricRadio = props => {
+//     const {
+//         selectedIndex,
+//         value,
+//         children,
+//         onChange = (() => {}),
+//         layout = {container: defaultContainer, itemProps: props => props},
+//         ...rest
+//     } = props;
+//     const changeHandler = (index, value) =>
+//         evt => {
+//             if (index !== selectedIndex) {
+//                 onChange({
+//                     target: {
+//                         selectedIndex: index,
+//                         value
+//                     },
+//                     type: 'change'
+//                 });
+//             }
+//         };
+//     // const Container = layout.container || (props => <React.Fragment>{props.children}</React.Fragment>);
+//     const Container = layout.container;
+//     const Item = Container.RadioItem;
+//     const itemPropsFunc = layout.itemProps;
+//     let selected = false;
+//     const options = React.Children.toArray(children)
+//         .map((child, index) => {
+//             let icon = "ion-android-radio-button-off";
+//
+//             const valueMatch = (value !== undefined && value === child.props.value);
+//             const isSelected = selected === false && (index === selectedIndex || valueMatch === true);
+//             if (isSelected === true) {
+//                 icon = "ion-android-radio-button-on";
+//                 selected = true;
+//             }
+//             const itemProps = itemPropsFunc(
+//                 {index, key: index, selected: isSelected},
+//                 rest
+//             );
+//             // console.log(Item, itemProps);
+//
+//             return (
+//                 <Item {...itemProps}>
+//                     <Button className="doric-radio-item" selected={isSelected} block onTap={changeHandler(index, child.props.value)}>
+//                         <Icon icon={icon} />
+//                         {child.props.label || child.props.children}
+//                     </Button>
+//                 </Item>
+//             );
+//         });
+//
+//     return (
+//         <doric-radio-group {...rest}>
+//             <Container>
+//                 {options}
+//             </Container>
+//         </doric-radio-group>
+//     );
+// };
+
+var _initialiseProps = function _initialiseProps() {
+    var _this2 = this;
+
+    this.shouldComponentUpdate = function (nextProps) {
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+            for (var _iterator = Object.keys(nextProps)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var key = _step.value;
+
+                if (_this2.props[key] !== nextProps[key] && key !== 'children') {
+                    console.log('dif', key);
+                    return true;
+                }
             }
-        };
-    };
-    // const Container = layout.container || (props => <React.Fragment>{props.children}</React.Fragment>);
-    var Container = layout.container;
-    var Item = Container.RadioItem;
-    var itemPropsFunc = layout.itemProps;
-    var selected = false;
-    var options = _react2.default.Children.toArray(children).map(function (child, index) {
-        var icon = "ion-android-radio-button-off";
-
-        var valueMatch = value !== undefined && value === child.props.value;
-        var isSelected = selected === false && (index === selectedIndex || valueMatch === true);
-        if (isSelected === true) {
-            icon = "ion-android-radio-button-on";
-            selected = true;
+        } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                    _iterator.return();
+                }
+            } finally {
+                if (_didIteratorError) {
+                    throw _iteratorError;
+                }
+            }
         }
-        var itemProps = itemPropsFunc({ index: index, key: index, selected: isSelected }, rest);
-        // console.log(Item, itemProps);
 
-        return _react2.default.createElement(Item, itemProps, _react2.default.createElement(_button2.default, { className: 'doric-radio-item', selected: isSelected, block: true, onTap: changeHandler(index, child.props.value) }, _react2.default.createElement(_icon2.default, { icon: icon }), child.props.label || child.props.children));
-    });
+        var current = _react2.default.Children.toArray(_this2.props.children);
+        var next = _react2.default.Children.toArray(nextProps.children);
+        if (current.length !== next.length) {
+            return true;
+        }
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
 
-    return _react2.default.createElement('doric-radio-group', rest, _react2.default.createElement(Container, null, options));
+        try {
+            for (var _iterator2 = 0 .to(current.length)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                var i = _step2.value;
+
+                if (current[i] !== next[i]) {
+                    return true;
+                }
+            }
+        } catch (err) {
+            _didIteratorError2 = true;
+            _iteratorError2 = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                    _iterator2.return();
+                }
+            } finally {
+                if (_didIteratorError2) {
+                    throw _iteratorError2;
+                }
+            }
+        }
+
+        return false;
+    };
+
+    this.render = function () {
+        var props = _this2.props;
+
+        var selectedIndex = props.selectedIndex,
+            value = props.value,
+            children = props.children,
+            _props$onChange = props.onChange,
+            onChange = _props$onChange === undefined ? function () {} : _props$onChange,
+            _props$layout = props.layout,
+            layout = _props$layout === undefined ? { container: defaultContainer, itemProps: function itemProps(props) {
+                return props;
+            } } : _props$layout,
+            rest = _objectWithoutProperties(props, ['selectedIndex', 'value', 'children', 'onChange', 'layout']);
+
+        var changeHandler = function changeHandler(index, value) {
+            return function (evt) {
+                if (index !== selectedIndex) {
+                    onChange({
+                        target: {
+                            selectedIndex: index,
+                            value: value
+                        },
+                        type: 'change'
+                    });
+                }
+            };
+        };
+        // const Container = layout.container || (props => <React.Fragment>{props.children}</React.Fragment>);
+        var Container = layout.container;
+        var Item = Container.RadioItem;
+        var itemPropsFunc = layout.itemProps;
+        var selected = false;
+        var options = _react2.default.Children.toArray(children).map(function (child, index) {
+            var icon = "ion-android-radio-button-off";
+
+            var valueMatch = value !== undefined && value === child.props.value;
+            var isSelected = selected === false && (index === selectedIndex || valueMatch === true);
+            if (isSelected === true) {
+                icon = "ion-android-radio-button-on";
+                selected = true;
+            }
+            var itemProps = itemPropsFunc({ index: index, key: index, selected: isSelected }, rest);
+            // console.log(Item, itemProps);
+
+            return _react2.default.createElement(Item, itemProps, _react2.default.createElement(_button2.default, { className: 'doric-radio-item', selected: isSelected, block: true, onTap: changeHandler(index, child.props.value) }, _react2.default.createElement(_icon2.default, { icon: icon }), child.props.label || child.props.children));
+        });
+
+        return _react2.default.createElement('doric-radio-group', rest, _react2.default.createElement(Container, null, options));
+    };
 };
 
 _grid.Grid.RadioItem = function (props) {
     return _react2.default.createElement(_grid.Col, props, props.children);
 };
 
-exports.default = Radio;
+exports.default = DoricRadio;
 
 /***/ }),
 /* 60 */
@@ -25920,7 +26396,7 @@ _style2.default.add({
         borderBottomColor: _theme2.default.select.border.focus
     }
 });
-var Select = function Select(props) {
+var DoricSelect = function DoricSelect(props) {
     var wrapperStyle = props.wrapperStyle,
         wrapperClassName = props.wrapperClassName,
         selectProps = _objectWithoutProperties(props, ['wrapperStyle', 'wrapperClassName']);
@@ -25928,7 +26404,7 @@ var Select = function Select(props) {
     return _react2.default.createElement('doric-select', { style: wrapperStyle, 'class': wrapperClassName }, _react2.default.createElement('select', selectProps));
 };
 
-exports.default = Select;
+exports.default = DoricSelect;
 
 /***/ }),
 /* 61 */
@@ -26035,13 +26511,13 @@ _style2.default.add({
     }
 });
 
-var Slider = function (_React$PureComponent) {
-    _inherits(Slider, _React$PureComponent);
+var DoricSlider = function (_React$PureComponent) {
+    _inherits(DoricSlider, _React$PureComponent);
 
-    function Slider(props) {
-        _classCallCheck(this, Slider);
+    function DoricSlider(props) {
+        _classCallCheck(this, DoricSlider);
 
-        var _this = _possibleConstructorReturn(this, (Slider.__proto__ || Object.getPrototypeOf(Slider)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (DoricSlider.__proto__ || Object.getPrototypeOf(DoricSlider)).call(this, props));
 
         _this.render = function () {
             var _this$props = _this.props,
@@ -26064,10 +26540,10 @@ var Slider = function (_React$PureComponent) {
         return _this;
     }
 
-    return Slider;
+    return DoricSlider;
 }(_react2.default.PureComponent);
 
-exports.default = Slider;
+exports.default = DoricSlider;
 
 /***/ }),
 /* 62 */
@@ -26363,7 +26839,7 @@ _style2.default.add({
     }
 });
 
-exports.default = function (props) {
+var DoricToggle = function DoricToggle(props) {
     var label = props.label,
         children = props.children,
         on = props.on,
@@ -26394,6 +26870,8 @@ exports.default = function (props) {
 
     return _react2.default.createElement('doric-toggle', _extends({ tabIndex: disabled === true ? null : tabIndex }, passThrough, { onKeyDown: onKeyDown }), _react2.default.createElement(_customListeners2.default, { listeners: { onTap: onTap } }), _react2.default.createElement('doric-toggle-content', null, label || children), _react2.default.createElement('doric-toggle-thumb', { on: on }, _react2.default.createElement('div', null)));
 };
+
+exports.default = DoricToggle;
 
 /***/ })
 /******/ ]);

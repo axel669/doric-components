@@ -4,6 +4,7 @@ import Loader from 'react-loader-spinner';
 
 import theme from '../theme';
 import style from '../style';
+import {setFunctionName} from '../util';
 
 const inputTypes = [
     'text',
@@ -54,44 +55,64 @@ style.add({
         borderColor: theme.input.bg.disabled
     }
 });
-const TextInput = (props, type, Element) => {
-    const {
-        wrapperStyle,
-        wrapperClassName,
-        value,
-        label = null,
-        required,
-        optional,
-        loader = false,
-        loaderType = 'Oval',
-        onChange = (() => {}),
-        ...passThrough
-    } = props;
-    const labelElem = (label === null)
-        ? null
-        : <doric-input-label {...{required, optional}}>{label}</doric-input-label>;
-    const loaderElem = (loader !== true)
-        ? null
-        : (
+class DoricInput extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.refreshLoader(props.loaderType || "Oval");
+    }
+
+    componentWillUpdate = (nextProps) => {
+        if (this.props.loaderType !== nextProps.loaderType) {
+            this.refreshLoader(nextProps.loaderType);
+        }
+    }
+
+    refreshLoader = type => {
+        this.loader = (
             <div style={{position: 'absolute', left: 'auto', right: 4, bottom: 0}}>
-                <Loader type={loaderType} width={20} height={20} />
+                <Loader type={type} width={20} height={20} />
             </div>
         );
+    }
 
-    return (
-        <doric-input type={type} class={wrapperClassName} style={wrapperStyle}>
-            {labelElem}
-            <Element {...passThrough} type={type} value={value} onChange={onChange} />
-            {loaderElem}
-        </doric-input>
-    );
-};
+    render = () => {
+        const {
+            wrapperStyle,
+            wrapperClassName,
+            value,
+            label = null,
+            required,
+            optional,
+            loader = false,
+            loaderType = 'Oval',
+            onChange = (() => {}),
+            type,
+            Element,
+            ...passThrough
+        } = this.props;
+        const labelElem = (label === null)
+            ? null
+            : <doric-input-label {...{required, optional}}>{label}</doric-input-label>;
+        const loaderElem = (loader !== true) ? null : this.loader;
+
+        return (
+            <doric-input type={type} class={wrapperClassName} style={wrapperStyle}>
+                {labelElem}
+                <Element {...passThrough} type={type} value={value} onChange={onChange} />
+                {loaderElem}
+            </doric-input>
+        );
+    }
+}
 
 const inputs = {
-    textarea: props => TextInput(props, 'textarea', 'textarea')
+    textarea: function DoricTextarea(props) {
+        return <DoricInput {...props} type="textarea" Element="textarea" />;
+    }
 };
 for (const type of inputTypes) {
-    inputs[type] = props => TextInput(props, type, 'input');
+    inputs[type] = props => <DoricInput {...props} type={type} Element="input" />;
+    setFunctionName(inputs[type], `Doric${type.slice(0, 1).toUpperCase()}${type.slice(1)}Input`);
 }
 
 export default inputs;

@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.setFunctionName = undefined;
 
 var _theme = require('./theme');
 
@@ -22,6 +23,10 @@ Number.prototype.to = function (end) {
     return array;
 };
 
+var setFunctionName = function setFunctionName(func, name) {
+    Object.defineProperty(func, 'name', { value: name, writable: false });
+};
+exports.setFunctionName = setFunctionName;
 exports.default = {
     background: {
         after: {

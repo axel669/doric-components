@@ -183,6 +183,10 @@ class Test extends doric.baseComponent {
             c: false,
             n: 0
         };
+        this.linked = {
+            t: this.linkState('t'),
+            rv: this.linkState('rv')
+        };
     }
 
     add = () => {
@@ -209,9 +213,9 @@ class Test extends doric.baseComponent {
     render = () => {
         return (
             <div style={{overflow: 'hidden'}}>
-                <doric.input.text value={this.state.t} onChange={this.linkState('t')} label="Some Label" disabled />
-                <doric.input.text value={this.state.t} onChange={this.linkState('t')} label="Some Label" required loader={true} />
-                <doric.input.text value={this.state.t} onChange={this.linkState('t')} label="Some Label" optional loader={true} loaderType="TailSpin" />
+                <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" disabled />
+                <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" required loader={true} />
+                <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" optional loader={true} loaderType="TailSpin" />
                 <doric.card>
                     <doric.card.title main="Main Title" subtitle="subtitle" icon={images.laughingMan} />
                     <doric.card.media>
@@ -233,8 +237,8 @@ class Test extends doric.baseComponent {
                     {(0).to(10).map(i => <option value={i}>{i}</option>)}
                 </doric.select>
                 <doric.collapse title="Collapse">
-                    <doric.radio value={this.state.rv} onChange={this.linkState('rv')}>
-                        {(0).to(10).map(i => <option value={i}>{i}</option>)}
+                    <doric.radio value={this.state.rv} onChange={this.linked.rv} children={(0).to(10).map(i => <option value={i}>{i}</option>)}>
+                        {/* {(0).to(10).map(i => <option value={i}>{i}</option>)} */}
                     </doric.radio>
                 </doric.collapse>
                 <doric.slider min={-100} max={100} value={this.state.n} onChange={this.linkState('n')} />

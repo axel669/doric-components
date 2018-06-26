@@ -64,42 +64,86 @@ style.add({
         textAlign: 'right'
     }
 });
-export default (props) => {
-    const {
-        checked,
-        label,
-        children,
-        onChange = (() => {}),
-        onKeyDown: passedOKD = (() => {}),
-        tabIndex = 0,
-        ...passThrough
-    } = props;
-    const {disabled} = props;
-    const onTap = evt => {
-        if (disabled !== true) {
-            const e = {
-                ...evt,
-                type: 'change',
-                checked: checked === false
-            };
-            e.target = evt.target;
-            e.target.value = e.checked;
-            onChange(e);
-        }
-    };
-    const onKeyDown = evt => {
-        passedOKD(evt);
-        if (evt.key === ' ' || evt.key === 'Enter') {
-            onTap(evt);
-        }
-    };
 
-    return (
-        <doric-checkbox tabIndex={disabled === true ? null : tabIndex} {...passThrough} checked={checked} onKeyDown={onKeyDown}>
-            <CustomListeners listeners={{onTap}} />
-            <doric-checkbox-content>
-                {label || children}
-            </doric-checkbox-content>
-        </doric-checkbox>
-    );
-};
+export default class DoricCheckbox extends React.PureComponent {
+    render = () => {
+        const props = this.props;
+        const {
+            checked,
+            label,
+            children,
+            onChange = (() => {}),
+            onKeyDown: passedOKD = (() => {}),
+            tabIndex = 0,
+            ...passThrough
+        } = props;
+        const {disabled} = props;
+        const onTap = evt => {
+            if (disabled !== true) {
+                const e = {
+                    ...evt,
+                    type: 'change',
+                    checked: checked === false
+                };
+                e.target = evt.target;
+                e.target.value = e.checked;
+                onChange(e);
+            }
+        };
+        const onKeyDown = evt => {
+            passedOKD(evt);
+            if (evt.key === ' ' || evt.key === 'Enter') {
+                onTap(evt);
+            }
+        };
+
+        return (
+            <doric-checkbox tabIndex={disabled === true ? null : tabIndex} {...passThrough} checked={checked} onKeyDown={onKeyDown}>
+                <CustomListeners listeners={{onTap}} />
+                <doric-checkbox-content>
+                    {label || children}
+                </doric-checkbox-content>
+            </doric-checkbox>
+        );
+    }
+}
+
+// export default (props) => {
+//     const {
+//         checked,
+//         label,
+//         children,
+//         onChange = (() => {}),
+//         onKeyDown: passedOKD = (() => {}),
+//         tabIndex = 0,
+//         ...passThrough
+//     } = props;
+//     const {disabled} = props;
+//     const onTap = evt => {
+//         if (disabled !== true) {
+//             const e = {
+//                 ...evt,
+//                 type: 'change',
+//                 checked: checked === false
+//             };
+//             e.target = evt.target;
+//             e.target.value = e.checked;
+//             onChange(e);
+//         }
+//     };
+//     const onKeyDown = evt => {
+//         passedOKD(evt);
+//         if (evt.key === ' ' || evt.key === 'Enter') {
+//             onTap(evt);
+//         }
+//     };
+//
+//     return (
+//         <doric-checkbox tabIndex={disabled === true ? null : tabIndex} {...passThrough} checked={checked} onKeyDown={onKeyDown}>
+//             <CustomListeners listeners={{onTap}} />
+//             <doric-checkbox-content>
+//                 {label || children}
+//             </doric-checkbox-content>
+//         </doric-checkbox>
+//     );
+// };

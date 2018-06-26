@@ -50,7 +50,7 @@ style.add({
         boxShadow: '0px 0px 2px rgba(0, 0, 0, 0.25)'
     }
 });
-class Slider extends React.PureComponent {
+class DoricSlider extends React.PureComponent {
     constructor(props) {
         super(props);
     }
@@ -78,4 +78,4 @@ class Slider extends React.PureComponent {
     }
 }
 
-export default Slider;
+export default DoricSlider;

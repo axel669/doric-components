@@ -88,13 +88,13 @@ _style2.default.add({
     }
 });
 
-var Collapse = function (_React$Component) {
-    _inherits(Collapse, _React$Component);
+var DoricCollapse = function (_React$Component) {
+    _inherits(DoricCollapse, _React$Component);
 
-    function Collapse(props) {
-        _classCallCheck(this, Collapse);
+    function DoricCollapse(props) {
+        _classCallCheck(this, DoricCollapse);
 
-        var _this = _possibleConstructorReturn(this, (Collapse.__proto__ || Object.getPrototypeOf(Collapse)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (DoricCollapse.__proto__ || Object.getPrototypeOf(DoricCollapse)).call(this, props));
 
         _initialiseProps.call(_this);
 
@@ -102,7 +102,7 @@ var Collapse = function (_React$Component) {
         return _this;
     }
 
-    return Collapse;
+    return DoricCollapse;
 }(_react2.default.Component);
 
 var _initialiseProps = function _initialiseProps() {
@@ -141,4 +141,4 @@ var _initialiseProps = function _initialiseProps() {
     };
 };
 
-exports.default = Collapse;
+exports.default = DoricCollapse;

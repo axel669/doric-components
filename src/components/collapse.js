@@ -51,7 +51,7 @@ style.add({
         color: theme.collapse.title.text.normal
     }
 });
-class Collapse extends React.Component {
+class DoricCollapse extends React.Component {
     constructor(props) {
         super(props);
         this.state = {open: false};
@@ -83,4 +83,4 @@ class Collapse extends React.Component {
     }
 }
 
-export default Collapse;
+export default DoricCollapse;

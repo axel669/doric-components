@@ -40,7 +40,7 @@ style.add({
         borderBottomColor: theme.select.border.focus
     }
 });
-const Select = props => {
+const DoricSelect = props => {
     const {
         wrapperStyle,
         wrapperClassName,
@@ -53,4 +53,4 @@ const Select = props => {
     );
 };
 
-export default Select;
+export default DoricSelect;

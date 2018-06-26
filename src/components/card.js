@@ -82,7 +82,8 @@ style.add({
         overflow: 'hidden'
     }
 });
-const Card = props => {
+
+const DoricCard = props => {
     const {
         title = null,
         sideImage = null,
@@ -112,7 +113,23 @@ const Card = props => {
         </doric-card>
     );
 };
-Card.actions = props => {
+class DoricCardTitle extends React.PureComponent {
+    render = () => {
+        const {main, subtitle, icon = null} = this.props;
+        const iconElement = (icon === null)
+            ? null
+            : <div className="doric-title-icon"><Image source={icon} width="100%" height="100%" imageSize="cover" /></div>;
+
+        return (
+            <doric-card-title data-card-flush>
+                {iconElement}
+                <div className="doric-title-main">{main}</div>
+                <div className="doric-title-subtitle">{subtitle}</div>
+            </doric-card-title>
+        );
+    }
+}
+DoricCard.actions = function DoricCardActions(props) {
     const divider = props.divider;
 
     return (
@@ -121,20 +138,9 @@ Card.actions = props => {
         </doric-card-actions>
     );
 };
-Card.media = props => <doric-card-media {...props} />;
-Card.title = props => {
-    const {main, subtitle, icon = null} = props;
-    const iconElement = (icon === null)
-        ? null
-        : <div className="doric-title-icon"><Image source={icon} width="100%" height="100%" imageSize="cover" /></div>;
+DoricCard.media = function DoricCardMedia(props) {
+    return <doric-card-media {...props} />;
+}
+DoricCard.title = DoricCardTitle;
 
-    return (
-        <doric-card-title data-card-flush>
-            {iconElement}
-            <div className="doric-title-main">{main}</div>
-            <div className="doric-title-subtitle">{subtitle}</div>
-        </doric-card-title>
-    );
-};
-
-export default Card;
+export default DoricCard;

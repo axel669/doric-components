@@ -12,6 +12,13 @@ Number.prototype.to = function (end) {
     return array;
 };
 
+const setFunctionName = (func, name) => {
+    Object.defineProperty(func, 'name', {value: name, writable: false});
+};
+export {
+    setFunctionName
+};
+
 export default {
     background: {
         after: {

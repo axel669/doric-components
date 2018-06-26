@@ -74,13 +74,13 @@ _style2.default.add({
     }
 });
 
-var Slider = function (_React$PureComponent) {
-    _inherits(Slider, _React$PureComponent);
+var DoricSlider = function (_React$PureComponent) {
+    _inherits(DoricSlider, _React$PureComponent);
 
-    function Slider(props) {
-        _classCallCheck(this, Slider);
+    function DoricSlider(props) {
+        _classCallCheck(this, DoricSlider);
 
-        var _this = _possibleConstructorReturn(this, (Slider.__proto__ || Object.getPrototypeOf(Slider)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (DoricSlider.__proto__ || Object.getPrototypeOf(DoricSlider)).call(this, props));
 
         _this.render = function () {
             var _this$props = _this.props,
@@ -113,7 +113,7 @@ var Slider = function (_React$PureComponent) {
         return _this;
     }
 
-    return Slider;
+    return DoricSlider;
 }(_react2.default.PureComponent);
 
-exports.default = Slider;
+exports.default = DoricSlider;

@@ -107,7 +107,7 @@ _style2.default.add({
     }
 });
 
-exports.default = function (props) {
+var DoricToggle = function DoricToggle(props) {
     var label = props.label,
         children = props.children,
         on = props.on,
@@ -152,3 +152,5 @@ exports.default = function (props) {
         )
     );
 };
+
+exports.default = DoricToggle;

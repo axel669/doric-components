@@ -85,7 +85,7 @@ style.add({
     }
 });
 
-export default props => {
+const DoricToggle = props => {
     const {
         label,
         children,
@@ -123,3 +123,5 @@ export default props => {
         </doric-toggle>
     );
 };
+
+export default DoricToggle;
