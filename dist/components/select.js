@@ -43,8 +43,10 @@ _style2.default.add({
         backgroundColor: 'transparent',
         borderWidth: 0,
         borderBottom: '2px solid ' + _theme2.default.select.border.normal,
+        color: _theme2.default.select.text.normal,
         height: 30,
-        borderRadius: 0
+        borderRadius: 0,
+        fontSize: 16
     },
     "doric-select::after": {
         content: '"' + _icon2.default.icons["ion-arrow-down-b"] + '"',
@@ -54,7 +56,7 @@ _style2.default.add({
         left: 'auto',
         top: '50%',
         right: 5,
-        color: '#000',
+        color: _theme2.default.select.text.normal,
         transform: 'translateY(-50%)'
     },
     "doric-select > select:focus": {

@@ -20,8 +20,10 @@ style.add({
         backgroundColor: 'transparent',
         borderWidth: 0,
         borderBottom: `2px solid ${theme.select.border.normal}`,
+        color: theme.select.text.normal,
         height: 30,
-        borderRadius: 0
+        borderRadius: 0,
+        fontSize: 16
     },
     "doric-select::after": {
         content: `"${icon.icons["ion-arrow-down-b"]}"`,
@@ -31,7 +33,7 @@ style.add({
         left: 'auto',
         top: '50%',
         right: 5,
-        color: '#000',
+        color: theme.select.text.normal,
         transform: 'translateY(-50%)'
     },
     "doric-select > select:focus": {
