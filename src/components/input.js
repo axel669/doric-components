@@ -33,6 +33,22 @@ style.add({
     },
     "doric-input > input:focus, doric-input > textarea:focus": {
         borderBottomColor: theme.input.border.focus
+    },
+    "doric-input-label": {
+        display: 'block',
+        padding: 2,
+        color: theme.input.label.text.normal,
+        fontSize: 12
+    },
+    "doric-input-label[required='true']": {
+        color: theme.input.label.text.required
+    },
+    "doric-input-label[optional='true']": {
+        color: theme.input.label.text.optional
+    },
+    "doric-input > input[disabled]": {
+        backgroundColor: theme.input.bg.disabled,
+        borderColor: theme.input.bg.disabled
     }
 });
 const TextInput = (props, type, Element) => {
@@ -40,12 +56,19 @@ const TextInput = (props, type, Element) => {
         wrapperStyle,
         wrapperClassName,
         value,
+        label = null,
+        required,
+        optional,
         onChange = (() => {}),
         ...passThrough
     } = props;
+    let labelElem = (label === null)
+        ? null
+        : <doric-input-label {...{required, optional}}>{label}</doric-input-label>;
 
     return (
         <doric-input type={type} class={wrapperClassName} style={wrapperStyle}>
+            {labelElem}
             <Element {...passThrough} type={type} value={value} onChange={onChange} />
         </doric-input>
     );

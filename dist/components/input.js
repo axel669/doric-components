@@ -51,18 +51,41 @@ _style2.default.add((_style$add = {
     color: _theme2.default.input.text.normal
 }), _defineProperty(_style$add, "doric-input > input:focus, doric-input > textarea:focus", {
     borderBottomColor: _theme2.default.input.border.focus
+}), _defineProperty(_style$add, "doric-input-label", {
+    display: 'block',
+    padding: 2,
+    color: _theme2.default.input.label.text.normal,
+    fontSize: 12
+}), _defineProperty(_style$add, "doric-input-label[required='true']", {
+    color: _theme2.default.input.label.text.required
+}), _defineProperty(_style$add, "doric-input-label[optional='true']", {
+    color: _theme2.default.input.label.text.optional
+}), _defineProperty(_style$add, "doric-input > input[disabled]", {
+    backgroundColor: _theme2.default.input.bg.disabled,
+    borderColor: _theme2.default.input.bg.disabled
 }), _style$add));
 var TextInput = function TextInput(props, type, Element) {
     var wrapperStyle = props.wrapperStyle,
         wrapperClassName = props.wrapperClassName,
         value = props.value,
+        _props$label = props.label,
+        label = _props$label === undefined ? null : _props$label,
+        required = props.required,
+        optional = props.optional,
         _props$onChange = props.onChange,
         onChange = _props$onChange === undefined ? function () {} : _props$onChange,
-        passThrough = _objectWithoutProperties(props, ['wrapperStyle', 'wrapperClassName', 'value', 'onChange']);
+        passThrough = _objectWithoutProperties(props, ['wrapperStyle', 'wrapperClassName', 'value', 'label', 'required', 'optional', 'onChange']);
+
+    var labelElem = label === null ? null : _react2.default.createElement(
+        'doric-input-label',
+        { required: required, optional: optional },
+        label
+    );
 
     return _react2.default.createElement(
         'doric-input',
         { type: type, 'class': wrapperClassName, style: wrapperStyle },
+        labelElem,
         _react2.default.createElement(Element, _extends({}, passThrough, { type: type, value: value, onChange: onChange }))
     );
 };
