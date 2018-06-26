@@ -43,13 +43,13 @@ _style2.default.add({
         width: '100%',
         height: '100%',
         zIndex: '+1',
-        opacity: 0.5
+        opacity: 0
     },
     'doric-slider > doric-slider-track-bg': {
         position: 'absolute',
-        top: 8,
+        top: 9,
         left: 10,
-        bottom: 8,
+        bottom: 9,
         right: 10,
         backgroundColor: _theme2.default.slider.track.bg.normal
     },
@@ -69,7 +69,8 @@ _style2.default.add({
         height: 16,
         borderRadius: 10,
         backgroundColor: _theme2.default.slider.thumb.normal,
-        transform: 'translate(-50%, -50%)'
+        transform: 'translate(-50%, -50%)',
+        boxShadow: '0px 0px 2px rgba(0, 0, 0, 0.25)'
     }
 });
 
@@ -93,6 +94,10 @@ var Slider = function (_React$PureComponent) {
                 onChange = _this$props$onChange === undefined ? function () {} : _this$props$onChange;
 
 
+            var range = max - min;
+            var dist = value - min;
+            var pos = dist / range * 100;
+
             return _react2.default.createElement(
                 'doric-slider',
                 { style: { position: 'relative' } },
@@ -100,7 +105,7 @@ var Slider = function (_React$PureComponent) {
                 _react2.default.createElement(
                     'doric-slider-track-bg',
                     null,
-                    _react2.default.createElement('doric-slider-track', { style: { width: value * 10 + '%' } })
+                    _react2.default.createElement('doric-slider-track', { style: { width: pos + '%' } })
                 )
             );
         };

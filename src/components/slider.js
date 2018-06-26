@@ -20,13 +20,13 @@ style.add({
         width: '100%',
         height: '100%',
         zIndex: '+1',
-        opacity: 0.5
+        opacity: 0
     },
     'doric-slider > doric-slider-track-bg': {
         position: 'absolute',
-        top: 8,
+        top: 9,
         left: 10,
-        bottom: 8,
+        bottom: 9,
         right: 10,
         backgroundColor: theme.slider.track.bg.normal
     },
@@ -46,7 +46,8 @@ style.add({
         height: 16,
         borderRadius: 10,
         backgroundColor: theme.slider.thumb.normal,
-        transform: 'translate(-50%, -50%)'
+        transform: 'translate(-50%, -50%)',
+        boxShadow: '0px 0px 2px rgba(0, 0, 0, 0.25)'
     }
 });
 class Slider extends React.PureComponent {
@@ -62,11 +63,15 @@ class Slider extends React.PureComponent {
             onChange = (() => {})
         } = this.props;
 
+        const range = max - min;
+        const dist = value - min;
+        const pos = (dist / range) * 100;
+
         return (
             <doric-slider style={{position: 'relative'}}>
                 <input type="range" {...{min, max}} value={value} onChange={onChange} />
                 <doric-slider-track-bg>
-                    <doric-slider-track style={{width: `${value * 10}%`}} />
+                    <doric-slider-track style={{width: `${pos}%`}} />
                 </doric-slider-track-bg>
             </doric-slider>
         );
