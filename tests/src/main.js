@@ -73,22 +73,6 @@ class Functional extends React.PureComponent {
     }
 }
 
-// class Dialog extends React.Component {
-//     constructor(props) {
-//         super(props);
-//     }
-//
-//     componentDidMount = () => {
-//     }
-//
-//     componentWillUpdate = () => {
-//     }
-//
-//     render = () => {
-//         return null;
-//     }
-// }
-
 doric.style.add({
     "doric-dialog-base": {
         position: 'absolute',
@@ -224,8 +208,36 @@ class Test extends doric.baseComponent {
 
     render = () => {
         return (
-            <div>
-                <doric.slider value={this.state.n} onChange={this.linkState('n')} />
+            <div style={{overflow: 'hidden'}}>
+                <doric.input.text value={this.state.t} onChange={this.linkState('t')} label="Some Label" disabled />
+                <doric.input.text value={this.state.t} onChange={this.linkState('t')} label="Some Label" required />
+                <doric.input.text value={this.state.t} onChange={this.linkState('t')} label="Some Label" optional />
+                <doric.card>
+                    <doric.card.title main="Main Title" subtitle="subtitle" icon={images.laughingMan} />
+                    <doric.card.media>
+                        <doric.image height="100%" source={images.bayoBG} />
+                    </doric.card.media>
+                    Some content
+                    <doric.divider />
+                    More content!
+                    <doric.card.actions>
+                        <doric.button text="Normal" />
+                        <doric.button text="Primary" primary />
+                        <doric.button text="Danger" danger />
+                        <doric.button text="Accent" accent />
+                    </doric.card.actions>
+                </doric.card>
+                <doric.checkbox checked={this.state.c} onChange={this.linkState('c')} label="Checkbox?" />
+                <doric.toggle label="Toggle!" on={this.state.o} onChange={this.linkState('o')} />
+                <doric.select value={this.state.s} onChange={this.linkState('s')}>
+                    {(0).to(10).map(i => <option value={i}>{i}</option>)}
+                </doric.select>
+                <doric.collapse title="Collapse">
+                    <doric.radio value={this.state.rv} onChange={this.linkState('rv')}>
+                        {(0).to(10).map(i => <option value={i}>{i}</option>)}
+                    </doric.radio>
+                </doric.collapse>
+                <doric.slider min={-100} max={100} value={this.state.n} onChange={this.linkState('n')} />
             </div>
         );
     }

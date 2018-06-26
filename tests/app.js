@@ -180,57 +180,6 @@ function _objectWithoutProperties(obj, keys) {
     }return target;
 }
 
-// const _typeof = new Function('obj', 'return typeof obj');
-// const deepMerge = (a, b) => {
-//     const t1 = _typeof(a);
-//     const t2 = _typeof(b);
-//     const a1 = Array.isArray(a);
-//     const a2 = Array.isArray(b);
-//
-//     if (t1 === 'boolean' || t1 === 'function' || t1 === 'number' || t1 === 'string') {
-//         if (t2 === 'object') {
-//             if (a2 === true) {
-//                 return [].concat(b);
-//             }
-//             return deepMerge({}, b);
-//         }
-//         if (b === undefined) {
-//             return a;
-//         }
-//         return b;
-//     }
-//
-//     if (a1 === true) {
-//         if (a2 === true) {
-//             return a.concat(b);
-//         }
-//         return a.concat([b]);
-//     }
-//
-//     if (b === undefined) {
-//         b = {};
-//     }
-//     const obj = {};
-//     const keys = new Set(
-//         Object.keys(a)
-//         .concat(Object.keys(b))
-//     );
-//     for (const key of keys) {
-//         switch (true) {
-//             case (a[key] === undefined && b[key] !== undefined):
-//                 obj[key] = deepMerge(b[key]);
-//                 break;
-//             case (a[key] !== undefined && b[key] === undefined):
-//                 obj[key] = deepMerge(a[key]);
-//                 break;
-//
-//             default:
-//                 obj[key] = deepMerge(a[key], b[key]);
-//         }
-//     }
-//     return obj;
-// };
-
 var niceBlue = '#1d62d5';
 var normalHL = 'rgba(0, 0, 0, 0.4)';
 var focusHL = 'rgba(0, 0, 0, 0.125)';
@@ -265,12 +214,17 @@ var baseTheme = {
     'input.border.normal': 'lightgray',
     'input.border.focus': niceBlue,
     'input.text.normal': 'black',
+    'input.label.text.normal': 'black',
+    'input.label.text.optional': niceBlue,
+    'input.label.text.required': '#F44336',
+    'input.bg.disabled': 'lightgray',
 
     'radio.circleColor': niceBlue,
     'radio.text.normal': 'black',
 
     'select.border.normal': 'lightgray',
     'select.border.focus': niceBlue,
+    'select.text.normal': 'black',
 
     'slider.track.bg.normal': 'lightgray',
     'slider.track.bg.value': niceBlue,
@@ -2421,6 +2375,12 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+    return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+} : function (obj) {
+    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+};
+
 var _extends = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
         var source = arguments[i];for (var key in source) {
@@ -2429,12 +2389,6 @@ var _extends = Object.assign || function (target) {
             }
         }
     }return target;
-};
-
-var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
 };
 
 function _toConsumableArray(arr) {
@@ -2451,7 +2405,39 @@ var verbs = {
     $set: function $set(prev, value) {
         return value;
     },
+    $unset: function $unset(prev, value) {
+        var copy = _extends({}, prev);
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+            for (var _iterator = value[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var key = _step.value;
+
+                delete copy[key];
+            }
+        } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                    _iterator.return();
+                }
+            } finally {
+                if (_didIteratorError) {
+                    throw _iteratorError;
+                }
+            }
+        }
+
+        return copy;
+    },
     $push: function $push(prev, value) {
+        return [].concat(_toConsumableArray(prev), [value]);
+    },
+    $append: function $append(prev, value) {
         return [].concat(_toConsumableArray(prev), _toConsumableArray(value));
     },
     $apply: function $apply(prev, value) {
@@ -2463,12 +2449,25 @@ var verbs = {
 };
 var checks = {
     $set: function $set(prev, value) {},
+    $unset: function $unset(prev, value) {
+        if ((typeof prev === "undefined" ? "undefined" : _typeof(prev)) !== 'object') {
+            throw new Error("Can only remove keys from an object");
+        }
+        if (Array.isArray(value) === false) {
+            throw new Error("List of keys must be an array");
+        }
+    },
     $push: function $push(prev, value) {
         if (Array.isArray(prev) === false) {
             throw new Error("Can only push to arrays");
         }
+    },
+    $append: function $append(prev, value) {
+        if (Array.isArray(prev) === false) {
+            throw new Error("Can only append to arrays");
+        }
         if (Array.isArray(value) === false) {
-            throw new Error("Push value must be an array");
+            throw new Error("Appended value must be an array");
         }
     },
     $apply: function $apply(prev, value) {
@@ -2521,27 +2520,27 @@ var internal_setValues = function internal_setValues(dest, key, n, value, create
 };
 var update = function update(source, obj) {
     var create = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
+    var _iteratorNormalCompletion2 = true;
+    var _didIteratorError2 = false;
+    var _iteratorError2 = undefined;
 
     try {
-        for (var _iterator = Object.keys(obj)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var key = _step.value;
+        for (var _iterator2 = Object.keys(obj)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var key = _step2.value;
 
             source = internal_setValues(source, key.split('.'), 0, obj[key], create);
         }
     } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
     } finally {
         try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-                _iterator.return();
+            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                _iterator2.return();
             }
         } finally {
-            if (_didIteratorError) {
-                throw _iteratorError;
+            if (_didIteratorError2) {
+                throw _iteratorError2;
             }
         }
     }
@@ -2836,22 +2835,6 @@ var Functional = function (_React$PureComponent) {
     return Functional;
 }(_react2.default.PureComponent);
 
-// class Dialog extends React.Component {
-//     constructor(props) {
-//         super(props);
-//     }
-//
-//     componentDidMount = () => {
-//     }
-//
-//     componentWillUpdate = () => {
-//     }
-//
-//     render = () => {
-//         return null;
-//     }
-// }
-
 _index2.default.style.add({
     "doric-dialog-base": {
         position: 'absolute',
@@ -2997,8 +2980,60 @@ var Test = function (_doric$baseComponent2) {
         _this3.render = function () {
             return _react2.default.createElement(
                 'div',
-                null,
-                _react2.default.createElement(_index2.default.slider, { value: _this3.state.n, onChange: _this3.linkState('n') })
+                { style: { overflow: 'hidden' } },
+                _react2.default.createElement(_index2.default.input.text, { value: _this3.state.t, onChange: _this3.linkState('t'), label: 'Some Label', disabled: true }),
+                _react2.default.createElement(_index2.default.input.text, { value: _this3.state.t, onChange: _this3.linkState('t'), label: 'Some Label', required: true }),
+                _react2.default.createElement(_index2.default.input.text, { value: _this3.state.t, onChange: _this3.linkState('t'), label: 'Some Label', optional: true }),
+                _react2.default.createElement(
+                    _index2.default.card,
+                    null,
+                    _react2.default.createElement(_index2.default.card.title, { main: 'Main Title', subtitle: 'subtitle', icon: images.laughingMan }),
+                    _react2.default.createElement(
+                        _index2.default.card.media,
+                        null,
+                        _react2.default.createElement(_index2.default.image, { height: '100%', source: images.bayoBG })
+                    ),
+                    'Some content',
+                    _react2.default.createElement(_index2.default.divider, null),
+                    'More content!',
+                    _react2.default.createElement(
+                        _index2.default.card.actions,
+                        null,
+                        _react2.default.createElement(_index2.default.button, { text: 'Normal' }),
+                        _react2.default.createElement(_index2.default.button, { text: 'Primary', primary: true }),
+                        _react2.default.createElement(_index2.default.button, { text: 'Danger', danger: true }),
+                        _react2.default.createElement(_index2.default.button, { text: 'Accent', accent: true })
+                    )
+                ),
+                _react2.default.createElement(_index2.default.checkbox, { checked: _this3.state.c, onChange: _this3.linkState('c'), label: 'Checkbox?' }),
+                _react2.default.createElement(_index2.default.toggle, { label: 'Toggle!', on: _this3.state.o, onChange: _this3.linkState('o') }),
+                _react2.default.createElement(
+                    _index2.default.select,
+                    { value: _this3.state.s, onChange: _this3.linkState('s') },
+                    0 .to(10).map(function (i) {
+                        return _react2.default.createElement(
+                            'option',
+                            { value: i },
+                            i
+                        );
+                    })
+                ),
+                _react2.default.createElement(
+                    _index2.default.collapse,
+                    { title: 'Collapse' },
+                    _react2.default.createElement(
+                        _index2.default.radio,
+                        { value: _this3.state.rv, onChange: _this3.linkState('rv') },
+                        0 .to(10).map(function (i) {
+                            return _react2.default.createElement(
+                                'option',
+                                { value: i },
+                                i
+                            );
+                        })
+                    )
+                ),
+                _react2.default.createElement(_index2.default.slider, { min: -100, max: 100, value: _this3.state.n, onChange: _this3.linkState('n') })
             );
         };
 
@@ -23518,8 +23553,10 @@ exports.default = function (props) {
         if (disabled !== true) {
             var e = _extends({}, evt, {
                 type: 'change',
-                value: checked === false
+                checked: checked === false
             });
+            e.target = evt.target;
+            e.target.value = e.checked;
             onChange(e);
         }
     };
@@ -23816,16 +23853,34 @@ _style2.default.add((_style$add = {
     color: _theme2.default.input.text.normal
 }), _defineProperty(_style$add, "doric-input > input:focus, doric-input > textarea:focus", {
     borderBottomColor: _theme2.default.input.border.focus
+}), _defineProperty(_style$add, "doric-input-label", {
+    display: 'block',
+    padding: 2,
+    color: _theme2.default.input.label.text.normal,
+    fontSize: 12
+}), _defineProperty(_style$add, "doric-input-label[required='true']", {
+    color: _theme2.default.input.label.text.required
+}), _defineProperty(_style$add, "doric-input-label[optional='true']", {
+    color: _theme2.default.input.label.text.optional
+}), _defineProperty(_style$add, "doric-input > input[disabled]", {
+    backgroundColor: _theme2.default.input.bg.disabled,
+    borderColor: _theme2.default.input.bg.disabled
 }), _style$add));
 var TextInput = function TextInput(props, type, Element) {
     var wrapperStyle = props.wrapperStyle,
         wrapperClassName = props.wrapperClassName,
         value = props.value,
+        _props$label = props.label,
+        label = _props$label === undefined ? null : _props$label,
+        required = props.required,
+        optional = props.optional,
         _props$onChange = props.onChange,
         onChange = _props$onChange === undefined ? function () {} : _props$onChange,
-        passThrough = _objectWithoutProperties(props, ['wrapperStyle', 'wrapperClassName', 'value', 'onChange']);
+        passThrough = _objectWithoutProperties(props, ['wrapperStyle', 'wrapperClassName', 'value', 'label', 'required', 'optional', 'onChange']);
 
-    return _react2.default.createElement('doric-input', { type: type, 'class': wrapperClassName, style: wrapperStyle }, _react2.default.createElement(Element, _extends({}, passThrough, { type: type, value: value, onChange: onChange })));
+    var labelElem = label === null ? null : _react2.default.createElement('doric-input-label', { required: required, optional: optional }, label);
+
+    return _react2.default.createElement('doric-input', { type: type, 'class': wrapperClassName, style: wrapperStyle }, labelElem, _react2.default.createElement(Element, _extends({}, passThrough, { type: type, value: value, onChange: onChange })));
 };
 
 var inputs = {
@@ -24050,8 +24105,10 @@ _style2.default.add({
         backgroundColor: 'transparent',
         borderWidth: 0,
         borderBottom: '2px solid ' + _theme2.default.select.border.normal,
+        color: _theme2.default.select.text.normal,
         height: 30,
-        borderRadius: 0
+        borderRadius: 0,
+        fontSize: 16
     },
     "doric-select::after": {
         content: '"' + _icon2.default.icons["ion-arrow-down-b"] + '"',
@@ -24061,7 +24118,7 @@ _style2.default.add({
         left: 'auto',
         top: '50%',
         right: 5,
-        color: '#000',
+        color: _theme2.default.select.text.normal,
         transform: 'translateY(-50%)'
     },
     "doric-select > select:focus": {
@@ -24152,13 +24209,13 @@ _style2.default.add({
         width: '100%',
         height: '100%',
         zIndex: '+1',
-        opacity: 0.5
+        opacity: 0
     },
     'doric-slider > doric-slider-track-bg': {
         position: 'absolute',
-        top: 8,
+        top: 9,
         left: 10,
-        bottom: 8,
+        bottom: 9,
         right: 10,
         backgroundColor: _theme2.default.slider.track.bg.normal
     },
@@ -24178,7 +24235,8 @@ _style2.default.add({
         height: 16,
         borderRadius: 10,
         backgroundColor: _theme2.default.slider.thumb.normal,
-        transform: 'translate(-50%, -50%)'
+        transform: 'translate(-50%, -50%)',
+        boxShadow: '0px 0px 2px rgba(0, 0, 0, 0.25)'
     }
 });
 
@@ -24201,7 +24259,11 @@ var Slider = function (_React$PureComponent) {
                 _this$props$onChange = _this$props.onChange,
                 onChange = _this$props$onChange === undefined ? function () {} : _this$props$onChange;
 
-            return _react2.default.createElement('doric-slider', { style: { position: 'relative' } }, _react2.default.createElement('input', _extends({ type: 'range' }, { min: min, max: max }, { value: value, onChange: onChange })), _react2.default.createElement('doric-slider-track-bg', null, _react2.default.createElement('doric-slider-track', { style: { width: value * 10 + '%' } })));
+            var range = max - min;
+            var dist = value - min;
+            var pos = dist / range * 100;
+
+            return _react2.default.createElement('doric-slider', { style: { position: 'relative' } }, _react2.default.createElement('input', _extends({ type: 'range' }, { min: min, max: max }, { value: value, onChange: onChange })), _react2.default.createElement('doric-slider-track-bg', null, _react2.default.createElement('doric-slider-track', { style: { width: pos + '%' } })));
         };
 
         return _this;
@@ -24522,7 +24584,10 @@ exports.default = function (props) {
 
     var onTap = function onTap(evt) {
         if (disabled !== true) {
-            onChange(_extends({}, evt, { type: 'change', value: on === false }));
+            var e = _extends({}, evt, { type: 'change', on: on === false });
+            e.target = evt.target;
+            e.target.value = e.on;
+            onChange(e);
         }
     };
     var onKeyDown = function onKeyDown(evt) {
