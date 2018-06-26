@@ -12,6 +12,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactLoaderSpinner = require('react-loader-spinner');
+
+var _reactLoaderSpinner2 = _interopRequireDefault(_reactLoaderSpinner);
+
 var _theme = require('../theme');
 
 var _theme2 = _interopRequireDefault(_theme);
@@ -33,7 +37,8 @@ var inputSelectors = inputTypes.map(function (type) {
 _style2.default.add((_style$add = {
     "doric-input": {
         margin: 2,
-        display: 'block'
+        display: 'block',
+        position: 'relative'
     },
     "doric-input > input, doric-input > textarea": {
         width: '100%',
@@ -72,21 +77,31 @@ var TextInput = function TextInput(props, type, Element) {
         label = _props$label === undefined ? null : _props$label,
         required = props.required,
         optional = props.optional,
+        _props$loader = props.loader,
+        loader = _props$loader === undefined ? false : _props$loader,
+        _props$loaderType = props.loaderType,
+        loaderType = _props$loaderType === undefined ? 'Oval' : _props$loaderType,
         _props$onChange = props.onChange,
         onChange = _props$onChange === undefined ? function () {} : _props$onChange,
-        passThrough = _objectWithoutProperties(props, ['wrapperStyle', 'wrapperClassName', 'value', 'label', 'required', 'optional', 'onChange']);
+        passThrough = _objectWithoutProperties(props, ['wrapperStyle', 'wrapperClassName', 'value', 'label', 'required', 'optional', 'loader', 'loaderType', 'onChange']);
 
     var labelElem = label === null ? null : _react2.default.createElement(
         'doric-input-label',
         { required: required, optional: optional },
         label
     );
+    var loaderElem = loader !== true ? null : _react2.default.createElement(
+        'div',
+        { style: { position: 'absolute', left: 'auto', right: 4, bottom: 0 } },
+        _react2.default.createElement(_reactLoaderSpinner2.default, { type: loaderType, width: 20, height: 20 })
+    );
 
     return _react2.default.createElement(
         'doric-input',
         { type: type, 'class': wrapperClassName, style: wrapperStyle },
         labelElem,
-        _react2.default.createElement(Element, _extends({}, passThrough, { type: type, value: value, onChange: onChange }))
+        _react2.default.createElement(Element, _extends({}, passThrough, { type: type, value: value, onChange: onChange })),
+        loaderElem
     );
 };
 

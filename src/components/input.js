@@ -1,5 +1,7 @@
 import React from 'react';
 
+import Loader from 'react-loader-spinner';
+
 import theme from '../theme';
 import style from '../style';
 
@@ -14,7 +16,8 @@ const inputSelectors = inputTypes.map(type => `doric-input[type='${type}'] > inp
 style.add({
     "doric-input": {
         margin: 2,
-        display: 'block'
+        display: 'block',
+        position: 'relative'
     },
     "doric-input > input, doric-input > textarea": {
         width: '100%',
@@ -59,17 +62,27 @@ const TextInput = (props, type, Element) => {
         label = null,
         required,
         optional,
+        loader = false,
+        loaderType = 'Oval',
         onChange = (() => {}),
         ...passThrough
     } = props;
-    let labelElem = (label === null)
+    const labelElem = (label === null)
         ? null
         : <doric-input-label {...{required, optional}}>{label}</doric-input-label>;
+    const loaderElem = (loader !== true)
+        ? null
+        : (
+            <div style={{position: 'absolute', left: 'auto', right: 4, bottom: 0}}>
+                <Loader type={loaderType} width={20} height={20} />
+            </div>
+        );
 
     return (
         <doric-input type={type} class={wrapperClassName} style={wrapperStyle}>
             {labelElem}
             <Element {...passThrough} type={type} value={value} onChange={onChange} />
+            {loaderElem}
         </doric-input>
     );
 };

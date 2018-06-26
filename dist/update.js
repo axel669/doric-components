@@ -54,6 +54,9 @@ var verbs = {
     },
     $filter: function $filter(prev, value) {
         return prev.filter(value);
+    },
+    $merge: function $merge(prev, value) {
+        return _extends({}, prev, value);
     }
 };
 var checks = {
@@ -90,6 +93,14 @@ var checks = {
         }
         if (typeof value !== 'function') {
             throw new Error("Value must be a function");
+        }
+    },
+    $merge: function $merge(prev, value) {
+        if ((typeof prev === "undefined" ? "undefined" : _typeof(prev)) !== 'object') {
+            throw new Error("Can't merge non-objects (source is bad)");
+        }
+        if ((typeof value === "undefined" ? "undefined" : _typeof(value)) !== 'object') {
+            throw new Error("Can't merge non-objects (value is bad)");
         }
     }
 };

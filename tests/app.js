@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 23);
+/******/ 	return __webpack_require__(__webpack_require__.s = 24);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -71,9 +71,9 @@
 /* WEBPACK VAR INJECTION */(function(process) {
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(24);
-} else {
   module.exports = __webpack_require__(25);
+} else {
+  module.exports = __webpack_require__(26);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
@@ -1932,9 +1932,9 @@ if (process.env.NODE_ENV === 'production') {
   // DCE check should happen before ReactDOM bundle executes so that
   // DevTools can report bad minification during injection.
   checkDCE();
-  module.exports = __webpack_require__(26);
+  module.exports = __webpack_require__(27);
 } else {
-  module.exports = __webpack_require__(29);
+  module.exports = __webpack_require__(30);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
@@ -2335,7 +2335,7 @@ module.exports = shallowEqual;
  * 
  */
 
-var isTextNode = __webpack_require__(27);
+var isTextNode = __webpack_require__(28);
 
 /*eslint-disable no-bitwise */
 
@@ -2445,6 +2445,9 @@ var verbs = {
     },
     $filter: function $filter(prev, value) {
         return prev.filter(value);
+    },
+    $merge: function $merge(prev, value) {
+        return _extends({}, prev, value);
     }
 };
 var checks = {
@@ -2481,6 +2484,14 @@ var checks = {
         }
         if (typeof value !== 'function') {
             throw new Error("Value must be a function");
+        }
+    },
+    $merge: function $merge(prev, value) {
+        if ((typeof prev === "undefined" ? "undefined" : _typeof(prev)) !== 'object') {
+            throw new Error("Can't merge non-objects (source is bad)");
+        }
+        if ((typeof value === "undefined" ? "undefined" : _typeof(value)) !== 'object') {
+            throw new Error("Can't merge non-objects (value is bad)");
         }
     }
 };
@@ -2721,6 +2732,12 @@ var GridBreak = exports.GridBreak = function GridBreak() {
 /* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = __webpack_require__(44);
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 
@@ -2736,7 +2753,7 @@ var _reactDom = __webpack_require__(13);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _index = __webpack_require__(34);
+var _index = __webpack_require__(35);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -2982,8 +2999,8 @@ var Test = function (_doric$baseComponent2) {
                 'div',
                 { style: { overflow: 'hidden' } },
                 _react2.default.createElement(_index2.default.input.text, { value: _this3.state.t, onChange: _this3.linkState('t'), label: 'Some Label', disabled: true }),
-                _react2.default.createElement(_index2.default.input.text, { value: _this3.state.t, onChange: _this3.linkState('t'), label: 'Some Label', required: true }),
-                _react2.default.createElement(_index2.default.input.text, { value: _this3.state.t, onChange: _this3.linkState('t'), label: 'Some Label', optional: true }),
+                _react2.default.createElement(_index2.default.input.text, { value: _this3.state.t, onChange: _this3.linkState('t'), label: 'Some Label', required: true, loader: true }),
+                _react2.default.createElement(_index2.default.input.text, { value: _this3.state.t, onChange: _this3.linkState('t'), label: 'Some Label', optional: true, loader: true, loaderType: 'TailSpin' }),
                 _react2.default.createElement(
                     _index2.default.card,
                     null,
@@ -3054,7 +3071,7 @@ var Test = function (_doric$baseComponent2) {
 _index2.default.init(_react2.default.createElement(Test, null), document.querySelector("div"));
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3083,7 +3100,7 @@ assign:k}},Y={default:X},Z=Y&&X||Y;module.exports=Z.default?Z.default:Z;
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4577,7 +4594,7 @@ module.exports = react;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4824,7 +4841,7 @@ var Ai={default:vi},Bi=Ai&&vi||Ai;module.exports=Bi.default?Bi.default:Bi;
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4839,7 +4856,7 @@ var Ai={default:vi},Bi=Ai&&vi||Ai;module.exports=Bi.default?Bi.default:Bi;
  * @typechecks
  */
 
-var isNode = __webpack_require__(28);
+var isNode = __webpack_require__(29);
 
 /**
  * @param {*} object The object to check.
@@ -4852,7 +4869,7 @@ function isTextNode(object) {
 module.exports = isTextNode;
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4880,7 +4897,7 @@ function isNode(object) {
 module.exports = isNode;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4912,8 +4929,8 @@ var getActiveElement = __webpack_require__(17);
 var shallowEqual = __webpack_require__(18);
 var containsNode = __webpack_require__(19);
 var emptyObject = __webpack_require__(10);
-var hyphenateStyleName = __webpack_require__(30);
-var camelizeStyleName = __webpack_require__(32);
+var hyphenateStyleName = __webpack_require__(31);
+var camelizeStyleName = __webpack_require__(33);
 
 // Relying on the `invariant()` implementation lets us
 // have preserve the format and params in the www builds.
@@ -22318,7 +22335,7 @@ module.exports = reactDom;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22333,7 +22350,7 @@ module.exports = reactDom;
 
 
 
-var hyphenate = __webpack_require__(31);
+var hyphenate = __webpack_require__(32);
 
 var msPattern = /^ms-/;
 
@@ -22360,7 +22377,7 @@ function hyphenateStyleName(string) {
 module.exports = hyphenateStyleName;
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22396,7 +22413,7 @@ function hyphenate(string) {
 module.exports = hyphenate;
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22411,7 +22428,7 @@ module.exports = hyphenate;
 
 
 
-var camelize = __webpack_require__(33);
+var camelize = __webpack_require__(34);
 
 var msPattern = /^-ms-/;
 
@@ -22439,7 +22456,7 @@ function camelizeStyleName(string) {
 module.exports = camelizeStyleName;
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22474,7 +22491,7 @@ function camelize(string) {
 module.exports = camelize;
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22488,9 +22505,9 @@ var _reactDom = __webpack_require__(13);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-__webpack_require__(35);
+__webpack_require__(36);
 
-var _ssjs = __webpack_require__(36);
+var _ssjs = __webpack_require__(37);
 
 var _ssjs2 = _interopRequireDefault(_ssjs);
 
@@ -22502,25 +22519,25 @@ var _update = __webpack_require__(20);
 
 var _update2 = _interopRequireDefault(_update);
 
-var _baseComponent = __webpack_require__(37);
+var _baseComponent = __webpack_require__(38);
 
 var _button = __webpack_require__(14);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _card = __webpack_require__(38);
+var _card = __webpack_require__(39);
 
 var _card2 = _interopRequireDefault(_card);
 
-var _checkbox = __webpack_require__(39);
+var _checkbox = __webpack_require__(40);
 
 var _checkbox2 = _interopRequireDefault(_checkbox);
 
-var _collapse = __webpack_require__(40);
+var _collapse = __webpack_require__(41);
 
 var _collapse2 = _interopRequireDefault(_collapse);
 
-var _divider = __webpack_require__(41);
+var _divider = __webpack_require__(42);
 
 var _divider2 = _interopRequireDefault(_divider);
 
@@ -22534,29 +22551,29 @@ var _image = __webpack_require__(21);
 
 var _image2 = _interopRequireDefault(_image);
 
-var _input = __webpack_require__(42);
+var _input = __webpack_require__(43);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _radio = __webpack_require__(43);
+var _radio = __webpack_require__(59);
 
 var _radio2 = _interopRequireDefault(_radio);
 
-var _select = __webpack_require__(44);
+var _select = __webpack_require__(60);
 
 var _select2 = _interopRequireDefault(_select);
 
-var _slider = __webpack_require__(45);
+var _slider = __webpack_require__(61);
 
 var _slider2 = _interopRequireDefault(_slider);
 
-var _tabs = __webpack_require__(46);
+var _tabs = __webpack_require__(62);
 
-var _toggle = __webpack_require__(47);
+var _toggle = __webpack_require__(63);
 
 var _toggle2 = _interopRequireDefault(_toggle);
 
-var _reactLoaderSpinner = __webpack_require__(48);
+var _reactLoaderSpinner = __webpack_require__(23);
 
 var _reactLoaderSpinner2 = _interopRequireDefault(_reactLoaderSpinner);
 
@@ -22611,7 +22628,7 @@ var doric = {
 exports.default = doric;
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22976,7 +22993,7 @@ exports.default = doric;
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23151,7 +23168,7 @@ exports.default = doric;
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23267,7 +23284,7 @@ var PureBaseComponent = exports.PureBaseComponent = function (_React$PureCompone
 ;
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23428,7 +23445,7 @@ Card.title = function (props) {
 exports.default = Card;
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23571,7 +23588,7 @@ exports.default = function (props) {
 };
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23735,7 +23752,7 @@ var _initialiseProps = function _initialiseProps() {
 exports.default = Collapse;
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23776,7 +23793,7 @@ var Divider = function Divider(props) {
 exports.default = Divider;
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23801,6 +23818,10 @@ var _style$add;
 var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _reactLoaderSpinner = __webpack_require__(23);
+
+var _reactLoaderSpinner2 = _interopRequireDefault(_reactLoaderSpinner);
 
 var _theme = __webpack_require__(2);
 
@@ -23835,7 +23856,8 @@ var inputSelectors = inputTypes.map(function (type) {
 _style2.default.add((_style$add = {
     "doric-input": {
         margin: 2,
-        display: 'block'
+        display: 'block',
+        position: 'relative'
     },
     "doric-input > input, doric-input > textarea": {
         width: '100%',
@@ -23874,13 +23896,18 @@ var TextInput = function TextInput(props, type, Element) {
         label = _props$label === undefined ? null : _props$label,
         required = props.required,
         optional = props.optional,
+        _props$loader = props.loader,
+        loader = _props$loader === undefined ? false : _props$loader,
+        _props$loaderType = props.loaderType,
+        loaderType = _props$loaderType === undefined ? 'Oval' : _props$loaderType,
         _props$onChange = props.onChange,
         onChange = _props$onChange === undefined ? function () {} : _props$onChange,
-        passThrough = _objectWithoutProperties(props, ['wrapperStyle', 'wrapperClassName', 'value', 'label', 'required', 'optional', 'onChange']);
+        passThrough = _objectWithoutProperties(props, ['wrapperStyle', 'wrapperClassName', 'value', 'label', 'required', 'optional', 'loader', 'loaderType', 'onChange']);
 
     var labelElem = label === null ? null : _react2.default.createElement('doric-input-label', { required: required, optional: optional }, label);
+    var loaderElem = loader !== true ? null : _react2.default.createElement('div', { style: { position: 'absolute', left: 'auto', right: 4, bottom: 0 } }, _react2.default.createElement(_reactLoaderSpinner2.default, { type: loaderType, width: 20, height: 20 }));
 
-    return _react2.default.createElement('doric-input', { type: type, 'class': wrapperClassName, style: wrapperStyle }, labelElem, _react2.default.createElement(Element, _extends({}, passThrough, { type: type, value: value, onChange: onChange })));
+    return _react2.default.createElement('doric-input', { type: type, 'class': wrapperClassName, style: wrapperStyle }, labelElem, _react2.default.createElement(Element, _extends({}, passThrough, { type: type, value: value, onChange: onChange })), loaderElem);
 };
 
 var inputs = {
@@ -23923,696 +23950,12 @@ try {
 exports.default = inputs;
 
 /***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _button = __webpack_require__(14);
-
-var _button2 = _interopRequireDefault(_button);
-
-var _icon = __webpack_require__(5);
-
-var _icon2 = _interopRequireDefault(_icon);
-
-var _grid = __webpack_require__(22);
-
-var _style = __webpack_require__(1);
-
-var _style2 = _interopRequireDefault(_style);
-
-var _theme = __webpack_require__(2);
-
-var _theme2 = _interopRequireDefault(_theme);
-
-var _util = __webpack_require__(4);
-
-function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _objectWithoutProperties(obj, keys) {
-    var target = {};for (var i in obj) {
-        if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
-    }return target;
-}
-
-_style2.default.add({
-    "doric-radio-group": {
-        display: 'block',
-        padding: 2
-    },
-    ".doric-radio-item": {
-        margin: 0,
-        textAlign: 'left',
-        paddingLeft: 20
-    },
-    ".doric-radio-item doric-icon": {
-        position: 'absolute',
-        left: 0,
-        top: '50%',
-        transform: 'translateY(-50%)',
-        color: _theme2.default.radio.circleColor
-    },
-    "doric-button.doric-radio-item": {
-        color: _theme2.default.radio.text.normal
-    }
-});
-
-var defaultContainer = function defaultContainer(props) {
-    return _react2.default.createElement(_react2.default.Fragment, null, props.children);
-};
-defaultContainer.RadioItem = function (props) {
-    return _react2.default.createElement(_react2.default.Fragment, null, props.children);
-};
-var Radio = function Radio(props) {
-    var selectedIndex = props.selectedIndex,
-        value = props.value,
-        children = props.children,
-        _props$onChange = props.onChange,
-        onChange = _props$onChange === undefined ? function () {} : _props$onChange,
-        _props$layout = props.layout,
-        layout = _props$layout === undefined ? { container: defaultContainer, itemProps: function itemProps(props) {
-            return props;
-        } } : _props$layout,
-        rest = _objectWithoutProperties(props, ['selectedIndex', 'value', 'children', 'onChange', 'layout']);
-
-    var changeHandler = function changeHandler(index, value) {
-        return function (evt) {
-            if (index !== selectedIndex) {
-                onChange({
-                    target: {
-                        selectedIndex: index,
-                        value: value
-                    },
-                    type: 'change'
-                });
-            }
-        };
-    };
-    // const Container = layout.container || (props => <React.Fragment>{props.children}</React.Fragment>);
-    var Container = layout.container;
-    var Item = Container.RadioItem;
-    var itemPropsFunc = layout.itemProps;
-    var selected = false;
-    var options = _react2.default.Children.toArray(children).map(function (child, index) {
-        var icon = "ion-android-radio-button-off";
-
-        var valueMatch = value !== undefined && value === child.props.value;
-        var isSelected = selected === false && (index === selectedIndex || valueMatch === true);
-        if (isSelected === true) {
-            icon = "ion-android-radio-button-on";
-            selected = true;
-        }
-        var itemProps = itemPropsFunc({ index: index, key: index, selected: isSelected }, rest);
-        // console.log(Item, itemProps);
-
-        return _react2.default.createElement(Item, itemProps, _react2.default.createElement(_button2.default, { className: 'doric-radio-item', selected: isSelected, block: true, onTap: changeHandler(index, child.props.value) }, _react2.default.createElement(_icon2.default, { icon: icon }), child.props.label || child.props.children));
-    });
-
-    return _react2.default.createElement('doric-radio-group', rest, _react2.default.createElement(Container, null, options));
-};
-
-_grid.Grid.RadioItem = function (props) {
-    return _react2.default.createElement(_grid.Col, props, props.children);
-};
-
-exports.default = Radio;
-
-/***/ }),
 /* 44 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _icon = __webpack_require__(5);
-
-var _icon2 = _interopRequireDefault(_icon);
-
-var _style = __webpack_require__(1);
-
-var _style2 = _interopRequireDefault(_style);
-
-var _theme = __webpack_require__(2);
-
-var _theme2 = _interopRequireDefault(_theme);
-
-var _util = __webpack_require__(4);
-
-var _util2 = _interopRequireDefault(_util);
-
-function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _objectWithoutProperties(obj, keys) {
-    var target = {};for (var i in obj) {
-        if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
-    }return target;
-}
-
-_style2.default.add({
-    "doric-select": {
-        display: 'block',
-        margin: 2,
-        position: 'relative'
-    },
-    "doric-select > select": {
-        width: '100%',
-        WebkitAppearance: 'none',
-        MozAppearance: 'none',
-        padding: '3px 5px',
-        textAlign: 'center',
-        backgroundColor: 'transparent',
-        borderWidth: 0,
-        borderBottom: '2px solid ' + _theme2.default.select.border.normal,
-        color: _theme2.default.select.text.normal,
-        height: 30,
-        borderRadius: 0,
-        fontSize: 16
-    },
-    "doric-select::after": {
-        content: '"' + _icon2.default.icons["ion-arrow-down-b"] + '"',
-        fontFamily: "Ionic",
-        fontSize: 16,
-        position: 'absolute',
-        left: 'auto',
-        top: '50%',
-        right: 5,
-        color: _theme2.default.select.text.normal,
-        transform: 'translateY(-50%)'
-    },
-    "doric-select > select:focus": {
-        borderBottomColor: _theme2.default.select.border.focus
-    }
-});
-var Select = function Select(props) {
-    var wrapperStyle = props.wrapperStyle,
-        wrapperClassName = props.wrapperClassName,
-        selectProps = _objectWithoutProperties(props, ['wrapperStyle', 'wrapperClassName']);
-
-    return _react2.default.createElement('doric-select', { style: wrapperStyle, 'class': wrapperClassName }, _react2.default.createElement('select', selectProps));
-};
-
-exports.default = Select;
-
-/***/ }),
-/* 45 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-        var source = arguments[i];for (var key in source) {
-            if (Object.prototype.hasOwnProperty.call(source, key)) {
-                target[key] = source[key];
-            }
-        }
-    }return target;
-};
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _theme = __webpack_require__(2);
-
-var _theme2 = _interopRequireDefault(_theme);
-
-var _style = __webpack_require__(1);
-
-var _style2 = _interopRequireDefault(_style);
-
-function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
-}
-
-function _possibleConstructorReturn(self, call) {
-    if (!self) {
-        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
-    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-_style2.default.add({
-    "doric-slider": {
-        margin: '4px 12px',
-        display: 'block',
-        height: 20
-    },
-    "doric-slider > input[type='range']": {
-        WebkitAppearance: 'none',
-        backgroundColor: 'transparent',
-        margin: 0,
-        padding: 0,
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        zIndex: '+1',
-        opacity: 0
-    },
-    'doric-slider > doric-slider-track-bg': {
-        position: 'absolute',
-        top: 9,
-        left: 10,
-        bottom: 9,
-        right: 10,
-        backgroundColor: _theme2.default.slider.track.bg.normal
-    },
-    'doric-slider doric-slider-track': {
-        backgroundColor: _theme2.default.slider.track.bg.value,
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        height: '100%'
-    },
-    'doric-slider doric-slider-track::after': {
-        content: '""',
-        position: 'absolute',
-        left: '100%',
-        top: '50%',
-        width: 16,
-        height: 16,
-        borderRadius: 10,
-        backgroundColor: _theme2.default.slider.thumb.normal,
-        transform: 'translate(-50%, -50%)',
-        boxShadow: '0px 0px 2px rgba(0, 0, 0, 0.25)'
-    }
-});
-
-var Slider = function (_React$PureComponent) {
-    _inherits(Slider, _React$PureComponent);
-
-    function Slider(props) {
-        _classCallCheck(this, Slider);
-
-        var _this = _possibleConstructorReturn(this, (Slider.__proto__ || Object.getPrototypeOf(Slider)).call(this, props));
-
-        _this.render = function () {
-            var _this$props = _this.props,
-                _this$props$min = _this$props.min,
-                min = _this$props$min === undefined ? 0 : _this$props$min,
-                _this$props$max = _this$props.max,
-                max = _this$props$max === undefined ? 10 : _this$props$max,
-                _this$props$value = _this$props.value,
-                value = _this$props$value === undefined ? 0 : _this$props$value,
-                _this$props$onChange = _this$props.onChange,
-                onChange = _this$props$onChange === undefined ? function () {} : _this$props$onChange;
-
-            var range = max - min;
-            var dist = value - min;
-            var pos = dist / range * 100;
-
-            return _react2.default.createElement('doric-slider', { style: { position: 'relative' } }, _react2.default.createElement('input', _extends({ type: 'range' }, { min: min, max: max }, { value: value, onChange: onChange })), _react2.default.createElement('doric-slider-track-bg', null, _react2.default.createElement('doric-slider-track', { style: { width: pos + '%' } })));
-        };
-
-        return _this;
-    }
-
-    return Slider;
-}(_react2.default.PureComponent);
-
-exports.default = Slider;
-
-/***/ }),
-/* 46 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.Tab = exports.Tabs = undefined;
-
-var _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-        var source = arguments[i];for (var key in source) {
-            if (Object.prototype.hasOwnProperty.call(source, key)) {
-                target[key] = source[key];
-            }
-        }
-    }return target;
-};
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _customListeners = __webpack_require__(8);
-
-var _customListeners2 = _interopRequireDefault(_customListeners);
-
-var _theme = __webpack_require__(2);
-
-var _theme2 = _interopRequireDefault(_theme);
-
-var _style = __webpack_require__(1);
-
-var _style2 = _interopRequireDefault(_style);
-
-var _util = __webpack_require__(4);
-
-var _util2 = _interopRequireDefault(_util);
-
-function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
-}
-
-function _possibleConstructorReturn(self, call) {
-    if (!self) {
-        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
-    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-_style2.default.add({
-    "doric-tab-bar": {
-        display: 'table',
-        tableLayout: 'fixed',
-        width: '100%'
-    },
-    "doric-tab-title": {
-        display: 'table-cell',
-        borderBottom: '2px solid ' + _theme2.default.tabs.tab.border.normal,
-        color: _theme2.default.tabs.tab.text.normal,
-        backgroundColor: _theme2.default.tabs.tab.bg.normal,
-        textAlign: 'center',
-        verticalAlign: 'middle',
-        padding: 7,
-        cursor: 'pointer',
-        position: 'relative'
-    },
-    "doric-tab-content": {
-        display: 'block'
-    },
-    "doric-tab-content[active='false']": {
-        display: 'none'
-    },
-    "doric-tab-title[active='true']": {
-        borderBottomColor: _theme2.default.tabs.tab.border.active,
-        color: _theme2.default.tabs.tab.text.active,
-        backgroundColor: _theme2.default.tabs.tab.bg.active
-    },
-    "doric-tab-title::after": _extends({}, _util2.default.background.after.base),
-    "doric-tab-title[data-tap-active]::after": _extends({}, _util2.default.background.after.colorize(_theme2.default.tabs.tab.hl.normal))
-});
-
-var Tabs = function (_React$Component) {
-    _inherits(Tabs, _React$Component);
-
-    function Tabs(props) {
-        _classCallCheck(this, Tabs);
-
-        var _this = _possibleConstructorReturn(this, (Tabs.__proto__ || Object.getPrototypeOf(Tabs)).call(this, props));
-
-        _initialiseProps.call(_this);
-
-        return _this;
-    }
-
-    return Tabs;
-}(_react2.default.Component);
-
-var _initialiseProps = function _initialiseProps() {
-    var _this2 = this;
-
-    this.componentDidUpdate = function (prevProps) {
-        if (prevProps.selectedIndex !== _this2.props.selectedIndex) {
-            var child = _this2.children[_this2.props.selectedIndex];
-            var onActive = child.props.onActive || function () {};
-            onActive(child);
-        }
-    };
-
-    this.changeTab = function (index) {
-        var _props$onChange = _this2.props.onChange,
-            onChange = _props$onChange === undefined ? function () {} : _props$onChange;
-
-        onChange({
-            target: {
-                selectedIndex: index
-            },
-            tab: _this2.children[index],
-            type: 'change'
-        });
-    };
-
-    this.render = function () {
-        var selectedIndex = _this2.props.selectedIndex;
-
-        var children = _react2.default.Children.toArray(_this2.props.children);
-        _this2.children = children;
-
-        var tabs = children.map(function (_ref, index) {
-            var props = _ref.props;
-            return _react2.default.createElement('doric-tab-title', { active: index === selectedIndex, key: index }, _react2.default.createElement(_customListeners2.default, { listeners: { onTap: function onTap() {
-                        return _this2.changeTab(index);
-                    } } }), props.label);
-        });
-
-        var content = children.map(function (child, index) {
-            return _react2.default.createElement('doric-tab-content', { active: index === selectedIndex, key: index }, child.props.children);
-        });
-
-        return _react2.default.createElement('doric-tabs', null, _react2.default.createElement('doric-tab-bar', null, tabs), content);
-    };
-};
-
-var Tab = function Tab() {
-    return null;
-};
-
-exports.Tabs = Tabs;
-exports.Tab = Tab;
-
-/***/ }),
-/* 47 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-        var source = arguments[i];for (var key in source) {
-            if (Object.prototype.hasOwnProperty.call(source, key)) {
-                target[key] = source[key];
-            }
-        }
-    }return target;
-};
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _theme = __webpack_require__(2);
-
-var _theme2 = _interopRequireDefault(_theme);
-
-var _style = __webpack_require__(1);
-
-var _style2 = _interopRequireDefault(_style);
-
-var _icon = __webpack_require__(5);
-
-var _icon2 = _interopRequireDefault(_icon);
-
-var _customListeners = __webpack_require__(8);
-
-var _customListeners2 = _interopRequireDefault(_customListeners);
-
-var _util = __webpack_require__(4);
-
-var _util2 = _interopRequireDefault(_util);
-
-function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _objectWithoutProperties(obj, keys) {
-    var target = {};for (var i in obj) {
-        if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
-    }return target;
-}
-
-var size = 30;
-_style2.default.add({
-    "doric-toggle": {
-        display: 'flex',
-        position: 'relative',
-        top: 0,
-        left: 0,
-        paddingLeft: size * 2 + 10,
-        alignItems: 'center'
-    },
-    "doric-toggle[disabled='true']": {
-        opacity: 0.7
-    },
-    "doric-toggle::after": _extends({}, _util2.default.background.after.base),
-    "doric-toggle[data-tap-active]:not([disabled='true'])::after": _extends({}, _util2.default.background.after.colorize(_theme2.default.toggle.hl.normal)),
-    "doric-toggle:focus::after": {
-        backgroundColor: _theme2.default.toggle.hl.focus
-    },
-    "doric-toggle > doric-toggle-content": {
-        flexGrow: 1,
-        padding: 5
-    },
-    "doric-toggle > doric-toggle-thumb": {
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        left: 0,
-        width: size * 2 + 10,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    "doric-toggle-thumb > div": {
-        position: 'relative',
-        top: 0,
-        left: 0,
-        width: size * 2,
-        height: 20,
-        backgroundColor: _theme2.default.toggle.track.off,
-        transition: 'background-color 100ms linear',
-        borderRadius: 5
-    },
-    "doric-toggle-thumb > div::after": {
-        content: '""',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: size,
-        height: 20,
-        backgroundColor: _theme2.default.toggle.thumb.off,
-        transition: 'transform 100ms linear',
-        borderRadius: 5
-    },
-    "doric-toggle-thumb[on='true'] > div": {
-        backgroundColor: _theme2.default.toggle.track.on
-    },
-    "doric-toggle-thumb[on='true'] > div::after": {
-        backgroundColor: _theme2.default.toggle.thumb.on,
-        transform: 'translateX(' + size + 'px)'
-    },
-    "doric-toggle[toggleRight='true']": {
-        paddingLeft: 0,
-        paddingRight: size * 2 + 10
-    },
-    "doric-toggle[toggleRight='true'] > doric-toggle-thumb": {
-        left: 'auto',
-        right: 0
-    },
-    "doric-toggle[alignRight]": {
-        textAlign: 'right'
-    }
-});
-
-exports.default = function (props) {
-    var label = props.label,
-        children = props.children,
-        on = props.on,
-        _props$onChange = props.onChange,
-        onChange = _props$onChange === undefined ? function () {} : _props$onChange,
-        _props$onKeyDown = props.onKeyDown,
-        passedOKD = _props$onKeyDown === undefined ? function () {} : _props$onKeyDown,
-        _props$tabIndex = props.tabIndex,
-        tabIndex = _props$tabIndex === undefined ? 0 : _props$tabIndex,
-        passThrough = _objectWithoutProperties(props, ['label', 'children', 'on', 'onChange', 'onKeyDown', 'tabIndex']);
-
-    var disabled = props.disabled;
-
-    var onTap = function onTap(evt) {
-        if (disabled !== true) {
-            var e = _extends({}, evt, { type: 'change', on: on === false });
-            e.target = evt.target;
-            e.target.value = e.on;
-            onChange(e);
-        }
-    };
-    var onKeyDown = function onKeyDown(evt) {
-        passedOKD(evt);
-        if (evt.key === ' ' || evt.key === 'Enter') {
-            onTap(evt);
-        }
-    };
-
-    return _react2.default.createElement('doric-toggle', _extends({ tabIndex: disabled === true ? null : tabIndex }, passThrough, { onKeyDown: onKeyDown }), _react2.default.createElement(_customListeners2.default, { listeners: { onTap: onTap } }), _react2.default.createElement('doric-toggle-content', null, label || children), _react2.default.createElement('doric-toggle-thumb', { on: on }, _react2.default.createElement('div', null)));
-};
-
-/***/ }),
-/* 48 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(49);
-
-/***/ }),
-/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
     if (true) {
-        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(50), __webpack_require__(53), __webpack_require__(54), __webpack_require__(55), __webpack_require__(56), __webpack_require__(63), __webpack_require__(57), __webpack_require__(58), __webpack_require__(59), __webpack_require__(60), __webpack_require__(61), __webpack_require__(62)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(45), __webpack_require__(48), __webpack_require__(49), __webpack_require__(50), __webpack_require__(51), __webpack_require__(58), __webpack_require__(52), __webpack_require__(53), __webpack_require__(54), __webpack_require__(55), __webpack_require__(56), __webpack_require__(57)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -24792,7 +24135,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 50 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/**
@@ -24817,17 +24160,17 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(51)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(46)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(52)();
+  module.exports = __webpack_require__(47)();
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 51 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25390,7 +24733,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 52 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25456,7 +24799,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 53 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -25535,7 +24878,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 54 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -25631,7 +24974,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 55 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -25734,7 +25077,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 56 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -25799,7 +25142,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 57 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -25861,7 +25204,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 58 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -25924,7 +25267,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 59 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -26007,7 +25350,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 60 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -26097,7 +25440,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 61 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -26181,7 +25524,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 62 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -26260,7 +25603,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 63 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -26373,6 +25716,684 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         );
     }
 });
+
+/***/ }),
+/* 59 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _button = __webpack_require__(14);
+
+var _button2 = _interopRequireDefault(_button);
+
+var _icon = __webpack_require__(5);
+
+var _icon2 = _interopRequireDefault(_icon);
+
+var _grid = __webpack_require__(22);
+
+var _style = __webpack_require__(1);
+
+var _style2 = _interopRequireDefault(_style);
+
+var _theme = __webpack_require__(2);
+
+var _theme2 = _interopRequireDefault(_theme);
+
+var _util = __webpack_require__(4);
+
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _objectWithoutProperties(obj, keys) {
+    var target = {};for (var i in obj) {
+        if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
+    }return target;
+}
+
+_style2.default.add({
+    "doric-radio-group": {
+        display: 'block',
+        padding: 2
+    },
+    ".doric-radio-item": {
+        margin: 0,
+        textAlign: 'left',
+        paddingLeft: 20
+    },
+    ".doric-radio-item doric-icon": {
+        position: 'absolute',
+        left: 0,
+        top: '50%',
+        transform: 'translateY(-50%)',
+        color: _theme2.default.radio.circleColor
+    },
+    "doric-button.doric-radio-item": {
+        color: _theme2.default.radio.text.normal
+    }
+});
+
+var defaultContainer = function defaultContainer(props) {
+    return _react2.default.createElement(_react2.default.Fragment, null, props.children);
+};
+defaultContainer.RadioItem = function (props) {
+    return _react2.default.createElement(_react2.default.Fragment, null, props.children);
+};
+var Radio = function Radio(props) {
+    var selectedIndex = props.selectedIndex,
+        value = props.value,
+        children = props.children,
+        _props$onChange = props.onChange,
+        onChange = _props$onChange === undefined ? function () {} : _props$onChange,
+        _props$layout = props.layout,
+        layout = _props$layout === undefined ? { container: defaultContainer, itemProps: function itemProps(props) {
+            return props;
+        } } : _props$layout,
+        rest = _objectWithoutProperties(props, ['selectedIndex', 'value', 'children', 'onChange', 'layout']);
+
+    var changeHandler = function changeHandler(index, value) {
+        return function (evt) {
+            if (index !== selectedIndex) {
+                onChange({
+                    target: {
+                        selectedIndex: index,
+                        value: value
+                    },
+                    type: 'change'
+                });
+            }
+        };
+    };
+    // const Container = layout.container || (props => <React.Fragment>{props.children}</React.Fragment>);
+    var Container = layout.container;
+    var Item = Container.RadioItem;
+    var itemPropsFunc = layout.itemProps;
+    var selected = false;
+    var options = _react2.default.Children.toArray(children).map(function (child, index) {
+        var icon = "ion-android-radio-button-off";
+
+        var valueMatch = value !== undefined && value === child.props.value;
+        var isSelected = selected === false && (index === selectedIndex || valueMatch === true);
+        if (isSelected === true) {
+            icon = "ion-android-radio-button-on";
+            selected = true;
+        }
+        var itemProps = itemPropsFunc({ index: index, key: index, selected: isSelected }, rest);
+        // console.log(Item, itemProps);
+
+        return _react2.default.createElement(Item, itemProps, _react2.default.createElement(_button2.default, { className: 'doric-radio-item', selected: isSelected, block: true, onTap: changeHandler(index, child.props.value) }, _react2.default.createElement(_icon2.default, { icon: icon }), child.props.label || child.props.children));
+    });
+
+    return _react2.default.createElement('doric-radio-group', rest, _react2.default.createElement(Container, null, options));
+};
+
+_grid.Grid.RadioItem = function (props) {
+    return _react2.default.createElement(_grid.Col, props, props.children);
+};
+
+exports.default = Radio;
+
+/***/ }),
+/* 60 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _icon = __webpack_require__(5);
+
+var _icon2 = _interopRequireDefault(_icon);
+
+var _style = __webpack_require__(1);
+
+var _style2 = _interopRequireDefault(_style);
+
+var _theme = __webpack_require__(2);
+
+var _theme2 = _interopRequireDefault(_theme);
+
+var _util = __webpack_require__(4);
+
+var _util2 = _interopRequireDefault(_util);
+
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _objectWithoutProperties(obj, keys) {
+    var target = {};for (var i in obj) {
+        if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
+    }return target;
+}
+
+_style2.default.add({
+    "doric-select": {
+        display: 'block',
+        margin: 2,
+        position: 'relative'
+    },
+    "doric-select > select": {
+        width: '100%',
+        WebkitAppearance: 'none',
+        MozAppearance: 'none',
+        padding: '3px 5px',
+        textAlign: 'center',
+        backgroundColor: 'transparent',
+        borderWidth: 0,
+        borderBottom: '2px solid ' + _theme2.default.select.border.normal,
+        color: _theme2.default.select.text.normal,
+        height: 30,
+        borderRadius: 0,
+        fontSize: 16
+    },
+    "doric-select::after": {
+        content: '"' + _icon2.default.icons["ion-arrow-down-b"] + '"',
+        fontFamily: "Ionic",
+        fontSize: 16,
+        position: 'absolute',
+        left: 'auto',
+        top: '50%',
+        right: 5,
+        color: _theme2.default.select.text.normal,
+        transform: 'translateY(-50%)'
+    },
+    "doric-select > select:focus": {
+        borderBottomColor: _theme2.default.select.border.focus
+    }
+});
+var Select = function Select(props) {
+    var wrapperStyle = props.wrapperStyle,
+        wrapperClassName = props.wrapperClassName,
+        selectProps = _objectWithoutProperties(props, ['wrapperStyle', 'wrapperClassName']);
+
+    return _react2.default.createElement('doric-select', { style: wrapperStyle, 'class': wrapperClassName }, _react2.default.createElement('select', selectProps));
+};
+
+exports.default = Select;
+
+/***/ }),
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];for (var key in source) {
+            if (Object.prototype.hasOwnProperty.call(source, key)) {
+                target[key] = source[key];
+            }
+        }
+    }return target;
+};
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _theme = __webpack_require__(2);
+
+var _theme2 = _interopRequireDefault(_theme);
+
+var _style = __webpack_require__(1);
+
+var _style2 = _interopRequireDefault(_style);
+
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
+
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+_style2.default.add({
+    "doric-slider": {
+        margin: '4px 12px',
+        display: 'block',
+        height: 20
+    },
+    "doric-slider > input[type='range']": {
+        WebkitAppearance: 'none',
+        backgroundColor: 'transparent',
+        margin: 0,
+        padding: 0,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: '+1',
+        opacity: 0
+    },
+    'doric-slider > doric-slider-track-bg': {
+        position: 'absolute',
+        top: 9,
+        left: 10,
+        bottom: 9,
+        right: 10,
+        backgroundColor: _theme2.default.slider.track.bg.normal
+    },
+    'doric-slider doric-slider-track': {
+        backgroundColor: _theme2.default.slider.track.bg.value,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        height: '100%'
+    },
+    'doric-slider doric-slider-track::after': {
+        content: '""',
+        position: 'absolute',
+        left: '100%',
+        top: '50%',
+        width: 16,
+        height: 16,
+        borderRadius: 10,
+        backgroundColor: _theme2.default.slider.thumb.normal,
+        transform: 'translate(-50%, -50%)',
+        boxShadow: '0px 0px 2px rgba(0, 0, 0, 0.25)'
+    }
+});
+
+var Slider = function (_React$PureComponent) {
+    _inherits(Slider, _React$PureComponent);
+
+    function Slider(props) {
+        _classCallCheck(this, Slider);
+
+        var _this = _possibleConstructorReturn(this, (Slider.__proto__ || Object.getPrototypeOf(Slider)).call(this, props));
+
+        _this.render = function () {
+            var _this$props = _this.props,
+                _this$props$min = _this$props.min,
+                min = _this$props$min === undefined ? 0 : _this$props$min,
+                _this$props$max = _this$props.max,
+                max = _this$props$max === undefined ? 10 : _this$props$max,
+                _this$props$value = _this$props.value,
+                value = _this$props$value === undefined ? 0 : _this$props$value,
+                _this$props$onChange = _this$props.onChange,
+                onChange = _this$props$onChange === undefined ? function () {} : _this$props$onChange;
+
+            var range = max - min;
+            var dist = value - min;
+            var pos = dist / range * 100;
+
+            return _react2.default.createElement('doric-slider', { style: { position: 'relative' } }, _react2.default.createElement('input', _extends({ type: 'range' }, { min: min, max: max }, { value: value, onChange: onChange })), _react2.default.createElement('doric-slider-track-bg', null, _react2.default.createElement('doric-slider-track', { style: { width: pos + '%' } })));
+        };
+
+        return _this;
+    }
+
+    return Slider;
+}(_react2.default.PureComponent);
+
+exports.default = Slider;
+
+/***/ }),
+/* 62 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Tab = exports.Tabs = undefined;
+
+var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];for (var key in source) {
+            if (Object.prototype.hasOwnProperty.call(source, key)) {
+                target[key] = source[key];
+            }
+        }
+    }return target;
+};
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _customListeners = __webpack_require__(8);
+
+var _customListeners2 = _interopRequireDefault(_customListeners);
+
+var _theme = __webpack_require__(2);
+
+var _theme2 = _interopRequireDefault(_theme);
+
+var _style = __webpack_require__(1);
+
+var _style2 = _interopRequireDefault(_style);
+
+var _util = __webpack_require__(4);
+
+var _util2 = _interopRequireDefault(_util);
+
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
+
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+_style2.default.add({
+    "doric-tab-bar": {
+        display: 'table',
+        tableLayout: 'fixed',
+        width: '100%'
+    },
+    "doric-tab-title": {
+        display: 'table-cell',
+        borderBottom: '2px solid ' + _theme2.default.tabs.tab.border.normal,
+        color: _theme2.default.tabs.tab.text.normal,
+        backgroundColor: _theme2.default.tabs.tab.bg.normal,
+        textAlign: 'center',
+        verticalAlign: 'middle',
+        padding: 7,
+        cursor: 'pointer',
+        position: 'relative'
+    },
+    "doric-tab-content": {
+        display: 'block'
+    },
+    "doric-tab-content[active='false']": {
+        display: 'none'
+    },
+    "doric-tab-title[active='true']": {
+        borderBottomColor: _theme2.default.tabs.tab.border.active,
+        color: _theme2.default.tabs.tab.text.active,
+        backgroundColor: _theme2.default.tabs.tab.bg.active
+    },
+    "doric-tab-title::after": _extends({}, _util2.default.background.after.base),
+    "doric-tab-title[data-tap-active]::after": _extends({}, _util2.default.background.after.colorize(_theme2.default.tabs.tab.hl.normal))
+});
+
+var Tabs = function (_React$Component) {
+    _inherits(Tabs, _React$Component);
+
+    function Tabs(props) {
+        _classCallCheck(this, Tabs);
+
+        var _this = _possibleConstructorReturn(this, (Tabs.__proto__ || Object.getPrototypeOf(Tabs)).call(this, props));
+
+        _initialiseProps.call(_this);
+
+        return _this;
+    }
+
+    return Tabs;
+}(_react2.default.Component);
+
+var _initialiseProps = function _initialiseProps() {
+    var _this2 = this;
+
+    this.componentDidUpdate = function (prevProps) {
+        if (prevProps.selectedIndex !== _this2.props.selectedIndex) {
+            var child = _this2.children[_this2.props.selectedIndex];
+            var onActive = child.props.onActive || function () {};
+            onActive(child);
+        }
+    };
+
+    this.changeTab = function (index) {
+        var _props$onChange = _this2.props.onChange,
+            onChange = _props$onChange === undefined ? function () {} : _props$onChange;
+
+        onChange({
+            target: {
+                selectedIndex: index
+            },
+            tab: _this2.children[index],
+            type: 'change'
+        });
+    };
+
+    this.render = function () {
+        var selectedIndex = _this2.props.selectedIndex;
+
+        var children = _react2.default.Children.toArray(_this2.props.children);
+        _this2.children = children;
+
+        var tabs = children.map(function (_ref, index) {
+            var props = _ref.props;
+            return _react2.default.createElement('doric-tab-title', { active: index === selectedIndex, key: index }, _react2.default.createElement(_customListeners2.default, { listeners: { onTap: function onTap() {
+                        return _this2.changeTab(index);
+                    } } }), props.label);
+        });
+
+        var content = children.map(function (child, index) {
+            return _react2.default.createElement('doric-tab-content', { active: index === selectedIndex, key: index }, child.props.children);
+        });
+
+        return _react2.default.createElement('doric-tabs', null, _react2.default.createElement('doric-tab-bar', null, tabs), content);
+    };
+};
+
+var Tab = function Tab() {
+    return null;
+};
+
+exports.Tabs = Tabs;
+exports.Tab = Tab;
+
+/***/ }),
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];for (var key in source) {
+            if (Object.prototype.hasOwnProperty.call(source, key)) {
+                target[key] = source[key];
+            }
+        }
+    }return target;
+};
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _theme = __webpack_require__(2);
+
+var _theme2 = _interopRequireDefault(_theme);
+
+var _style = __webpack_require__(1);
+
+var _style2 = _interopRequireDefault(_style);
+
+var _icon = __webpack_require__(5);
+
+var _icon2 = _interopRequireDefault(_icon);
+
+var _customListeners = __webpack_require__(8);
+
+var _customListeners2 = _interopRequireDefault(_customListeners);
+
+var _util = __webpack_require__(4);
+
+var _util2 = _interopRequireDefault(_util);
+
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _objectWithoutProperties(obj, keys) {
+    var target = {};for (var i in obj) {
+        if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
+    }return target;
+}
+
+var size = 30;
+_style2.default.add({
+    "doric-toggle": {
+        display: 'flex',
+        position: 'relative',
+        top: 0,
+        left: 0,
+        paddingLeft: size * 2 + 10,
+        alignItems: 'center'
+    },
+    "doric-toggle[disabled='true']": {
+        opacity: 0.7
+    },
+    "doric-toggle::after": _extends({}, _util2.default.background.after.base),
+    "doric-toggle[data-tap-active]:not([disabled='true'])::after": _extends({}, _util2.default.background.after.colorize(_theme2.default.toggle.hl.normal)),
+    "doric-toggle:focus::after": {
+        backgroundColor: _theme2.default.toggle.hl.focus
+    },
+    "doric-toggle > doric-toggle-content": {
+        flexGrow: 1,
+        padding: 5
+    },
+    "doric-toggle > doric-toggle-thumb": {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        width: size * 2 + 10,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    "doric-toggle-thumb > div": {
+        position: 'relative',
+        top: 0,
+        left: 0,
+        width: size * 2,
+        height: 20,
+        backgroundColor: _theme2.default.toggle.track.off,
+        transition: 'background-color 100ms linear',
+        borderRadius: 5
+    },
+    "doric-toggle-thumb > div::after": {
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: size,
+        height: 20,
+        backgroundColor: _theme2.default.toggle.thumb.off,
+        transition: 'transform 100ms linear',
+        borderRadius: 5
+    },
+    "doric-toggle-thumb[on='true'] > div": {
+        backgroundColor: _theme2.default.toggle.track.on
+    },
+    "doric-toggle-thumb[on='true'] > div::after": {
+        backgroundColor: _theme2.default.toggle.thumb.on,
+        transform: 'translateX(' + size + 'px)'
+    },
+    "doric-toggle[toggleRight='true']": {
+        paddingLeft: 0,
+        paddingRight: size * 2 + 10
+    },
+    "doric-toggle[toggleRight='true'] > doric-toggle-thumb": {
+        left: 'auto',
+        right: 0
+    },
+    "doric-toggle[alignRight]": {
+        textAlign: 'right'
+    }
+});
+
+exports.default = function (props) {
+    var label = props.label,
+        children = props.children,
+        on = props.on,
+        _props$onChange = props.onChange,
+        onChange = _props$onChange === undefined ? function () {} : _props$onChange,
+        _props$onKeyDown = props.onKeyDown,
+        passedOKD = _props$onKeyDown === undefined ? function () {} : _props$onKeyDown,
+        _props$tabIndex = props.tabIndex,
+        tabIndex = _props$tabIndex === undefined ? 0 : _props$tabIndex,
+        passThrough = _objectWithoutProperties(props, ['label', 'children', 'on', 'onChange', 'onKeyDown', 'tabIndex']);
+
+    var disabled = props.disabled;
+
+    var onTap = function onTap(evt) {
+        if (disabled !== true) {
+            var e = _extends({}, evt, { type: 'change', on: on === false });
+            e.target = evt.target;
+            e.target.value = e.on;
+            onChange(e);
+        }
+    };
+    var onKeyDown = function onKeyDown(evt) {
+        passedOKD(evt);
+        if (evt.key === ' ' || evt.key === 'Enter') {
+            onTap(evt);
+        }
+    };
+
+    return _react2.default.createElement('doric-toggle', _extends({ tabIndex: disabled === true ? null : tabIndex }, passThrough, { onKeyDown: onKeyDown }), _react2.default.createElement(_customListeners2.default, { listeners: { onTap: onTap } }), _react2.default.createElement('doric-toggle-content', null, label || children), _react2.default.createElement('doric-toggle-thumb', { on: on }, _react2.default.createElement('div', null)));
+};
 
 /***/ })
 /******/ ]);

@@ -210,8 +210,8 @@ class Test extends doric.baseComponent {
         return (
             <div style={{overflow: 'hidden'}}>
                 <doric.input.text value={this.state.t} onChange={this.linkState('t')} label="Some Label" disabled />
-                <doric.input.text value={this.state.t} onChange={this.linkState('t')} label="Some Label" required />
-                <doric.input.text value={this.state.t} onChange={this.linkState('t')} label="Some Label" optional />
+                <doric.input.text value={this.state.t} onChange={this.linkState('t')} label="Some Label" required loader={true} />
+                <doric.input.text value={this.state.t} onChange={this.linkState('t')} label="Some Label" optional loader={true} loaderType="TailSpin" />
                 <doric.card>
                     <doric.card.title main="Main Title" subtitle="subtitle" icon={images.laughingMan} />
                     <doric.card.media>
