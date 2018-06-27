@@ -183,10 +183,7 @@ class Test extends doric.baseComponent {
             c: false,
             n: 0
         };
-        this.linked = {
-            t: this.linkState('t'),
-            rv: this.linkState('rv')
-        };
+        this.linked = this.createLinks('t', 'rv', 'c', 'n', 'o');
     }
 
     add = () => {
@@ -217,7 +214,7 @@ class Test extends doric.baseComponent {
                 <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" required loader={true} />
                 <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" optional loader={true} loaderType="TailSpin" />
                 <doric.card>
-                    <doric.card.title main="Main Title" subtitle="subtitle" icon={images.laughingMan} />
+                    <doric.card.title.pure main="Main Title" subtitle="subtitle" icon={images.laughingMan} />
                     <doric.card.media>
                         <doric.image height="100%" source={images.bayoBG} />
                     </doric.card.media>
@@ -226,13 +223,13 @@ class Test extends doric.baseComponent {
                     More content!
                     <doric.card.actions>
                         <doric.button text="Normal" />
-                        <doric.button text="Primary" primary />
-                        <doric.button text="Danger" danger />
+                        <doric.button.pure text="Primary" primary />
+                        <doric.button.pure text="Danger" danger />
                         <doric.button text="Accent" accent />
                     </doric.card.actions>
                 </doric.card>
-                <doric.checkbox checked={this.state.c} onChange={this.linkState('c')} label="Checkbox?" />
-                <doric.toggle label="Toggle!" on={this.state.o} onChange={this.linkState('o')} />
+                <doric.checkbox.pure checked={this.state.c} onChange={this.linked.c} label="Checkbox?" />
+                <doric.toggle.pure label="Toggle!" on={this.state.o} onChange={this.linked.o} />
                 <doric.select value={this.state.s} onChange={this.linkState('s')}>
                     {(0).to(10).map(i => <option value={i}>{i}</option>)}
                 </doric.select>
@@ -241,7 +238,7 @@ class Test extends doric.baseComponent {
                         {/* {(0).to(10).map(i => <option value={i}>{i}</option>)} */}
                     </doric.radio>
                 </doric.collapse>
-                <doric.slider min={-100} max={100} value={this.state.n} onChange={this.linkState('n')} />
+                <doric.slider min={-100} max={100} value={this.state.n} onChange={this.linked.n} />
             </div>
         );
     }

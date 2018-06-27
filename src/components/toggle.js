@@ -6,7 +6,7 @@ import style from '../style';
 import Icon from './icon';
 import CustomListeners from './customListeners';
 
-import util from '../util';
+import {default as util, createPureClass} from '../util';
 
 const size = 30;
 style.add({
@@ -123,5 +123,6 @@ const DoricToggle = props => {
         </doric-toggle>
     );
 };
+DoricToggle.pure = createPureClass(DoricToggle);
 
 export default DoricToggle;

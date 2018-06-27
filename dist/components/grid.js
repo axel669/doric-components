@@ -70,7 +70,7 @@ try {
 
 _style2.default.add(gridStyle);
 
-var Grid = exports.Grid = function Grid(_ref) {
+var DoricGrid = function DoricGrid(_ref) {
     var children = _ref.children;
 
     return _react2.default.createElement(
@@ -79,7 +79,7 @@ var Grid = exports.Grid = function Grid(_ref) {
         children
     );
 };
-var Col = function Col(_ref2) {
+var DoricCol = function DoricCol(_ref2) {
     var _ref2$size = _ref2.size,
         size = _ref2$size === undefined ? 1 : _ref2$size,
         _ref2$offset = _ref2.offset,
@@ -92,7 +92,10 @@ var Col = function Col(_ref2) {
     }
     return _react2.default.createElement('doric-col', _extends({ 'class': className }, props));
 };
-exports.Col = Col;
-var GridBreak = exports.GridBreak = function GridBreak() {
+var DoricGridBreak = function DoricGridBreak() {
     return _react2.default.createElement('doric-col', { 'class': 'w12' });
 };
+
+exports.Grid = DoricGrid;
+exports.Col = DoricCol;
+exports.GridBreak = DoricGridBreak;

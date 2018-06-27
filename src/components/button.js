@@ -5,7 +5,8 @@ import style from '../style';
 
 import CustomListeners from './customListeners';
 
-import util from '../util';
+// import util from '../util';
+import {default as util, createPureClass} from '../util';
 
 /*
     custom
@@ -90,71 +91,74 @@ style.add({
     }
 });
 
-export default class DoricButton extends React.PureComponent {
-    render = () => {
-        const props = this.props;
-        const {
-            onTap: tapHandler = (() => {}),
-            onKeyDown: passedOKD = (() => {}),
-            text,
-            children,
-            className,
-            tabIndex = 0,
-            ...passThrough
-        } = props;
-        const {disabled} = props;
-        const onTap =  evt => {
-            if (disabled !== true) {
-                tapHandler({...evt, type: 'tap'});
-            }
-        };
-        const onKeyDown = evt => {
-            passedOKD(evt);
-            if (evt.key === ' ' || evt.key === 'Enter') {
-                onTap(evt);
-            }
-        };
-
-        return (
-            <doric-button tabIndex={disabled === true ? null : tabIndex} {...passThrough} class={className} onKeyDown={onKeyDown}>
-                <CustomListeners listeners={{onTap}} />
-                <doric-button-content>
-                    {text || children}
-                </doric-button-content>
-            </doric-button>
-        );
-    }
-}
-
-// export default (props) => {
-//     const {
-//         onTap: tapHandler = (() => {}),
-//         onKeyDown: passedOKD = (() => {}),
-//         text,
-//         children,
-//         className,
-//         tabIndex = 0,
-//         ...passThrough
-//     } = props;
-//     const {disabled} = props;
-//     const onTap =  evt => {
-//         if (disabled !== true) {
-//             tapHandler({...evt, type: 'tap'});
-//         }
-//     };
-//     const onKeyDown = evt => {
-//         passedOKD(evt);
-//         if (evt.key === ' ' || evt.key === 'Enter') {
-//             onTap(evt);
-//         }
-//     };
+// export default class DoricButton extends React.PureComponent {
+//     render = () => {
+//         const props = this.props;
+//         const {
+//             onTap: tapHandler = (() => {}),
+//             onKeyDown: passedOKD = (() => {}),
+//             text,
+//             children,
+//             className,
+//             tabIndex = 0,
+//             ...passThrough
+//         } = props;
+//         const {disabled} = props;
+//         const onTap =  evt => {
+//             if (disabled !== true) {
+//                 tapHandler({...evt, type: 'tap'});
+//             }
+//         };
+//         const onKeyDown = evt => {
+//             passedOKD(evt);
+//             if (evt.key === ' ' || evt.key === 'Enter') {
+//                 onTap(evt);
+//             }
+//         };
 //
-//     return (
-//         <doric-button tabIndex={disabled === true ? null : tabIndex} {...passThrough} class={className} onKeyDown={onKeyDown}>
-//             <CustomListeners target={this} listeners={{onTap}} />
-//             <doric-button-content>
-//                 {text || children}
-//             </doric-button-content>
-//         </doric-button>
-//     );
-// };
+//         return (
+//             <doric-button tabIndex={disabled === true ? null : tabIndex} {...passThrough} class={className} onKeyDown={onKeyDown}>
+//                 <CustomListeners listeners={{onTap}} />
+//                 <doric-button-content>
+//                     {text || children}
+//                 </doric-button-content>
+//             </doric-button>
+//         );
+//     }
+// }
+
+const DoricButton = (props) => {
+    const {
+        onTap: tapHandler = (() => {}),
+        onKeyDown: passedOKD = (() => {}),
+        text,
+        children,
+        className,
+        tabIndex = 0,
+        ...passThrough
+    } = props;
+    const {disabled} = props;
+    const onTap =  evt => {
+        if (disabled !== true) {
+            tapHandler({...evt, type: 'tap'});
+        }
+    };
+    const onKeyDown = evt => {
+        passedOKD(evt);
+        if (evt.key === ' ' || evt.key === 'Enter') {
+            onTap(evt);
+        }
+    };
+
+    return (
+        <doric-button tabIndex={disabled === true ? null : tabIndex} {...passThrough} class={className} onKeyDown={onKeyDown}>
+            <CustomListeners target={this} listeners={{onTap}} />
+            <doric-button-content>
+                {text || children}
+            </doric-button-content>
+        </doric-button>
+    );
+};
+DoricButton.pure = createPureClass(DoricButton);
+
+export default DoricButton;

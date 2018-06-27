@@ -1,3 +1,5 @@
+import React from 'react';
+
 import theme from './theme';
 
 Number.prototype.to = function (end) {
@@ -15,8 +17,16 @@ Number.prototype.to = function (end) {
 const setFunctionName = (func, name) => {
     Object.defineProperty(func, 'name', {value: name, writable: false});
 };
+const createPureClass = (func) => {
+    class GenClass extends React.PureComponent {
+        render = () => func(this.props)
+    }
+    setFunctionName(GenClass, `${func.name}Pure`);
+    return GenClass;
+};
 export {
-    setFunctionName
+    setFunctionName,
+    createPureClass
 };
 
 export default {

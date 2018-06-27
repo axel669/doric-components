@@ -74,5 +74,6 @@ var DoricSelect = function DoricSelect(props) {
         _react2.default.createElement('select', selectProps)
     );
 };
+DoricSelect.pure = (0, _util.createPureClass)(DoricSelect);
 
 exports.default = DoricSelect;

@@ -11,6 +11,6 @@ style.add({
         margin: '12px 0px'
     }
 });
-const Divider = props => <doric-divide {...props} />;
+const DoricDivider = props => <doric-divide {...props} />;
 
-export default Divider;
+export default DoricDivider;

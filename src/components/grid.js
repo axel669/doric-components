@@ -32,18 +32,24 @@ for (const i of (1).to(13)) {
 
 style.add(gridStyle);
 
-export const Grid = ({children}) => {
+const DoricGrid = ({children}) => {
     return (
         <doric-grid>
             {children}
         </doric-grid>
     );
 };
-export const Col = ({size = 1, offset = null, ...props}) => {
+const DoricCol = ({size = 1, offset = null, ...props}) => {
     let className = `w${size}`;
     if (offset !== null) {
         className = `${className} offset${offset}`;
     }
     return <doric-col class={className} {...props} />;
 };
-export const GridBreak = () => <doric-col class="w12" />;
+const DoricGridBreak = () => <doric-col class="w12" />;
+
+export {
+    DoricGrid as Grid,
+    DoricCol as Col,
+    DoricGridBreak as GridBreak
+};

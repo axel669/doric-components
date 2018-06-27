@@ -769,7 +769,7 @@ _style2.default.add({
         padding: 2
     }
 });
-var Icon = function Icon(props) {
+var DoricIcon = function DoricIcon(props) {
     var icon = props.icon,
         className = props.className,
         passThrough = _objectWithoutProperties(props, ['icon', 'className']);
@@ -780,6 +780,6 @@ var Icon = function Icon(props) {
         icons[icon]
     );
 };
-Icon.icons = icons;
+DoricIcon.icons = icons;
 
-exports.default = Icon;
+exports.default = DoricIcon;

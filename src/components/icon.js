@@ -753,10 +753,10 @@ style.add({
         padding: 2
     }
 });
-const Icon = (props) => {
+const DoricIcon = (props) => {
     const {icon, className, ...passThrough} = props;
     return <doric-icon class={className} {...passThrough} data-icon-name={icon}>{icons[icon]}</doric-icon>;
 };
-Icon.icons = icons;
+DoricIcon.icons = icons;
 
-export default Icon;
+export default DoricIcon;

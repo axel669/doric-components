@@ -2,6 +2,7 @@ import React from 'react';
 
 import theme from '../theme';
 import style from '../style';
+import {createPureClass} from '../util';
 
 import Image from './image';
 
@@ -113,23 +114,21 @@ const DoricCard = props => {
         </doric-card>
     );
 };
-class DoricCardTitle extends React.PureComponent {
-    render = () => {
-        const {main, subtitle, icon = null} = this.props;
-        const iconElement = (icon === null)
-            ? null
-            : <div className="doric-title-icon"><Image source={icon} width="100%" height="100%" imageSize="cover" /></div>;
+const DoricCardTitle = props => {
+    const {main, subtitle, icon = null} = props;
+    const iconElement = (icon === null)
+        ? null
+        : <div className="doric-title-icon"><Image source={icon} width="100%" height="100%" imageSize="cover" /></div>;
 
-        return (
-            <doric-card-title data-card-flush>
-                {iconElement}
-                <div className="doric-title-main">{main}</div>
-                <div className="doric-title-subtitle">{subtitle}</div>
-            </doric-card-title>
-        );
-    }
-}
-DoricCard.actions = function DoricCardActions(props) {
+    return (
+        <doric-card-title data-card-flush>
+            {iconElement}
+            <div className="doric-title-main">{main}</div>
+            <div className="doric-title-subtitle">{subtitle}</div>
+        </doric-card-title>
+    );
+};
+const DoricCardActions = (props) => {
     const divider = props.divider;
 
     return (
@@ -138,9 +137,15 @@ DoricCard.actions = function DoricCardActions(props) {
         </doric-card-actions>
     );
 };
-DoricCard.media = function DoricCardMedia(props) {
-    return <doric-card-media {...props} />;
-}
+const DoricCardMedia = props => <doric-card-media {...props} />;
+
 DoricCard.title = DoricCardTitle;
+DoricCard.actions = DoricCardActions;
+DoricCard.media = DoricCardMedia;
+
+DoricCard.pure = createPureClass(DoricCard);
+DoricCard.title.pure = createPureClass(DoricCardTitle);
+DoricCard.actions.pure = createPureClass(DoricCardActions);
+DoricCard.media.pure = createPureClass(DoricCardMedia);
 
 export default DoricCard;

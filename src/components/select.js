@@ -3,7 +3,7 @@ import React from 'react';
 import icon from '../components/icon';
 import style from '../style';
 import theme from '../theme';
-import util from '../util';
+import {default as util, createPureClass} from '../util';
 
 style.add({
     "doric-select": {
@@ -52,5 +52,6 @@ const DoricSelect = props => {
         </doric-select>
     );
 };
+DoricSelect.pure = createPureClass(DoricSelect);
 
 export default DoricSelect;

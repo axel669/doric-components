@@ -152,5 +152,6 @@ var DoricToggle = function DoricToggle(props) {
         )
     );
 };
+DoricToggle.pure = (0, _util.createPureClass)(DoricToggle);
 
 exports.default = DoricToggle;

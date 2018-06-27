@@ -26,8 +26,8 @@ _style2.default.add({
         margin: '12px 0px'
     }
 });
-var Divider = function Divider(props) {
+var DoricDivider = function DoricDivider(props) {
     return _react2.default.createElement('doric-divide', props);
 };
 
-exports.default = Divider;
+exports.default = DoricDivider;
