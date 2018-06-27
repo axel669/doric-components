@@ -2849,7 +2849,7 @@ exports.GridBreak = DoricGridBreak;
 /* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(44);
+module.exports = __webpack_require__(45);
 
 /***/ }),
 /* 24 */
@@ -3140,7 +3140,7 @@ var Test = function (_doric$baseComponent2) {
                     )
                 ),
                 _react2.default.createElement(_index2.default.checkbox.pure, { checked: _this3.state.c, onChange: _this3.linked.c, label: 'Checkbox?' }),
-                _react2.default.createElement(_index2.default.toggle.pure, { label: 'Toggle!', on: _this3.state.o, onChange: _this3.linkState('o') }),
+                _react2.default.createElement(_index2.default.toggle.pure, { label: 'Toggle!', on: _this3.state.o, onChange: _this3.linked.o }),
                 _react2.default.createElement(
                     _index2.default.select,
                     { value: _this3.state.s, onChange: _this3.linkState('s') },
@@ -3175,13 +3175,7 @@ var Test = function (_doric$baseComponent2) {
             c: false,
             n: 0
         };
-        _this3.linked = _this3.createLinks('t', 'rv', 'c', 'n');
-        // this.linked = {
-        //     t: this.linkState('t'),
-        //     rv: this.linkState('rv'),
-        //     c: this.linkState('c'),
-        //     n: this.linkState('n')
-        // };
+        _this3.linked = _this3.createLinks('t', 'rv', 'c', 'n', 'o');
         return _this3;
     }
 
@@ -22617,6 +22611,17 @@ module.exports = camelize;
 "use strict";
 
 
+var doric = __webpack_require__(36);
+
+module.exports = doric;
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -22625,9 +22630,9 @@ var _reactDom = __webpack_require__(13);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-__webpack_require__(36);
+__webpack_require__(37);
 
-var _ssjs = __webpack_require__(37);
+var _ssjs = __webpack_require__(38);
 
 var _ssjs2 = _interopRequireDefault(_ssjs);
 
@@ -22639,25 +22644,25 @@ var _update = __webpack_require__(20);
 
 var _update2 = _interopRequireDefault(_update);
 
-var _baseComponent = __webpack_require__(38);
+var _baseComponent = __webpack_require__(39);
 
 var _button = __webpack_require__(14);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _card = __webpack_require__(39);
+var _card = __webpack_require__(40);
 
 var _card2 = _interopRequireDefault(_card);
 
-var _checkbox = __webpack_require__(40);
+var _checkbox = __webpack_require__(41);
 
 var _checkbox2 = _interopRequireDefault(_checkbox);
 
-var _collapse = __webpack_require__(41);
+var _collapse = __webpack_require__(42);
 
 var _collapse2 = _interopRequireDefault(_collapse);
 
-var _divider = __webpack_require__(42);
+var _divider = __webpack_require__(43);
 
 var _divider2 = _interopRequireDefault(_divider);
 
@@ -22671,25 +22676,25 @@ var _image = __webpack_require__(21);
 
 var _image2 = _interopRequireDefault(_image);
 
-var _input = __webpack_require__(43);
+var _input = __webpack_require__(44);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _radio = __webpack_require__(59);
+var _radio = __webpack_require__(60);
 
 var _radio2 = _interopRequireDefault(_radio);
 
-var _select = __webpack_require__(60);
+var _select = __webpack_require__(61);
 
 var _select2 = _interopRequireDefault(_select);
 
-var _slider = __webpack_require__(61);
+var _slider = __webpack_require__(62);
 
 var _slider2 = _interopRequireDefault(_slider);
 
-var _tabs = __webpack_require__(62);
+var _tabs = __webpack_require__(63);
 
-var _toggle = __webpack_require__(63);
+var _toggle = __webpack_require__(64);
 
 var _toggle2 = _interopRequireDefault(_toggle);
 
@@ -22748,7 +22753,7 @@ var doric = {
 exports.default = doric;
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23113,7 +23118,7 @@ exports.default = doric;
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23288,7 +23293,7 @@ exports.default = doric;
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23485,7 +23490,7 @@ var PureBaseComponent = exports.PureBaseComponent = function (_DoricMixin2) {
 // };
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23658,7 +23663,7 @@ DoricCard.media.pure = (0, _util.createPureClass)(DoricCardMedia);
 exports.default = DoricCard;
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23847,7 +23852,7 @@ DoricCheckbox.pure = (0, _util.createPureClass)(DoricCheckbox);
 exports.default = DoricCheckbox;
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24011,7 +24016,7 @@ var _initialiseProps = function _initialiseProps() {
 exports.default = DoricCollapse;
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24052,7 +24057,7 @@ var DoricDivider = function DoricDivider(props) {
 exports.default = DoricDivider;
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24261,12 +24266,12 @@ try {
 exports.default = inputs;
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
     if (true) {
-        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(45), __webpack_require__(48), __webpack_require__(49), __webpack_require__(50), __webpack_require__(51), __webpack_require__(58), __webpack_require__(52), __webpack_require__(53), __webpack_require__(54), __webpack_require__(55), __webpack_require__(56), __webpack_require__(57)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(46), __webpack_require__(49), __webpack_require__(50), __webpack_require__(51), __webpack_require__(52), __webpack_require__(59), __webpack_require__(53), __webpack_require__(54), __webpack_require__(55), __webpack_require__(56), __webpack_require__(57), __webpack_require__(58)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -24446,7 +24451,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/**
@@ -24471,17 +24476,17 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(46)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(47)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(47)();
+  module.exports = __webpack_require__(48)();
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25044,7 +25049,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25110,7 +25115,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -25189,7 +25194,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -25285,7 +25290,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -25388,7 +25393,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -25453,7 +25458,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -25515,7 +25520,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -25578,7 +25583,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -25661,7 +25666,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -25751,7 +25756,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -25835,7 +25840,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -25914,7 +25919,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -26029,7 +26034,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26323,7 +26328,7 @@ _grid.Grid.RadioItem = function (props) {
 exports.default = DoricRadio;
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26410,7 +26415,7 @@ DoricSelect.pure = (0, _util.createPureClass)(DoricSelect);
 exports.default = DoricSelect;
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26549,7 +26554,7 @@ var DoricSlider = function (_React$PureComponent) {
 exports.default = DoricSlider;
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26715,7 +26720,7 @@ exports.Tabs = Tabs;
 exports.Tab = Tab;
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

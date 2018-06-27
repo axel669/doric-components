@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import doric from '../../dist/index.js';
+import doric from '../../index.js';
 
 window.images = {
     boxxy: "http://axel669.net/images/boxxy.png",
