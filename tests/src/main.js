@@ -133,7 +133,7 @@ class DialogManager extends doric.baseComponent {
         };
         const dialogs = doric.util.update(
             this.state.dialogs,
-            {"$push": [dialog]}
+            {"$push": dialog}
         );
         this.setStatef({dialogs});
     }
@@ -164,13 +164,38 @@ const dialog = (() => {
         <DialogManager />,
         container
     );
+    const show = Container => manager.addDialog(Container);
 
     return {
-        show(Container) {
-            manager.addDialog(Container);
+        show,
+        alert(msg) {
+            show(({close}) => (
+                <doric.card>
+                    <doric.card.title main="Alert" />
+                    {msg}
+                    <doric.card.actions>
+                        <doric.button text="Ok" block primary onTap={close} />
+                    </doric.card.actions>
+                </doric.card>
+            ));
         }
     };
 })();
+
+const Dialog = ({children, open}) => {
+    if (open === false) {
+        return null;
+    }
+
+    return (
+        <doric-dialog-wrapper>
+            <doric-dialog-container>
+                {children}
+            </doric-dialog-container>
+        </doric-dialog-wrapper>
+    );
+};
+
 
 class Test extends doric.baseComponent {
     constructor(props) {
@@ -181,7 +206,8 @@ class Test extends doric.baseComponent {
             o: false,
             rv: null,
             c: false,
-            n: 0
+            n: 0,
+            dialog: false
         };
         this.linked = this.createLinks('t', 'rv', 'c', 'n', 'o');
     }
@@ -207,10 +233,30 @@ class Test extends doric.baseComponent {
         ));
     }
 
+    toggleDialog = () => {
+        const dialog = this.state.dialog === false;
+        this.setStatef({dialog});
+    }
+    alertTest = () => {
+        dialog.alert("Test");
+    }
+
     render = () => {
         return (
             <div style={{overflow: 'hidden'}}>
-                <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" disabled />
+                <doric.button text="Dialog" onTap={this.toggleDialog} />
+                <doric.button primary text="Alert" onTap={this.alertTest} />
+
+                <Dialog open={this.state.dialog}>
+                    <doric.card>
+                        <doric.card.title main="Alert?" />
+                        Some message
+                        <doric.card.actions>
+                            <doric.button block text="OK" onTap={this.toggleDialog} />
+                        </doric.card.actions>
+                    </doric.card>
+                </Dialog>
+                {/* <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" disabled />
                 <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" required loader={true} />
                 <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" optional loader={true} loaderType="TailSpin" />
                 <doric.card>
@@ -222,7 +268,7 @@ class Test extends doric.baseComponent {
                     <doric.divider />
                     More content!
                     <doric.card.actions>
-                        <doric.button text="Normal" />
+                        <doric.button text="Normal" onTap={this.dialogTest} />
                         <doric.button.pure text="Primary" primary />
                         <doric.button.pure text="Danger" danger />
                         <doric.button text="Accent" accent />
@@ -235,10 +281,10 @@ class Test extends doric.baseComponent {
                 </doric.select>
                 <doric.collapse title="Collapse">
                     <doric.radio value={this.state.rv} onChange={this.linked.rv} children={(0).to(10).map(i => <option value={i}>{i}</option>)}>
-                        {/* {(0).to(10).map(i => <option value={i}>{i}</option>)} */}
+                        {(0).to(10).map(i => <option value={i}>{i}</option>)}
                     </doric.radio>
                 </doric.collapse>
-                <doric.slider min={-100} max={100} value={this.state.n} onChange={this.linked.n} />
+                <doric.slider min={-100} max={100} value={this.state.n} onChange={this.linked.n} /> */}
             </div>
         );
     }

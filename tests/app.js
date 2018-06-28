@@ -3027,7 +3027,7 @@ var DialogManager = function (_doric$baseComponent) {
                     )
                 )
             };
-            var dialogs = _index2.default.util.update(_this2.state.dialogs, { "$push": [dialog] });
+            var dialogs = _index2.default.util.update(_this2.state.dialogs, { "$push": dialog });
             _this2.setStatef({ dialogs: dialogs });
         };
 
@@ -3064,13 +3064,49 @@ var dialog = function () {
     document.body.appendChild(container);
 
     var manager = _reactDom2.default.render(_react2.default.createElement(DialogManager, null), container);
+    var show = function show(Container) {
+        return manager.addDialog(Container);
+    };
 
     return {
-        show: function show(Container) {
-            manager.addDialog(Container);
+        show: show,
+        alert: function alert(msg) {
+            show(function (_ref) {
+                var close = _ref.close;
+                return _react2.default.createElement(
+                    _index2.default.card,
+                    null,
+                    _react2.default.createElement(_index2.default.card.title, { main: 'Alert' }),
+                    msg,
+                    _react2.default.createElement(
+                        _index2.default.card.actions,
+                        null,
+                        _react2.default.createElement(_index2.default.button, { text: 'Ok', block: true, primary: true, onTap: close })
+                    )
+                );
+            });
         }
     };
 }();
+
+var Dialog = function Dialog(_ref2) {
+    var children = _ref2.children,
+        open = _ref2.open;
+
+    if (open === false) {
+        return null;
+    }
+
+    return _react2.default.createElement(
+        'doric-dialog-wrapper',
+        null,
+        _react2.default.createElement(
+            'doric-dialog-container',
+            null,
+            children
+        )
+    );
+};
 
 var Test = function (_doric$baseComponent2) {
     _inherits(Test, _doric$baseComponent2);
@@ -3095,8 +3131,8 @@ var Test = function (_doric$baseComponent2) {
         };
 
         _this3.dialogTest = function () {
-            dialog.show(function (_ref) {
-                var close = _ref.close;
+            dialog.show(function (_ref3) {
+                var close = _ref3.close;
                 return _react2.default.createElement(
                     _index2.default.card,
                     null,
@@ -3111,59 +3147,36 @@ var Test = function (_doric$baseComponent2) {
             });
         };
 
+        _this3.toggleDialog = function () {
+            var dialog = _this3.state.dialog === false;
+            _this3.setStatef({ dialog: dialog });
+        };
+
+        _this3.alertTest = function () {
+            dialog.alert("Test");
+        };
+
         _this3.render = function () {
             return _react2.default.createElement(
                 'div',
                 { style: { overflow: 'hidden' } },
-                _react2.default.createElement(_index2.default.input.text, { value: _this3.state.t, onChange: _this3.linked.t, label: 'Some Label', disabled: true }),
-                _react2.default.createElement(_index2.default.input.text, { value: _this3.state.t, onChange: _this3.linked.t, label: 'Some Label', required: true, loader: true }),
-                _react2.default.createElement(_index2.default.input.text, { value: _this3.state.t, onChange: _this3.linked.t, label: 'Some Label', optional: true, loader: true, loaderType: 'TailSpin' }),
+                _react2.default.createElement(_index2.default.button, { text: 'Dialog', onTap: _this3.toggleDialog }),
+                _react2.default.createElement(_index2.default.button, { primary: true, text: 'Alert', onTap: _this3.alertTest }),
                 _react2.default.createElement(
-                    _index2.default.card,
-                    null,
-                    _react2.default.createElement(_index2.default.card.title.pure, { main: 'Main Title', subtitle: 'subtitle', icon: images.laughingMan }),
+                    Dialog,
+                    { open: _this3.state.dialog },
                     _react2.default.createElement(
-                        _index2.default.card.media,
+                        _index2.default.card,
                         null,
-                        _react2.default.createElement(_index2.default.image, { height: '100%', source: images.bayoBG })
-                    ),
-                    'Some content',
-                    _react2.default.createElement(_index2.default.divider, null),
-                    'More content!',
-                    _react2.default.createElement(
-                        _index2.default.card.actions,
-                        null,
-                        _react2.default.createElement(_index2.default.button, { text: 'Normal' }),
-                        _react2.default.createElement(_index2.default.button.pure, { text: 'Primary', primary: true }),
-                        _react2.default.createElement(_index2.default.button.pure, { text: 'Danger', danger: true }),
-                        _react2.default.createElement(_index2.default.button, { text: 'Accent', accent: true })
+                        _react2.default.createElement(_index2.default.card.title, { main: 'Alert?' }),
+                        'Some message',
+                        _react2.default.createElement(
+                            _index2.default.card.actions,
+                            null,
+                            _react2.default.createElement(_index2.default.button, { block: true, text: 'OK', onTap: _this3.toggleDialog })
+                        )
                     )
-                ),
-                _react2.default.createElement(_index2.default.checkbox.pure, { checked: _this3.state.c, onChange: _this3.linked.c, label: 'Checkbox?' }),
-                _react2.default.createElement(_index2.default.toggle.pure, { label: 'Toggle!', on: _this3.state.o, onChange: _this3.linked.o }),
-                _react2.default.createElement(
-                    _index2.default.select,
-                    { value: _this3.state.s, onChange: _this3.linkState('s') },
-                    0 .to(10).map(function (i) {
-                        return _react2.default.createElement(
-                            'option',
-                            { value: i },
-                            i
-                        );
-                    })
-                ),
-                _react2.default.createElement(
-                    _index2.default.collapse,
-                    { title: 'Collapse' },
-                    _react2.default.createElement(_index2.default.radio, { value: _this3.state.rv, onChange: _this3.linked.rv, children: 0 .to(10).map(function (i) {
-                            return _react2.default.createElement(
-                                'option',
-                                { value: i },
-                                i
-                            );
-                        }) })
-                ),
-                _react2.default.createElement(_index2.default.slider, { min: -100, max: 100, value: _this3.state.n, onChange: _this3.linked.n })
+                )
             );
         };
 
@@ -3173,7 +3186,8 @@ var Test = function (_doric$baseComponent2) {
             o: false,
             rv: null,
             c: false,
-            n: 0
+            n: 0,
+            dialog: false
         };
         _this3.linked = _this3.createLinks('t', 'rv', 'c', 'n', 'o');
         return _this3;
