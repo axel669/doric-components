@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import update from 'immutable-update-values';
+
 import doric from '../../index.js';
 
 window.images = {
@@ -98,7 +100,19 @@ doric.style.add({
         left: '50%',
         transform: 'translateX(-50%)',
         width: '70vmin',
-        height: '60vmin'
+        height: '60vmin',
+        animationName: 'doric-dialog-enter',
+        animationDuration: '150ms'
+    },
+    '@keyframes doric-dialog-enter': {
+        from: {
+            opacity: 0,
+            transform: 'translateX(-50%) translateY(-25%)'
+        },
+        to: {
+            opacity: 1,
+            transform: 'translateX(-50%)'
+        }
     }
 });
 
@@ -115,7 +129,7 @@ class DialogManager extends doric.baseComponent {
         const id = Date.now();
         const close = () => {
             this.setStatef({
-                dialogs: doric.util.update(
+                dialogs: update(
                     this.state.dialogs,
                     {$filter: dialog => dialog.id !== id}
                 )
@@ -131,21 +145,21 @@ class DialogManager extends doric.baseComponent {
                 </doric-dialog-wrapper>
             )
         };
-        const dialogs = doric.util.update(
+        const dialogs = update(
             this.state.dialogs,
             {"$push": dialog}
         );
         this.setStatef({dialogs});
     }
 
-    componentWillUpdate = (nprops, nstate) => {
-        if (nstate.dialogs.length > 0) {
-            document.body.style.overflow = 'hidden';
-        }
-        else {
-            document.body.style.overflow = '';
-        }
-    }
+    // componentWillUpdate = (nprops, nstate) => {
+    //     if (nstate.dialogs.length > 0) {
+    //         document.body.style.overflow = 'hidden';
+    //     }
+    //     else {
+    //         document.body.style.overflow = '';
+    //     }
+    // }
 
     render = () => {
         return (
@@ -172,7 +186,7 @@ const dialog = (() => {
             show(({close}) => (
                 <doric.card>
                     <doric.card.title main="Alert" />
-                    {msg}
+                    <div style={{textAlign: 'center'}}>{msg}</div>
                     <doric.card.actions>
                         <doric.button text="Ok" block primary onTap={close} />
                     </doric.card.actions>
@@ -196,6 +210,18 @@ const Dialog = ({children, open}) => {
     );
 };
 
+const withDialog = Component => class extends Component {
+    render = () => {
+        console.log(super.modnum, super.wat);
+        return (
+            <React.Fragment>
+                {/* {super.render()} */}
+                {JSON.stringify(this.props)}
+            </React.Fragment>
+        );
+        // return <Component {...this.props} dialog={dialog} />;
+    }
+};
 
 class Test extends doric.baseComponent {
     constructor(props) {
@@ -207,7 +233,8 @@ class Test extends doric.baseComponent {
             rv: null,
             c: false,
             n: 0,
-            dialog: false
+            dialog: false,
+            number: 0
         };
         this.linked = this.createLinks('t', 'rv', 'c', 'n', 'o');
     }
@@ -222,7 +249,7 @@ class Test extends doric.baseComponent {
     }
 
     dialogTest = () => {
-        dialog.show(({close}) => (
+        this.props.dialog.show(({close}) => (
             <doric.card>
                 <doric.card.title main="Alert?" />
                 Some message
@@ -232,6 +259,7 @@ class Test extends doric.baseComponent {
             </doric.card>
         ));
     }
+    wat() {}
 
     toggleDialog = () => {
         const dialog = this.state.dialog === false;
@@ -240,6 +268,7 @@ class Test extends doric.baseComponent {
     alertTest = () => {
         dialog.alert("Test");
     }
+    modnum = () => this.setStatef({number: this.state.number + 1})
 
     render = () => {
         return (
@@ -251,6 +280,8 @@ class Test extends doric.baseComponent {
                     <doric.card>
                         <doric.card.title main="Alert?" />
                         Some message
+                        <div>{this.state.number}</div>
+                        <doric.button text="nope" onTap={this.modnum} primary />
                         <doric.card.actions>
                             <doric.button block text="OK" onTap={this.toggleDialog} />
                         </doric.card.actions>
@@ -289,8 +320,9 @@ class Test extends doric.baseComponent {
         );
     }
 }
+const Main = withDialog(Test);
 
 doric.init(
-    <Test />,
+    <Main />,
     document.querySelector("div")
 );

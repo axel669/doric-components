@@ -58,4 +58,4 @@ const TronTheme = {
 };
 
 // window.DoricTheme = DarkTheme;
-// window.DoricTheme = TronTheme;
+window.DoricTheme = TronTheme;

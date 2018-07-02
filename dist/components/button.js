@@ -6,9 +6,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-// import util from '../util';
-
-
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -111,42 +108,6 @@ _style2.default.add({
         borderRadius: 500
     }
 });
-
-// export default class DoricButton extends React.PureComponent {
-//     render = () => {
-//         const props = this.props;
-//         const {
-//             onTap: tapHandler = (() => {}),
-//             onKeyDown: passedOKD = (() => {}),
-//             text,
-//             children,
-//             className,
-//             tabIndex = 0,
-//             ...passThrough
-//         } = props;
-//         const {disabled} = props;
-//         const onTap =  evt => {
-//             if (disabled !== true) {
-//                 tapHandler({...evt, type: 'tap'});
-//             }
-//         };
-//         const onKeyDown = evt => {
-//             passedOKD(evt);
-//             if (evt.key === ' ' || evt.key === 'Enter') {
-//                 onTap(evt);
-//             }
-//         };
-//
-//         return (
-//             <doric-button tabIndex={disabled === true ? null : tabIndex} {...passThrough} class={className} onKeyDown={onKeyDown}>
-//                 <CustomListeners listeners={{onTap}} />
-//                 <doric-button-content>
-//                     {text || children}
-//                 </doric-button-content>
-//             </doric-button>
-//         );
-//     }
-// }
 
 var DoricButton = function DoricButton(props) {
     var _props$onTap = props.onTap,

@@ -28,17 +28,6 @@ _style2.default.add({
     }
 });
 
-// export default class DoricImage extends React.PureComponent {
-//     render = () => {
-//         const {source, height, imageSize = 'contain'} = this.props;
-//         const style = {
-//             backgroundImage: `url("${source}")`,
-//             height,
-//             backgroundSize: imageSize
-//         };
-//         return <doric-image style={style} />;
-//     }
-// }
 var DoricImage = function DoricImage(_ref) {
     var source = _ref.source,
         height = _ref.height,

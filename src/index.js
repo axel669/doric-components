@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import 'gesturesjs';
 import ssjs from 'ssjs';
 import style from './style';
-import update from './update';
 
 import {
     BaseComponent as baseComponent,
@@ -52,12 +51,6 @@ const doric = {
 
     ext: {
         loader
-    },
-    util: {
-        update,
-        setState(component, value) {
-            component.setState(() => value);
-        }
     },
 
     init(main, target) {

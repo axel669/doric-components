@@ -18,10 +18,6 @@ var _style = require('./style');
 
 var _style2 = _interopRequireDefault(_style);
 
-var _update = require('./update');
-
-var _update2 = _interopRequireDefault(_update);
-
 var _baseComponent = require('./components/baseComponent');
 
 var _button = require('./components/button');
@@ -107,14 +103,6 @@ var doric = {
 
     ext: {
         loader: _reactLoaderSpinner2.default
-    },
-    util: {
-        update: _update2.default,
-        setState: function setState(component, value) {
-            component.setState(function () {
-                return value;
-            });
-        }
     },
 
     init: function init(main, target) {

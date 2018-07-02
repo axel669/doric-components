@@ -1,4 +1,6 @@
-import update from './update';
+import update from 'immutable-update-values';
+
+console.log(update);
 
 const niceBlue = '#1d62d5';
 const normalHL = 'rgba(0, 0, 0, 0.4)';
