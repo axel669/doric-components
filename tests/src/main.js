@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import update from 'immutable-update-values';
+import autobind from 'autobind-decorator';
 
 import doric from '../../index.js';
 
@@ -116,91 +117,7 @@ doric.style.add({
     }
 });
 
-class DialogManager extends doric.baseComponent {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            dialogs: []
-        };
-    }
-
-    addDialog = Component => {
-        const id = Date.now();
-        const close = () => {
-            this.setStatef({
-                dialogs: update(
-                    this.state.dialogs,
-                    {$filter: dialog => dialog.id !== id}
-                )
-            });
-        };
-        const dialog = {
-            id,
-            element: (
-                <doric-dialog-wrapper key={id}>
-                    <doric-dialog-container>
-                        <Component close={close} />
-                    </doric-dialog-container>
-                </doric-dialog-wrapper>
-            )
-        };
-        const dialogs = update(
-            this.state.dialogs,
-            {"$push": dialog}
-        );
-        this.setStatef({dialogs});
-    }
-
-    // componentWillUpdate = (nprops, nstate) => {
-    //     if (nstate.dialogs.length > 0) {
-    //         document.body.style.overflow = 'hidden';
-    //     }
-    //     else {
-    //         document.body.style.overflow = '';
-    //     }
-    // }
-
-    render = () => {
-        return (
-            <React.Fragment>
-                {this.state.dialogs.map(d => d.element)}
-            </React.Fragment>
-        );
-    }
-}
-const dialog = (() => {
-    const container = document.createElement("doric-dialog-base");
-
-    document.body.appendChild(container);
-
-    const manager = ReactDOM.render(
-        <DialogManager />,
-        container
-    );
-    const show = Container => manager.addDialog(Container);
-
-    return {
-        show,
-        alert(msg) {
-            show(({close}) => (
-                <doric.card>
-                    <doric.card.title main="Alert" />
-                    <div style={{textAlign: 'center'}}>{msg}</div>
-                    <doric.card.actions>
-                        <doric.button text="Ok" block primary onTap={close} />
-                    </doric.card.actions>
-                </doric.card>
-            ));
-        }
-    };
-})();
-
-const Dialog = ({children, open}) => {
-    if (open === false) {
-        return null;
-    }
-
+const DoricDialog = ({children}) => {
     return (
         <doric-dialog-wrapper>
             <doric-dialog-container>
@@ -210,19 +127,82 @@ const Dialog = ({children, open}) => {
     );
 };
 
-const withDialog = Component => class extends Component {
-    render = () => {
-        console.log(super.modnum, super.wat);
+const copyKeys = (source, keys) => {
+    const res = {};
+    for (const key of keys) {
+        res[key] = source[key];
+    }
+    return res;
+};
+const dialogPrivate = new WeakMap();
+const dialogify = Component => class extends Component {
+    static displayName = `DialogWrapped:${Component.name || "NamelessComponent"}`;
+    constructor(props) {
+        super(props);
+        dialogPrivate.set(this, []);
+        const scheduleUpdate = () => this.setState(() => ({}));
+        this.dialogs = {
+            show: (element, ...props) => new Promise(
+                resolve => {
+                    const id = `${Date.now()}_${Math.random()}`;
+                    const close = (value) => {
+                        const dialogs = dialogPrivate.get(this);
+                        dialogPrivate.set(
+                            this,
+                            dialogs.filter(d => d.id !== id)
+                        );
+                        scheduleUpdate();
+                        resolve(value);
+                    };
+                    dialogPrivate.get(this).push({
+                        id,
+                        close,
+                        element,
+                        props
+                    });
+                    scheduleUpdate();
+                }
+            )
+        };
+    }
+
+    render() {
         return (
             <React.Fragment>
-                {/* {super.render()} */}
+                {super.render()}
                 {JSON.stringify(this.props)}
+                {JSON.stringify(this.state)}
+                {dialogPrivate.get(this).map(
+                    dialog => (
+                        <DoricDialog key={dialog.id}>
+                            <dialog.element close={dialog.close} />
+                        </DoricDialog>
+                    )
+                )}
             </React.Fragment>
         );
-        // return <Component {...this.props} dialog={dialog} />;
     }
 };
 
+class NeatDialog extends doric.pureBaseComponent {
+    constructor(props) {
+        super(props);
+        this.state = {
+            input: ""
+        };
+    }
+
+    render = () => {
+        const {close} = this.props;
+        return (
+            <div>
+                <doric.input.text value={this.state.input} onChange={this.linkState('input')} />
+                <doric.button block text="Normal Close" onTap={close} />
+                <doric.button block text="Text Close" onTap={() => close(this.state.input)} />
+            </div>
+        );
+    }
+}
 class Test extends doric.baseComponent {
     constructor(props) {
         super(props);
@@ -248,18 +228,29 @@ class Test extends doric.baseComponent {
         });
     }
 
-    dialogTest = () => {
-        this.props.dialog.show(({close}) => (
-            <doric.card>
-                <doric.card.title main="Alert?" />
-                Some message
-                <doric.card.actions>
-                    <doric.button block text="OK" onTap={close} />
-                </doric.card.actions>
-            </doric.card>
-        ));
+    dialogTest = async () => {
+        const value = await this.dialogs.show(props => {
+            // console.log(props);
+            const {close} = props;
+            return (
+                <doric.card>
+                    <doric.card.title main="Alert?" />
+                    Some message: {this.state.number}
+                    <doric.divider />
+                    <doric.button text="nope" onTap={this.modnum} primary />
+                    <doric.button danger text="WOAH" block onTap={this.dialogTest} />
+                    <doric.card.actions>
+                        <doric.button block text="OK" onTap={() => close(Date.now())} />
+                    </doric.card.actions>
+                </doric.card>
+            )
+        });
+        console.log(value);
     }
-    wat() {}
+    @autobind
+    async moarDialog() {
+        console.log(await this.dialogs.show(NeatDialog));
+    }
 
     toggleDialog = () => {
         const dialog = this.state.dialog === false;
@@ -270,23 +261,12 @@ class Test extends doric.baseComponent {
     }
     modnum = () => this.setStatef({number: this.state.number + 1})
 
-    render = () => {
+    render() {
         return (
             <div style={{overflow: 'hidden'}}>
-                <doric.button text="Dialog" onTap={this.toggleDialog} />
+                <doric.button text="Dialog" onTap={this.dialogTest} />
                 <doric.button primary text="Alert" onTap={this.alertTest} />
-
-                <Dialog open={this.state.dialog}>
-                    <doric.card>
-                        <doric.card.title main="Alert?" />
-                        Some message
-                        <div>{this.state.number}</div>
-                        <doric.button text="nope" onTap={this.modnum} primary />
-                        <doric.card.actions>
-                            <doric.button block text="OK" onTap={this.toggleDialog} />
-                        </doric.card.actions>
-                    </doric.card>
-                </Dialog>
+                <doric.button block text="Neat Dialog" onTap={this.moarDialog} />
                 {/* <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" disabled />
                 <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" required loader={true} />
                 <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" optional loader={true} loaderType="TailSpin" />
@@ -320,9 +300,9 @@ class Test extends doric.baseComponent {
         );
     }
 }
-const Main = withDialog(Test);
+const Main = dialogify(Test);
 
 doric.init(
-    <Main />,
+    <Main wat="lul" />,
     document.querySelector("div")
 );

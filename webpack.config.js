@@ -8,10 +8,7 @@ module.exports = {
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader',
-                query: {
-                    presets: ['env', 'react', 'stage-0']
-                }
+                loader: 'babel-loader'
             },
             {
                 test: /\.(gif|woff)$/,

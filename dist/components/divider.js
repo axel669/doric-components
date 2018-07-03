@@ -1,33 +1,30 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
+exports.default = void 0;
 
-var _react = require('react');
+var _react = _interopRequireDefault(require("react"));
 
-var _react2 = _interopRequireDefault(_react);
+var _style = _interopRequireDefault(require("../style"));
 
-var _style = require('../style');
-
-var _style2 = _interopRequireDefault(_style);
-
-var _theme = require('../theme');
-
-var _theme2 = _interopRequireDefault(_theme);
+var _theme = _interopRequireDefault(require("../theme"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_style2.default.add({
-    "doric-divide": {
-        display: 'block',
-        height: 0,
-        borderBottom: '2px solid ' + _theme2.default.divider.border.normal,
-        margin: '12px 0px'
-    }
+_style.default.add({
+  "doric-divide": {
+    display: 'block',
+    height: 0,
+    borderBottom: "2px solid ".concat(_theme.default.divider.border.normal),
+    margin: '12px 0px'
+  }
 });
+
 var DoricDivider = function DoricDivider(props) {
-    return _react2.default.createElement('doric-divide', props);
+  return _react.default.createElement("doric-divide", props);
 };
 
-exports.default = DoricDivider;
+var _default = DoricDivider;
+exports.default = _default;
