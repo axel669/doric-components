@@ -126,13 +126,13 @@ const DoricDialog = ({children}) => {
         </doric-dialog-wrapper>
     );
 };
-
-const copyKeys = (source, keys) => {
-    const res = {};
-    for (const key of keys) {
-        res[key] = source[key];
-    }
-    return res;
+const DialogBox = ({children, title}) => {
+    return (
+        <doric-dialog-box>
+            <doric-dialog-box-title>{title}</doric-dialog-box-title>
+            {children}
+        </doric-dialog-box>
+    );
 };
 const dialogPrivate = new WeakMap();
 const dialogify = Component => class extends Component {
@@ -195,7 +195,7 @@ class NeatDialog extends doric.pureBaseComponent {
     render = () => {
         const {close} = this.props;
         return (
-            <div>
+            <div style={{height: '200%', backgroundColor: '#444'}}>
                 <doric.input.text value={this.state.input} onChange={this.linkState('input')} />
                 <doric.button block text="Normal Close" onTap={close} />
                 <doric.button block text="Text Close" onTap={() => close(this.state.input)} />

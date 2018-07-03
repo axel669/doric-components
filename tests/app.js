@@ -5526,33 +5526,10 @@ var DoricDialog = function DoricDialog(_ref) {
   return _react.default.createElement("doric-dialog-wrapper", null, _react.default.createElement("doric-dialog-container", null, children));
 };
 
-var copyKeys = function copyKeys(source, keys) {
-  var res = {};
-  var _iteratorNormalCompletion2 = true;
-  var _didIteratorError2 = false;
-  var _iteratorError2 = undefined;
-
-  try {
-    for (var _iterator2 = keys[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-      var key = _step2.value;
-      res[key] = source[key];
-    }
-  } catch (err) {
-    _didIteratorError2 = true;
-    _iteratorError2 = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-        _iterator2.return();
-      }
-    } finally {
-      if (_didIteratorError2) {
-        throw _iteratorError2;
-      }
-    }
-  }
-
-  return res;
+var DialogBox = function DialogBox(_ref2) {
+  var children = _ref2.children,
+      title = _ref2.title;
+  return _react.default.createElement("doric-dialog-box", null, _react.default.createElement("doric-dialog-box-title", null, title), children);
 };
 
 var dialogPrivate = new WeakMap();
@@ -5613,14 +5590,12 @@ var dialogify = function dialogify(Component) {
     _createClass(_class, [{
       key: "render",
       value: function render() {
-        var _this3 = this;
-
         return _react.default.createElement(_react.default.Fragment, null, _get(_getPrototypeOf(_class.prototype), "render", this).call(this), JSON.stringify(this.props), JSON.stringify(this.state), dialogPrivate.get(this).map(function (dialog) {
           return _react.default.createElement(DoricDialog, {
             key: dialog.id
-          }, _react.default.createElement(dialog.element, _extends({
+          }, _react.default.createElement(dialog.element, {
             close: dialog.close
-          }, copyKeys(_this3.props, dialog.props))));
+          }));
         }));
       }
     }]);
@@ -5635,17 +5610,22 @@ function (_doric$pureBaseCompon) {
   _inherits(NeatDialog, _doric$pureBaseCompon);
 
   function NeatDialog(props) {
-    var _this4;
+    var _this3;
 
     _classCallCheck(this, NeatDialog);
 
-    _this4 = _possibleConstructorReturn(this, _getPrototypeOf(NeatDialog).call(this, props));
+    _this3 = _possibleConstructorReturn(this, _getPrototypeOf(NeatDialog).call(this, props));
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this4)), "render", function () {
-      var close = _this4.props.close;
-      return _react.default.createElement("div", null, _react.default.createElement(_index.default.input.text, {
-        value: _this4.state.input,
-        onChange: _this4.linkState('input')
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this3)), "render", function () {
+      var close = _this3.props.close;
+      return _react.default.createElement("div", {
+        style: {
+          height: '200%',
+          backgroundColor: '#444'
+        }
+      }, _react.default.createElement(_index.default.input.text, {
+        value: _this3.state.input,
+        onChange: _this3.linkState('input')
       }), _react.default.createElement(_index.default.button, {
         block: true,
         text: "Normal Close",
@@ -5654,15 +5634,15 @@ function (_doric$pureBaseCompon) {
         block: true,
         text: "Text Close",
         onTap: function onTap() {
-          return close(_this4.state.input);
+          return close(_this3.state.input);
         }
       }));
     });
 
-    _this4.state = {
+    _this3.state = {
       input: ""
     };
-    return _this4;
+    return _this3;
   }
 
   return NeatDialog;
@@ -5674,17 +5654,17 @@ function (_doric$baseComponent) {
   _inherits(Test, _doric$baseComponent);
 
   function Test(_props) {
-    var _this5;
+    var _this4;
 
     _classCallCheck(this, Test);
 
-    _this5 = _possibleConstructorReturn(this, _getPrototypeOf(Test).call(this, _props));
+    _this4 = _possibleConstructorReturn(this, _getPrototypeOf(Test).call(this, _props));
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this5)), "add", function () {
-      var i = _this5.state.i;
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this4)), "add", function () {
+      var i = _this4.state.i;
       i += 1;
 
-      _this5.setState(function () {
+      _this4.setState(function () {
         for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
           args[_key2] = arguments[_key2];
         }
@@ -5696,7 +5676,7 @@ function (_doric$baseComponent) {
       });
     });
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this5)), "dialogTest",
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this4)), "dialogTest",
     /*#__PURE__*/
     _asyncToGenerator(
     /*#__PURE__*/
@@ -5707,20 +5687,20 @@ function (_doric$baseComponent) {
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.next = 2;
-              return _this5.dialogs.show(function (props) {
+              return _this4.dialogs.show(function (props) {
                 // console.log(props);
                 var close = props.close;
                 return _react.default.createElement(_index.default.card, null, _react.default.createElement(_index.default.card.title, {
                   main: "Alert?"
-                }), "Some message: ", _this5.state.number, _react.default.createElement(_index.default.divider, null), _react.default.createElement(_index.default.button, {
+                }), "Some message: ", _this4.state.number, _react.default.createElement(_index.default.divider, null), _react.default.createElement(_index.default.button, {
                   text: "nope",
-                  onTap: _this5.modnum,
+                  onTap: _this4.modnum,
                   primary: true
                 }), _react.default.createElement(_index.default.button, {
                   danger: true,
                   text: "WOAH",
                   block: true,
-                  onTap: _this5.dialogTest
+                  onTap: _this4.dialogTest
                 }), _react.default.createElement(_index.default.card.actions, null, _react.default.createElement(_index.default.button, {
                   block: true,
                   text: "OK",
@@ -5742,25 +5722,25 @@ function (_doric$baseComponent) {
       }, _callee, this);
     })));
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this5)), "toggleDialog", function () {
-      var dialog = _this5.state.dialog === false;
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this4)), "toggleDialog", function () {
+      var dialog = _this4.state.dialog === false;
 
-      _this5.setStatef({
+      _this4.setStatef({
         dialog: dialog
       });
     });
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this5)), "alertTest", function () {
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this4)), "alertTest", function () {
       dialog.alert("Test");
     });
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this5)), "modnum", function () {
-      return _this5.setStatef({
-        number: _this5.state.number + 1
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this4)), "modnum", function () {
+      return _this4.setStatef({
+        number: _this4.state.number + 1
       });
     });
 
-    _this5.state = {
+    _this4.state = {
       i: 0,
       t: '',
       o: false,
@@ -5770,8 +5750,8 @@ function (_doric$baseComponent) {
       dialog: false,
       number: 0
     };
-    _this5.linked = _this5.createLinks('t', 'rv', 'c', 'n', 'o');
-    return _this5;
+    _this4.linked = _this4.createLinks('t', 'rv', 'c', 'n', 'o');
+    return _this4;
   }
 
   _createClass(Test, [{
