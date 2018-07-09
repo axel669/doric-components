@@ -5,6 +5,40 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+require("core-js/modules/es6.array.for-each");
+
+require("core-js/modules/es6.array.filter");
+
+require("core-js/modules/es6.object.define-property");
+
+require("core-js/modules/es6.array.from");
+
+require("core-js/modules/es6.regexp.to-string");
+
+require("core-js/modules/es6.date.to-string");
+
+require("core-js/modules/es6.array.is-array");
+
+require("core-js/modules/es6.array.index-of");
+
+require("core-js/modules/es6.array.reduce");
+
+require("core-js/modules/es6.string.iterator");
+
+require("core-js/modules/es6.set");
+
+require("core-js/modules/es6.array.iterator");
+
+require("core-js/modules/es6.object.keys");
+
+require("core-js/modules/es6.string.ends-with");
+
+require("core-js/modules/es7.symbol.async-iterator");
+
+require("core-js/modules/es6.symbol");
+
+require("core-js/modules/web.dom.iterable");
+
 var _immutableUpdateValues = _interopRequireDefault(require("immutable-update-values"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -49,6 +83,8 @@ var baseTheme = {
   'collapse.title.bg.normal': niceBlue,
   'collapse.title.text.normal': 'white',
   'collapse.border.normal': 'lightgray',
+  'dialog.bg.normal': 'white',
+  'dialog.border.normal': 'white',
   'divider.border.normal': 'lightgray',
   'input.border.normal': 'lightgray',
   'input.border.focus': niceBlue,

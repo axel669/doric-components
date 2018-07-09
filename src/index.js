@@ -2,27 +2,29 @@ import ReactDOM from 'react-dom';
 
 import 'gesturesjs';
 import ssjs from 'ssjs';
-import style from './style';
+import style from './style.js';
 
 import {
     BaseComponent as baseComponent,
     PureBaseComponent as pureBaseComponent
-} from './components/baseComponent';
+} from './components/baseComponent.js';
 
-import button from './components/button';
-import card from './components/card';
-import checkbox from './components/checkbox';
-import collapse from './components/collapse';
-import divider from './components/divider';
-import {Grid as grid, Col as col, GridBreak as gridBreak} from './components/grid';
-import icon from './components/icon';
-import image from './components/image';
-import input from './components/input';
-import radio from './components/radio';
-import select from './components/select';
-import slider from './components/slider';
-import {Tabs as tabs, Tab as tab} from './components/tabs';
-import toggle from './components/toggle';
+import button from './components/button.js';
+import card from './components/card.js';
+import checkbox from './components/checkbox.js';
+import collapse from './components/collapse.js';
+import divider from './components/divider.js';
+import {Grid as grid, Col as col, GridBreak as gridBreak} from './components/grid.js';
+import icon from './components/icon.js';
+import image from './components/image.js';
+import input from './components/input.js';
+import radio from './components/radio.js';
+import select from './components/select.js';
+import slider from './components/slider.js';
+import {Tabs as tabs, Tab as tab} from './components/tabs.js';
+import toggle from './components/toggle.js';
+
+import dialogify from './components/dialog.js';
 
 import loader from 'react-loader-spinner';
 
@@ -46,6 +48,8 @@ const doric = {
     tab,
     tabs,
     toggle,
+
+    dialogify,
 
     style,
 

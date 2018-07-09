@@ -29,6 +29,9 @@ const baseTheme = {
     'collapse.title.text.normal': 'white',
     'collapse.border.normal': 'lightgray',
 
+    'dialog.bg.normal': 'white',
+    'dialog.border.normal': 'white',
+
     'divider.border.normal': 'lightgray',
 
     'input.border.normal': 'lightgray',

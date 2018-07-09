@@ -1,5 +1,7 @@
 "use strict";
 
+require("core-js/modules/es6.object.define-property");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -11,37 +13,39 @@ require("gesturesjs");
 
 var _ssjs = _interopRequireDefault(require("ssjs"));
 
-var _style = _interopRequireDefault(require("./style"));
+var _style = _interopRequireDefault(require("./style.js"));
 
-var _baseComponent = require("./components/baseComponent");
+var _baseComponent = require("./components/baseComponent.js");
 
-var _button = _interopRequireDefault(require("./components/button"));
+var _button = _interopRequireDefault(require("./components/button.js"));
 
-var _card = _interopRequireDefault(require("./components/card"));
+var _card = _interopRequireDefault(require("./components/card.js"));
 
-var _checkbox = _interopRequireDefault(require("./components/checkbox"));
+var _checkbox = _interopRequireDefault(require("./components/checkbox.js"));
 
-var _collapse = _interopRequireDefault(require("./components/collapse"));
+var _collapse = _interopRequireDefault(require("./components/collapse.js"));
 
-var _divider = _interopRequireDefault(require("./components/divider"));
+var _divider = _interopRequireDefault(require("./components/divider.js"));
 
-var _grid = require("./components/grid");
+var _grid = require("./components/grid.js");
 
-var _icon = _interopRequireDefault(require("./components/icon"));
+var _icon = _interopRequireDefault(require("./components/icon.js"));
 
-var _image = _interopRequireDefault(require("./components/image"));
+var _image = _interopRequireDefault(require("./components/image.js"));
 
-var _input = _interopRequireDefault(require("./components/input"));
+var _input = _interopRequireDefault(require("./components/input.js"));
 
-var _radio = _interopRequireDefault(require("./components/radio"));
+var _radio = _interopRequireDefault(require("./components/radio.js"));
 
-var _select = _interopRequireDefault(require("./components/select"));
+var _select = _interopRequireDefault(require("./components/select.js"));
 
-var _slider = _interopRequireDefault(require("./components/slider"));
+var _slider = _interopRequireDefault(require("./components/slider.js"));
 
-var _tabs = require("./components/tabs");
+var _tabs = require("./components/tabs.js");
 
-var _toggle = _interopRequireDefault(require("./components/toggle"));
+var _toggle = _interopRequireDefault(require("./components/toggle.js"));
+
+var _dialog = _interopRequireDefault(require("./components/dialog.js"));
 
 var _reactLoaderSpinner = _interopRequireDefault(require("react-loader-spinner"));
 
@@ -67,6 +71,7 @@ var doric = {
   tab: _tabs.Tab,
   tabs: _tabs.Tabs,
   toggle: _toggle.default,
+  dialogify: _dialog.default,
   style: _style.default,
   ext: {
     loader: _reactLoaderSpinner.default

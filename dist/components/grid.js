@@ -1,9 +1,25 @@
 "use strict";
 
+require("core-js/modules/es6.object.define-property");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.GridBreak = exports.Col = exports.Grid = void 0;
+
+require("core-js/modules/es6.object.assign");
+
+require("core-js/modules/es6.array.index-of");
+
+require("core-js/modules/es6.array.iterator");
+
+require("core-js/modules/es6.object.keys");
+
+require("core-js/modules/es7.symbol.async-iterator");
+
+require("core-js/modules/es6.symbol");
+
+require("core-js/modules/web.dom.iterable");
 
 var _react = _interopRequireDefault(require("react"));
 
