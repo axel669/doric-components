@@ -406,7 +406,7 @@ var dialogify = function dialogify(Component) {
     _createClass(_class2, [{
       key: "render",
       value: function render() {
-        return _react.default.createElement(_react.default.Fragment, null, _get(_getPrototypeOf(_class2.prototype), "render", this).call(this), JSON.stringify(this.props), JSON.stringify(this.state), dialogPrivate.get(this).map(function (dialog) {
+        return _react.default.createElement(_react.default.Fragment, null, _get(_getPrototypeOf(_class2.prototype), "render", this).call(this), dialogPrivate.get(this).map(function (dialog) {
           return _react.default.createElement(DoricDialog, _extends({
             key: dialog.id
           }, dialog.dialogProps, {

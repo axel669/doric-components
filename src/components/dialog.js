@@ -193,8 +193,8 @@ const dialogify = Component => class extends Component {
         return (
             <React.Fragment>
                 {super.render()}
-                {JSON.stringify(this.props)}
-                {JSON.stringify(this.state)}
+                {/* {JSON.stringify(this.props)}
+                {JSON.stringify(this.state)} */}
                 {dialogPrivate.get(this).map(
                     dialog => <DoricDialog
                         key={dialog.id} {...dialog.dialogProps}
