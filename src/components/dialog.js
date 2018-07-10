@@ -1,5 +1,6 @@
 import React from 'react';
 import autobind from 'autobind-decorator';
+import Loader from 'react-loader-spinner';
 
 import {PureBaseComponent} from './baseComponent.js';
 import Button from './button.js';
@@ -33,15 +34,18 @@ style.add({
         top: '10vh',
         left: '50%',
         transform: 'translateX(-50%)',
-        width: '70vmin',
+        width: '50vmin',
         animationName: 'doric-dialog-enter',
         animationDuration: '150ms',
         borderRadius: 5,
         border: `4px double ${theme.dialog.border.normal}`,
         backgroundColor: theme.dialog.bg.normal
     },
+    "doric-dialog-container.spinner": {
+        width: 'auto'
+    },
     "doric-dialog-content": {
-        maxHeight: '35vh',
+        maxHeight: '40vh',
         overflow: 'auto',
         display: 'block',
         padding: 5
@@ -71,10 +75,10 @@ style.add({
     }
 });
 
-const DoricDialog = ({content, actions, title = null}) => {
+const DoricDialog = ({content, actions, title = null, className}) => {
     return (
         <doric-dialog-wrapper>
-            <doric-dialog-container>
+            <doric-dialog-container class={className}>
                 <doric-dialog-title>{title}</doric-dialog-title>
                 <doric-dialog-content>{content}</doric-dialog-content>
                 <doric-dialog-actions>{actions}</doric-dialog-actions>
@@ -84,7 +88,7 @@ const DoricDialog = ({content, actions, title = null}) => {
 };
 
 const alerts = {
-    content: ({msg}) => <div>{msg}</div>,
+    content: ({msg}) => <div style={{width: '100%'}}>{msg}</div>,
     actions: ({close}) => <Button primary block text="OK" onTap={() => close(null)} />
 };
 const confirms = {
@@ -141,33 +145,48 @@ const dialogify = Component => class extends Component {
         dialogPrivate.set(this, []);
         const scheduleUpdate = () => this.setState(() => ({}));
         this.dialogs = {
-            show: ({content, actions = (() => null)}, dialogProps, props) => new Promise(
-                resolve => {
-                    const id = `${Date.now()}_${Math.random()}`;
-                    const close = (value) => {
-                        const dialogs = dialogPrivate.get(this);
-                        dialogPrivate.set(
-                            this,
-                            dialogs.filter(d => d.id !== id)
-                        );
+            show: ({content, actions = (() => null)}, dialogProps, props) => {
+                let closeMethod = null;
+                const value = new Promise(
+                    resolve => {
+                        const id = `${Date.now()}_${Math.random()}`;
+                        const close = (value) => {
+                            const dialogs = dialogPrivate.get(this);
+                            dialogPrivate.set(
+                                this,
+                                dialogs.filter(d => d.id !== id)
+                            );
+                            scheduleUpdate();
+                            resolve(value);
+                        };
+                        dialogPrivate.get(this).push({
+                            id,
+                            close,
+                            content,
+                            actions,
+                            dialogProps,
+                            props
+                        });
+                        closeMethod = close;
                         scheduleUpdate();
-                        resolve(value);
-                    };
-                    dialogPrivate.get(this).push({
-                        id,
-                        close,
-                        content,
-                        actions,
-                        dialogProps,
-                        props
-                    });
-                    scheduleUpdate();
-                }
-            )
+                    }
+                );
+                value.close = closeMethod;
+                return value;
+            }
         };
         this.dialogs.alert = (msg, title) => this.dialogs.show(alerts, {title}, {msg});
         this.dialogs.confirm = (msg, title) => this.dialogs.show(confirms, {title}, {msg});
         this.dialogs.prompt = (msg, title, placeholder) => this.dialogs.show(prompts(), {title}, {msg});
+        this.dialogs.spinner = (msg, spinnerProps = null) => this.dialogs.show(
+            {content: props => (
+                <div style={{textAlign: 'center', padding: 5}}>
+                    {msg}
+                    <Loader {...spinnerProps} />
+                </div>
+            )},
+            {className: 'spinner'}
+        );
     }
 
     render() {

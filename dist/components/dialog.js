@@ -47,6 +47,8 @@ var _react = _interopRequireDefault(require("react"));
 
 var _autobindDecorator = _interopRequireDefault(require("autobind-decorator"));
 
+var _reactLoaderSpinner = _interopRequireDefault(require("react-loader-spinner"));
+
 var _baseComponent = require("./baseComponent.js");
 
 var _button = _interopRequireDefault(require("./button.js"));
@@ -115,15 +117,18 @@ _style.default.add({
     top: '10vh',
     left: '50%',
     transform: 'translateX(-50%)',
-    width: '70vmin',
+    width: '50vmin',
     animationName: 'doric-dialog-enter',
     animationDuration: '150ms',
     borderRadius: 5,
     border: "4px double ".concat(_theme.default.dialog.border.normal),
     backgroundColor: _theme.default.dialog.bg.normal
   },
+  "doric-dialog-container.spinner": {
+    width: 'auto'
+  },
   "doric-dialog-content": {
-    maxHeight: '35vh',
+    maxHeight: '40vh',
     overflow: 'auto',
     display: 'block',
     padding: 5
@@ -157,14 +162,21 @@ var DoricDialog = function DoricDialog(_ref) {
   var content = _ref.content,
       actions = _ref.actions,
       _ref$title = _ref.title,
-      title = _ref$title === void 0 ? null : _ref$title;
-  return _react.default.createElement("doric-dialog-wrapper", null, _react.default.createElement("doric-dialog-container", null, _react.default.createElement("doric-dialog-title", null, title), _react.default.createElement("doric-dialog-content", null, content), _react.default.createElement("doric-dialog-actions", null, actions)));
+      title = _ref$title === void 0 ? null : _ref$title,
+      className = _ref.className;
+  return _react.default.createElement("doric-dialog-wrapper", null, _react.default.createElement("doric-dialog-container", {
+    class: className
+  }, _react.default.createElement("doric-dialog-title", null, title), _react.default.createElement("doric-dialog-content", null, content), _react.default.createElement("doric-dialog-actions", null, actions)));
 };
 
 var alerts = {
   content: function content(_ref2) {
     var msg = _ref2.msg;
-    return _react.default.createElement("div", null, msg);
+    return _react.default.createElement("div", {
+      style: {
+        width: '100%'
+      }
+    }, msg);
   },
   actions: function actions(_ref3) {
     var close = _ref3.close;
@@ -319,7 +331,8 @@ var dialogify = function dialogify(Component) {
               actions = _ref8$actions === void 0 ? function () {
             return null;
           } : _ref8$actions;
-          return new Promise(function (resolve) {
+          var closeMethod = null;
+          var value = new Promise(function (resolve) {
             var id = "".concat(Date.now(), "_").concat(Math.random());
 
             var close = function close(value) {
@@ -339,8 +352,11 @@ var dialogify = function dialogify(Component) {
               dialogProps: dialogProps,
               props: props
             });
+            closeMethod = close;
             scheduleUpdate();
           });
+          value.close = closeMethod;
+          return value;
         }
       };
 
@@ -365,6 +381,22 @@ var dialogify = function dialogify(Component) {
           title: title
         }, {
           msg: msg
+        });
+      };
+
+      _this2.dialogs.spinner = function (msg) {
+        var spinnerProps = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+        return _this2.dialogs.show({
+          content: function content(props) {
+            return _react.default.createElement("div", {
+              style: {
+                textAlign: 'center',
+                padding: 5
+              }
+            }, msg, _react.default.createElement(_reactLoaderSpinner.default, spinnerProps));
+          }
+        }, {
+          className: 'spinner'
         });
       };
 

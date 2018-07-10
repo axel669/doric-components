@@ -13,6 +13,8 @@ window.images = {
 };
 window.cblog = console::console.log;
 
+const wait = time => new Promise(resolve => setTimeout(resolve, time));
+
 const loaders = [
     'Audio',
     'Ball-Triangle',
@@ -162,6 +164,12 @@ class Test extends doric.baseComponent {
     async promptDialog() {
         console.log(await this.dialogs.prompt("Just Monika?", "Doki Doki", "Ok"));
     }
+    @autobind
+    async spinnerDialog() {
+        window.spinner = this.dialogs.spinner("Testing", {type: "Circles", width: 50, height: 50});
+        // await wait(1000);
+        // spinner.close();
+    }
 
     toggleDialog = () => {
         const dialog = this.state.dialog === false;
@@ -180,6 +188,7 @@ class Test extends doric.baseComponent {
                 <doric.button block text="Neat Dialog" onTap={this.alertDialog} />
                 <doric.button block text="OK / Cancel" onTap={this.okDialog} />
                 <doric.button block text="Prompt" onTap={this.promptDialog} />
+                <doric.button block text="Spinner" onTap={this.spinnerDialog} />
                 {/* <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" disabled />
                 <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" required loader={true} />
                 <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" optional loader={true} loaderType="TailSpin" />
