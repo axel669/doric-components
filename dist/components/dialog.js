@@ -5,19 +5,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-require("core-js/modules/es7.symbol.async-iterator");
-
-require("core-js/modules/es6.symbol");
-
 require("core-js/modules/es6.object.assign");
 
 require("core-js/modules/es6.reflect.get");
-
-require("core-js/modules/es6.object.create");
-
-require("core-js/modules/es6.object.set-prototype-of");
-
-require("core-js/modules/es6.object.define-property");
 
 require("core-js/modules/es6.function.name");
 
@@ -29,27 +19,59 @@ require("core-js/modules/es6.date.now");
 
 require("core-js/modules/es6.promise");
 
-require("core-js/modules/web.dom.iterable");
-
-require("core-js/modules/es6.array.iterator");
-
 require("core-js/modules/es6.string.iterator");
 
 require("core-js/modules/es6.weak-map");
 
+require("core-js/modules/es7.symbol.async-iterator");
+
+require("core-js/modules/es6.symbol");
+
+require("core-js/modules/es6.object.create");
+
+require("core-js/modules/es6.object.set-prototype-of");
+
+require("core-js/modules/es6.object.define-property");
+
+require("core-js/modules/es6.array.reduce");
+
+require("core-js/modules/es6.array.iterator");
+
+require("core-js/modules/es6.object.keys");
+
+require("core-js/modules/web.dom.iterable");
+
+require("core-js/modules/es6.array.for-each");
+
 var _react = _interopRequireDefault(require("react"));
 
+var _autobindDecorator = _interopRequireDefault(require("autobind-decorator"));
+
+var _baseComponent = require("./baseComponent.js");
+
 var _button = _interopRequireDefault(require("./button.js"));
+
+var _grid = require("./grid.js");
+
+var _input = _interopRequireDefault(require("./input.js"));
 
 var _theme = _interopRequireDefault(require("../theme.js"));
 
 var _style = _interopRequireDefault(require("../style.js"));
 
+var _class;
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
+
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -59,9 +81,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
-
-function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
@@ -69,9 +89,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) { var desc = {}; Object['ke' + 'ys'](descriptor).forEach(function (key) { desc[key] = descriptor[key]; }); desc.enumerable = !!desc.enumerable; desc.configurable = !!desc.configurable; if ('value' in desc || desc.initializer) { desc.writable = true; } desc = decorators.slice().reverse().reduce(function (desc, decorator) { return decorator(target, property, desc) || desc; }, desc); if (context && desc.initializer !== void 0) { desc.value = desc.initializer ? desc.initializer.call(context) : void 0; desc.initializer = undefined; } if (desc.initializer === void 0) { Object['define' + 'Property'](target, property, desc); desc = null; } return desc; }
 
 _style.default.add({
   "doric-dialog-base": {
@@ -100,6 +118,7 @@ _style.default.add({
     width: '70vmin',
     animationName: 'doric-dialog-enter',
     animationDuration: '150ms',
+    borderRadius: 5,
     border: "4px double ".concat(_theme.default.dialog.border.normal),
     backgroundColor: _theme.default.dialog.bg.normal
   },
@@ -112,9 +131,14 @@ _style.default.add({
   "doric-dialog-title": {
     display: 'block',
     padding: 5,
-    fontSize: 20
+    fontSize: 20,
+    paddingBottom: 15
   },
-  "doric-dialog-title:empty": {
+  "doric-dialog-actions": {
+    display: 'block',
+    marginTop: 15
+  },
+  "doric-dialog-title:empty, doric-dialog-actions:empty": {
     display: 'none'
   },
   '@keyframes doric-dialog-enter': {
@@ -130,54 +154,188 @@ _style.default.add({
 });
 
 var DoricDialog = function DoricDialog(_ref) {
-  var children = _ref.children,
+  var content = _ref.content,
+      actions = _ref.actions,
       _ref$title = _ref.title,
       title = _ref$title === void 0 ? null : _ref$title;
-  return _react.default.createElement("doric-dialog-wrapper", null, _react.default.createElement("doric-dialog-container", null, _react.default.createElement("doric-dialog-title", null, title), _react.default.createElement("doric-dialog-content", null, children)));
+  return _react.default.createElement("doric-dialog-wrapper", null, _react.default.createElement("doric-dialog-container", null, _react.default.createElement("doric-dialog-title", null, title), _react.default.createElement("doric-dialog-content", null, content), _react.default.createElement("doric-dialog-actions", null, actions)));
+};
+
+var alerts = {
+  content: function content(_ref2) {
+    var msg = _ref2.msg;
+    return _react.default.createElement("div", null, msg);
+  },
+  actions: function actions(_ref3) {
+    var close = _ref3.close;
+    return _react.default.createElement(_button.default, {
+      primary: true,
+      block: true,
+      text: "OK",
+      onTap: function onTap() {
+        return close(null);
+      }
+    });
+  }
+};
+var confirms = {
+  content: function content(_ref4) {
+    var msg = _ref4.msg;
+    return _react.default.createElement("div", null, msg);
+  },
+  actions: function actions(_ref5) {
+    var close = _ref5.close;
+    return _react.default.createElement(_grid.Grid, null, _react.default.createElement(_grid.Col, {
+      size: 6
+    }, _react.default.createElement(_button.default, {
+      block: true,
+      text: "Cancel",
+      danger: true,
+      onTap: function onTap() {
+        return close(false);
+      }
+    })), _react.default.createElement(_grid.Col, {
+      size: 6
+    }, _react.default.createElement(_button.default, {
+      block: true,
+      text: "OK",
+      primary: true,
+      onTap: function onTap() {
+        return close(true);
+      }
+    })));
+  }
+};
+var DoricPrompt = (_class =
+/*#__PURE__*/
+function (_PureBaseComponent) {
+  _inherits(DoricPrompt, _PureBaseComponent);
+
+  function DoricPrompt(props) {
+    var _this;
+
+    _classCallCheck(this, DoricPrompt);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(DoricPrompt).call(this, props));
+    _this.state = {
+      value: ""
+    };
+    return _this;
+  }
+
+  _createClass(DoricPrompt, [{
+    key: "update",
+    value: function update(evt) {
+      var value = evt.target.value;
+      this.setStatef({
+        value: value
+      });
+      this.props.setValue(value);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this$props = this.props,
+          msg = _this$props.msg,
+          placeholder = _this$props.placeholder;
+      return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement("div", null, msg), _react.default.createElement(_input.default.text, {
+        value: this.state.value,
+        onChange: this.update,
+        placeholder: placeholder
+      }));
+    }
+  }]);
+
+  return DoricPrompt;
+}(_baseComponent.PureBaseComponent), (_applyDecoratedDescriptor(_class.prototype, "update", [_autobindDecorator.default], Object.getOwnPropertyDescriptor(_class.prototype, "update"), _class.prototype)), _class);
+
+var prompts = function prompts() {
+  var value = "";
+  return {
+    content: function content(_ref6) {
+      var msg = _ref6.msg,
+          placeholder = _ref6.placeholder;
+      return _react.default.createElement(DoricPrompt, {
+        msg: msg,
+        placeholder: placeholder,
+        setValue: function setValue(v) {
+          return value = v;
+        }
+      });
+    },
+    actions: function actions(_ref7) {
+      var close = _ref7.close;
+      return _react.default.createElement(_grid.Grid, null, _react.default.createElement(_grid.Col, {
+        size: 6
+      }, _react.default.createElement(_button.default, {
+        block: true,
+        danger: true,
+        text: "Cancel",
+        onTap: function onTap() {
+          return close(null);
+        }
+      })), _react.default.createElement(_grid.Col, {
+        size: 6
+      }, _react.default.createElement(_button.default, {
+        block: true,
+        primary: true,
+        text: "OK",
+        onTap: function onTap() {
+          return close(value);
+        }
+      })));
+    }
+  };
 };
 
 var dialogPrivate = new WeakMap();
 
 var dialogify = function dialogify(Component) {
-  var _class, _temp;
+  var _class2, _temp;
 
-  return _temp = _class =
+  return _temp = _class2 =
   /*#__PURE__*/
   function (_Component) {
-    _inherits(_class, _Component);
+    _inherits(_class2, _Component);
 
-    function _class(props) {
-      var _this;
+    function _class2(props) {
+      var _this2;
 
-      _classCallCheck(this, _class);
+      _classCallCheck(this, _class2);
 
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(_class).call(this, props));
-      dialogPrivate.set(_assertThisInitialized(_assertThisInitialized(_this)), []);
+      _this2 = _possibleConstructorReturn(this, _getPrototypeOf(_class2).call(this, props));
+      dialogPrivate.set(_assertThisInitialized(_assertThisInitialized(_this2)), []);
 
       var scheduleUpdate = function scheduleUpdate() {
-        return _this.setState(function () {
+        return _this2.setState(function () {
           return {};
         });
       };
 
-      _this.dialogs = {
-        show: function show(element, dialogProps, props) {
+      _this2.dialogs = {
+        show: function show(_ref8, dialogProps, props) {
+          var content = _ref8.content,
+              _ref8$actions = _ref8.actions,
+              actions = _ref8$actions === void 0 ? function () {
+            return null;
+          } : _ref8$actions;
           return new Promise(function (resolve) {
             var id = "".concat(Date.now(), "_").concat(Math.random());
 
             var close = function close(value) {
-              var dialogs = dialogPrivate.get(_assertThisInitialized(_assertThisInitialized(_this)));
-              dialogPrivate.set(_assertThisInitialized(_assertThisInitialized(_this)), dialogs.filter(function (d) {
+              var dialogs = dialogPrivate.get(_assertThisInitialized(_assertThisInitialized(_this2)));
+              dialogPrivate.set(_assertThisInitialized(_assertThisInitialized(_this2)), dialogs.filter(function (d) {
                 return d.id !== id;
               }));
               scheduleUpdate();
               resolve(value);
             };
 
-            dialogPrivate.get(_assertThisInitialized(_assertThisInitialized(_this))).push({
+            dialogPrivate.get(_assertThisInitialized(_assertThisInitialized(_this2))).push({
               id: id,
               close: close,
-              element: element,
+              content: content,
+              actions: actions,
               dialogProps: dialogProps,
               props: props
             });
@@ -186,39 +344,53 @@ var dialogify = function dialogify(Component) {
         }
       };
 
-      _this.dialogs.alert = function (msg, title) {
-        return _this.dialogs.show(function (_ref2) {
-          var close = _ref2.close;
-          return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement("div", null, msg), _react.default.createElement(_button.default, {
-            text: "OK",
-            block: true,
-            onTap: function onTap() {
-              return close(null);
-            }
-          }));
-        }, {
+      _this2.dialogs.alert = function (msg, title) {
+        return _this2.dialogs.show(alerts, {
           title: title
+        }, {
+          msg: msg
         });
       };
 
-      return _this;
+      _this2.dialogs.confirm = function (msg, title) {
+        return _this2.dialogs.show(confirms, {
+          title: title
+        }, {
+          msg: msg
+        });
+      };
+
+      _this2.dialogs.prompt = function (msg, title, placeholder) {
+        return _this2.dialogs.show(prompts(), {
+          title: title
+        }, {
+          msg: msg
+        });
+      };
+
+      return _this2;
     }
 
-    _createClass(_class, [{
+    _createClass(_class2, [{
       key: "render",
       value: function render() {
-        return _react.default.createElement(_react.default.Fragment, null, _get(_getPrototypeOf(_class.prototype), "render", this).call(this), JSON.stringify(this.props), JSON.stringify(this.state), dialogPrivate.get(this).map(function (dialog) {
+        return _react.default.createElement(_react.default.Fragment, null, _get(_getPrototypeOf(_class2.prototype), "render", this).call(this), JSON.stringify(this.props), JSON.stringify(this.state), dialogPrivate.get(this).map(function (dialog) {
           return _react.default.createElement(DoricDialog, _extends({
             key: dialog.id
-          }, dialog.dialogProps), _react.default.createElement(dialog.element, _extends({}, dialog.props, {
-            close: dialog.close
-          })));
+          }, dialog.dialogProps, {
+            content: _react.default.createElement(dialog.content, _extends({}, dialog.props, {
+              close: dialog.close
+            })),
+            actions: _react.default.createElement(dialog.actions, _extends({}, dialog.props, {
+              close: dialog.close
+            }))
+          }));
         }));
       }
     }]);
 
-    return _class;
-  }(Component), _defineProperty(_class, "displayName", "DialogWrapped:".concat(Component.name || "NamelessComponent")), _temp;
+    return _class2;
+  }(Component), _defineProperty(_class2, "displayName", "DialogWrapped:".concat(Component.name || "NamelessComponent")), _temp;
 };
 
 var _default = dialogify;

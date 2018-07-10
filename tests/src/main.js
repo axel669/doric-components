@@ -121,29 +121,46 @@ class Test extends doric.baseComponent {
     }
 
     dialogTest = async () => {
-        const value = await this.dialogs.show(props => {
-            // console.log(props);
-            const {close} = props;
-            return (
-                <doric.card>
-                    <doric.card.title main="Alert?" />
-                    Some message: {this.state.number}
-                    <doric.divider />
-                    <doric.button text="nope" onTap={this.modnum} primary />
-                    <doric.button danger text="WOAH" block onTap={this.dialogTest} />
-                    <doric.card.actions>
-                        <doric.button block text="OK" onTap={() => close(Date.now())} />
-                    </doric.card.actions>
-                </doric.card>
-            )
+        const value = await this.dialogs.show({
+            content: props => {
+                const {close} = props;
+                return (
+                    <doric.card>
+                        <doric.card.title main="Alert?" />
+                        Some message: {this.state.number}
+                        <doric.divider />
+                        <doric.button text="nope" onTap={this.modnum} primary />
+                        <doric.button danger text="WOAH" block onTap={this.dialogTest} />
+                        <doric.card.actions>
+                            <doric.button block text="OK" onTap={() => close(Date.now())} />
+                        </doric.card.actions>
+                    </doric.card>
+                )
+            }
         });
         console.log(value);
     }
     @autobind
-    async moarDialog() {
-        console.log(await this.dialogs.show(NeatDialog, {title: 'test'}));
-        console.log(await this.dialogs.show(NeatDialog, null, {initialValue: 'hi'}));
+    async tallDialog() {
+        console.log(await this.dialogs.show(
+            {
+                content: () => <div style={{height: 400, background: "linear-gradient(to bottom right, black, fuchsia)"}} />,
+                actions: ({close}) => <doric.button text="OK" block onTap={close} />
+            },
+            {title: "Tall Boi"}
+        ));
+    }
+    @autobind
+    async alertDialog() {
         console.log(await this.dialogs.alert("Just Monika", "Doki Doki"));
+    }
+    @autobind
+    async okDialog() {
+        console.log(await this.dialogs.confirm("Just Monika?", "Doki Doki"));
+    }
+    @autobind
+    async promptDialog() {
+        console.log(await this.dialogs.prompt("Just Monika?", "Doki Doki", "Ok"));
     }
 
     toggleDialog = () => {
@@ -158,9 +175,11 @@ class Test extends doric.baseComponent {
     render() {
         return (
             <div style={{overflow: 'hidden'}}>
-                <doric.button text="Dialog" onTap={this.dialogTest} />
-                <doric.button primary text="Alert" onTap={this.alertTest} />
-                <doric.button block text="Neat Dialog" onTap={this.moarDialog} />
+                <doric.button block text="Dialog" onTap={this.dialogTest} />
+                <doric.button block text="tall" onTap={this.tallDialog} />
+                <doric.button block text="Neat Dialog" onTap={this.alertDialog} />
+                <doric.button block text="OK / Cancel" onTap={this.okDialog} />
+                <doric.button block text="Prompt" onTap={this.promptDialog} />
                 {/* <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" disabled />
                 <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" required loader={true} />
                 <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" optional loader={true} loaderType="TailSpin" />
