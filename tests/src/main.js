@@ -97,6 +97,32 @@ class NeatDialog extends doric.pureBaseComponent {
         );
     }
 }
+
+
+// doric.style.add({
+//     "doric-flex": {
+//         display: 'flex',
+//         flexWrap: 'wrap'
+//     },
+//     "doric-flex-col": {
+//         flex: '1'
+//     }
+// });
+// for (const i of (1).to(13)) {
+//     const width = ((i / 12) * 100).toPrecision(8);
+//     doric.style.add({
+//         [`doric-flex-col[size='${i}']`]: {
+//             minWidth: `${width}%`,
+//             maxWidth: `${width}%`
+//         }
+//     });
+// }
+// console.log(doric.style);
+// const DoricFlex = ({children, ...props}) => <doric-flex {...props}>{children}</doric-flex>;
+// const DoricFlexCol = ({children, ...props}) => <doric-flex-col {...props}>{children}</doric-flex-col>;
+const A = (props) => <div style={{backgroundColor: 'cyan', height: 70}} {...props} />;
+const B = (props) => <div style={{backgroundColor: 'teal', height: '100%'}} {...props} />;
+
 class Test extends doric.baseComponent {
     constructor(props) {
         super(props);
@@ -183,12 +209,26 @@ class Test extends doric.baseComponent {
     render() {
         return (
             <div style={{overflow: 'hidden'}}>
-                <doric.button block text="Dialog" onTap={this.dialogTest} />
+                <doric.flex>
+                    <doric.flex.gridCol size={1}><B>Test</B></doric.flex.gridCol>
+                    <doric.flex.gridCol size={1}><B>Test<br />Test</B></doric.flex.gridCol>
+                    <doric.flex.gridCol size={2}><B /></doric.flex.gridCol>
+                    <doric.flex.gridCol size={3}><B /></doric.flex.gridCol>
+                    <doric.flex.gridCol size={4}><B /></doric.flex.gridCol>
+                </doric.flex>
+                <doric.flex>
+                    <doric.flex.col grow={1}><B>Test</B></doric.flex.col>
+                    <doric.flex.col grow={1}><B>Test<br />Test</B></doric.flex.col>
+                    <doric.flex.col grow={2}><B /></doric.flex.col>
+                    <doric.flex.col grow={3}><B /></doric.flex.col>
+                    <doric.flex.col grow={4}><B /></doric.flex.col>
+                </doric.flex>
+                {/* <doric.button block text="Dialog" onTap={this.dialogTest} />
                 <doric.button block text="tall" onTap={this.tallDialog} />
                 <doric.button block text="Neat Dialog" onTap={this.alertDialog} />
                 <doric.button block text="OK / Cancel" onTap={this.okDialog} />
                 <doric.button block text="Prompt" onTap={this.promptDialog} />
-                <doric.button block text="Spinner" onTap={this.spinnerDialog} />
+                <doric.button block text="Spinner" onTap={this.spinnerDialog} /> */}
                 {/* <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" disabled />
                 <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" required loader={true} />
                 <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" optional loader={true} loaderType="TailSpin" />

@@ -1,12 +1,13 @@
 import React from 'react';
 
-import Button from './button';
-import Icon from './icon';
-import {Grid, Col} from './grid';
+import Button from './button.js';
+import Icon from './icon.js';
+import Grid from './grid.js';
+import Flex from './flex.js';
 
-import style from '../style';
-import theme from '../theme';
-import {keySplit} from '../util';
+import style from '../style.js';
+import theme from '../theme.js';
+import {keySplit} from '../util.js';
 
 style.add({
     "doric-radio-group": {
@@ -119,6 +120,7 @@ class DoricRadio extends React.Component {
     }
 }
 
-Grid.RadioItem = props => <Col {...props}>{props.children}</Col>;
+Grid.RadioItem = props => <Grid.col {...props} />;
+Flex.RadioItem = props => <Flex.col {...props} />;
 
 export default DoricRadio;

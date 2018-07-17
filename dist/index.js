@@ -27,7 +27,9 @@ var _collapse = _interopRequireDefault(require("./components/collapse.js"));
 
 var _divider = _interopRequireDefault(require("./components/divider.js"));
 
-var _grid = require("./components/grid.js");
+var _flex = _interopRequireDefault(require("./components/flex.js"));
+
+var _grid = _interopRequireDefault(require("./components/grid.js"));
 
 var _icon = _interopRequireDefault(require("./components/icon.js"));
 
@@ -51,6 +53,7 @@ var _reactLoaderSpinner = _interopRequireDefault(require("react-loader-spinner")
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import {Grid as grid, Col as col, GridBreak as gridBreak} from './components/grid.js';
 var doric = {
   baseComponent: _baseComponent.BaseComponent,
   pureBaseComponent: _baseComponent.PureBaseComponent,
@@ -59,9 +62,10 @@ var doric = {
   checkbox: _checkbox.default,
   collapse: _collapse.default,
   divider: _divider.default,
-  grid: _grid.Grid,
-  col: _grid.Col,
-  gridBreak: _grid.GridBreak,
+  flex: _flex.default,
+  grid: _grid.default,
+  // col,
+  // gridBreak,
   icon: _icon.default,
   image: _image.default,
   input: _input.default,

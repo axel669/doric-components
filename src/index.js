@@ -14,7 +14,9 @@ import card from './components/card.js';
 import checkbox from './components/checkbox.js';
 import collapse from './components/collapse.js';
 import divider from './components/divider.js';
-import {Grid as grid, Col as col, GridBreak as gridBreak} from './components/grid.js';
+import flex from './components/flex.js';
+import grid from './components/grid.js';
+// import {Grid as grid, Col as col, GridBreak as gridBreak} from './components/grid.js';
 import icon from './components/icon.js';
 import image from './components/image.js';
 import input from './components/input.js';
@@ -36,9 +38,10 @@ const doric = {
     checkbox,
     collapse,
     divider,
+    flex,
     grid,
-    col,
-    gridBreak,
+    // col,
+    // gridBreak,
     icon,
     image,
     input,

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import style from '../style';
+import style from '../style.js';
 
 const gridStyle = {
     "doric-grid": {
@@ -48,8 +48,13 @@ const DoricCol = ({size = 1, offset = null, ...props}) => {
 };
 const DoricGridBreak = () => <doric-col class="w12" />;
 
-export {
-    DoricGrid as Grid,
-    DoricCol as Col,
-    DoricGridBreak as GridBreak
-};
+DoricGrid.col = DoricCol;
+DoricGrid.break = DoricGridBreak;
+
+export default DoricGrid;
+
+// export {
+//     DoricGrid as Grid,
+//     DoricCol as Col,
+//     DoricGridBreak as GridBreak
+// };

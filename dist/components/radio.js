@@ -27,17 +27,19 @@ require("core-js/modules/es6.object.keys");
 
 var _react = _interopRequireDefault(require("react"));
 
-var _button = _interopRequireDefault(require("./button"));
+var _button = _interopRequireDefault(require("./button.js"));
 
-var _icon = _interopRequireDefault(require("./icon"));
+var _icon = _interopRequireDefault(require("./icon.js"));
 
-var _grid = require("./grid");
+var _grid = _interopRequireDefault(require("./grid.js"));
 
-var _style = _interopRequireDefault(require("../style"));
+var _flex = _interopRequireDefault(require("./flex.js"));
 
-var _theme = _interopRequireDefault(require("../theme"));
+var _style = _interopRequireDefault(require("../style.js"));
 
-var _util = require("../util");
+var _theme = _interopRequireDefault(require("../theme.js"));
+
+var _util = require("../util.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -221,8 +223,12 @@ function (_React$Component) {
   return DoricRadio;
 }(_react.default.Component);
 
-_grid.Grid.RadioItem = function (props) {
-  return _react.default.createElement(_grid.Col, props, props.children);
+_grid.default.RadioItem = function (props) {
+  return _react.default.createElement(_grid.default.col, props);
+};
+
+_flex.default.RadioItem = function (props) {
+  return _react.default.createElement(_flex.default.col, props);
 };
 
 var _default = DoricRadio;

@@ -1,13 +1,17 @@
 "use strict";
 
-require("core-js/modules/es6.object.define-property");
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
 
 require("core-js/modules/es6.object.assign");
+
+require("core-js/modules/es6.array.for-each");
+
+require("core-js/modules/es6.array.filter");
+
+require("core-js/modules/es6.object.define-property");
 
 require("core-js/modules/es6.array.index-of");
 
@@ -29,23 +33,19 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 
-var gridStyle = {
-  "doric-grid": {
-    display: 'block'
+var flexCSS = {
+  "doric-flex": {
+    display: 'flex',
+    flexWrap: 'wrap'
   },
-  "doric-grid::before": {
-    content: "\" \"",
-    display: 'table'
-  },
-  "doric-grid::after": {
-    content: "\" \"",
-    display: 'table',
-    clear: 'both'
-  },
-  "doric-col": {
-    float: 'left'
+  "doric-flex-grid-col": {
+    flex: '1'
   }
 };
 var _iteratorNormalCompletion = true;
@@ -56,11 +56,9 @@ try {
   for (var _iterator = 1 .to(13)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
     var i = _step.value;
     var width = (i / 12 * 100).toPrecision(8);
-    gridStyle["doric-col.w".concat(i)] = {
-      width: "".concat(width, "%")
-    };
-    gridStyle["doric-col.offset".concat(i)] = {
-      marginLeft: "".concat(width, "%")
+    flexCSS["doric-flex-grid-col[size='".concat(i, "']")] = {
+      minWidth: "".concat(width, "%"),
+      maxWidth: "".concat(width, "%")
     };
   }
 } catch (err) {
@@ -78,43 +76,33 @@ try {
   }
 }
 
-_style.default.add(gridStyle);
+_style.default.add(flexCSS);
 
-var DoricGrid = function DoricGrid(_ref) {
-  var children = _ref.children;
-  return _react.default.createElement("doric-grid", null, children);
+var DoricFlex = function DoricFlex(props) {
+  return _react.default.createElement("doric-flex", props);
 };
 
-var DoricCol = function DoricCol(_ref2) {
-  var _ref2$size = _ref2.size,
-      size = _ref2$size === void 0 ? 1 : _ref2$size,
-      _ref2$offset = _ref2.offset,
-      offset = _ref2$offset === void 0 ? null : _ref2$offset,
-      props = _objectWithoutProperties(_ref2, ["size", "offset"]);
+var DoricFlexCol = function DoricFlexCol(_ref) {
+  var _ref$grow = _ref.grow,
+      grow = _ref$grow === void 0 ? 1 : _ref$grow,
+      _ref$shrink = _ref.shrink,
+      shrink = _ref$shrink === void 0 ? grow : _ref$shrink,
+      _ref$style = _ref.style,
+      style = _ref$style === void 0 ? {} : _ref$style,
+      props = _objectWithoutProperties(_ref, ["grow", "shrink", "style"]);
 
-  var className = "w".concat(size);
-
-  if (offset !== null) {
-    className = "".concat(className, " offset").concat(offset);
-  }
-
-  return _react.default.createElement("doric-col", _extends({
-    class: className
+  return _react.default.createElement("doric-flex-col", _extends({
+    style: _objectSpread({}, style, {
+      flex: "".concat(grow, " ").concat(shrink)
+    })
   }, props));
 };
 
-var DoricGridBreak = function DoricGridBreak() {
-  return _react.default.createElement("doric-col", {
-    class: "w12"
-  });
+var DoricFlexGridCol = function DoricFlexGridCol(props) {
+  return _react.default.createElement("doric-flex-grid-col", props);
 };
 
-DoricGrid.col = DoricCol;
-DoricGrid.break = DoricGridBreak;
-var _default = DoricGrid; // export {
-//     DoricGrid as Grid,
-//     DoricCol as Col,
-//     DoricGridBreak as GridBreak
-// };
-
+DoricFlex.col = DoricFlexCol;
+DoricFlex.gridCol = DoricFlexGridCol;
+var _default = DoricFlex;
 exports.default = _default;
