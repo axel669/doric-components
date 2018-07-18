@@ -87,7 +87,6 @@ const DoricDialog = ({content, actions, title = null, className}) => {
     );
 };
 
-console.log(Button);
 const alerts = {
     content: ({msg}) => <div style={{width: '100%'}}>{msg}</div>,
     actions: ({close}) => <Button primary block text="OK" onTap={() => close(null)} />

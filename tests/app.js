@@ -33243,7 +33243,6 @@ var DoricDialog = function DoricDialog(_ref) {
   }, _react.default.createElement("doric-dialog-title", null, title), _react.default.createElement("doric-dialog-content", null, content), _react.default.createElement("doric-dialog-actions", null, actions)));
 };
 
-console.log(_button.default);
 var alerts = {
   content: function content(_ref2) {
     var msg = _ref2.msg;
