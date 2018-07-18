@@ -7444,27 +7444,31 @@ function (_doric$baseComponent) {
         style: {
           overflow: 'hidden'
         }
-      }, _react.default.createElement(_index.default.flex, null, _react.default.createElement(_index.default.flex.gridCol, {
-        size: 1
-      }, _react.default.createElement(B, null, "Test")), _react.default.createElement(_index.default.flex.gridCol, {
-        size: 1
-      }, _react.default.createElement(B, null, "Test", _react.default.createElement("br", null), "Test")), _react.default.createElement(_index.default.flex.gridCol, {
-        size: 2
-      }, _react.default.createElement(B, null)), _react.default.createElement(_index.default.flex.gridCol, {
-        size: 3
-      }, _react.default.createElement(B, null)), _react.default.createElement(_index.default.flex.gridCol, {
-        size: 4
-      }, _react.default.createElement(B, null))), _react.default.createElement(_index.default.flex, null, _react.default.createElement(_index.default.flex.col, {
-        grow: 1
-      }, _react.default.createElement(B, null, "Test")), _react.default.createElement(_index.default.flex.col, {
-        grow: 1
-      }, _react.default.createElement(B, null, "Test", _react.default.createElement("br", null), "Test")), _react.default.createElement(_index.default.flex.col, {
-        grow: 2
-      }, _react.default.createElement(B, null)), _react.default.createElement(_index.default.flex.col, {
-        grow: 3
-      }, _react.default.createElement(B, null)), _react.default.createElement(_index.default.flex.col, {
-        grow: 4
-      }, _react.default.createElement(B, null))));
+      }, _react.default.createElement(_index.default.button, {
+        block: true,
+        text: "Dialog",
+        onTap: this.dialogTest
+      }), _react.default.createElement(_index.default.button, {
+        block: true,
+        text: "tall",
+        onTap: this.tallDialog
+      }), _react.default.createElement(_index.default.button, {
+        block: true,
+        text: "Neat Dialog",
+        onTap: this.alertDialog
+      }), _react.default.createElement(_index.default.button, {
+        block: true,
+        text: "OK / Cancel",
+        onTap: this.okDialog
+      }), _react.default.createElement(_index.default.button, {
+        block: true,
+        text: "Prompt",
+        onTap: this.promptDialog
+      }), _react.default.createElement(_index.default.button, {
+        block: true,
+        text: "Spinner",
+        onTap: this.spinnerDialog
+      }));
     }
   }]);
 
@@ -32972,7 +32976,7 @@ var _baseComponent = __webpack_require__(117);
 
 var _button = _interopRequireDefault(__webpack_require__(67));
 
-var _grid = __webpack_require__(85);
+var _grid = _interopRequireDefault(__webpack_require__(85));
 
 var _input = _interopRequireDefault(__webpack_require__(122));
 
@@ -33187,7 +33191,7 @@ _style.default.add({
     top: '10vh',
     left: '50%',
     transform: 'translateX(-50%)',
-    width: '50vmin',
+    width: '60vmin',
     animationName: 'doric-dialog-enter',
     animationDuration: '150ms',
     borderRadius: 5,
@@ -33239,6 +33243,7 @@ var DoricDialog = function DoricDialog(_ref) {
   }, _react.default.createElement("doric-dialog-title", null, title), _react.default.createElement("doric-dialog-content", null, content), _react.default.createElement("doric-dialog-actions", null, actions)));
 };
 
+console.log(_button.default);
 var alerts = {
   content: function content(_ref2) {
     var msg = _ref2.msg;
@@ -33267,7 +33272,7 @@ var confirms = {
   },
   actions: function actions(_ref5) {
     var close = _ref5.close;
-    return _react.default.createElement(_grid.Grid, null, _react.default.createElement(_grid.Col, {
+    return _react.default.createElement(_grid.default, null, _react.default.createElement(_grid.default.col, {
       size: 6
     }, _react.default.createElement(_button.default, {
       block: true,
@@ -33276,7 +33281,7 @@ var confirms = {
       onTap: function onTap() {
         return close(false);
       }
-    })), _react.default.createElement(_grid.Col, {
+    })), _react.default.createElement(_grid.default.col, {
       size: 6
     }, _react.default.createElement(_button.default, {
       block: true,
@@ -33347,7 +33352,7 @@ var prompts = function prompts() {
     },
     actions: function actions(_ref7) {
       var close = _ref7.close;
-      return _react.default.createElement(_grid.Grid, null, _react.default.createElement(_grid.Col, {
+      return _react.default.createElement(_grid.default, null, _react.default.createElement(_grid.default.col, {
         size: 6
       }, _react.default.createElement(_button.default, {
         block: true,
@@ -33356,7 +33361,7 @@ var prompts = function prompts() {
         onTap: function onTap() {
           return close(null);
         }
-      })), _react.default.createElement(_grid.Col, {
+      })), _react.default.createElement(_grid.default.col, {
         size: 6
       }, _react.default.createElement(_button.default, {
         block: true,
@@ -33389,9 +33394,7 @@ var dialogify = function dialogify(Component) {
       dialogPrivate.set(_assertThisInitialized(_assertThisInitialized(_this2)), []);
 
       var scheduleUpdate = function scheduleUpdate() {
-        return _this2.setState(function () {
-          return {};
-        });
+        return _this2.forceUpdate();
       };
 
       _this2.dialogs = {

@@ -4,7 +4,7 @@ import Loader from 'react-loader-spinner';
 
 import {PureBaseComponent} from './baseComponent.js';
 import Button from './button.js';
-import {Grid, Col} from './grid.js';
+import Grid from './grid.js';
 import Input from './input.js';
 
 import theme from '../theme.js';
@@ -34,7 +34,7 @@ style.add({
         top: '10vh',
         left: '50%',
         transform: 'translateX(-50%)',
-        width: '50vmin',
+        width: '60vmin',
         animationName: 'doric-dialog-enter',
         animationDuration: '150ms',
         borderRadius: 5,
@@ -87,6 +87,7 @@ const DoricDialog = ({content, actions, title = null, className}) => {
     );
 };
 
+console.log(Button);
 const alerts = {
     content: ({msg}) => <div style={{width: '100%'}}>{msg}</div>,
     actions: ({close}) => <Button primary block text="OK" onTap={() => close(null)} />
@@ -95,8 +96,8 @@ const confirms = {
     content: ({msg}) => <div>{msg}</div>,
     actions: ({close}) => (
         <Grid>
-            <Col size={6}><Button block text="Cancel" danger onTap={() => close(false)} /></Col>
-            <Col size={6}><Button block text="OK" primary onTap={() => close(true)} /></Col>
+            <Grid.col size={6}><Button block text="Cancel" danger onTap={() => close(false)} /></Grid.col>
+            <Grid.col size={6}><Button block text="OK" primary onTap={() => close(true)} /></Grid.col>
         </Grid>
     )
 };
@@ -130,8 +131,8 @@ const prompts = () => {
         content: ({msg, placeholder}) => <DoricPrompt msg={msg} placeholder={placeholder} setValue={v => value = v} />,
         actions: ({close}) => (
             <Grid>
-                <Col size={6}><Button block danger text="Cancel" onTap={() => close(null)} /></Col>
-                <Col size={6}><Button block primary text="OK" onTap={() => close(value)} /></Col>
+                <Grid.col size={6}><Button block danger text="Cancel" onTap={() => close(null)} /></Grid.col>
+                <Grid.col size={6}><Button block primary text="OK" onTap={() => close(value)} /></Grid.col>
             </Grid>
         )
     };
@@ -143,7 +144,7 @@ const dialogify = Component => class extends Component {
     constructor(props) {
         super(props);
         dialogPrivate.set(this, []);
-        const scheduleUpdate = () => this.setState(() => ({}));
+        const scheduleUpdate = () => this.forceUpdate();
         this.dialogs = {
             show: ({content, actions = (() => null)}, dialogProps, props) => {
                 let closeMethod = null;
@@ -193,8 +194,6 @@ const dialogify = Component => class extends Component {
         return (
             <React.Fragment>
                 {super.render()}
-                {/* {JSON.stringify(this.props)}
-                {JSON.stringify(this.state)} */}
                 {dialogPrivate.get(this).map(
                     dialog => <DoricDialog
                         key={dialog.id} {...dialog.dialogProps}

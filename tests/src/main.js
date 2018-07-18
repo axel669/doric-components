@@ -209,7 +209,7 @@ class Test extends doric.baseComponent {
     render() {
         return (
             <div style={{overflow: 'hidden'}}>
-                <doric.flex>
+                {/* <doric.flex>
                     <doric.flex.gridCol size={1}><B>Test</B></doric.flex.gridCol>
                     <doric.flex.gridCol size={1}><B>Test<br />Test</B></doric.flex.gridCol>
                     <doric.flex.gridCol size={2}><B /></doric.flex.gridCol>
@@ -222,13 +222,13 @@ class Test extends doric.baseComponent {
                     <doric.flex.col grow={2}><B /></doric.flex.col>
                     <doric.flex.col grow={3}><B /></doric.flex.col>
                     <doric.flex.col grow={4}><B /></doric.flex.col>
-                </doric.flex>
-                {/* <doric.button block text="Dialog" onTap={this.dialogTest} />
+                </doric.flex> */}
+                <doric.button block text="Dialog" onTap={this.dialogTest} />
                 <doric.button block text="tall" onTap={this.tallDialog} />
                 <doric.button block text="Neat Dialog" onTap={this.alertDialog} />
                 <doric.button block text="OK / Cancel" onTap={this.okDialog} />
                 <doric.button block text="Prompt" onTap={this.promptDialog} />
-                <doric.button block text="Spinner" onTap={this.spinnerDialog} /> */}
+                <doric.button block text="Spinner" onTap={this.spinnerDialog} />
                 {/* <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" disabled />
                 <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" required loader={true} />
                 <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" optional loader={true} loaderType="TailSpin" />

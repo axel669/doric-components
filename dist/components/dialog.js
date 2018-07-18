@@ -53,7 +53,7 @@ var _baseComponent = require("./baseComponent.js");
 
 var _button = _interopRequireDefault(require("./button.js"));
 
-var _grid = require("./grid.js");
+var _grid = _interopRequireDefault(require("./grid.js"));
 
 var _input = _interopRequireDefault(require("./input.js"));
 
@@ -117,7 +117,7 @@ _style.default.add({
     top: '10vh',
     left: '50%',
     transform: 'translateX(-50%)',
-    width: '50vmin',
+    width: '60vmin',
     animationName: 'doric-dialog-enter',
     animationDuration: '150ms',
     borderRadius: 5,
@@ -169,6 +169,7 @@ var DoricDialog = function DoricDialog(_ref) {
   }, _react.default.createElement("doric-dialog-title", null, title), _react.default.createElement("doric-dialog-content", null, content), _react.default.createElement("doric-dialog-actions", null, actions)));
 };
 
+console.log(_button.default);
 var alerts = {
   content: function content(_ref2) {
     var msg = _ref2.msg;
@@ -197,7 +198,7 @@ var confirms = {
   },
   actions: function actions(_ref5) {
     var close = _ref5.close;
-    return _react.default.createElement(_grid.Grid, null, _react.default.createElement(_grid.Col, {
+    return _react.default.createElement(_grid.default, null, _react.default.createElement(_grid.default.col, {
       size: 6
     }, _react.default.createElement(_button.default, {
       block: true,
@@ -206,7 +207,7 @@ var confirms = {
       onTap: function onTap() {
         return close(false);
       }
-    })), _react.default.createElement(_grid.Col, {
+    })), _react.default.createElement(_grid.default.col, {
       size: 6
     }, _react.default.createElement(_button.default, {
       block: true,
@@ -277,7 +278,7 @@ var prompts = function prompts() {
     },
     actions: function actions(_ref7) {
       var close = _ref7.close;
-      return _react.default.createElement(_grid.Grid, null, _react.default.createElement(_grid.Col, {
+      return _react.default.createElement(_grid.default, null, _react.default.createElement(_grid.default.col, {
         size: 6
       }, _react.default.createElement(_button.default, {
         block: true,
@@ -286,7 +287,7 @@ var prompts = function prompts() {
         onTap: function onTap() {
           return close(null);
         }
-      })), _react.default.createElement(_grid.Col, {
+      })), _react.default.createElement(_grid.default.col, {
         size: 6
       }, _react.default.createElement(_button.default, {
         block: true,
@@ -319,9 +320,7 @@ var dialogify = function dialogify(Component) {
       dialogPrivate.set(_assertThisInitialized(_assertThisInitialized(_this2)), []);
 
       var scheduleUpdate = function scheduleUpdate() {
-        return _this2.setState(function () {
-          return {};
-        });
+        return _this2.forceUpdate();
       };
 
       _this2.dialogs = {
