@@ -134,9 +134,10 @@ class Test extends doric.baseComponent {
             c: false,
             n: 0,
             dialog: false,
-            number: 0
+            number: 0,
+            s: ''
         };
-        this.linked = this.createLinks('t', 'rv', 'c', 'n', 'o');
+        this.linked = this.createLinks('t', 'rv', 'c', 'n', 'o', 's');
     }
 
     add = () => {
@@ -229,6 +230,17 @@ class Test extends doric.baseComponent {
                 <doric.button block text="OK / Cancel" onTap={this.okDialog} />
                 <doric.button block text="Prompt" onTap={this.promptDialog} />
                 <doric.button block text="Spinner" onTap={this.spinnerDialog} />
+
+                <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" />
+                <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" required />
+                <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" optional />
+
+                <doric.select value={this.state.s} onChange={this.linked.s} label="Select">
+                    <option value="" hidden>Nope</option>
+                    <option value='a'>A</option>
+                    <option value='b'>B</option>
+                    <option value='c'>C</option>
+                </doric.select>
                 {/* <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" disabled />
                 <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" required loader={true} />
                 <doric.input.text value={this.state.t} onChange={this.linked.t} label="Some Label" optional loader={true} loaderType="TailSpin" />

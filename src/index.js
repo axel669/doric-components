@@ -16,10 +16,10 @@ import collapse from './components/collapse.js';
 import divider from './components/divider.js';
 import flex from './components/flex.js';
 import grid from './components/grid.js';
-// import {Grid as grid, Col as col, GridBreak as gridBreak} from './components/grid.js';
 import icon from './components/icon.js';
 import image from './components/image.js';
 import input from './components/input.js';
+import label from './components/label.js';
 import radio from './components/radio.js';
 import select from './components/select.js';
 import slider from './components/slider.js';
@@ -45,6 +45,7 @@ const doric = {
     icon,
     image,
     input,
+    label,
     radio,
     select,
     slider,

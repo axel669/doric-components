@@ -31,11 +31,13 @@ var _react = _interopRequireDefault(require("react"));
 
 var _reactLoaderSpinner = _interopRequireDefault(require("react-loader-spinner"));
 
-var _theme = _interopRequireDefault(require("../theme"));
+var _label = _interopRequireDefault(require("./label.js"));
 
-var _style = _interopRequireDefault(require("../style"));
+var _theme = _interopRequireDefault(require("../theme.js"));
 
-var _util = require("../util");
+var _style = _interopRequireDefault(require("../style.js"));
+
+var _util = require("../util.js");
 
 var _style$add;
 
@@ -88,15 +90,6 @@ _style.default.add((_style$add = {
   color: _theme.default.input.text.normal
 }), _defineProperty(_style$add, "doric-input > input:focus, doric-input > textarea:focus", {
   borderBottomColor: _theme.default.input.border.focus
-}), _defineProperty(_style$add, "doric-input-label", {
-  display: 'block',
-  padding: 2,
-  color: _theme.default.input.label.text.normal,
-  fontSize: 12
-}), _defineProperty(_style$add, "doric-input-label[required='true']", {
-  color: _theme.default.input.label.text.required
-}), _defineProperty(_style$add, "doric-input-label[optional='true']", {
-  color: _theme.default.input.label.text.optional
 }), _defineProperty(_style$add, "doric-input > input[disabled]", {
   backgroundColor: _theme.default.input.bg.disabled,
   borderColor: _theme.default.input.bg.disabled
@@ -152,18 +145,20 @@ function (_React$PureComponent) {
           onChange = _this$props$onChange === void 0 ? function () {} : _this$props$onChange,
           type = _this$props.type,
           Element = _this$props.Element,
-          passThrough = _objectWithoutProperties(_this$props, ["wrapperStyle", "wrapperClassName", "value", "label", "required", "optional", "loader", "loaderType", "onChange", "type", "Element"]);
+          passThrough = _objectWithoutProperties(_this$props, ["wrapperStyle", "wrapperClassName", "value", "label", "required", "optional", "loader", "loaderType", "onChange", "type", "Element"]); // const labelElem = (label === null)
+      //     ? null
+      //     : <doric-input-label {...{required, optional}}>{label}</doric-input-label>;
 
-      var labelElem = label === null ? null : _react.default.createElement("doric-input-label", {
-        required: required,
-        optional: optional
-      }, label);
+
       var loaderElem = loader !== true ? null : _this.loader;
       return _react.default.createElement("doric-input", {
         type: type,
         class: wrapperClassName,
         style: wrapperStyle
-      }, labelElem, _react.default.createElement(Element, _extends({}, passThrough, {
+      }, _react.default.createElement(_label.default, {
+        optional: optional,
+        required: required
+      }, label), _react.default.createElement(Element, _extends({}, passThrough, {
         type: type,
         value: value,
         onChange: onChange

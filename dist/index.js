@@ -37,6 +37,8 @@ var _image = _interopRequireDefault(require("./components/image.js"));
 
 var _input = _interopRequireDefault(require("./components/input.js"));
 
+var _label = _interopRequireDefault(require("./components/label.js"));
+
 var _radio = _interopRequireDefault(require("./components/radio.js"));
 
 var _select = _interopRequireDefault(require("./components/select.js"));
@@ -53,7 +55,6 @@ var _reactLoaderSpinner = _interopRequireDefault(require("react-loader-spinner")
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import {Grid as grid, Col as col, GridBreak as gridBreak} from './components/grid.js';
 var doric = {
   baseComponent: _baseComponent.BaseComponent,
   pureBaseComponent: _baseComponent.PureBaseComponent,
@@ -69,6 +70,7 @@ var doric = {
   icon: _icon.default,
   image: _image.default,
   input: _input.default,
+  label: _label.default,
   radio: _radio.default,
   select: _select.default,
   slider: _slider.default,

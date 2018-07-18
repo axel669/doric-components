@@ -47,6 +47,8 @@ const TronTheme = {
 
     'input.bg.disabled': '#444',
 
+    'label.text.normal': 'white',
+
     'radio.circleColor': '#00ffff',
 
     'slider.track.bg.normal': 'lightgray',

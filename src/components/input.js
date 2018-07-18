@@ -2,9 +2,10 @@ import React from 'react';
 
 import Loader from 'react-loader-spinner';
 
-import theme from '../theme';
-import style from '../style';
-import {setFunctionName} from '../util';
+import Label from './label.js';
+import theme from '../theme.js';
+import style from '../style.js';
+import {setFunctionName} from '../util.js';
 
 const inputTypes = [
     'text',
@@ -38,18 +39,18 @@ style.add({
     "doric-input > input:focus, doric-input > textarea:focus": {
         borderBottomColor: theme.input.border.focus
     },
-    "doric-input-label": {
-        display: 'block',
-        padding: 2,
-        color: theme.input.label.text.normal,
-        fontSize: 12
-    },
-    "doric-input-label[required='true']": {
-        color: theme.input.label.text.required
-    },
-    "doric-input-label[optional='true']": {
-        color: theme.input.label.text.optional
-    },
+    // "doric-input-label": {
+    //     display: 'block',
+    //     padding: 2,
+    //     color: theme.input.label.text.normal,
+    //     fontSize: 12
+    // },
+    // "doric-input-label[required='true']": {
+    //     color: theme.input.label.text.required
+    // },
+    // "doric-input-label[optional='true']": {
+    //     color: theme.input.label.text.optional
+    // },
     "doric-input > input[disabled]": {
         backgroundColor: theme.input.bg.disabled,
         borderColor: theme.input.bg.disabled
@@ -90,14 +91,15 @@ class DoricInput extends React.PureComponent {
             Element,
             ...passThrough
         } = this.props;
-        const labelElem = (label === null)
-            ? null
-            : <doric-input-label {...{required, optional}}>{label}</doric-input-label>;
+        // const labelElem = (label === null)
+        //     ? null
+        //     : <doric-input-label {...{required, optional}}>{label}</doric-input-label>;
         const loaderElem = (loader !== true) ? null : this.loader;
 
         return (
             <doric-input type={type} class={wrapperClassName} style={wrapperStyle}>
-                {labelElem}
+                {/* {labelElem} */}
+                <Label {...{optional, required}}>{label}</Label>
                 <Element {...passThrough} type={type} value={value} onChange={onChange} />
                 {loaderElem}
             </doric-input>

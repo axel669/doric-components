@@ -1,9 +1,11 @@
 import React from 'react';
 
-import icon from '../components/icon';
-import style from '../style';
-import theme from '../theme';
-import {default as util, createPureClass} from '../util';
+import icon from '../components/icon.js';
+import style from '../style.js';
+import theme from '../theme.js';
+import {default as util, createPureClass} from '../util.js';
+
+import Label from './label.js';
 
 style.add({
     "doric-select": {
@@ -38,16 +40,23 @@ style.add({
     },
     "doric-select > select:focus": {
         borderBottomColor: theme.select.border.focus
+    },
+    "doric-select option": {
+        color: 'black'
     }
 });
 const DoricSelect = props => {
     const {
         wrapperStyle,
         wrapperClassName,
+        required,
+        optional,
+        label,
         ...selectProps
     } = props;
     return (
         <doric-select style={wrapperStyle} class={wrapperClassName}>
+            <Label {...{required, optional}}>{label}</Label>
             <select {...selectProps} />
         </doric-select>
     );

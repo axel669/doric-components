@@ -17,13 +17,15 @@ require("core-js/modules/es6.object.keys");
 
 var _react = _interopRequireDefault(require("react"));
 
-var _icon = _interopRequireDefault(require("../components/icon"));
+var _icon = _interopRequireDefault(require("../components/icon.js"));
 
-var _style = _interopRequireDefault(require("../style"));
+var _style = _interopRequireDefault(require("../style.js"));
 
-var _theme = _interopRequireDefault(require("../theme"));
+var _theme = _interopRequireDefault(require("../theme.js"));
 
-var _util = _interopRequireWildcard(require("../util"));
+var _util = _interopRequireWildcard(require("../util.js"));
+
+var _label = _interopRequireDefault(require("./label.js"));
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
@@ -64,18 +66,27 @@ _style.default.add({
   },
   "doric-select > select:focus": {
     borderBottomColor: _theme.default.select.border.focus
+  },
+  "doric-select option": {
+    color: 'black'
   }
 });
 
 var DoricSelect = function DoricSelect(props) {
   var wrapperStyle = props.wrapperStyle,
       wrapperClassName = props.wrapperClassName,
-      selectProps = _objectWithoutProperties(props, ["wrapperStyle", "wrapperClassName"]);
+      required = props.required,
+      optional = props.optional,
+      label = props.label,
+      selectProps = _objectWithoutProperties(props, ["wrapperStyle", "wrapperClassName", "required", "optional", "label"]);
 
   return _react.default.createElement("doric-select", {
     style: wrapperStyle,
     class: wrapperClassName
-  }, _react.default.createElement("select", selectProps));
+  }, _react.default.createElement(_label.default, {
+    required: required,
+    optional: optional
+  }, label), _react.default.createElement("select", selectProps));
 };
 
 DoricSelect.pure = (0, _util.createPureClass)(DoricSelect);
