@@ -16,6 +16,7 @@ Number.prototype.to = function (end) {
 
 const setFunctionName = (func, name) => {
     Object.defineProperty(func, 'name', {value: name, writable: false});
+    return func;
 };
 const createPureClass = (func) => {
     class GenClass extends React.PureComponent {
@@ -24,9 +25,17 @@ const createPureClass = (func) => {
     setFunctionName(GenClass, `${func.name}Pure`);
     return GenClass;
 };
+const component = {
+    bindProps: (props, Component) =>
+        setFunctionName(
+            newProps => <Component {...props} {...newProps} />,
+            `Bound:${Component.name}`
+        )
+};
 export {
     setFunctionName,
-    createPureClass
+    createPureClass,
+    component
 };
 
 export default {

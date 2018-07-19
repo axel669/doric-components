@@ -26,7 +26,7 @@ import slider from './components/slider.js';
 import {Tabs as tabs, Tab as tab} from './components/tabs.js';
 import toggle from './components/toggle.js';
 
-import dialogify from './components/dialog.js';
+import {dialog, dialogify} from './components/dialog.js';
 
 import loader from 'react-loader-spinner';
 
@@ -40,9 +40,6 @@ const doric = {
     divider,
     flex,
     grid,
-    // col,
-    // gridBreak,
-    icon,
     image,
     input,
     label,
@@ -53,6 +50,7 @@ const doric = {
     tabs,
     toggle,
 
+    dialog,
     dialogify,
 
     style,

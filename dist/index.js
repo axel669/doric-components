@@ -49,7 +49,7 @@ var _tabs = require("./components/tabs.js");
 
 var _toggle = _interopRequireDefault(require("./components/toggle.js"));
 
-var _dialog = _interopRequireDefault(require("./components/dialog.js"));
+var _dialog = require("./components/dialog.js");
 
 var _reactLoaderSpinner = _interopRequireDefault(require("react-loader-spinner"));
 
@@ -65,9 +65,6 @@ var doric = {
   divider: _divider.default,
   flex: _flex.default,
   grid: _grid.default,
-  // col,
-  // gridBreak,
-  icon: _icon.default,
   image: _image.default,
   input: _input.default,
   label: _label.default,
@@ -77,7 +74,8 @@ var doric = {
   tab: _tabs.Tab,
   tabs: _tabs.Tabs,
   toggle: _toggle.default,
-  dialogify: _dialog.default,
+  dialog: _dialog.dialog,
+  dialogify: _dialog.dialogify,
   style: _style.default,
   ext: {
     loader: _reactLoaderSpinner.default

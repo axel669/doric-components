@@ -9,6 +9,7 @@ import Input from './input.js';
 
 import theme from '../theme.js';
 import style from '../style.js';
+import {component} from '../util.js';
 
 style.add({
     "doric-dialog-base": {
@@ -19,7 +20,7 @@ style.add({
         width: 0,
         height: 0
     },
-    "doric-dialog-wrapper": {
+    "doric-dialog-overlay": {
         position: 'fixed',
         top: 0,
         left: 0,
@@ -75,67 +76,73 @@ style.add({
     }
 });
 
-const DoricDialog = ({content, actions, title = null, className}) => {
-    return (
-        <doric-dialog-wrapper>
-            <doric-dialog-container class={className}>
-                <doric-dialog-title>{title}</doric-dialog-title>
-                <doric-dialog-content>{content}</doric-dialog-content>
-                <doric-dialog-actions>{actions}</doric-dialog-actions>
-            </doric-dialog-container>
-        </doric-dialog-wrapper>
-    );
-};
+const DoricDialogOverlay = ({children}) => (
+    <doric-dialog-overlay>
+        {children}
+    </doric-dialog-overlay>
+);
+const DoricDialogContainer = props => <doric-dialog-container {...props} />;
+const DoricDialogTitle = props => <doric-dialog-title {...props} />;
+const DoricDialogContent = props => <doric-dialog-content {...props} />;
+const DoricDialogActions = props => <doric-dialog-actions {...props} />;
 
-const alerts = {
-    content: ({msg}) => <div style={{width: '100%'}}>{msg}</div>,
-    actions: ({close}) => <Button primary block text="OK" onTap={() => close(null)} />
-};
-const confirms = {
-    content: ({msg}) => <div>{msg}</div>,
-    actions: ({close}) => (
+const DoricDialog = ({title, content, actions, ...props}) => (
+    <DoricDialogContainer {...props}>
+        <DoricDialogTitle>{title}</DoricDialogTitle>
+        <DoricDialogContent>{content}</DoricDialogContent>
+        <DoricDialogActions>{actions}</DoricDialogActions>
+    </DoricDialogContainer>
+);
+
+const DoricAlert = ({msg, title = "Alert", close}) => <DoricDialog title={title} content={msg} actions={<Button block text="Ok" onTap={() => close()} />} />;
+const DoricConfirm = ({msg, title = "Confirm", close}) => {
+    const actions = (
         <Grid>
-            <Grid.col size={6}><Button block text="Cancel" danger onTap={() => close(false)} /></Grid.col>
-            <Grid.col size={6}><Button block text="OK" primary onTap={() => close(true)} /></Grid.col>
+            <Grid.col size={6}><Button block text="Cancel" flat danger onTap={() => close(false)} /></Grid.col>
+            <Grid.col size={6}><Button block text="OK" flat primary onTap={() => close(true)} /></Grid.col>
         </Grid>
-    )
+    );
+    return <DoricDialog title={title} content={msg} actions={actions} />;
+};
+const DoricSpinner = ({msg, width = 60, height = 60, type = "Circles"}) => {
+    const content = (
+        <div style={{textAlign: 'center'}}>
+            <div>{msg}</div>
+            <Loader {...{width, height, type}} />
+        </div>
+    );
+    return <DoricDialog style={{width: 'auto'}} title={null} content={content} actions={null} />;
 };
 class DoricPrompt extends PureBaseComponent {
     constructor(props) {
         super(props);
         this.state = {value: ""};
+        this.link = this.createLinks('value');
     }
 
     @autobind
-    update(evt) {
-        const value = evt.target.value;
-        this.setStatef({value});
-        this.props.setValue(value);
+    close() {
+        this.props.close(null);
+    }
+    @autobind
+    submit() {
+        this.props.close(this.state.value);
     }
 
     render() {
-        const {msg, placeholder} = this.props;
+        const {msg, placeholder, title, close} = this.props;
 
-        return (
-            <React.Fragment>
-                <div>{msg}</div>
-                <Input.text value={this.state.value} onChange={this.update} placeholder={placeholder} />
-            </React.Fragment>
+        const content = <Input.text label={msg} value={this.state.value} onChange={this.link.value} placeholder={placeholder} />;
+        const actions = (
+            <Grid>
+                <Grid.col size={6}><Button block danger text="Cancel" onTap={this.close} /></Grid.col>
+                <Grid.col size={6}><Button block primary text="Ok" onTap={this.submit} /></Grid.col>
+            </Grid>
         );
+
+        return <DoricDialog title={title} content={content} actions={actions} />;
     }
 }
-const prompts = () => {
-    let value = "";
-    return {
-        content: ({msg, placeholder}) => <DoricPrompt msg={msg} placeholder={placeholder} setValue={v => value = v} />,
-        actions: ({close}) => (
-            <Grid>
-                <Grid.col size={6}><Button block danger text="Cancel" onTap={() => close(null)} /></Grid.col>
-                <Grid.col size={6}><Button block primary text="OK" onTap={() => close(value)} /></Grid.col>
-            </Grid>
-        )
-    };
-};
 
 const dialogPrivate = new WeakMap();
 const dialogify = Component => class extends Component {
@@ -143,50 +150,35 @@ const dialogify = Component => class extends Component {
     constructor(props) {
         super(props);
         dialogPrivate.set(this, []);
-        const scheduleUpdate = () => this.forceUpdate();
-        this.dialogs = {
-            show: ({content, actions = (() => null)}, dialogProps, props) => {
-                let closeMethod = null;
-                const value = new Promise(
+        this.dialog = {
+            show: (element) => {
+                let close = null;
+                const res = new Promise(
                     resolve => {
                         const id = `${Date.now()}_${Math.random()}`;
-                        const close = (value) => {
+                        close = (value = null) => {
                             const dialogs = dialogPrivate.get(this);
                             dialogPrivate.set(
                                 this,
                                 dialogs.filter(d => d.id !== id)
                             );
-                            scheduleUpdate();
+                            this.forceUpdate();
                             resolve(value);
                         };
                         dialogPrivate.get(this).push({
-                            id,
-                            close,
-                            content,
-                            actions,
-                            dialogProps,
-                            props
+                            id, close, element
                         });
-                        closeMethod = close;
-                        scheduleUpdate();
+                        this.forceUpdate();
                     }
                 );
-                value.close = closeMethod;
-                return value;
-            }
+                res.close = close;
+                return res;
+            },
+            alert: (msg, title) => this.dialog.show(component.bindProps({msg, title}, DoricAlert)),
+            confirm: (msg, title) => this.dialog.show(component.bindProps({msg, title}, DoricConfirm)),
+            prompt: (msg, title, placeholder) => this.dialog.show(component.bindProps({msg, title, placeholder}, DoricPrompt)),
+            spinner: (msg, spinnerProps) => this.dialog.show(component.bindProps({msg, ...spinnerProps}, DoricSpinner))
         };
-        this.dialogs.alert = (msg, title) => this.dialogs.show(alerts, {title}, {msg});
-        this.dialogs.confirm = (msg, title) => this.dialogs.show(confirms, {title}, {msg});
-        this.dialogs.prompt = (msg, title, placeholder) => this.dialogs.show(prompts(), {title}, {msg});
-        this.dialogs.spinner = (msg, spinnerProps = null) => this.dialogs.show(
-            {content: props => (
-                <div style={{textAlign: 'center', padding: 5}}>
-                    {msg}
-                    <Loader {...spinnerProps} />
-                </div>
-            )},
-            {className: 'spinner'}
-        );
     }
 
     render() {
@@ -194,15 +186,19 @@ const dialogify = Component => class extends Component {
             <React.Fragment>
                 {super.render()}
                 {dialogPrivate.get(this).map(
-                    dialog => <DoricDialog
-                        key={dialog.id} {...dialog.dialogProps}
-                        content={<dialog.content {...dialog.props} close={dialog.close} />}
-                        actions={<dialog.actions {...dialog.props} close={dialog.close} />}
-                        />
+                    dialog => (
+                        <DoricDialogOverlay key={dialog.id}>
+                            <dialog.element close={dialog.close} />
+                        </DoricDialogOverlay>
+                    )
                 )}
             </React.Fragment>
         );
     }
 };
 
-export default dialogify;
+const dialog = DoricDialog;
+dialog.title = DoricDialogTitle;
+dialog.content = DoricDialogContent;
+dialog.actions = DoricDialogActions;
+export {dialog, dialogify};

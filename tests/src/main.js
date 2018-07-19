@@ -171,29 +171,38 @@ class Test extends doric.baseComponent {
     }
     @autobind
     async tallDialog() {
-        console.log(await this.dialogs.show(
-            {
-                content: () => <div style={{height: 400, background: "linear-gradient(to bottom right, black, fuchsia)"}} />,
-                actions: ({close}) => <doric.button text="OK" block onTap={close} />
-            },
-            {title: "Tall Boi"}
-        ));
+        // console.log(await this.dialogs.show(
+        //     {
+        //         content: () => <div style={{height: 400, background: "linear-gradient(to bottom right, black, fuchsia)"}} />,
+        //         actions: ({close}) => <doric.button text="OK" block onTap={close} />
+        //     },
+        //     {title: "Tall Boi"}
+        // ));
+        console.log(
+            await this.dialog.show(
+                ({close}) => {
+                    const content = <div style={{height: 400, background: "linear-gradient(to bottom right, black, fuchsia)"}} />;
+                    const actions = <doric.button text="OK" block onTap={close} />;
+                    return <doric.dialog title="Tall Boi" content={content} actions={actions} />;
+                }
+            )
+        );
     }
     @autobind
     async alertDialog() {
-        console.log(await this.dialogs.alert("Just Monika", "Doki Doki"));
+        console.log(await this.dialog.alert("Just Monika", "Doki Doki"));
     }
     @autobind
     async okDialog() {
-        console.log(await this.dialogs.confirm("Just Monika?", "Doki Doki"));
+        console.log(await this.dialog.confirm("Just Monika?", "Doki Doki"));
     }
     @autobind
     async promptDialog() {
-        console.log(await this.dialogs.prompt("Just Monika?", "Doki Doki", "Ok"));
+        console.log(await this.dialog.prompt("Just Monika?", "Doki Doki", "Ok"));
     }
     @autobind
     async spinnerDialog() {
-        window.spinner = this.dialogs.spinner("Testing", {type: "Circles", width: 50, height: 50});
+        window.spinner = this.dialog.spinner("Testing Spinner");
         // await wait(1000);
         // spinner.close();
     }
