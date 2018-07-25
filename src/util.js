@@ -14,6 +14,9 @@ Number.prototype.to = function (end) {
     return array;
 };
 
+const wait = time => new Promise(resolve => setTimeout(resolve, time));
+const animFrame = () => new Promise(resolve => requestAnimationFrame(resolve));
+
 const setFunctionName = (func, name) => {
     Object.defineProperty(func, 'name', {value: name, writable: false});
     return func;
@@ -35,7 +38,9 @@ const component = {
 export {
     setFunctionName,
     createPureClass,
-    component
+    component,
+    wait,
+    animFrame
 };
 
 export default {

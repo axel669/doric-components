@@ -6,8 +6,8 @@ providers: [
         {
           project: "C:\\Users\\cmorgan\\Documents\\git\\doric-components"
           source: "C:\\Users\\cmorgan\\Documents\\git\\doric-components\\.build-tools.cson"
-          name: "Prep Test"
-          command: "npm run prep-test -s"
+          name: "Build?"
+          command: "npm run pack"
           wd: "."
           env: {}
           modifier:
@@ -31,8 +31,8 @@ providers: [
         {
           project: "C:\\Users\\cmorgan\\Documents\\git\\doric-components"
           source: "C:\\Users\\cmorgan\\Documents\\git\\doric-components\\.build-tools.cson"
-          name: "Build?"
-          command: "npm run pack"
+          name: "Prep Test"
+          command: "npm run prep-test -s"
           wd: "."
           env: {}
           modifier:

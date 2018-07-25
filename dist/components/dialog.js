@@ -100,14 +100,6 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 
 _style.default.add({
-  "doric-dialog-base": {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    overflow: 'visible',
-    width: 0,
-    height: 0
-  },
   "doric-dialog-overlay": {
     position: 'fixed',
     top: 0,
@@ -115,8 +107,7 @@ _style.default.add({
     right: 0,
     bottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    zIndex: 1000,
-    animationName: 'doric-dialog-fade-in'
+    zIndex: 1000
   },
   "doric-dialog-container": {
     position: 'absolute',

@@ -12,14 +12,6 @@ import style from '../style.js';
 import {component} from '../util.js';
 
 style.add({
-    "doric-dialog-base": {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        overflow: 'visible',
-        width: 0,
-        height: 0
-    },
     "doric-dialog-overlay": {
         position: 'fixed',
         top: 0,
@@ -27,8 +19,7 @@ style.add({
         right: 0,
         bottom: 0,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        zIndex: 1000,
-        animationName: 'doric-dialog-fade-in'
+        zIndex: 1000
     },
     "doric-dialog-container": {
         position: 'absolute',

@@ -9,10 +9,12 @@ import {
     PureBaseComponent as pureBaseComponent
 } from './components/baseComponent.js';
 
+import appContainer from './components/appContainer.js';
 import button from './components/button.js';
 import card from './components/card.js';
 import checkbox from './components/checkbox.js';
 import collapse from './components/collapse.js';
+import customListeners from './components/customListeners.js';
 import divider from './components/divider.js';
 import flex from './components/flex.js';
 import grid from './components/grid.js';
@@ -31,15 +33,18 @@ import {dialog, dialogify} from './components/dialog.js';
 import loader from 'react-loader-spinner';
 
 const doric = {
+    appContainer,
     baseComponent,
     pureBaseComponent,
     button,
     card,
     checkbox,
     collapse,
+    customListeners,
     divider,
     flex,
     grid,
+    icon,
     image,
     input,
     label,

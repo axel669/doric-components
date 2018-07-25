@@ -110,7 +110,6 @@ function (_React$Component) {
         var key = _arr[_i];
 
         if (_this.props[key] !== nextProps[key] && key !== 'children') {
-          console.log('dif', key);
           return true;
         }
       }

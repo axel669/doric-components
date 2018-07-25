@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.component = exports.createPureClass = exports.setFunctionName = void 0;
+exports.default = exports.animFrame = exports.wait = exports.component = exports.createPureClass = exports.setFunctionName = void 0;
 
 require("core-js/modules/es7.symbol.async-iterator");
 
@@ -18,6 +18,8 @@ require("core-js/modules/es6.object.set-prototype-of");
 require("core-js/modules/es6.function.name");
 
 require("core-js/modules/es6.object.define-property");
+
+require("core-js/modules/es6.promise");
 
 require("core-js/modules/es6.number.constructor");
 
@@ -56,6 +58,22 @@ Number.prototype.to = function (end) {
 
   return array;
 };
+
+var wait = function wait(time) {
+  return new Promise(function (resolve) {
+    return setTimeout(resolve, time);
+  });
+};
+
+exports.wait = wait;
+
+var animFrame = function animFrame() {
+  return new Promise(function (resolve) {
+    return requestAnimationFrame(resolve);
+  });
+};
+
+exports.animFrame = animFrame;
 
 var setFunctionName = function setFunctionName(func, name) {
   Object.defineProperty(func, 'name', {

@@ -41,7 +41,6 @@ class DoricRadio extends React.Component {
     shouldComponentUpdate = (nextProps) => {
         for (const key of Object.keys(nextProps)) {
             if (this.props[key] !== nextProps[key] && key !== 'children') {
-                console.log('dif', key);
                 return true;
             }
         }

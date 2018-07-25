@@ -42,7 +42,17 @@ const buttons = (() => {
     ];
 
     const make = (base, name, values) =>
-        values.reduce((list, value) => [...list, <doric.button {...{...base, [name]: value}} text="demo" onTap={() => cblog(base, name, value)} />], []);
+        values.reduce(
+            (list, value) => [
+                ...list,
+                <doric.button
+                    {...{...base, [name]: value}}
+                    text="demo"
+                    onTap={() => cblog(base, name, value)}
+                />
+            ],
+            []
+        );
 
     const makeAll = (array, base = {}) => {
         const opt = array[0];
@@ -98,28 +108,6 @@ class NeatDialog extends doric.pureBaseComponent {
     }
 }
 
-
-// doric.style.add({
-//     "doric-flex": {
-//         display: 'flex',
-//         flexWrap: 'wrap'
-//     },
-//     "doric-flex-col": {
-//         flex: '1'
-//     }
-// });
-// for (const i of (1).to(13)) {
-//     const width = ((i / 12) * 100).toPrecision(8);
-//     doric.style.add({
-//         [`doric-flex-col[size='${i}']`]: {
-//             minWidth: `${width}%`,
-//             maxWidth: `${width}%`
-//         }
-//     });
-// }
-// console.log(doric.style);
-// const DoricFlex = ({children, ...props}) => <doric-flex {...props}>{children}</doric-flex>;
-// const DoricFlexCol = ({children, ...props}) => <doric-flex-col {...props}>{children}</doric-flex-col>;
 const A = (props) => <div style={{backgroundColor: 'cyan', height: 70}} {...props} />;
 const B = (props) => <div style={{backgroundColor: 'teal', height: '100%'}} {...props} />;
 
@@ -181,7 +169,12 @@ class Test extends doric.baseComponent {
         console.log(
             await this.dialog.show(
                 ({close}) => {
-                    const content = <div style={{height: 400, background: "linear-gradient(to bottom right, black, fuchsia)"}} />;
+                    const content = (
+                        <div>
+                            {this.state.number}
+                            <div style={{height: 400, background: "linear-gradient(to bottom right, black, fuchsia)"}} />
+                        </div>
+                    );
                     const actions = <doric.button text="OK" block onTap={close} />;
                     return <doric.dialog title="Tall Boi" content={content} actions={actions} />;
                 }
@@ -285,7 +278,38 @@ class Test extends doric.baseComponent {
 }
 const Main = doric.dialogify(Test);
 
+// const wait = time => new Promise(resolve => setTimeout(resolve, time));
+class DemoMenu extends React.Component {
+    @autobind
+    transition(url) {
+        return () => {
+            console.log(url);
+            this.props.toggle();
+        };
+    }
+
+    render() {
+        return (
+            <React.Fragment>
+                <doric.button text="Menu Item" onTap={this.transition("/test")} />
+                <doric.button text="Menu Item" />
+                <doric.button text="Menu Item" />
+                <doric.button text="Menu Item" />
+            </React.Fragment>
+        );
+    }
+}
+class Test2 extends doric.baseComponent {
+    render() {
+        return (
+            <doric.appContainer title="Testing" back="Test" onBack={::console.log}>
+                Test
+            </doric.appContainer>
+        );
+    }
+}
+
 doric.init(
-    <Main wat="lul" />,
+    <Test2 />,
     document.querySelector("div")
 );

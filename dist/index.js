@@ -17,6 +17,8 @@ var _style = _interopRequireDefault(require("./style.js"));
 
 var _baseComponent = require("./components/baseComponent.js");
 
+var _appContainer = _interopRequireDefault(require("./components/appContainer.js"));
+
 var _button = _interopRequireDefault(require("./components/button.js"));
 
 var _card = _interopRequireDefault(require("./components/card.js"));
@@ -24,6 +26,8 @@ var _card = _interopRequireDefault(require("./components/card.js"));
 var _checkbox = _interopRequireDefault(require("./components/checkbox.js"));
 
 var _collapse = _interopRequireDefault(require("./components/collapse.js"));
+
+var _customListeners = _interopRequireDefault(require("./components/customListeners.js"));
 
 var _divider = _interopRequireDefault(require("./components/divider.js"));
 
@@ -56,15 +60,18 @@ var _reactLoaderSpinner = _interopRequireDefault(require("react-loader-spinner")
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var doric = {
+  appContainer: _appContainer.default,
   baseComponent: _baseComponent.BaseComponent,
   pureBaseComponent: _baseComponent.PureBaseComponent,
   button: _button.default,
   card: _card.default,
   checkbox: _checkbox.default,
   collapse: _collapse.default,
+  customListeners: _customListeners.default,
   divider: _divider.default,
   flex: _flex.default,
   grid: _grid.default,
+  icon: _icon.default,
   image: _image.default,
   input: _input.default,
   label: _label.default,
