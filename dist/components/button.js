@@ -164,7 +164,7 @@ var DoricButton = function DoricButton(props) {
     listeners: {
       onTap: onTap
     }
-  }), _react.default.createElement("doric-button-content", null, text || children));
+  }), _react.default.createElement("doric-button-content", null, text, children));
 };
 
 DoricButton.pure = (0, _util.createPureClass)(DoricButton);

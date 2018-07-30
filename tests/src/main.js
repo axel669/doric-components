@@ -303,7 +303,8 @@ class Test2 extends doric.baseComponent {
     render() {
         return (
             <doric.appContainer title="Testing" back="Test" onBack={::console.log}>
-                Test
+                <doric.iconButton icon="ion-trash-b" text="Text" />
+                <doric.iconButton icon="ion-trash-b" />
             </doric.appContainer>
         );
     }

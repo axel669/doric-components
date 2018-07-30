@@ -37,6 +37,8 @@ var _grid = _interopRequireDefault(require("./components/grid.js"));
 
 var _icon = _interopRequireDefault(require("./components/icon.js"));
 
+var _iconButton = _interopRequireDefault(require("./components/iconButton.js"));
+
 var _image = _interopRequireDefault(require("./components/image.js"));
 
 var _input = _interopRequireDefault(require("./components/input.js"));
@@ -72,6 +74,7 @@ var doric = {
   flex: _flex.default,
   grid: _grid.default,
   icon: _icon.default,
+  iconButton: _iconButton.default,
   image: _image.default,
   input: _input.default,
   label: _label.default,

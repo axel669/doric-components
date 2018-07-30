@@ -19,6 +19,7 @@ import divider from './components/divider.js';
 import flex from './components/flex.js';
 import grid from './components/grid.js';
 import icon from './components/icon.js';
+import iconButton from './components/iconButton.js';
 import image from './components/image.js';
 import input from './components/input.js';
 import label from './components/label.js';
@@ -45,6 +46,7 @@ const doric = {
     flex,
     grid,
     icon,
+    iconButton,
     image,
     input,
     label,

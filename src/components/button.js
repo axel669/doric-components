@@ -117,7 +117,7 @@ const DoricButton = (props) => {
         <doric-button tabIndex={disabled === true ? null : tabIndex} {...passThrough} class={className} onKeyDown={onKeyDown}>
             <CustomListeners target={this} listeners={{onTap}} />
             <doric-button-content>
-                {text || children}
+                {text}{children}
             </doric-button-content>
         </doric-button>
     );
