@@ -279,7 +279,7 @@ function (_PureBaseComponent) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(DoricPrompt).call(this, props));
     _this.state = {
-      value: ""
+      value: _this.props.initialValue || ""
     };
     _this.link = _this.createLinks('value');
     return _this;
@@ -395,11 +395,12 @@ var dialogify = function dialogify(Component) {
             title: title
           }, DoricConfirm));
         },
-        prompt: function prompt(msg, title, placeholder) {
+        prompt: function prompt(msg, title, initialvalue, placeholder) {
           return _this2.dialog.show(_util.component.bindProps({
             msg: msg,
             title: title,
-            placeholder: placeholder
+            placeholder: placeholder,
+            initialValue: initialValue
           }, DoricPrompt));
         },
         spinner: function spinner(msg, spinnerProps) {

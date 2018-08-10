@@ -107,7 +107,7 @@ const DoricSpinner = ({msg, width = 60, height = 60, type = "Circles"}) => {
 class DoricPrompt extends PureBaseComponent {
     constructor(props) {
         super(props);
-        this.state = {value: ""};
+        this.state = {value: this.props.initialValue || ""};
         this.link = this.createLinks('value');
     }
 
@@ -167,7 +167,7 @@ const dialogify = Component => class extends Component {
             },
             alert: (msg, title) => this.dialog.show(component.bindProps({msg, title}, DoricAlert)),
             confirm: (msg, title) => this.dialog.show(component.bindProps({msg, title}, DoricConfirm)),
-            prompt: (msg, title, placeholder) => this.dialog.show(component.bindProps({msg, title, placeholder}, DoricPrompt)),
+            prompt: (msg, title, initialvalue, placeholder) => this.dialog.show(component.bindProps({msg, title, placeholder, initialValue}, DoricPrompt)),
             spinner: (msg, spinnerProps) => this.dialog.show(component.bindProps({msg, ...spinnerProps}, DoricSpinner))
         };
     }
