@@ -167,7 +167,7 @@ const dialogify = Component => class extends Component {
             },
             alert: (msg, title) => this.dialog.show(component.bindProps({msg, title}, DoricAlert)),
             confirm: (msg, title) => this.dialog.show(component.bindProps({msg, title}, DoricConfirm)),
-            prompt: (msg, title, initialvalue, placeholder) => this.dialog.show(component.bindProps({msg, title, placeholder, initialValue}, DoricPrompt)),
+            prompt: (msg, title, initialValue, placeholder) => this.dialog.show(component.bindProps({msg, title, placeholder, initialValue}, DoricPrompt)),
             spinner: (msg, spinnerProps) => this.dialog.show(component.bindProps({msg, ...spinnerProps}, DoricSpinner))
         };
     }

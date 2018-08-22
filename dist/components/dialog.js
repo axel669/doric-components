@@ -395,7 +395,7 @@ var dialogify = function dialogify(Component) {
             title: title
           }, DoricConfirm));
         },
-        prompt: function prompt(msg, title, initialvalue, placeholder) {
+        prompt: function prompt(msg, title, initialValue, placeholder) {
           return _this2.dialog.show(_util.component.bindProps({
             msg: msg,
             title: title,
