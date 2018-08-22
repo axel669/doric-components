@@ -233,11 +233,21 @@ $export($export.P + $export.F * (NEGATIVE_ZERO || !__webpack_require__(47)($nati
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(103)('asyncIterator');
+// 19.1.3.1 Object.assign(target, source)
+var $export = __webpack_require__(9);
+
+$export($export.S + $export.F, 'Object', { assign: __webpack_require__(90) });
 
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(103)('asyncIterator');
+
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -478,16 +488,6 @@ setToStringTag(global.JSON, 'JSON', true);
 
 
 /***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 19.1.3.1 Object.assign(target, source)
-var $export = __webpack_require__(9);
-
-$export($export.S + $export.F, 'Object', { assign: __webpack_require__(90) });
-
-
-/***/ }),
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -702,9 +702,9 @@ __webpack_require__(2);
 
 __webpack_require__(3);
 
-__webpack_require__(6);
-
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(0);
 
@@ -743,9 +743,9 @@ __webpack_require__(3);
 
 __webpack_require__(118);
 
-__webpack_require__(6);
-
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(1);
 
@@ -1114,11 +1114,11 @@ __webpack_require__(10);
 
 __webpack_require__(11);
 
-__webpack_require__(8);
-
 __webpack_require__(6);
 
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(0);
 
@@ -1129,11 +1129,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = exports.animFrame = exports.wait = exports.component = exports.createPureClass = exports.setFunctionName = void 0;
 
-__webpack_require__(6);
-
 __webpack_require__(7);
 
 __webpack_require__(8);
+
+__webpack_require__(6);
 
 __webpack_require__(10);
 
@@ -1665,7 +1665,7 @@ __webpack_require__(2);
 
 __webpack_require__(3);
 
-__webpack_require__(8);
+__webpack_require__(6);
 
 __webpack_require__(0);
 
@@ -1676,7 +1676,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-__webpack_require__(8);
+__webpack_require__(6);
 
 __webpack_require__(5);
 
@@ -2941,7 +2941,7 @@ __webpack_require__(2);
 
 __webpack_require__(3);
 
-__webpack_require__(8);
+__webpack_require__(6);
 
 __webpack_require__(0);
 
@@ -2950,7 +2950,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-__webpack_require__(8);
+__webpack_require__(6);
 
 __webpack_require__(5);
 
@@ -3177,7 +3177,8 @@ var DoricButton = function DoricButton(props) {
       className = props.className,
       _props$tabIndex = props.tabIndex,
       tabIndex = _props$tabIndex === void 0 ? 0 : _props$tabIndex,
-      passThrough = _objectWithoutProperties(props, ["onTap", "onKeyDown", "text", "children", "className", "tabIndex"]);
+      forwardRef = props.forwardRef,
+      passThrough = _objectWithoutProperties(props, ["onTap", "onKeyDown", "text", "children", "className", "tabIndex", "forwardRef"]);
 
   var disabled = props.disabled;
 
@@ -3201,7 +3202,8 @@ var DoricButton = function DoricButton(props) {
     tabIndex: disabled === true ? null : tabIndex
   }, passThrough, {
     class: className,
-    onKeyDown: onKeyDown
+    onKeyDown: onKeyDown,
+    ref: forwardRef
   }), _react.default.createElement(_customListeners.default, {
     target: _this,
     listeners: {
@@ -3235,9 +3237,9 @@ __webpack_require__(10);
 
 __webpack_require__(11);
 
-__webpack_require__(6);
-
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(0);
 
@@ -3254,9 +3256,9 @@ __webpack_require__(10);
 
 __webpack_require__(11);
 
-__webpack_require__(6);
-
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(3);
 
@@ -4748,9 +4750,9 @@ module.exports = function (NAME, wrapper, methods, common, IS_MAP, IS_WEAK) {
 "use strict";
 
 
-__webpack_require__(6);
-
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(5);
 
@@ -4760,7 +4762,7 @@ __webpack_require__(2);
 
 __webpack_require__(3);
 
-__webpack_require__(8);
+__webpack_require__(6);
 
 __webpack_require__(0);
 
@@ -4771,7 +4773,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-__webpack_require__(8);
+__webpack_require__(6);
 
 __webpack_require__(5);
 
@@ -4779,9 +4781,9 @@ __webpack_require__(2);
 
 __webpack_require__(3);
 
-__webpack_require__(6);
-
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(1);
 
@@ -6669,9 +6671,9 @@ __webpack_require__(53);
 
 __webpack_require__(1);
 
-__webpack_require__(6);
-
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(0);
 
@@ -6690,9 +6692,9 @@ __webpack_require__(52);
 
 __webpack_require__(53);
 
-__webpack_require__(6);
-
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(1);
 
@@ -7077,9 +7079,9 @@ exports.default = _default;
 "use strict";
 
 
-__webpack_require__(6);
-
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(5);
 
@@ -7093,7 +7095,7 @@ __webpack_require__(2);
 
 __webpack_require__(3);
 
-__webpack_require__(8);
+__webpack_require__(6);
 
 __webpack_require__(0);
 
@@ -7102,7 +7104,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-__webpack_require__(8);
+__webpack_require__(6);
 
 __webpack_require__(13);
 
@@ -7116,9 +7118,9 @@ __webpack_require__(2);
 
 __webpack_require__(3);
 
-__webpack_require__(6);
-
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(1);
 
@@ -7299,11 +7301,11 @@ __webpack_require__(2);
 
 __webpack_require__(3);
 
-__webpack_require__(8);
-
 __webpack_require__(6);
 
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(0);
 
@@ -7316,11 +7318,11 @@ exports.default = void 0;
 
 __webpack_require__(0);
 
-__webpack_require__(6);
-
 __webpack_require__(7);
 
 __webpack_require__(8);
+
+__webpack_require__(6);
 
 __webpack_require__(5);
 
@@ -7564,7 +7566,8 @@ function (_React$PureComponent) {
           onChange = _this$props$onChange === void 0 ? function () {} : _this$props$onChange,
           type = _this$props.type,
           Element = _this$props.Element,
-          passThrough = _objectWithoutProperties(_this$props, ["wrapperStyle", "wrapperClassName", "value", "label", "required", "optional", "loader", "loaderType", "onChange", "type", "Element"]); // const labelElem = (label === null)
+          forwardRef = _this$props.forwardRef,
+          passThrough = _objectWithoutProperties(_this$props, ["wrapperStyle", "wrapperClassName", "value", "label", "required", "optional", "loader", "loaderType", "onChange", "type", "Element", "forwardRef"]); // const labelElem = (label === null)
       //     ? null
       //     : <doric-input-label {...{required, optional}}>{label}</doric-input-label>;
 
@@ -7580,7 +7583,8 @@ function (_React$PureComponent) {
       }, label), _react.default.createElement(Element, _extends({}, passThrough, {
         type: type,
         value: value,
-        onChange: onChange
+        onChange: onChange,
+        ref: forwardRef
       })), loaderElem);
     });
 
@@ -7735,7 +7739,7 @@ $export($export.S, 'Reflect', { get: get });
 "use strict";
 
 
-__webpack_require__(8);
+__webpack_require__(6);
 
 __webpack_require__(13);
 
@@ -7763,9 +7767,9 @@ __webpack_require__(10);
 
 __webpack_require__(11);
 
-__webpack_require__(6);
-
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(1);
 
@@ -29103,9 +29107,9 @@ __webpack_require__(11);
 
 __webpack_require__(34);
 
-__webpack_require__(6);
-
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(33);
 
@@ -29136,9 +29140,9 @@ __webpack_require__(1);
 
 __webpack_require__(13);
 
-__webpack_require__(6);
-
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(34);
 
@@ -29670,7 +29674,7 @@ __webpack_require__(2);
 
 __webpack_require__(3);
 
-__webpack_require__(8);
+__webpack_require__(6);
 
 __webpack_require__(0);
 
@@ -29681,7 +29685,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-__webpack_require__(8);
+__webpack_require__(6);
 
 __webpack_require__(5);
 
@@ -29915,7 +29919,7 @@ __webpack_require__(2);
 
 __webpack_require__(3);
 
-__webpack_require__(8);
+__webpack_require__(6);
 
 __webpack_require__(0);
 
@@ -29924,7 +29928,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-__webpack_require__(8);
+__webpack_require__(6);
 
 __webpack_require__(5);
 
@@ -30124,7 +30128,8 @@ var DoricCheckbox = function DoricCheckbox(props) {
       passedOKD = _props$onKeyDown === void 0 ? function () {} : _props$onKeyDown,
       _props$tabIndex = props.tabIndex,
       tabIndex = _props$tabIndex === void 0 ? 0 : _props$tabIndex,
-      passThrough = _objectWithoutProperties(props, ["checked", "label", "children", "onChange", "onKeyDown", "tabIndex"]);
+      fowardRef = props.fowardRef,
+      passThrough = _objectWithoutProperties(props, ["checked", "label", "children", "onChange", "onKeyDown", "tabIndex", "fowardRef"]);
 
   var disabled = props.disabled;
 
@@ -30153,7 +30158,8 @@ var DoricCheckbox = function DoricCheckbox(props) {
     tabIndex: disabled === true ? null : tabIndex
   }, passThrough, {
     checked: checked,
-    onKeyDown: onKeyDown
+    onKeyDown: onKeyDown,
+    ref: forwardRef
   }), _react.default.createElement(_customListeners.default, {
     listeners: {
       onTap: onTap
@@ -30184,11 +30190,11 @@ __webpack_require__(2);
 
 __webpack_require__(3);
 
-__webpack_require__(8);
-
 __webpack_require__(6);
 
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(0);
 
@@ -30201,11 +30207,11 @@ exports.default = void 0;
 
 __webpack_require__(0);
 
-__webpack_require__(6);
-
 __webpack_require__(7);
 
 __webpack_require__(8);
+
+__webpack_require__(6);
 
 __webpack_require__(5);
 
@@ -30519,7 +30525,7 @@ __webpack_require__(2);
 
 __webpack_require__(3);
 
-__webpack_require__(8);
+__webpack_require__(6);
 
 __webpack_require__(0);
 
@@ -30530,7 +30536,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-__webpack_require__(8);
+__webpack_require__(6);
 
 __webpack_require__(5);
 
@@ -32407,9 +32413,9 @@ __webpack_require__(2);
 
 __webpack_require__(3);
 
-__webpack_require__(6);
-
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(0);
 
@@ -32430,9 +32436,9 @@ __webpack_require__(11);
 
 __webpack_require__(30);
 
-__webpack_require__(6);
-
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(1);
 
@@ -32757,6 +32763,8 @@ __webpack_require__(2);
 
 __webpack_require__(3);
 
+__webpack_require__(6);
+
 __webpack_require__(0);
 
 __webpack_require__(0);
@@ -32765,6 +32773,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+
+__webpack_require__(6);
 
 __webpack_require__(5);
 
@@ -32815,6 +32825,24 @@ function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
     default: obj
   };
+}
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
 }
 
 function _objectWithoutProperties(source, excluded) {
@@ -32888,7 +32916,8 @@ var DoricSelect = function DoricSelect(props) {
       required = props.required,
       optional = props.optional,
       label = props.label,
-      selectProps = _objectWithoutProperties(props, ["wrapperStyle", "wrapperClassName", "required", "optional", "label"]);
+      forwardRef = props.forwardRef,
+      selectProps = _objectWithoutProperties(props, ["wrapperStyle", "wrapperClassName", "required", "optional", "label", "forwardRef"]);
 
   return _react.default.createElement("doric-select", {
     style: wrapperStyle,
@@ -32896,7 +32925,9 @@ var DoricSelect = function DoricSelect(props) {
   }, _react.default.createElement(_label.default, {
     required: required,
     optional: optional
-  }, label), _react.default.createElement("select", selectProps));
+  }, label), _react.default.createElement("select", _extends({}, selectProps, {
+    ref: forwardRef
+  })));
 };
 
 DoricSelect.pure = (0, _util.createPureClass)(DoricSelect);
@@ -32914,11 +32945,11 @@ __webpack_require__(10);
 
 __webpack_require__(11);
 
-__webpack_require__(8);
-
 __webpack_require__(6);
 
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(0);
 
@@ -32931,11 +32962,11 @@ exports.default = void 0;
 
 __webpack_require__(0);
 
-__webpack_require__(6);
-
 __webpack_require__(7);
 
 __webpack_require__(8);
+
+__webpack_require__(6);
 
 __webpack_require__(10);
 
@@ -33177,9 +33208,9 @@ __webpack_require__(10);
 
 __webpack_require__(11);
 
-__webpack_require__(6);
-
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(0);
 
@@ -33202,9 +33233,9 @@ __webpack_require__(3);
 
 __webpack_require__(0);
 
-__webpack_require__(6);
-
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(10);
 
@@ -33456,7 +33487,7 @@ __webpack_require__(2);
 
 __webpack_require__(3);
 
-__webpack_require__(8);
+__webpack_require__(6);
 
 __webpack_require__(0);
 
@@ -33465,7 +33496,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-__webpack_require__(8);
+__webpack_require__(6);
 
 __webpack_require__(5);
 
@@ -33686,7 +33717,8 @@ var DoricToggle = function DoricToggle(props) {
       passedOKD = _props$onKeyDown === void 0 ? function () {} : _props$onKeyDown,
       _props$tabIndex = props.tabIndex,
       tabIndex = _props$tabIndex === void 0 ? 0 : _props$tabIndex,
-      passThrough = _objectWithoutProperties(props, ["label", "children", "on", "onChange", "onKeyDown", "tabIndex"]);
+      forwardRef = props.forwardRef,
+      passThrough = _objectWithoutProperties(props, ["label", "children", "on", "onChange", "onKeyDown", "tabIndex", "forwardRef"]);
 
   var disabled = props.disabled;
 
@@ -33714,7 +33746,8 @@ var DoricToggle = function DoricToggle(props) {
   return _react.default.createElement("doric-toggle", _extends({
     tabIndex: disabled === true ? null : tabIndex
   }, passThrough, {
-    onKeyDown: onKeyDown
+    onKeyDown: onKeyDown,
+    ref: forwardRef
   }), _react.default.createElement(_customListeners.default, {
     listeners: {
       onTap: onTap
@@ -33757,9 +33790,9 @@ __webpack_require__(10);
 
 __webpack_require__(11);
 
-__webpack_require__(6);
-
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(127);
 
@@ -33800,9 +33833,9 @@ __webpack_require__(27);
 
 __webpack_require__(125);
 
-__webpack_require__(6);
-
 __webpack_require__(7);
+
+__webpack_require__(8);
 
 __webpack_require__(10);
 

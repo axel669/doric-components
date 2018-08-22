@@ -73,6 +73,7 @@ const DoricCheckbox = (props) => {
         onChange = (() => {}),
         onKeyDown: passedOKD = (() => {}),
         tabIndex = 0,
+        fowardRef,
         ...passThrough
     } = props;
     const {disabled} = props;
@@ -96,7 +97,7 @@ const DoricCheckbox = (props) => {
     };
 
     return (
-        <doric-checkbox tabIndex={disabled === true ? null : tabIndex} {...passThrough} checked={checked} onKeyDown={onKeyDown}>
+        <doric-checkbox tabIndex={disabled === true ? null : tabIndex} {...passThrough} checked={checked} onKeyDown={onKeyDown} ref={forwardRef}>
             <CustomListeners listeners={{onTap}} />
             <doric-checkbox-content>
                 {label || children}

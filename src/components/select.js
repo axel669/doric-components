@@ -52,12 +52,13 @@ const DoricSelect = props => {
         required,
         optional,
         label,
+        forwardRef,
         ...selectProps
     } = props;
     return (
         <doric-select style={wrapperStyle} class={wrapperClassName}>
             <Label {...{required, optional}}>{label}</Label>
-            <select {...selectProps} />
+            <select {...selectProps} ref={forwardRef} />
         </doric-select>
     );
 };

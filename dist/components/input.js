@@ -145,7 +145,8 @@ function (_React$PureComponent) {
           onChange = _this$props$onChange === void 0 ? function () {} : _this$props$onChange,
           type = _this$props.type,
           Element = _this$props.Element,
-          passThrough = _objectWithoutProperties(_this$props, ["wrapperStyle", "wrapperClassName", "value", "label", "required", "optional", "loader", "loaderType", "onChange", "type", "Element"]); // const labelElem = (label === null)
+          forwardRef = _this$props.forwardRef,
+          passThrough = _objectWithoutProperties(_this$props, ["wrapperStyle", "wrapperClassName", "value", "label", "required", "optional", "loader", "loaderType", "onChange", "type", "Element", "forwardRef"]); // const labelElem = (label === null)
       //     ? null
       //     : <doric-input-label {...{required, optional}}>{label}</doric-input-label>;
 
@@ -161,7 +162,8 @@ function (_React$PureComponent) {
       }, label), _react.default.createElement(Element, _extends({}, passThrough, {
         type: type,
         value: value,
-        onChange: onChange
+        onChange: onChange,
+        ref: forwardRef
       })), loaderElem);
     });
 

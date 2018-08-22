@@ -108,7 +108,8 @@ var DoricCheckbox = function DoricCheckbox(props) {
       passedOKD = _props$onKeyDown === void 0 ? function () {} : _props$onKeyDown,
       _props$tabIndex = props.tabIndex,
       tabIndex = _props$tabIndex === void 0 ? 0 : _props$tabIndex,
-      passThrough = _objectWithoutProperties(props, ["checked", "label", "children", "onChange", "onKeyDown", "tabIndex"]);
+      fowardRef = props.fowardRef,
+      passThrough = _objectWithoutProperties(props, ["checked", "label", "children", "onChange", "onKeyDown", "tabIndex", "fowardRef"]);
 
   var disabled = props.disabled;
 
@@ -137,7 +138,8 @@ var DoricCheckbox = function DoricCheckbox(props) {
     tabIndex: disabled === true ? null : tabIndex
   }, passThrough, {
     checked: checked,
-    onKeyDown: onKeyDown
+    onKeyDown: onKeyDown,
+    ref: forwardRef
   }), _react.default.createElement(_customListeners.default, {
     listeners: {
       onTap: onTap

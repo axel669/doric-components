@@ -93,6 +93,7 @@ const DoricToggle = props => {
         onChange = (() => {}),
         onKeyDown: passedOKD = (() => {}),
         tabIndex = 0,
+        forwardRef,
         ...passThrough
     } = props;
     const {disabled} = props;
@@ -112,7 +113,7 @@ const DoricToggle = props => {
     };
 
     return (
-        <doric-toggle tabIndex={disabled === true ? null : tabIndex} {...passThrough} onKeyDown={onKeyDown}>
+        <doric-toggle tabIndex={disabled === true ? null : tabIndex} {...passThrough} onKeyDown={onKeyDown} ref={forwardRef}>
             <CustomListeners listeners={{onTap}} />
             <doric-toggle-content>
                 {label || children}

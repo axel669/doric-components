@@ -89,6 +89,7 @@ class DoricInput extends React.PureComponent {
             onChange = (() => {}),
             type,
             Element,
+            forwardRef,
             ...passThrough
         } = this.props;
         // const labelElem = (label === null)
@@ -100,7 +101,7 @@ class DoricInput extends React.PureComponent {
             <doric-input type={type} class={wrapperClassName} style={wrapperStyle}>
                 {/* {labelElem} */}
                 <Label {...{optional, required}}>{label}</Label>
-                <Element {...passThrough} type={type} value={value} onChange={onChange} />
+                <Element {...passThrough} type={type} value={value} onChange={onChange} ref={forwardRef} />
                 {loaderElem}
             </doric-input>
         );

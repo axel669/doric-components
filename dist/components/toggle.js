@@ -129,7 +129,8 @@ var DoricToggle = function DoricToggle(props) {
       passedOKD = _props$onKeyDown === void 0 ? function () {} : _props$onKeyDown,
       _props$tabIndex = props.tabIndex,
       tabIndex = _props$tabIndex === void 0 ? 0 : _props$tabIndex,
-      passThrough = _objectWithoutProperties(props, ["label", "children", "on", "onChange", "onKeyDown", "tabIndex"]);
+      forwardRef = props.forwardRef,
+      passThrough = _objectWithoutProperties(props, ["label", "children", "on", "onChange", "onKeyDown", "tabIndex", "forwardRef"]);
 
   var disabled = props.disabled;
 
@@ -157,7 +158,8 @@ var DoricToggle = function DoricToggle(props) {
   return _react.default.createElement("doric-toggle", _extends({
     tabIndex: disabled === true ? null : tabIndex
   }, passThrough, {
-    onKeyDown: onKeyDown
+    onKeyDown: onKeyDown,
+    ref: forwardRef
   }), _react.default.createElement(_customListeners.default, {
     listeners: {
       onTap: onTap

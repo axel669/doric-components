@@ -134,7 +134,8 @@ var DoricButton = function DoricButton(props) {
       className = props.className,
       _props$tabIndex = props.tabIndex,
       tabIndex = _props$tabIndex === void 0 ? 0 : _props$tabIndex,
-      passThrough = _objectWithoutProperties(props, ["onTap", "onKeyDown", "text", "children", "className", "tabIndex"]);
+      forwardRef = props.forwardRef,
+      passThrough = _objectWithoutProperties(props, ["onTap", "onKeyDown", "text", "children", "className", "tabIndex", "forwardRef"]);
 
   var disabled = props.disabled;
 
@@ -158,7 +159,8 @@ var DoricButton = function DoricButton(props) {
     tabIndex: disabled === true ? null : tabIndex
   }, passThrough, {
     class: className,
-    onKeyDown: onKeyDown
+    onKeyDown: onKeyDown,
+    ref: forwardRef
   }), _react.default.createElement(_customListeners.default, {
     target: _this,
     listeners: {
