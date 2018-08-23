@@ -114,7 +114,7 @@ _style.default.add({
     top: '10vh',
     left: '50%',
     transform: 'translateX(-50%)',
-    width: '60vmin',
+    width: 320,
     animationName: 'doric-dialog-enter',
     animationDuration: '150ms',
     borderRadius: 5,
@@ -156,8 +156,10 @@ _style.default.add({
 });
 
 var DoricDialogOverlay = function DoricDialogOverlay(_ref) {
-  var children = _ref.children;
-  return _react.default.createElement("doric-dialog-overlay", null, children);
+  var children = _ref.children,
+      props = _objectWithoutProperties(_ref, ["children"]);
+
+  return _react.default.createElement("doric-dialog-overlay", props, children);
 };
 
 var DoricDialogContainer = function DoricDialogContainer(props) {
@@ -195,6 +197,8 @@ var DoricAlert = function DoricAlert(_ref3) {
     content: msg,
     actions: _react.default.createElement(_button.default, {
       block: true,
+      primary: true,
+      flat: true,
       text: "Ok",
       onTap: function onTap() {
         return close();
@@ -315,6 +319,7 @@ function (_PureBaseComponent) {
         size: 6
       }, _react.default.createElement(_button.default, {
         block: true,
+        flat: true,
         danger: true,
         text: "Cancel",
         onTap: this.close
@@ -322,6 +327,7 @@ function (_PureBaseComponent) {
         size: 6
       }, _react.default.createElement(_button.default, {
         block: true,
+        flat: true,
         primary: true,
         text: "Ok",
         onTap: this.submit
@@ -356,9 +362,20 @@ var dialogify = function dialogify(Component) {
       dialogPrivate.set(_assertThisInitialized(_assertThisInitialized(_this2)), []);
       _this2.dialog = {
         show: function show(element) {
+          var onOverlayClicked = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
           var close = null;
           var res = new Promise(function (resolve) {
             var id = "".concat(Date.now(), "_").concat(Math.random());
+
+            var handleOverlayClick = function handleOverlayClick(evt) {
+              if (evt.target.tagName.toLowerCase() !== "doric-dialog-overlay") {
+                return;
+              }
+
+              if (onOverlayClicked(evt) !== false) {
+                close(null);
+              }
+            };
 
             close = function close() {
               var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -375,7 +392,8 @@ var dialogify = function dialogify(Component) {
             dialogPrivate.get(_assertThisInitialized(_assertThisInitialized(_this2))).push({
               id: id,
               close: close,
-              element: element
+              element: element,
+              handleOverlayClick: handleOverlayClick
             });
 
             _this2.forceUpdate();
@@ -387,13 +405,17 @@ var dialogify = function dialogify(Component) {
           return _this2.dialog.show(_util.component.bindProps({
             msg: msg,
             title: title
-          }, DoricAlert));
+          }, DoricAlert), function () {
+            return false;
+          });
         },
         confirm: function confirm(msg, title) {
           return _this2.dialog.show(_util.component.bindProps({
             msg: msg,
             title: title
-          }, DoricConfirm));
+          }, DoricConfirm), function () {
+            return false;
+          });
         },
         prompt: function prompt(msg, title, initialValue, placeholder) {
           return _this2.dialog.show(_util.component.bindProps({
@@ -401,12 +423,16 @@ var dialogify = function dialogify(Component) {
             title: title,
             placeholder: placeholder,
             initialValue: initialValue
-          }, DoricPrompt));
+          }, DoricPrompt), function () {
+            return false;
+          });
         },
         spinner: function spinner(msg, spinnerProps) {
           return _this2.dialog.show(_util.component.bindProps(_objectSpread({
             msg: msg
-          }, spinnerProps), DoricSpinner));
+          }, spinnerProps), DoricSpinner), function () {
+            return false;
+          });
         }
       };
       return _this2;
@@ -417,7 +443,8 @@ var dialogify = function dialogify(Component) {
       value: function render() {
         return _react.default.createElement(_react.default.Fragment, null, _get(_getPrototypeOf(_class2.prototype), "render", this).call(this), dialogPrivate.get(this).map(function (dialog) {
           return _react.default.createElement(DoricDialogOverlay, {
-            key: dialog.id
+            key: dialog.id,
+            onClick: dialog.handleOverlayClick
           }, _react.default.createElement(dialog.element, {
             close: dialog.close
           }));

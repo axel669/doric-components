@@ -299,16 +299,21 @@ class DemoMenu extends React.Component {
         );
     }
 }
+@doric.dialogify
 class Test2 extends doric.baseComponent {
     render() {
         return (
             <doric.appContainer title="Testing" back="Test" onBack={::console.log}>
-                <doric.iconButton icon="ion-trash-b" text="Text" />
-                <doric.iconButton icon="ion-trash-b" />
+                <doric.iconButton icon="ion-trash-b" text="Text" onTap={() => this.dialog.alert('test')} />
+                <doric.iconButton icon="ion-trash-b" text="Text" onTap={() => this.dialog.confirm('test')} />
+                <doric.iconButton icon="ion-trash-b" text="Text" onTap={() => this.dialog.prompt('test')} />
+                <doric.iconButton icon="ion-trash-b" onTap={() => this.dialog.show(() => <doric.dialog content="hi" />)} />
             </doric.appContainer>
         );
     }
 }
+
+window.doric = doric;
 
 doric.init(
     <Test2 />,

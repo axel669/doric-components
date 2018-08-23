@@ -26,7 +26,7 @@ style.add({
         top: '10vh',
         left: '50%',
         transform: 'translateX(-50%)',
-        width: '60vmin',
+        width: 320,
         animationName: 'doric-dialog-enter',
         animationDuration: '150ms',
         borderRadius: 5,
@@ -67,8 +67,8 @@ style.add({
     }
 });
 
-const DoricDialogOverlay = ({children}) => (
-    <doric-dialog-overlay>
+const DoricDialogOverlay = ({children, ...props}) => (
+    <doric-dialog-overlay {...props}>
         {children}
     </doric-dialog-overlay>
 );
@@ -85,7 +85,7 @@ const DoricDialog = ({title, content, actions, ...props}) => (
     </DoricDialogContainer>
 );
 
-const DoricAlert = ({msg, title = "Alert", close}) => <DoricDialog title={title} content={msg} actions={<Button block text="Ok" onTap={() => close()} />} />;
+const DoricAlert = ({msg, title = "Alert", close}) => <DoricDialog title={title} content={msg} actions={<Button block primary flat text="Ok" onTap={() => close()} />} />;
 const DoricConfirm = ({msg, title = "Confirm", close}) => {
     const actions = (
         <Grid>
@@ -126,8 +126,8 @@ class DoricPrompt extends PureBaseComponent {
         const content = <Input.text label={msg} value={this.state.value} onChange={this.link.value} placeholder={placeholder} />;
         const actions = (
             <Grid>
-                <Grid.col size={6}><Button block danger text="Cancel" onTap={this.close} /></Grid.col>
-                <Grid.col size={6}><Button block primary text="Ok" onTap={this.submit} /></Grid.col>
+                <Grid.col size={6}><Button block flat danger text="Cancel" onTap={this.close} /></Grid.col>
+                <Grid.col size={6}><Button block flat primary text="Ok" onTap={this.submit} /></Grid.col>
             </Grid>
         );
 
@@ -142,11 +142,19 @@ const dialogify = Component => class extends Component {
         super(props);
         dialogPrivate.set(this, []);
         this.dialog = {
-            show: (element) => {
+            show: (element, onOverlayClicked = (() => {})) => {
                 let close = null;
                 const res = new Promise(
                     resolve => {
                         const id = `${Date.now()}_${Math.random()}`;
+                        const handleOverlayClick = evt => {
+                            if (evt.target.tagName.toLowerCase() !== "doric-dialog-overlay") {
+                                return;
+                            }
+                            if (onOverlayClicked(evt) !== false) {
+                                close(null);
+                            }
+                        };
                         close = (value = null) => {
                             const dialogs = dialogPrivate.get(this);
                             dialogPrivate.set(
@@ -157,7 +165,7 @@ const dialogify = Component => class extends Component {
                             resolve(value);
                         };
                         dialogPrivate.get(this).push({
-                            id, close, element
+                            id, close, element, handleOverlayClick
                         });
                         this.forceUpdate();
                     }
@@ -165,10 +173,34 @@ const dialogify = Component => class extends Component {
                 res.close = close;
                 return res;
             },
-            alert: (msg, title) => this.dialog.show(component.bindProps({msg, title}, DoricAlert)),
-            confirm: (msg, title) => this.dialog.show(component.bindProps({msg, title}, DoricConfirm)),
-            prompt: (msg, title, initialValue, placeholder) => this.dialog.show(component.bindProps({msg, title, placeholder, initialValue}, DoricPrompt)),
-            spinner: (msg, spinnerProps) => this.dialog.show(component.bindProps({msg, ...spinnerProps}, DoricSpinner))
+            alert: (msg, title) => this.dialog.show(
+                component.bindProps(
+                    {msg, title},
+                    DoricAlert
+                ),
+                () => false
+            ),
+            confirm: (msg, title) => this.dialog.show(
+                component.bindProps(
+                    {msg, title},
+                    DoricConfirm
+                ),
+                () => false
+            ),
+            prompt: (msg, title, initialValue, placeholder) => this.dialog.show(
+                component.bindProps(
+                    {msg, title, placeholder, initialValue},
+                    DoricPrompt
+                ),
+                () => false
+            ),
+            spinner: (msg, spinnerProps) => this.dialog.show(
+                component.bindProps(
+                    {msg, ...spinnerProps},
+                    DoricSpinner
+                ),
+                () => false
+            )
         };
     }
 
@@ -178,7 +210,7 @@ const dialogify = Component => class extends Component {
                 {super.render()}
                 {dialogPrivate.get(this).map(
                     dialog => (
-                        <DoricDialogOverlay key={dialog.id}>
+                        <DoricDialogOverlay key={dialog.id} onClick={dialog.handleOverlayClick}>
                             <dialog.element close={dialog.close} />
                         </DoricDialogOverlay>
                     )

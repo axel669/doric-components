@@ -7791,7 +7791,7 @@ var _autobindDecorator = _interopRequireDefault(__webpack_require__(84));
 
 var _index = _interopRequireDefault(__webpack_require__(159));
 
-var _context, _class, _class3;
+var _context, _class, _class3, _dec, _class4;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8374,8 +8374,7 @@ function (_React$Component) {
 
   return DemoMenu;
 }(_react.default.Component), (_applyDecoratedDescriptor(_class3.prototype, "transition", [_autobindDecorator.default], Object.getOwnPropertyDescriptor(_class3.prototype, "transition"), _class3.prototype)), _class3);
-
-var Test2 =
+var Test2 = (_dec = _index.default.dialogify, _dec(_class4 =
 /*#__PURE__*/
 function (_doric$baseComponent2) {
   _inherits(Test2, _doric$baseComponent2);
@@ -8389,7 +8388,8 @@ function (_doric$baseComponent2) {
   _createClass(Test2, [{
     key: "render",
     value: function render() {
-      var _context8;
+      var _context8,
+          _this6 = this;
 
       return _react.default.createElement(_index.default.appContainer, {
         title: "Testing",
@@ -8397,15 +8397,38 @@ function (_doric$baseComponent2) {
         onBack: (_context8 = console).log.bind(_context8)
       }, _react.default.createElement(_index.default.iconButton, {
         icon: "ion-trash-b",
-        text: "Text"
+        text: "Text",
+        onTap: function onTap() {
+          return _this6.dialog.alert('test');
+        }
       }), _react.default.createElement(_index.default.iconButton, {
-        icon: "ion-trash-b"
+        icon: "ion-trash-b",
+        text: "Text",
+        onTap: function onTap() {
+          return _this6.dialog.confirm('test');
+        }
+      }), _react.default.createElement(_index.default.iconButton, {
+        icon: "ion-trash-b",
+        text: "Text",
+        onTap: function onTap() {
+          return _this6.dialog.prompt('test');
+        }
+      }), _react.default.createElement(_index.default.iconButton, {
+        icon: "ion-trash-b",
+        onTap: function onTap() {
+          return _this6.dialog.show(function () {
+            return _react.default.createElement(_index.default.dialog, {
+              content: "hi"
+            });
+          });
+        }
       }));
     }
   }]);
 
   return Test2;
-}(_index.default.baseComponent);
+}(_index.default.baseComponent)) || _class4);
+window.doric = _index.default;
 
 _index.default.init(_react.default.createElement(Test2, null), document.querySelector("div"));
 
@@ -34100,7 +34123,7 @@ _style.default.add({
     top: '10vh',
     left: '50%',
     transform: 'translateX(-50%)',
-    width: '60vmin',
+    width: 320,
     animationName: 'doric-dialog-enter',
     animationDuration: '150ms',
     borderRadius: 5,
@@ -34142,8 +34165,10 @@ _style.default.add({
 });
 
 var DoricDialogOverlay = function DoricDialogOverlay(_ref) {
-  var children = _ref.children;
-  return _react.default.createElement("doric-dialog-overlay", null, children);
+  var children = _ref.children,
+      props = _objectWithoutProperties(_ref, ["children"]);
+
+  return _react.default.createElement("doric-dialog-overlay", props, children);
 };
 
 var DoricDialogContainer = function DoricDialogContainer(props) {
@@ -34181,6 +34206,8 @@ var DoricAlert = function DoricAlert(_ref3) {
     content: msg,
     actions: _react.default.createElement(_button.default, {
       block: true,
+      primary: true,
+      flat: true,
       text: "Ok",
       onTap: function onTap() {
         return close();
@@ -34301,6 +34328,7 @@ function (_PureBaseComponent) {
         size: 6
       }, _react.default.createElement(_button.default, {
         block: true,
+        flat: true,
         danger: true,
         text: "Cancel",
         onTap: this.close
@@ -34308,6 +34336,7 @@ function (_PureBaseComponent) {
         size: 6
       }, _react.default.createElement(_button.default, {
         block: true,
+        flat: true,
         primary: true,
         text: "Ok",
         onTap: this.submit
@@ -34342,9 +34371,20 @@ var dialogify = function dialogify(Component) {
       dialogPrivate.set(_assertThisInitialized(_assertThisInitialized(_this2)), []);
       _this2.dialog = {
         show: function show(element) {
+          var onOverlayClicked = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
           var close = null;
           var res = new Promise(function (resolve) {
             var id = "".concat(Date.now(), "_").concat(Math.random());
+
+            var handleOverlayClick = function handleOverlayClick(evt) {
+              if (evt.target.tagName.toLowerCase() !== "doric-dialog-overlay") {
+                return;
+              }
+
+              if (onOverlayClicked(evt) !== false) {
+                close(null);
+              }
+            };
 
             close = function close() {
               var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -34361,7 +34401,8 @@ var dialogify = function dialogify(Component) {
             dialogPrivate.get(_assertThisInitialized(_assertThisInitialized(_this2))).push({
               id: id,
               close: close,
-              element: element
+              element: element,
+              handleOverlayClick: handleOverlayClick
             });
 
             _this2.forceUpdate();
@@ -34373,13 +34414,17 @@ var dialogify = function dialogify(Component) {
           return _this2.dialog.show(_util.component.bindProps({
             msg: msg,
             title: title
-          }, DoricAlert));
+          }, DoricAlert), function () {
+            return false;
+          });
         },
         confirm: function confirm(msg, title) {
           return _this2.dialog.show(_util.component.bindProps({
             msg: msg,
             title: title
-          }, DoricConfirm));
+          }, DoricConfirm), function () {
+            return false;
+          });
         },
         prompt: function prompt(msg, title, initialValue, placeholder) {
           return _this2.dialog.show(_util.component.bindProps({
@@ -34387,12 +34432,16 @@ var dialogify = function dialogify(Component) {
             title: title,
             placeholder: placeholder,
             initialValue: initialValue
-          }, DoricPrompt));
+          }, DoricPrompt), function () {
+            return false;
+          });
         },
         spinner: function spinner(msg, spinnerProps) {
           return _this2.dialog.show(_util.component.bindProps(_objectSpread({
             msg: msg
-          }, spinnerProps), DoricSpinner));
+          }, spinnerProps), DoricSpinner), function () {
+            return false;
+          });
         }
       };
       return _this2;
@@ -34403,7 +34452,8 @@ var dialogify = function dialogify(Component) {
       value: function render() {
         return _react.default.createElement(_react.default.Fragment, null, _get(_getPrototypeOf(_class2.prototype), "render", this).call(this), dialogPrivate.get(this).map(function (dialog) {
           return _react.default.createElement(DoricDialogOverlay, {
-            key: dialog.id
+            key: dialog.id,
+            onClick: dialog.handleOverlayClick
           }, _react.default.createElement(dialog.element, {
             close: dialog.close
           }));
