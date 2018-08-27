@@ -73,7 +73,7 @@ const DoricCheckbox = (props) => {
         onChange = (() => {}),
         onKeyDown: passedOKD = (() => {}),
         tabIndex = 0,
-        fowardRef,
+        forwardRef,
         ...passThrough
     } = props;
     const {disabled} = props;

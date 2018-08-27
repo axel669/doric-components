@@ -108,8 +108,8 @@ var DoricCheckbox = function DoricCheckbox(props) {
       passedOKD = _props$onKeyDown === void 0 ? function () {} : _props$onKeyDown,
       _props$tabIndex = props.tabIndex,
       tabIndex = _props$tabIndex === void 0 ? 0 : _props$tabIndex,
-      fowardRef = props.fowardRef,
-      passThrough = _objectWithoutProperties(props, ["checked", "label", "children", "onChange", "onKeyDown", "tabIndex", "fowardRef"]);
+      forwardRef = props.forwardRef,
+      passThrough = _objectWithoutProperties(props, ["checked", "label", "children", "onChange", "onKeyDown", "tabIndex", "forwardRef"]);
 
   var disabled = props.disabled;
 
