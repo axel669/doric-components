@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Doric (again)</title>
+        <meta name="viewport" content="initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width" />
+        <meta charset="utf-8" />
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+        <script crossorigin src="https://unpkg.com/react@16.7.0/umd/react.development.js"></script>
+        <script crossorigin src="https://unpkg.com/react-dom@16.7.0/umd/react-dom.development.js"></script>
+        <script src="https://unpkg.com/@axel669/teascript@0.13.4/standalone/transpiler.js"></script>
+        <script src="https://unpkg.com/gesturesjs@1.0.0/standalone/gesture.js"></script>
+        <script src="https://unpkg.com/ssjs@0.3.0/browser/ss.js"></script>
+    </head>
+    <body>
+        <app-root></app-root>
+        <script>
+        const doric = {};
+        const sheets = [];
+        </script>
+        <script type="text/teascript" src="style/style.tea"></script>
+        <script type="text/teascript">
+        let niceBlue = "#1d62d5"
+        let normalHL = "rgba(0 0 0 0.4)"
+        let focusHL = "rgba(0 0 0 0.125)"
+        let baseTheme = {
+            "body.bg.normal": "#f0f0f0"
+            "body.text.normal": "black"
+
+            "button.hl.normal": normalHL
+            "button.hl.focus": focusHL
+            "button.bg.normal": "transparent"
+            "button.text.normal": "black"
+            "button.bg.primary": niceBlue
+            "button.text.primary": "white"
+            "button.bg.danger": "#F44336"
+            "button.text.danger": "white"
+            "button.bg.accent": "#FF4081"
+            "button.text.accent": "white"
+
+            "card.bg.normal": "white"
+            "card.border.normal": "white"
+
+            "checkbox.checkColor": niceBlue
+            "checkbox.hl.normal": normalHL
+            "checkbox.hl.focus": focusHL
+
+            "collapse.title.bg.normal": niceBlue
+            "collapse.title.text.normal": "white"
+            "collapse.border.normal": "lightgray"
+
+            "dialog.bg.normal": "white"
+            "dialog.border.normal": "white"
+
+            "divider.border.normal": "lightgray"
+
+            "input.border.normal": "lightgray"
+            "input.border.focus": niceBlue
+            "input.text.normal": "black"
+            "input.bg.disabled": "lightgray"
+
+            "label.text.normal": "black"
+            "label.text.optional": niceBlue
+            "label.text.required": "#F44336"
+
+            "radio.circleColor": niceBlue
+            "radio.text.normal": "black"
+
+            "select.border.normal": "lightgray"
+            "select.border.focus": niceBlue
+            "select.text.normal": "black"
+
+            "slider.track.bg.normal": "lightgray"
+            "slider.track.bg.value": niceBlue
+            "slider.thumb.normal": niceBlue
+
+            "tabs.tab.hl.normal": normalHL
+            "tabs.tab.bg.normal": "white"
+            "tabs.tab.bg.active": "white"
+            "tabs.tab.border.normal": "lightgray"
+            "tabs.tab.border.active": niceBlue
+            "tabs.tab.text.normal": "black"
+            "tabs.tab.text.active": niceBlue
+
+            "toggle.hl.normal": normalHL
+            "toggle.hl.focus": focusHL
+            "toggle.thumb.on": niceBlue
+            "toggle.thumb.off": "#666768"
+            "toggle.track.on": "#79aafb"
+            "toggle.track.off": "lightgray"
+        }
+
+        construct Color {
+            new(...args) => {
+                [#r, #g, #b, #a = 1] = switch {
+                    case typeof args[0] == "string" {
+                        let color = args[0].startsWith("#") == true
+                            ? args[0][1...]
+                            : args[0]
+                        let alpha = color.length > 6
+                            ? color[6...]
+                            : "FF"
+                        break [
+                            parseInt(color[0...2], 16)
+                            parseInt(color[2...4], 16)
+                            parseInt(color[4...6], 16)
+                            parseInt(alpha, 16) / 255
+                        ]
+                    }
+                    default {
+                        break args
+                    }
+                }
+            }
+
+            get inverse() => Color(255 - #r, 255 - #g, 255 - #b, #a)
+
+            toString() => {
+                if #a == 1 {
+                    return "rgba(${#r}, ${#g}, ${#b})"
+                }
+                return "rgba(${#r}, ${#g}, ${#b}, ${#a})"
+            }
+        }
+        console.time("css-gen")
+
+        let bcolorVariant = (color) => {
+            "&.doric-${color}": {
+                backgroundColor: (theme) => theme.color[color]
+                color: "white"
+                "&.doric-flat": {
+                    backgroundColor: "transparent",
+                    color: (theme) => theme.color[color]
+                }
+                "&${tapActive}": {
+                    backgroundColor: (theme) =>
+                        theme.highlightColor.inverse
+                }
+            }
+        }
+
+        let tapActive = ".gjs-tap-active:not(.doric-disabled):not(.doric-flat)::after"
+        let buttonSheet = Sheet(
+            {
+                "doric-button": {
+                    position: "relative"
+                    display: "inline-flex"
+                    padding: "8px 16px"
+                    borderRadius: 4
+                    userSelect: "none"
+                    overflow: "hidden"
+                    justifyContent: "center"
+                    alignItems: "center"
+                    margin: 2
+                    "&:hover": {
+                        cursor: "pointer"
+                    }
+                    "&::after": {
+                        content: "''"
+                        position: "absolute"
+                        top: 0
+                        left: 0
+                        width: "100%"
+                        height: "100%"
+                        transition: "background-color 250ms linear"
+                    }
+                    "&.gjs-tap-active:not(.doric-disabled)::after": {
+                        transition: "none"
+                        backgroundColor: (theme) => theme.highlightColor
+                    }
+                    ...bcolorVariant("primary")
+                    ...bcolorVariant("secondary")
+                    ...bcolorVariant("danger")
+                    ...bcolorVariant("accent")
+                    "&.doric-block": {
+                        display: "flex"
+                    }
+                    "&.doric-disabled": {
+                        opacity: 0.4
+                    }
+                    "&.doric-snug": {
+                        padding: 0
+                    }
+                    "&.doric-flush": {
+                        margin: 0
+                    }
+                    "&.doric-raised": {
+                        boxShadow: "2px 2px 3px rgba(0, 0, 0, 0.4)"
+                    }
+                }
+            }
+            {name: "doric-button"}
+        )
+        buttonSheet.generate({
+            highlightColor: Color(0, 0, 0, 0.4)
+            color: {
+                primary: Color("#1d62d5")
+                secondary: Color("#128f12")
+                danger: Color("#F44336")
+                accent: Color("#FF4081")
+            }
+        })
+        console.timeEnd("css-gen")
+
+        class Button extends React.PureComponent {
+            render() => {
+                let {
+                    text, children, style = {}, tabIndex = 0
+                    className, circle
+                    ...rest
+                } = @props
+
+                if circle != void {
+                    style.width = circle
+                    style.height = circle
+                    style.padding = 0
+                    style.borderRadius = "50%"
+                }
+
+                let props = {
+                    style
+                    tabIndex
+                    "class": Object
+                        .entries(rest)
+                        .filter(
+                            ([name, on]) => on
+                        )
+                        .map(
+                            ([name]) => "doric-${name}"
+                        )
+                        .concat([className])
+                        .join(" ")
+                }
+
+                return <doric-button {...props}>{text}{children}</doric-button>
+            }
+        }
+
+        let mainCSS = Sheet(
+            {
+                "html body": {
+                    padding: 0
+                    margin: 0
+                    width: "100%"
+                    height: "100%"
+                    fontFamily: "Roboto"
+                }
+            }
+            {name: "main-style"}
+        )
+        mainCSS.generate()
+        ReactDOM.render(
+            <div>
+                <Button text="Test" raised circle=50 secondary />
+                <Button text="Test" raised />
+                <Button text="Test" primary />
+                <Button text="Test" secondary />
+                <Button text="Test" danger />
+                <Button text="Test" accent />
+
+                <Button text="Test" raised primary flat />
+                <Button text="Test" secondary flat />
+                <Button text="Test" danger flat />
+                <Button text="Test" accent flat />
+
+                <Button text="Test" raised block />
+                <Button text="Test" raised block primary />
+                <Button text="Test" raised block secondary />
+                <Button text="Test" raised block danger />
+                <Button text="Test" raised block accent />
+
+                <Button text="Test" disabled />
+                <Button text="Test" disabled primary />
+                <Button text="Test" disabled secondary />
+                <Button text="Test" disabled danger />
+                <Button text="Test" disabled accent />
+
+                <Button text="Test" block disabled />
+                <Button text="Test" block disabled primary />
+                <Button text="Test" block disabled secondary />
+                <Button text="Test" block disabled danger />
+                <Button text="Test" block disabled accent />
+            </div>
+            document.querySelector("app-root")
+        )
+        </script>
+    </body>
+</html>

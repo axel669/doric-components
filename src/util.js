@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PureComponent} from 'react';
 
 import theme from './theme';
 
@@ -41,6 +41,17 @@ export {
     component,
     wait,
     animFrame
+};
+
+export const pureOption = Component => {
+    Component.pure = class extends PureComponent {
+        static displayName = `Pure:${Component.displayName ?? Component.name}`;
+
+        render() {
+            return <Component {...this.props} />;
+        }
+    };
+    return Component;
 };
 
 export default {
