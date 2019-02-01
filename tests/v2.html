@@ -11,7 +11,7 @@
         <script crossorigin src="https://unpkg.com/react-dom@16.7.0/umd/react-dom.development.js"></script>
         <script src="https://unpkg.com/@axel669/teascript@0.13.4/standalone/transpiler.js"></script>
         <script src="https://unpkg.com/gesturesjs@1.0.0/standalone/gesture.js"></script>
-        <script src="https://unpkg.com/ssjs@0.3.0/browser/ss.js"></script>
+        <script src="https://unpkg.com/ssjs@1.0.0/standalone/ss.js"></script>
     </head>
     <body>
         <app-root></app-root>
@@ -19,8 +19,89 @@
         const doric = {};
         const sheets = [];
         </script>
-        <script type="text/teascript" src="style/style.tea"></script>
+        <!-- <script type="text/teascript" src="style/style.tea"></script> -->
         <script type="text/teascript">
+        // const globalListeners = {};
+        // const registerGlobalListener = (type, elem, handler) => {
+        //     if (globalListeners.hasOwnProperty(type) === false) {
+        //         globalListeners[type] = new Map();
+        //         window.addEventListener(
+        //             type,
+        //             evt => {
+        //                 const handlers = globalListeners[type];
+        //                 let current = evt.target;
+        //                 while (current !== null) {
+        //                     if (handlers.has(current) === true) {
+        //                         handlers.get(current)(evt);
+        //                     }
+        //                     current = current.parentNode;
+        //                 }
+        //             }
+        //         );
+        //     }
+        //
+        //     globalListeners[type].set(elem, handler);
+        // };
+        // const removeGlobalListener = (type, elem) => {
+        //     globalListeners[type].delete(elem);
+        // };
+
+        let climbDOM = (start, func) => {
+            let mut current = start
+            while current != null && current != document.documentElement {
+                func(current)
+                current = current.parentNode
+            }
+        }
+
+        let globalListeners = {}
+        let registerGlobalListener = (type, elem, handler) => {
+            if globalListeners[type] == undefined {
+                globalListeners[type] = Map*()
+
+                window.addEventListener(
+                    type
+                    (evt) => {
+                        let handlers = globalListeners[type]
+                        climbDOM(
+                            evt.target
+                            (node) => handlers.get(node)?(evt)
+                        )
+                    }
+                )
+            }
+
+            globalListeners[type].set(elem, handler)
+        }
+        let removeGlobalListener = (type, elem) =>
+            globalListeners[type].delete(elem)
+
+        class CustomListeners extends React.Component {
+            componentDidMount() => {
+                @types = []
+
+                for name of @props {
+                    let type = name[2...].toLowerCase()
+                    registerGlobalListener(
+                        type
+                        @elem
+                        (evt) => @props[name]?(evt)
+                    )
+                    @types.push(type)
+                }
+            }
+
+            componentWillUnmount() => {
+                for type in @types {
+                    removeGlobalListener(type, @elem)
+                }
+            }
+
+            render() => <doric-custom-listeners
+                ref=(elem) => {@elem = elem.parentNode}
+                style={display: "none"} />
+        }
+
         let niceBlue = "#1d62d5"
         let normalHL = "rgba(0 0 0 0.4)"
         let focusHL = "rgba(0 0 0 0.125)"
@@ -91,6 +172,19 @@
             "toggle.track.off": "lightgray"
         }
 
+        let classes = (obj) => {
+            let list = []
+            for key, value of obj {
+                if key == "className" && value != void {
+                    list.push(value)
+                }
+                if value == true {
+                    list.push(key)
+                }
+            }
+            return list.join(" ")
+        }
+
         construct Color {
             new(...args) => {
                 [#r, #g, #b, #a = 1] = switch {
@@ -118,12 +212,36 @@
 
             toString() => {
                 if #a == 1 {
-                    return "rgba(${#r}, ${#g}, ${#b})"
+                    return "rgb(${#r}, ${#g}, ${#b})"
                 }
                 return "rgba(${#r}, ${#g}, ${#b}, ${#a})"
             }
         }
-        console.time("css-gen")
+
+        let theme = {
+            highlightColor: Color(0, 0, 0, 0.4)
+            color: {
+                primary: Color("#1d62d5")
+                secondary: Color("#128f12")
+                danger: Color("#F44336")
+                accent: Color("#FF4081")
+            }
+            bg: {
+                color: "white"
+            }
+            label: {
+                text: {
+                    normal: Color(0, 0, 0)
+                    required: Color(255, 0, 0)
+                    optional: Color(0, 128, 255)
+                }
+            }
+            collapse: {
+                border: {
+                    color: Color(0, 0, 0)
+                }
+            }
+        }
 
         let bcolorVariant = (color) => {
             "&.doric-${color}": {
@@ -141,7 +259,7 @@
         }
 
         let tapActive = ".gjs-tap-active:not(.doric-disabled):not(.doric-flat)::after"
-        let buttonSheet = Sheet(
+        let buttonSheet = SSJS(
             {
                 "doric-button": {
                     position: "relative"
@@ -192,22 +310,14 @@
             }
             {name: "doric-button"}
         )
-        buttonSheet.generate({
-            highlightColor: Color(0, 0, 0, 0.4)
-            color: {
-                primary: Color("#1d62d5")
-                secondary: Color("#128f12")
-                danger: Color("#F44336")
-                accent: Color("#FF4081")
-            }
-        })
-        console.timeEnd("css-gen")
+        buttonSheet.generate(theme)
 
         class Button extends React.PureComponent {
             render() => {
                 let {
                     text, children, style = {}, tabIndex = 0
                     className, circle
+                    onTap
                     ...rest
                 } = @props
 
@@ -233,18 +343,237 @@
                         .join(" ")
                 }
 
-                return <doric-button {...props}>{text}{children}</doric-button>
+                return <doric-button {...props}>
+                    <CustomListeners onTap=onTap />
+                    {text}{children}
+                </doric-button>
             }
         }
 
-        let mainCSS = Sheet(
+        let cardCSS = SSJS(
             {
+                "doric-card": {
+                    display: "block"
+                    margin: 4
+                    boxShadow: [
+                        "2px 0px 2px rgba(0, 0, 0, 0.25)"
+                        "0px 2px 2px rgba(0, 0, 0, 0.25)"
+                        "-2px 0px 2px rgba(0, 0, 0, 0.25)"
+                        "0px -2px 2px rgba(0, 0, 0, 0.25)"
+                    ].join(", ")
+                    backgroundColor: (theme) => theme.bg.color
+                    overflow: "hidden"
+                    borderRadius: 2
+                    padding: 12
+                    position: "relative"
+                    top: 0
+                    left: 0
+                }
+                "doric-card-title": {
+                    display: "block"
+                    margin: -12
+                    marginBottom: 0
+                    padding: 4
+                    "&::after": {
+                        content: "' '"
+                        display: "table"
+                        clear: "both"
+                    }
+                    "& > div": {
+                        fontSize: 20
+                    }
+                    "& > span": {
+                        fontSize: 12
+                        color: "gray"
+                        float: "left"
+                    }
+                    "& > doric-image": {
+                        float: "left"
+                        marginRight: 8
+                    }
+                }
+                "doric-card-top": {
+                    position: "relative"
+                    display: "block"
+                    margin: -12
+                    marginBottom: 0
+                    padding: 4
+                }
+                "doric-card-bottom": {
+                    position: "relative"
+                    display: "block"
+                    margin: -12
+                    marginTop: 0
+                    padding: 4
+                }
+            }
+            {name: "doric-card"}
+        )
+        cardCSS.generate(theme)
+
+        class Card extends React.Component {
+            render() => {
+                let {children} = @props
+                return <doric-card>
+                    {children}
+                </doric-card>
+            }
+        }
+
+        Card.title = (props) => {
+            let {title, subtitle, image} = props
+            let imageElem = image == void
+                ? void
+                : (<Image width=45 height=45 round source=image />)
+
+            return <doric-card-title>
+                {imageElem}
+                <div>{title}</div>
+                <span>{subtitle}</span>
+            </doric-card-title>
+        }
+        Card.top = (props) => <doric-card-top {...props} />
+        Card.bottom = (props) => <doric-card-bottom {...props} />
+
+
+        let imageCSS = SSJS(
+            {
+                "doric-image": {
+                    display: "inline-block"
+                    backgroundRepeat: "no-repeat"
+                    backgroundPosition: "center center"
+                    backgroundSize: "contain"
+                    "& > img": {
+                        width: "100%"
+                        height: "100%"
+                        opacity: 0
+                    }
+                }
+            }
+            {name: "doric-image"}
+        )
+        imageCSS.generate(theme)
+        class Image extends React.PureComponent {
+            render() => {
+                let {
+                    source, width, height
+                    size, round
+                    ...passThrough
+                } = @props
+                let border = round == true
+                    ? {borderRadius: Math.max(width, height)}
+                    : {}
+                let style = {
+                    ...passThrough.style
+                    backgroundImage: "url('${source}')"
+                    backgroundSize: size
+                    width
+                    height
+                    ...border
+                }
+
+                return <doric-image {...passThrough} style=style>
+                    <img src=source />
+                </doric-image>
+            }
+        }
+
+        let labelCSS = SSJS(
+            {
+                "doric-label": {
+                    display: "block"
+                    padding: 2
+                    color: ({label}) => label.text.normal
+                    fontSize: 12
+                    "&.required": {
+                        color: ({label}) => label.text.required
+                    }
+                    "&.optional": {
+                        color: ({label}) => label.text.optional
+                    }
+                    "&:empty": {
+                        display: "none"
+                    }
+                }
+            }
+            {name: "doric-label"}
+        )
+        labelCSS.generate(theme)
+        class Label extends React.PureComponent {
+            render() => {
+                let {required, optional, className, ...props} = @props
+                let _class = classes({
+                    className
+                    required
+                    optional
+                })
+
+                return <doric-label {...props} class=_class />
+            }
+        }
+
+        let collapseCSS = SSJS({
+            "doric-collapse": {
+                display: "block"
+                borderRadius: 4
+                overflow: "hidden"
+                margin: 4
+                border: (theme) => {
+                    let {
+                        width = 1, type = "solid", color
+                    } = theme.collapse.border
+                    return "${width}px ${type} ${color}"
+                }
+                "&.hide > div": {
+                    display: "none"
+                }
+            }
+        })
+        collapseCSS.generate(theme)
+        class Collapse extends React.Component {
+            constructor(props) => {
+                super(props)
+
+                @state = {
+                    hide: true
+                }
+                @toggle = () => {
+                    let hide = !@state.hide
+                    @setState({hide})
+                }
+            }
+
+            render() => {
+                let {
+                    className, label = "Collapse"
+                    children
+                    ...passThrough
+                } = @props
+                let {hide} = @state
+                let _classes = classes({className, hide})
+                return <doric-collapse {...passThrough} class=_classes>
+                    <Button text=label block flush onTap=@toggle />
+                    <div>{children}</div>
+                </doric-collapse>
+            }
+        }
+
+        let mainCSS = SSJS(
+            {
+                "*": {
+                    boxSizing: "border-box"
+                    WebkitTapHighlightColor: "transparent"
+                    "&:focus": {
+                        outline: "2px solid ${Color(100, 150, 255, 0.6)}"
+                    }
+                }
                 "html body": {
                     padding: 0
                     margin: 0
                     width: "100%"
                     height: "100%"
                     fontFamily: "Roboto"
+                    backgroundColor: "#F0F0F0"
                 }
             }
             {name: "main-style"}
@@ -252,35 +581,17 @@
         mainCSS.generate()
         ReactDOM.render(
             <div>
-                <Button text="Test" raised circle=50 secondary />
-                <Button text="Test" raised />
-                <Button text="Test" primary />
-                <Button text="Test" secondary />
-                <Button text="Test" danger />
-                <Button text="Test" accent />
+                <Card>
+                    <Card.title title="Test" subtitle="second line?" image="images/anon.jpg" />
+                    <Button primary text="Demo" onTap=(evt) => console.log(evt) />
 
-                <Button text="Test" raised primary flat />
-                <Button text="Test" secondary flat />
-                <Button text="Test" danger flat />
-                <Button text="Test" accent flat />
-
-                <Button text="Test" raised block />
-                <Button text="Test" raised block primary />
-                <Button text="Test" raised block secondary />
-                <Button text="Test" raised block danger />
-                <Button text="Test" raised block accent />
-
-                <Button text="Test" disabled />
-                <Button text="Test" disabled primary />
-                <Button text="Test" disabled secondary />
-                <Button text="Test" disabled danger />
-                <Button text="Test" disabled accent />
-
-                <Button text="Test" block disabled />
-                <Button text="Test" block disabled primary />
-                <Button text="Test" block disabled secondary />
-                <Button text="Test" block disabled danger />
-                <Button text="Test" block disabled accent />
+                    <Collapse>
+                        <Label>Normal</Label>
+                        <Label required>Required</Label>
+                        <Label></Label>
+                        <Label optional>Optional</Label>
+                    </Collapse>
+                </Card>
             </div>
             document.querySelector("app-root")
         )
