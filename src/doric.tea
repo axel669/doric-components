@@ -1,0 +1,41 @@
+import "gesturesjs"
+import ssjs from "ssjs"
+
+import button from "./button.tea"
+import card from "./card.tea"
+import image from "./image.tea"
+import label from "./label.tea"
+import collapse from "./collapse.tea"
+
+import theme from "./helpers/theme.tea"
+import {Color} from "./helpers/css-color.tea"
+
+let mainCSS = ssjs(
+    {
+        "*": {
+            boxSizing: "border-box"
+            WebkitTapHighlightColor: "transparent"
+            "&:focus": {
+                outline: "2px solid ${Color(100, 150, 255, 0.6)}"
+            }
+        }
+        "html body": {
+            padding: 0
+            margin: 0
+            width: "100%"
+            height: "100%"
+            fontFamily: "Roboto"
+            backgroundColor: "#F0F0F0"
+        }
+    }
+    {name: "main-style"}
+)
+mainCSS.generate(theme)
+
+export default {
+    button
+    card
+    image
+    label
+    collapse
+}

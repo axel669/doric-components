@@ -1,0 +1,42 @@
+import {PureComponent} from "react"
+import ssjs from "ssjs"
+
+import theme from "./helpers/theme.tea"
+import classes from "./helpers/classes.tea"
+
+let labelCSS = ssjs(
+    {
+        "doric-label": {
+            display: "block"
+            padding: 2
+            color: ({label}) => label.text.normal
+            fontSize: 12
+            "&.required": {
+                color: ({label}) => label.text.required
+            }
+            "&.optional": {
+                color: ({label}) => label.text.optional
+            }
+            "&:empty": {
+                display: "none"
+            }
+        }
+    }
+    {name: "doric-label"}
+)
+labelCSS.generate(theme)
+
+class Label extends PureComponent {
+    render() => {
+        let {required, optional, className, ...props} = @props
+        let _class = classes({
+            className
+            required
+            optional
+        })
+
+        return <doric-label {...props} class=_class />
+    }
+}
+
+export default Label

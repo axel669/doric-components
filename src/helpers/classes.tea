@@ -1,0 +1,14 @@
+let classes = (obj) => {
+    let list = []
+    for key, value of obj {
+        if key == "className" && value != void {
+            list.push(value)
+        }
+        if value == true {
+            list.push(key)
+        }
+    }
+    return list.join(" ")
+}
+
+export default classes
