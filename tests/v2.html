@@ -6,6 +6,7 @@
         <meta charset="utf-8" />
 
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link href="https://unpkg.com/ionicons@4.5.5/dist/css/ionicons.min.css" rel="stylesheet">
 
         <script crossorigin src="https://unpkg.com/react@16.7.0/umd/react.development.js"></script>
         <script crossorigin src="https://unpkg.com/react-dom@16.7.0/umd/react-dom.development.js"></script>
@@ -87,20 +88,50 @@
         //     "toggle.track.off": "lightgray"
         // }
 
-        ReactDOM.render(
-            <div>
-                <doric.card>
-                    <doric.card.title title="Test" subtitle="second line?" image="images/anon.jpg" />
-                    <doric.button primary text="Demo" onTap=(evt) => console.log(evt) />
+        class Main extends React.Component {
+            constructor(props) => {
+                super(props)
+                @state = {
+                    checked: true
+                }
 
-                    <doric.collapse>
-                        <doric.label>Normal</doric.label>
-                        <doric.label required>Required</doric.label>
-                        <doric.label></doric.label>
-                        <doric.label optional>Optional</doric.label>
-                    </doric.collapse>
-                </doric.card>
-            </div>
+                @checkbox = (evt) => {
+                    let {checked} = evt
+                    @setState({checked})
+                }
+            }
+
+            render() => {
+                return <div>
+                    <doric.panel>
+                        <doric.panel.title title="Test" subtitle="second line?" image="images/anon.jpg" />
+                        <doric.button primary text="Demo" onTap=(evt) => console.log(evt) />
+
+                        <doric.collapse>
+                            <doric.label>Normal</doric.label>
+                            <doric.label required>Required</doric.label>
+                            <doric.label></doric.label>
+                            <doric.label optional>Optional</doric.label>
+                        </doric.collapse>
+                    </doric.panel>
+
+                    <doric.panel>
+                        <doric.checkbox onChange=@checkbox checked=@state.checked text="Checkbox!" />
+                    </doric.panel>
+
+                    <doric.checkbox onChange=@checkbox checked=@state.checked checkSide="right" text="Checkbox!" />
+                    <doric.checkbox onChange=@checkbox checked=@state.checked checkSide="right">
+                        <doric.image source="images/cthulhu.jpg" height=100 />
+                    </doric.checkbox>
+                    <doric.checkbox onChange=@checkbox checked=@state.checked>
+                        <doric.image source="images/cthulhu.jpg" height=100 />
+                    </doric.checkbox>
+                </div>
+            }
+        }
+
+        ReactDOM.render(
+            <Main />
             document.querySelector("app-root")
         )
         </script>

@@ -5,7 +5,6 @@ import theme from "./helpers/theme.tea"
 import classes from "./helpers/classes.tea"
 import {tappable, Color} from "./helpers/css-color.tea"
 
-import Button from "./button.tea"
 import CustomListeners from "./customListeners.tea"
 
 let collapseCSS = ssjs(
@@ -31,6 +30,11 @@ let collapseCSS = ssjs(
                 fontSize: 16
                 ...tappable(Color(0, 0, 0, 0.4).toString())
             }
+            "&-icon": {
+                display: "inline-block"
+                width: 16
+                textAlign: "center"
+            }
         }
     }
     {name: "doric-collapse"}
@@ -52,15 +56,24 @@ class Collapse extends React.Component {
 
     render() => {
         let {
-            className, label = "Collapse"
+            className, text = "Collapse", tabIndex = 1
             children
             ...passThrough
         } = @props
         let {hide} = @state
         let _classes = classes({className, hide})
-        return <doric-collapse {...passThrough} class=_classes>
+
+        let direction = (hide == true) ? "right" : "down"
+        let icon = <doric-collapse-icon class=`ion-md-arrow-drop${direction}` />
+
+        let props = {
+            tabIndex
+            ...passThrough
+        }
+
+        return <doric-collapse {...props} class=_classes>
             <doric-collapse-label>
-                {label}
+                {icon} {text}
                 <CustomListeners onTap=@toggle />
             </doric-collapse-label>
             <div>{children}</div>

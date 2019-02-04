@@ -656,7 +656,7 @@ class Button extends react.PureComponent {
             text,
             children,
             style = {},
-            tabIndex = 0,
+            tabIndex = 1,
             circle,
             onTap,
             ...rest
@@ -742,26 +742,21 @@ class Image extends react.PureComponent {
     }
 }
 
-const cardCSS = ss(
+const panelCSS = ss(
     {
-        "doric-card": {
+        "doric-panel": {
             display: "block",
             margin: 4,
-            boxShadow: [
-                "2px 0px 2px rgba(0, 0, 0, 0.25)",
-                "0px 2px 2px rgba(0, 0, 0, 0.25)",
-                "-2px 0px 2px rgba(0, 0, 0, 0.25)",
-                "0px -2px 2px rgba(0, 0, 0, 0.25)"
-            ].join(", "),
+            boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.4)",
+            borderTop: "1px solid lightgray",
             backgroundColor: (theme$$1) => theme$$1.bg.color,
             overflow: "hidden",
-            borderRadius: 2,
             padding: 12,
             position: "relative",
             top: 0,
             left: 0
         },
-        "doric-card-title": {
+        "doric-panel-title": {
             display: "block",
             margin: -12,
             marginBottom: 0,
@@ -784,14 +779,14 @@ const cardCSS = ss(
                 marginRight: 8
             }
         },
-        "doric-card-top": {
+        "doric-panel-top": {
             position: "relative",
             display: "block",
             margin: -12,
             marginBottom: 0,
             padding: 4
         },
-        "doric-card-bottom": {
+        "doric-panel-bottom": {
             position: "relative",
             display: "block",
             margin: -12,
@@ -800,17 +795,17 @@ const cardCSS = ss(
         }
     },
     {
-        name: "doric-card"
+        name: "doric-panel"
     }
 );
-cardCSS.generate(theme);
-class Card extends react.Component {
+panelCSS.generate(theme);
+class Panel extends react.Component {
     render() {
         const { children } = this.props;
-        return React.createElement("doric-card", {}, children);
+        return React.createElement("doric-panel", {}, children);
     }
 }
-Card.title = (props) => {
+Panel.title = (props) => {
     const { title, subtitle, image } = props;
     const imageElem =
         image === undefined
@@ -822,19 +817,19 @@ Card.title = (props) => {
                   source: image
               });
     return React.createElement(
-        "doric-card-title",
+        "doric-panel-title",
         {},
         imageElem,
         React.createElement("div", {}, title),
         React.createElement("span", {}, subtitle)
     );
 };
-Card.top = (props) =>
-    React.createElement("doric-card-top", {
+Panel.top = (props) =>
+    React.createElement("doric-panel-top", {
         ...props
     });
-Card.bottom = (props) =>
-    React.createElement("doric-card-bottom", {
+Panel.bottom = (props) =>
+    React.createElement("doric-panel-bottom", {
         ...props
     });
 
@@ -900,6 +895,11 @@ const collapseCSS = ss(
                 padding: 4,
                 fontSize: 16,
                 ...tappable(Color(0, 0, 0, 0.4).toString())
+            },
+            "&-icon": {
+                display: "inline-block",
+                width: 16,
+                textAlign: "center"
             }
         }
     },
@@ -924,7 +924,8 @@ class Collapse extends React.Component {
     render() {
         const {
             className,
-            label = "Collapse",
+            text = "Collapse",
+            tabIndex = 1,
             children,
             ...passThrough
         } = this.props;
@@ -933,21 +934,120 @@ class Collapse extends React.Component {
             className: className,
             hide: hide
         });
+        const direction = hide === true ? "right" : "down";
+        const icon = React.createElement("doric-collapse-icon", {
+            class: `ion-md-arrow-drop${direction}`
+        });
+        const props = {
+            tabIndex: tabIndex,
+            ...passThrough
+        };
         return React.createElement(
             "doric-collapse",
             {
-                ...passThrough,
+                ...props,
                 class: _classes
             },
             React.createElement(
                 "doric-collapse-label",
                 {},
-                label,
+                icon,
+                text,
                 React.createElement(CustomListeners, {
                     onTap: this.toggle
                 })
             ),
             React.createElement("div", {}, children)
+        );
+    }
+}
+
+const checkboxCSS = ss(
+    {
+        "doric-checkbox": {
+            display: "block",
+            margin: 4,
+            padding: 4,
+            ...tappable(Color(0, 0, 0, 0.4).toString()),
+            "&.left": {
+                paddingLeft: 24
+            },
+            "&.right": {
+                paddingRight: 24
+            },
+            "&-icon": {
+                position: "absolute",
+                display: "flex",
+                top: 0,
+                bottom: 0,
+                width: 24,
+                fontSize: 20,
+                alignItems: "center",
+                justifyContent: "center",
+                "&.left": {
+                    left: 0
+                },
+                "&.right": {
+                    left: "auto",
+                    right: 0
+                }
+            }
+        }
+    },
+    {
+        name: "doric-checkbox"
+    }
+);
+checkboxCSS.generate(theme);
+class Checkbox extends react.PureComponent {
+    constructor(props) {
+        super(props);
+        this.toggle = (event) => {
+            var nullref0;
+
+            const { checked } = this.props;
+            event.checked = !checked;
+            (nullref0 = this.props.onChange) != null
+                ? nullref0(event)
+                : undefined;
+        };
+    }
+    render() {
+        const {
+            checked,
+            checkSide = "left",
+            tabIndex = 1,
+            text,
+            children,
+            className,
+            ...rest
+        } = this.props;
+        const iconName = checked === true ? "checkbox" : "square-outline";
+        const props = {
+            tabIndex: tabIndex,
+            class: classes({
+                className: className,
+                [checkSide]: true
+            }),
+            ...rest
+        };
+        const iconClass = classes({
+            [`ion-md-${iconName}`]: true,
+            [checkSide]: true
+        });
+        return React.createElement(
+            "doric-checkbox",
+            {
+                ...props
+            },
+            React.createElement("doric-checkbox-icon", {
+                class: iconClass
+            }),
+            text,
+            children,
+            React.createElement(CustomListeners, {
+                onTap: this.toggle
+            })
         );
     }
 }
@@ -977,10 +1077,11 @@ const mainCSS = ss(
 mainCSS.generate(theme);
 var doric = {
     button: Button,
-    card: Card,
+    panel: Panel,
     image: Image,
     label: Label,
-    collapse: Collapse
+    collapse: Collapse,
+    checkbox: Checkbox
 };
 
 module.exports = doric;

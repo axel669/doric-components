@@ -2,11 +2,86 @@ import {PureComponent} from "react"
 import ssjs from "ssjs"
 
 import theme from "./helpers/theme.tea"
+import classes from "./helpers/classes.tea"
+import {tappable, Color} from "./helpers/css-color.tea"
+
+import CustomListeners from "./customListeners.tea"
+
+let checkboxCSS = ssjs(
+    {
+        "doric-checkbox": {
+            display: "block"
+            margin: 4
+            padding: 4
+            ...tappable(Color(0, 0, 0, 0.4).toString())
+            "&.left": {
+                paddingLeft: 24
+            }
+            "&.right": {
+                paddingRight: 24
+            }
+            "&-icon": {
+                position: "absolute"
+                display: "flex"
+                top: 0
+                bottom: 0
+                width: 24
+                fontSize: 20
+                alignItems: "center"
+                justifyContent: "center"
+                "&.left": {
+                    left: 0
+                }
+                "&.right": {
+                    left: "auto"
+                    right: 0
+                }
+            }
+        }
+    },
+    {name: "doric-checkbox"}
+)
+checkboxCSS.generate(theme)
 
 class Checkbox extends PureComponent {
+    constructor(props) => {
+        super(props)
+        @toggle = (event) => {
+            let {checked} = @props
+            event.checked = !checked
+            @props.onChange?(event)
+        }
+    }
+
     render() => {
-        return <doric-checkbox>
-            Checkbox!
+        let {
+            checked, checkSide = "left", tabIndex = 1
+            text, children
+            className
+            ...rest
+        } = @props
+
+        let iconName = (checked == true)
+            ? "checkbox"
+            : "square-outline"
+
+        let props = {
+            tabIndex
+            class: classes({
+                className
+                [checkSide]: true
+            })
+            ...rest
+        }
+        let iconClass = classes({
+            [`ion-md-${iconName}`]: true
+            [checkSide]: true
+        })
+
+        return <doric-checkbox {...props}>
+            <doric-checkbox-icon class=iconClass />
+            {text}{children}
+            <CustomListeners onTap=@toggle />
         </doric-checkbox>
     }
 }

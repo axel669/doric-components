@@ -9,11 +9,13 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@axel669/teascript": "^0.13.4",
+    "@axel669/teascript": "^0.14.0",
     "gesturesjs": "^1.0.0",
+    "ionicons": "^4.5.5",
     "rollup": "^1.1.2",
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-node-resolve": "^4.0.0",
+    "rollup-plugin-postcss": "^2.0.3",
     "ssjs": "^1.0.0"
   },
   "repository": {

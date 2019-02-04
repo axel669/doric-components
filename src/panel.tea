@@ -4,26 +4,21 @@ import ssjs from "ssjs"
 import theme from "./helpers/theme.tea"
 import Image from "./image.tea"
 
-let cardCSS = ssjs(
+let panelCSS = ssjs(
     {
-        "doric-card": {
+        "doric-panel": {
             display: "block"
             margin: 4
-            boxShadow: [
-                "2px 0px 2px rgba(0, 0, 0, 0.25)"
-                "0px 2px 2px rgba(0, 0, 0, 0.25)"
-                "-2px 0px 2px rgba(0, 0, 0, 0.25)"
-                "0px -2px 2px rgba(0, 0, 0, 0.25)"
-            ].join(", ")
+            boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.4)"
+            borderTop: "1px solid lightgray"
             backgroundColor: (theme) => theme.bg.color
             overflow: "hidden"
-            borderRadius: 2
             padding: 12
             position: "relative"
             top: 0
             left: 0
         }
-        "doric-card-title": {
+        "doric-panel-title": {
             display: "block"
             margin: -12
             marginBottom: 0
@@ -46,14 +41,14 @@ let cardCSS = ssjs(
                 marginRight: 8
             }
         }
-        "doric-card-top": {
+        "doric-panel-top": {
             position: "relative"
             display: "block"
             margin: -12
             marginBottom: 0
             padding: 4
         }
-        "doric-card-bottom": {
+        "doric-panel-bottom": {
             position: "relative"
             display: "block"
             margin: -12
@@ -61,32 +56,32 @@ let cardCSS = ssjs(
             padding: 4
         }
     }
-    {name: "doric-card"}
+    {name: "doric-panel"}
 )
-cardCSS.generate(theme)
+panelCSS.generate(theme)
 
-class Card extends Component {
+class Panel extends Component {
     render() => {
         let {children} = @props
-        return <doric-card>
+        return <doric-panel>
             {children}
-        </doric-card>
+        </doric-panel>
     }
 }
 
-Card.title = (props) => {
+Panel.title = (props) => {
     let {title, subtitle, image} = props
     let imageElem = image == void
         ? void
         : (<Image width=45 height=45 round source=image />)
 
-    return <doric-card-title>
+    return <doric-panel-title>
         {imageElem}
         <div>{title}</div>
         <span>{subtitle}</span>
-    </doric-card-title>
+    </doric-panel-title>
 }
-Card.top = (props) => <doric-card-top {...props} />
-Card.bottom = (props) => <doric-card-bottom {...props} />
+Panel.top = (props) => <doric-panel-top {...props} />
+Panel.bottom = (props) => <doric-panel-bottom {...props} />
 
-export default Card
+export default Panel
