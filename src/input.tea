@@ -1,0 +1,96 @@
+import {PureComponent} from "react"
+import ssjs from "ssjs"
+
+import theme from "./helpers/theme.tea"
+import classes from "./helpers/classes.tea"
+import {tappable, Color} from "./helpers/css-color.tea"
+
+import CustomListeners from "./customListeners.tea"
+
+let inputCSS = ssjs(
+    {
+        "doric-input": {
+            margin: 2
+            display: "block"
+            "& fieldset": {
+                borderRadius: 4
+                overflow: "hidden"
+                padding: 0
+                paddingRight: 1
+                backgroundColor: "white"
+                border: "1px solid lightgray"
+                margin: 0
+                "&.disabled": {
+                    backgroundColor: "lightgray"
+                }
+                "& legend": {
+                    marginLeft: 16
+                    fontSize: 12
+                    "&:empty": {
+                        display: "none"
+                    }
+                    "&:not(:empty) + input": {
+                        paddingTop: 6
+                    }
+                }
+                "&.required legend": {
+                    color: (theme) => theme.input.label.required
+                }
+                "&.optional legend": {
+                    color: (theme) => theme.input.label.optional
+                }
+                "&:focus-within": {
+                    borderColor: (theme) => theme.input.border.focus
+                }
+            }
+            "& input": {
+                display: "block"
+                width: "100%"
+                fontSize: 16
+                padding: 12
+                borderWidth: 0
+                backgroundColor: "transparent"
+                height: 40
+                "&:focus": {
+                    outline: "none"
+                }
+                "&.disabled": {
+                    backgroundColor: "transparent"
+                }
+            }
+        }
+    }
+    {name: "doric-input"}
+)
+inputCSS.generate(theme)
+
+class Input extends PureComponent {
+    render() => {
+        let {
+            label, value, onChange
+            disabled, optional, required, className, boring
+            wrapProps
+            ...rest
+        } = @props
+
+        let props = {
+            ...rest
+            className: classes({
+                className
+                disabled
+                optional
+                required
+                boring
+            })
+        }
+
+        return <doric-input {...wrapProps}>
+            <fieldset {...props}>
+                <legend>{label}</legend>
+                <input disabled=disabled value=value onChange=onChange />
+            </fieldset>
+        </doric-input>
+    }
+}
+
+export default Input

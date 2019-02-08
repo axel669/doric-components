@@ -429,6 +429,10 @@ var doric = (function (react) {
             const self = {};
             const publicAPI = {};
             Object.defineProperties(publicAPI, {
+                opacity: {
+                    configurable: false,
+                    get: () => (alpha) => Color(self.r, self.g, self.b, alpha)
+                },
                 toString: {
                     configurable: false,
                     get: () => () => {
@@ -475,8 +479,7 @@ var doric = (function (react) {
         };
         return (...args) => construct.apply({}, args);
     })();
-    const tapActive =
-        ".gjs-tap-active:not(.doric-disabled):not(.doric-flat)::after";
+    const tapActive = ".gjs-tap-active:not(.disabled):not(.flat)::after";
     const bcolorVariant = (color) => ({
         [`&.${color}`]: {
             backgroundColor: (theme) => theme.color[color],
@@ -507,10 +510,12 @@ var doric = (function (react) {
         }
     });
 
+    const blue = Color("#1d62d5");
     const theme = {
         highlightColor: Color(0, 0, 0, 0.4),
+        outline: blue,
         color: {
-            primary: Color("#1d62d5"),
+            primary: blue,
             secondary: Color("#128f12"),
             danger: Color("#F44336"),
             accent: Color("#FF4081")
@@ -528,6 +533,15 @@ var doric = (function (react) {
         collapse: {
             border: {
                 color: Color(0, 0, 0)
+            }
+        },
+        input: {
+            border: {
+                focus: blue
+            },
+            label: {
+                required: Color(255, 0, 0),
+                optional: blue
             }
         }
     };
@@ -745,7 +759,7 @@ var doric = (function (react) {
         {
             "doric-panel": {
                 display: "block",
-                margin: 4,
+                margin: 2,
                 boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.4)",
                 borderTop: "1px solid lightgray",
                 backgroundColor: (theme$$1) => theme$$1.bg.color,
@@ -874,7 +888,7 @@ var doric = (function (react) {
         {
             "doric-collapse": {
                 display: "block",
-                borderRadius: 4,
+                borderRadius: 2,
                 overflow: "hidden",
                 margin: 4,
                 padding: 0,
@@ -965,7 +979,7 @@ var doric = (function (react) {
         {
             "doric-checkbox": {
                 display: "block",
-                margin: 4,
+                margin: 2,
                 padding: 4,
                 ...tappable(Color(0, 0, 0, 0.4).toString()),
                 "&.left": {
@@ -1051,13 +1065,365 @@ var doric = (function (react) {
         }
     }
 
+    const inputCSS = ss(
+        {
+            "doric-input": {
+                margin: 2,
+                display: "block",
+                "& fieldset": {
+                    borderRadius: 4,
+                    overflow: "hidden",
+                    padding: 0,
+                    paddingRight: 1,
+                    backgroundColor: "white",
+                    border: "1px solid lightgray",
+                    margin: 0,
+                    "&.disabled": {
+                        backgroundColor: "lightgray"
+                    },
+                    "& legend": {
+                        marginLeft: 16,
+                        fontSize: 12,
+                        "&:empty": {
+                            display: "none"
+                        },
+                        "&:not(:empty) + input": {
+                            paddingTop: 6
+                        }
+                    },
+                    "&.required legend": {
+                        color: (theme$$1) => theme$$1.input.label.required
+                    },
+                    "&.optional legend": {
+                        color: (theme$$1) => theme$$1.input.label.optional
+                    },
+                    "&:focus-within": {
+                        borderColor: (theme$$1) => theme$$1.input.border.focus
+                    }
+                },
+                "& input": {
+                    display: "block",
+                    width: "100%",
+                    fontSize: 16,
+                    padding: 12,
+                    borderWidth: 0,
+                    backgroundColor: "transparent",
+                    height: 40,
+                    "&:focus": {
+                        outline: "none"
+                    },
+                    "&.disabled": {
+                        backgroundColor: "transparent"
+                    }
+                }
+            }
+        },
+        {
+            name: "doric-input"
+        }
+    );
+    inputCSS.generate(theme);
+    class Input extends react.PureComponent {
+        render() {
+            const {
+                label,
+                value,
+                onChange,
+                disabled,
+                optional,
+                required,
+                className,
+                wrapProps,
+                ...rest
+            } = this.props;
+            const props = {
+                ...rest,
+                className: classes({
+                    className: className,
+                    disabled: disabled,
+                    optional: optional,
+                    required: required
+                })
+            };
+            return React.createElement(
+                "doric-input",
+                {
+                    ...wrapProps
+                },
+                React.createElement(
+                    "fieldset",
+                    {
+                        ...props
+                    },
+                    React.createElement("legend", {}, label),
+                    React.createElement("input", {
+                        disabled: disabled,
+                        value: value,
+                        onChange: onChange
+                    })
+                )
+            );
+        }
+    }
+
+    var range = function(a, b) {
+        for (
+            var c =
+                    2 < arguments.length && void 0 !== arguments[2]
+                        ? arguments[2]
+                        : 1,
+                d = [],
+                e = a;
+            (0 < c && e < b) || (0 > c && e > b);
+
+        )
+            d.push(e), (e += c);
+        return d;
+    };
+    const gridSpans = range(0, 12, 1).reduce(
+        (spans, i) => ({
+            ...spans,
+            [`& [gcolspan="${i}"]`]: {
+                gridColumn: `span ${i}`
+            }
+        }),
+        {}
+    );
+    const gridCSS = ss(
+        {
+            "doric-grid": {
+                display: "grid",
+                gridGap: 2,
+                ...gridSpans,
+                "&[clearmargin='true'] > *": {
+                    margin: 0
+                }
+            }
+        },
+        {
+            name: "doric-grid"
+        }
+    );
+    gridCSS.generate(theme);
+    class Grid extends react.Component {
+        render() {
+            const {
+                cols = 12,
+                vAlign = "start",
+                colGap = 0,
+                children,
+                ...passThrough
+            } = this.props;
+            const style = {
+                gridTemplateColumns: range(0, cols, 1)
+                    .map(() => "1fr")
+                    .join(" "),
+                alignItems: vAlign,
+                columnGap: colGap
+            };
+            const props = {
+                ...passThrough,
+                style: style
+            };
+            return React.createElement(
+                "doric-grid",
+                {
+                    ...props
+                },
+                children
+            );
+        }
+    }
+
+    const selectCSS = ss(
+        {
+            "doric-select": {
+                margin: 2,
+                display: "block",
+                "& fieldset": {
+                    borderRadius: 4,
+                    overflow: "hidden",
+                    padding: 0,
+                    paddingRight: 1,
+                    backgroundColor: "white",
+                    border: "1px solid lightgray",
+                    margin: 0,
+                    "&.disabled": {
+                        backgroundColor: "lightgray"
+                    },
+                    "& legend": {
+                        marginLeft: 16,
+                        fontSize: 12,
+                        "&:empty": {
+                            display: "none"
+                        },
+                        "&:not(:empty) + input": {
+                            paddingTop: 6
+                        }
+                    },
+                    "&.required legend": {
+                        color: (theme$$1) => theme$$1.input.label.required
+                    },
+                    "&.optional legend": {
+                        color: (theme$$1) => theme$$1.input.label.optional
+                    },
+                    "&:focus-within": {
+                        borderColor: (theme$$1) => theme$$1.input.border.focus
+                    }
+                },
+                "& select": {
+                    display: "block",
+                    width: "100%",
+                    fontSize: 16,
+                    padding: "0px 12px",
+                    borderWidth: 0,
+                    margin: 0,
+                    backgroundColor: "transparent",
+                    height: 40,
+                    "&:focus": {
+                        outline: "none"
+                    },
+                    "&.disabled": {
+                        backgroundColor: "transparent"
+                    }
+                }
+            }
+        },
+        {
+            name: "doric-select"
+        }
+    );
+    selectCSS.generate(theme);
+    class Select extends react.Component {
+        render() {
+            const {
+                children,
+                selectedIndex = -1,
+                placeholder,
+                label,
+                className,
+                required,
+                optional,
+                disabled,
+                onChange,
+                wrapProps,
+                ...passThrough
+            } = this.props;
+            const props = {
+                className: classes({
+                    className: className,
+                    required: required,
+                    optional: optional,
+                    disabled: disabled
+                }),
+                ...passThrough
+            };
+            const selectProps = {
+                value: selectedIndex,
+                onChange: (evt) => {
+                    var nullref0;
+
+                    evt.value = values[evt.target.value];
+                    (nullref0 = onChange) != null ? nullref0(evt) : undefined;
+                },
+                disabled: disabled
+            };
+            const list =
+                placeholder !== undefined
+                    ? [
+                          React.createElement(
+                              "option",
+                              {
+                                  hidden: true,
+                                  value: "-1"
+                              },
+                              placeholder
+                          )
+                      ]
+                    : [];
+            const values = [];
+            const groups = React.Children.toArray(children)
+                .reduce(
+                    ({ list, current, name }, option, index) => {
+                        const { group = "_", value, label } = option.props;
+                        const elem = React.createElement(
+                            "option",
+                            {
+                                value: index,
+                                key: index
+                            },
+                            label
+                        );
+                        if (group !== name) {
+                            name = group;
+                            if (name === "_") {
+                                current = list;
+                            } else {
+                                current = [name];
+                                list.push(current);
+                            }
+                        }
+                        current.push(elem);
+                        values.push(value);
+                        return {
+                            list: list,
+                            current: current,
+                            name: name
+                        };
+                    },
+                    {
+                        list: list,
+                        current: null,
+                        name: null
+                    }
+                )
+                .list.map((item, index) =>
+                    Array.isArray(item) === true
+                        ? React.createElement(
+                              "optgroup",
+                              {
+                                  label: item[0],
+                                  key: `g${index}`
+                              },
+                              item.slice(1, undefined)
+                          )
+                        : item
+                );
+            return React.createElement(
+                "doric-select",
+                {
+                    ...wrapProps
+                },
+                React.createElement(
+                    "fieldset",
+                    {
+                        ...props
+                    },
+                    React.createElement("legend", {}, label),
+                    React.createElement(
+                        "select",
+                        {
+                            ...selectProps
+                        },
+                        groups
+                    )
+                )
+            );
+        }
+    }
+
     const mainCSS = ss(
         {
             "*": {
                 boxSizing: "border-box",
                 WebkitTapHighlightColor: "transparent",
                 "&:focus": {
-                    outline: `2px solid ${Color(100, 150, 255, 0.6)}`
+                    outline: "none"
+                }
+            },
+            "@media screen and (min-width: 640px)": {
+                "*:focus": {
+                    outline: (theme$$1) => `2px solid ${theme$$1.outline.opacity(0.5)}`
                 }
             },
             "html body": {
@@ -1080,7 +1446,10 @@ var doric = (function (react) {
         image: Image,
         label: Label,
         collapse: Collapse,
-        checkbox: Checkbox
+        checkbox: Checkbox,
+        input: Input,
+        grid: Grid,
+        select: Select
     };
 
     return doric;

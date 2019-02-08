@@ -22,6 +22,7 @@ construct Color {
     }
 
     get inverse() => Color(255 - #r, 255 - #g, 255 - #b, #a)
+    opacity(alpha) => Color(#r, #g, #b, alpha)
 
     toString() => {
         if #a == 1 {
@@ -31,7 +32,7 @@ construct Color {
     }
 }
 
-let tapActive = ".gjs-tap-active:not(.doric-disabled):not(.doric-flat)::after"
+let tapActive = ".gjs-tap-active:not(.disabled):not(.flat)::after"
 let bcolorVariant = (color) => {
     "&.${color}": {
         backgroundColor: (theme) => theme.color[color]

@@ -10,7 +10,8 @@
 
         <script crossorigin src="https://unpkg.com/react@16.7.0/umd/react.development.js"></script>
         <script crossorigin src="https://unpkg.com/react-dom@16.7.0/umd/react-dom.development.js"></script>
-        <script src="https://unpkg.com/@axel669/teascript@0.13.4/standalone/transpiler.js"></script>
+        <script src="https://unpkg.com/@axel669/teascript@0.14.0/standalone/transpiler.js"></script>
+        <script src="https://unpkg.com/@axel669/norn@0.3.1/browser/norn.js"></script>
         <!-- <script src="https://unpkg.com/gesturesjs@1.0.0/standalone/gesture.js"></script>
         <script src="https://unpkg.com/ssjs@1.0.0/standalone/ss.js"></script> -->
     </head>
@@ -93,39 +94,63 @@
                 super(props)
                 @state = {
                     checked: true
+                    inputValue: ""
                 }
 
                 @checkbox = (evt) => {
                     let {checked} = evt
                     @setState({checked})
                 }
+                @input = (evt) => {
+                    let {value} = evt.target
+                    @setState({
+                        inputValue: value
+                    })
+                }
             }
 
             render() => {
-                return <div>
+                let label = <span>
+                    Top line <br />
+                    Bottom line
+                </span>
+                return <div style={width: "100%", maxWidth: 1280, margin: "auto"}>
                     <doric.panel>
-                        <doric.panel.title title="Test" subtitle="second line?" image="images/anon.jpg" />
-                        <doric.button primary text="Demo" onTap=(evt) => console.log(evt) />
+                        <doric.grid cols=4 vAlign="end" clearMargin colGap=8>
+                            <doric.input required label="Customer ID" />
+                            <doric.input required label="Customer Name" />
+                            <doric.select required label="Shipping Method">
+                                <option label=1 />
+                                <option label=2 />
+                                <option label=3 />
+                            </doric.select>
+                            <doric.button style={height: "100%"} text="Shipping Addresses" disabled block primary />
 
-                        <doric.collapse>
-                            <doric.label>Normal</doric.label>
-                            <doric.label required>Required</doric.label>
-                            <doric.label></doric.label>
-                            <doric.label optional>Optional</doric.label>
-                        </doric.collapse>
+                            <doric.input required label="Rep 1" />
+                            <div />
+                            <doric.input required label="Purchase Order" />
+                            <doric.select required label="Terms">
+                                <option label=1 />
+                                <option label=2 />
+                                <option label=3 />
+                            </doric.select>
+
+                            <doric.input optional label="Rep 2" />
+                            <div />
+                            <doric.select disabled optional label="Discount">
+                                <option label=1 />
+                                <option label=2 />
+                                <option label=3 />
+                            </doric.select>
+                            <doric.input optional label="Promotional Code" />
+
+                            <doric.input optional label="Buyer Name" />
+                            <doric.input optional label="Buyer Phone Number" />
+                            <doric.input wrapProps={gcolspan: 2} optional label="Receipt Email(s)" />
+
+                            <doric.input wrapProps={gcolspan: 4} optional label="Special Instructions" />
+                        </doric.grid>
                     </doric.panel>
-
-                    <doric.panel>
-                        <doric.checkbox onChange=@checkbox checked=@state.checked text="Checkbox!" />
-                    </doric.panel>
-
-                    <doric.checkbox onChange=@checkbox checked=@state.checked checkSide="right" text="Checkbox!" />
-                    <doric.checkbox onChange=@checkbox checked=@state.checked checkSide="right">
-                        <doric.image source="images/cthulhu.jpg" height=100 />
-                    </doric.checkbox>
-                    <doric.checkbox onChange=@checkbox checked=@state.checked>
-                        <doric.image source="images/cthulhu.jpg" height=100 />
-                    </doric.checkbox>
                 </div>
             }
         }

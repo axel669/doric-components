@@ -1,9 +1,11 @@
 import {Color} from "./css-color.tea"
 
+let blue = Color("#1d62d5")
 let theme = {
     highlightColor: Color(0, 0, 0, 0.4)
+    outline: blue
     color: {
-        primary: Color("#1d62d5")
+        primary: blue
         secondary: Color("#128f12")
         danger: Color("#F44336")
         accent: Color("#FF4081")
@@ -21,6 +23,15 @@ let theme = {
     collapse: {
         border: {
             color: Color(0, 0, 0)
+        }
+    }
+    input: {
+        border: {
+            focus: blue
+        }
+        label: {
+            required: Color(255, 0, 0)
+            optional: blue
         }
     }
 }

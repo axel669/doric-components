@@ -7,6 +7,9 @@ import image from "./image.tea"
 import label from "./label.tea"
 import collapse from "./collapse.tea"
 import checkbox from "./checkbox.tea"
+import input from "./input.tea"
+import grid from "./grid.tea"
+import select from "./select.tea"
 
 import theme from "./helpers/theme.tea"
 import {Color} from "./helpers/css-color.tea"
@@ -17,7 +20,12 @@ let mainCSS = ssjs(
             boxSizing: "border-box"
             WebkitTapHighlightColor: "transparent"
             "&:focus": {
-                outline: "2px solid ${Color(100, 150, 255, 0.6)}"
+                outline: "none"
+            }
+        }
+        "@media screen and (min-width: 640px)": {
+            "*:focus": {
+                outline: (theme) => `2px solid ${theme.outline.opacity(0.5)}`
             }
         }
         "html body": {
@@ -40,4 +48,7 @@ export default {
     label
     collapse
     checkbox
+    input
+    grid
+    select
 }
