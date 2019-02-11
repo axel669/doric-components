@@ -59,11 +59,27 @@ let Router = (context) =>
             <Component {...@props} />
         </context.Provider>
     }
-let Route = (path, options = {}) =>
-    (Parent) => {
-        let {exact = false} = options
 
-        let groupNames = (path.match(/(\/:|\*)\w+/g) ?? [])
+class Route extends React.Component {
+    static contextType = RouteContext
+
+    constructor(props) => {
+        super(props)
+        @path = null
+        @exact = null
+        @updateRegex()
+    }
+
+    updateRegex() => {
+        let {path, exact = false} = @props
+
+        if @path == path && @exact == exact {
+            return
+        }
+
+        [@path, @exact] = [path, exact]
+
+        @groupNames = (path.match(/(\/:|\*)\w+/g) ?? [])
             .map((name) => name.replace(/^[^\w]+/, ""))
 
         let pathRegexBase = path
@@ -82,36 +98,36 @@ let Route = (path, options = {}) =>
         let regexString = (exact == false)
             ? `^${pathRegexBase}`
             : `^${pathRegexBase}$`
-        let regex = RegExp*(regexString, "i")
-
-        return class extends React.Component {
-            static contextType = RouteContext
-            static displayName = "Route[${path}: ${Parent.name ?? Parent.displayName}]"
-            render() => {
-                if @context == null {
-                    return null
-                }
-
-                let match = @context.match(regex)
-
-                if match == null {
-                    return null
-                }
-
-                let params = groupNames.reduce(
-                    (params, name, index) => {
-                        ...params
-                        [name]: match[index + 1]
-                    }
-                    {}
-                )
-                let route = {params, path: @context}
-                let child = <Parent {...@props} routeInfo=route />
-
-                return child
-            }
-        }
+        @regex = RegExp*(regexString, "i")
     }
+
+    render() => {
+        @updateRegex()
+
+        if @context == null {
+            return null
+        }
+
+        let match = @context.match(@regex)
+
+        if match == null {
+            return null
+        }
+
+        let params = @groupNames.reduce(
+            (params, name, index) => {
+                ...params
+                [name]: match[index + 1]
+            }
+            {}
+        )
+        let Component = @props.component
+        let route = {params, path: @context}
+
+        return  <Component {...@props} routeInfo=route />
+    }
+}
+
 let navigate = (path) =>
     () => {
         document.location.hash = path
@@ -169,6 +185,21 @@ let app = Norn(
 )
 let {actions} = app
 
+let connect = (app, reducer = (state, props) => state) =>
+    (Component) => class extends React.PureComponent {
+        constructor(props) => {
+            super(props)
+            @state = reducer(app.state, @props)
+            app.subscribe(
+                (newState) => @setState(
+                    () => reducer(newState, @props)
+                )
+            )
+        }
+
+        render() => <Component {...{...@props, ...@state}} />
+    }
+
 app.subscribe(
     (newState) => {
         storage.write("bags", newState.bags)
@@ -219,7 +250,8 @@ let compare = {
     }
 }
 
-@Route("/", {exact: true})
+// @Route("/", {exact: true})
+@connect(app, ({chars}) => {chars})
 class CharList extends React.PureComponent {
     addChar() => {
         let name = prompt("Character Name")?.trim() ?? ""
@@ -262,17 +294,33 @@ class CharList extends React.PureComponent {
     }
 }
 
-@Route("/char/:charID", {exact: true})
+// @Route("/char/:charID", {exact: true})
+@connect(
+    app
+    ({chars, bags}, {routeInfo}) => {
+        let character = chars[routeInfo.params.charID]
+
+        return {
+            charInfo: {
+                ...character
+                bags: character.bags.map(
+                    (bagID) => {bagID, ...bags[bagID]}
+                )
+            }
+        }
+    }
+)
 class CharacterBags extends React.PureComponent {
     render() => {
-        let {charID} = @props.routeInfo.params
+        // let {charID} = @props.routeInfo.params
 
         // console.log(@props)
-        let {name, bags} = @props.chars[charID]
+        // let {name, bags} = @props.chars[charID]
+        let {name, bags} = @props.charInfo
         let bagDisplay = bags.length == 0
             ? "No bags :("
             : bags.map(
-                (bagID) => <Container key=bagID {...@props.bags[bagID]} />
+                ({bagID, ...bag}) => <Container key=bagID {...bag} />
             )
 
         return <div>
@@ -322,7 +370,8 @@ let bind = (target, name, desc) => {
         }
     }
 }
-@Route("/char/:charID/addBag")
+
+// @Route("/char/:charID/addBag")
 class AddBag extends React.Component {
     constructor(props) => {
         super(props)
@@ -408,7 +457,7 @@ class AddBag extends React.Component {
     }
 }
 
-@Route("/char/:charID/addItem")
+// @Route("/char/:charID/addItem")
 class AddItem extends React.Component {
     constructor(props) => {
         super(props)
@@ -485,22 +534,20 @@ class AddItem extends React.Component {
 
 @Router(RouteContext)
 class App extends React.Component {
-    constructor(props) => {
-        super(props)
-        @state = app.state
-        app.subscribe(
-            (newState) => @setState(
-                () => newState
-            )
-        )
-    }
+    // constructor(props) => {
+    //     super(props)
+    //     @state = app.state
+    //     app.subscribe(
+    //         (newState) => @setState(
+    //             () => newState
+    //         )
+    //     )
+    // }
 
     render() => {
         return <div>
-            <CharList chars=@state.chars />
-            <CharacterBags bags=@state.bags chars=@state.chars />
-            <AddBag />
-            <AddItem bags=@state.bags chars=@state.chars />
+            <Route path="/" exact component=CharList />
+            <Route path="/char/:charID" exact component=CharacterBags />
         </div>
     }
 }
