@@ -68,9 +68,14 @@ class Button extends PureComponent {
             tabIndex
             class: classes(rest)
         }
+        let tapHandler = (evt) => {
+            if rest.disabled != true {
+                onTap?(evt)
+            }
+        }
 
         return <doric-button {...props}>
-            <CustomListeners onTap=onTap />
+            <CustomListeners onTap=tapHandler />
             {text}{children}
         </doric-button>
     }

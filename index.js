@@ -515,6 +515,7 @@ const blue = Color("#1d62d5");
 const theme = {
     highlightColor: Color(0, 0, 0, 0.4),
     outline: blue,
+    focusOutline: `2px solid ${blue.opacity(0.5)}`,
     color: {
         primary: blue,
         secondary: Color("#128f12"),
@@ -686,13 +687,20 @@ class Button extends react.PureComponent {
             tabIndex: tabIndex,
             class: classes(rest)
         };
+        const tapHandler = (evt) => {
+            var nullref0;
+
+            if (rest.disabled !== true) {
+                (nullref0 = onTap) != null ? nullref0(evt) : undefined;
+            }
+        };
         return React.createElement(
             "doric-button",
             {
                 ...props
             },
             React.createElement(CustomListeners, {
-                onTap: onTap
+                onTap: tapHandler
             }),
             text,
             children
@@ -938,7 +946,7 @@ class Collapse extends React.Component {
     render() {
         const {
             className,
-            text = "Collapse",
+            label = "Collapse",
             tabIndex = 1,
             children,
             ...passThrough
@@ -966,7 +974,7 @@ class Collapse extends React.Component {
                 "doric-collapse-label",
                 {},
                 icon,
-                text,
+                label,
                 React.createElement(CustomListeners, {
                     onTap: this.toggle
                 })
@@ -1082,6 +1090,9 @@ const inputCSS = ss(
                 "&.disabled": {
                     backgroundColor: "lightgray"
                 },
+                "&.boring": {
+                    borderWidth: 0
+                },
                 "& legend": {
                     marginLeft: 16,
                     fontSize: 12,
@@ -1110,12 +1121,17 @@ const inputCSS = ss(
                 borderWidth: 0,
                 backgroundColor: "transparent",
                 height: 40,
-                "&:focus": {
-                    outline: "none"
-                },
                 "&.disabled": {
                     backgroundColor: "transparent"
                 }
+            },
+            "& fieldset:not(.boring) input": {
+                outline: "none"
+            },
+            "& fieldset.boring input": {
+                border: "1px solid black",
+                padding: "6px 12px",
+                borderRadius: 4
             }
         }
     },
@@ -1134,6 +1150,8 @@ class Input extends react.PureComponent {
             optional,
             required,
             className,
+            boring,
+            type = "text",
             wrapProps,
             ...rest
         } = this.props;
@@ -1143,7 +1161,8 @@ class Input extends react.PureComponent {
                 className: className,
                 disabled: disabled,
                 optional: optional,
-                required: required
+                required: required,
+                boring: boring
             })
         };
         return React.createElement(
@@ -1158,6 +1177,7 @@ class Input extends react.PureComponent {
                 },
                 React.createElement("legend", {}, label),
                 React.createElement("input", {
+                    type: type,
                     disabled: disabled,
                     value: value,
                     onChange: onChange
@@ -1213,9 +1233,11 @@ class Grid extends react.Component {
             vAlign = "start",
             colGap = 0,
             children,
+            className,
             ...passThrough
         } = this.props;
         const style = {
+            ...passThrough.style,
             gridTemplateColumns: range(0, cols, 1)
                 .map(() => "1fr")
                 .join(" "),
@@ -1224,6 +1246,7 @@ class Grid extends react.Component {
         };
         const props = {
             ...passThrough,
+            class: className,
             style: style
         };
         return React.createElement(
@@ -1251,6 +1274,9 @@ const selectCSS = ss(
                 margin: 0,
                 "&.disabled": {
                     backgroundColor: "lightgray"
+                },
+                "&.boring": {
+                    borderWidth: 0
                 },
                 "& legend": {
                     marginLeft: 16,
@@ -1287,6 +1313,10 @@ const selectCSS = ss(
                 "&.disabled": {
                     backgroundColor: "transparent"
                 }
+            },
+            "& fieldset.boring select": {
+                border: "1px solid black",
+                borderRadius: 4
             }
         }
     },
@@ -1300,27 +1330,34 @@ class Select extends react.Component {
         const {
             children,
             selectedIndex = -1,
+            value,
             placeholder,
             label,
             className,
             required,
             optional,
             disabled,
+            boring,
             onChange,
             wrapProps,
             ...passThrough
         } = this.props;
+        const options = React.Children.toArray(children);
         const props = {
             className: classes({
                 className: className,
                 required: required,
                 optional: optional,
-                disabled: disabled
+                disabled: disabled,
+                boring: boring
             }),
             ...passThrough
         };
         const selectProps = {
-            value: selectedIndex,
+            value:
+                value === undefined
+                    ? selectedIndex
+                    : options.findIndex((item) => item.props.value === value),
             onChange: (evt) => {
                 var nullref0;
 
@@ -1335,6 +1372,7 @@ class Select extends react.Component {
                       React.createElement(
                           "option",
                           {
+                              key: "-1",
                               hidden: true,
                               value: "-1"
                           },
@@ -1343,7 +1381,7 @@ class Select extends react.Component {
                   ]
                 : [];
         const values = [];
-        const groups = React.Children.toArray(children)
+        const groups = options
             .reduce(
                 ({ list, current, name }, option, index) => {
                     const { group = "_", value, label } = option.props;
@@ -1424,7 +1462,7 @@ const mainCSS = ss(
         },
         "@media screen and (min-width: 640px)": {
             "*:focus": {
-                outline: (theme$$1) => `2px solid ${theme$$1.outline.opacity(0.5)}`
+                outline: (theme$$1) => theme$$1.focusOutline
             }
         },
         "html body": {
@@ -1434,6 +1472,15 @@ const mainCSS = ss(
             height: "100%",
             fontFamily: "Roboto",
             backgroundColor: "#F0F0F0"
+        },
+        "div.center": {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+        },
+        "div.fill": {
+            width: "100%",
+            height: "100%"
         }
     },
     {

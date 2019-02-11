@@ -33,11 +33,12 @@ class Grid extends Component {
     render() => {
         let {
             cols = 12, vAlign = "start", colGap = 0
-            children
+            children, className
             ...passThrough
         } = @props
 
         let style = {
+            ...passThrough.style
             gridTemplateColumns: [0...cols: () => "1fr"].join(" ")
             alignItems: vAlign
             columnGap: colGap
@@ -45,6 +46,7 @@ class Grid extends Component {
 
         let props = {
             ...passThrough
+            class: className
             style
         }
 

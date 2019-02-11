@@ -23,6 +23,9 @@ let inputCSS = ssjs(
                 "&.disabled": {
                     backgroundColor: "lightgray"
                 }
+                "&.boring": {
+                    borderWidth: 0
+                }
                 "& legend": {
                     marginLeft: 16
                     fontSize: 12
@@ -51,12 +54,17 @@ let inputCSS = ssjs(
                 borderWidth: 0
                 backgroundColor: "transparent"
                 height: 40
-                "&:focus": {
-                    outline: "none"
-                }
                 "&.disabled": {
                     backgroundColor: "transparent"
                 }
+            }
+            "& fieldset:not(.boring) input": {
+                outline: "none"
+            }
+            "& fieldset.boring input": {
+                border: "1px solid black"
+                padding: "6px 12px"
+                borderRadius: 4
             }
         }
     }
@@ -69,6 +77,7 @@ class Input extends PureComponent {
         let {
             label, value, onChange
             disabled, optional, required, className, boring
+            type = "text"
             wrapProps
             ...rest
         } = @props
@@ -87,7 +96,7 @@ class Input extends PureComponent {
         return <doric-input {...wrapProps}>
             <fieldset {...props}>
                 <legend>{label}</legend>
-                <input disabled=disabled value=value onChange=onChange />
+                <input type=type disabled=disabled value=value onChange=onChange />
             </fieldset>
         </doric-input>
     }

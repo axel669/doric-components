@@ -21,6 +21,9 @@ let selectCSS = ssjs(
                 "&.disabled": {
                     backgroundColor: "lightgray"
                 }
+                "&.boring": {
+                    borderWidth: 0
+                }
                 "& legend": {
                     marginLeft: 16
                     fontSize: 12
@@ -57,6 +60,10 @@ let selectCSS = ssjs(
                     backgroundColor: "transparent"
                 }
             }
+            "& fieldset.boring select": {
+                border: "1px solid black"
+                borderRadius: 4
+            }
         }
     }
     {name: "doric-select"}
@@ -66,13 +73,15 @@ selectCSS.generate(theme)
 class Select extends Component {
     render() => {
         let {
-            children, selectedIndex = -1
+            children, selectedIndex = -1, value
             placeholder, label
-            className, required, optional, disabled
+            className, required, optional, disabled, boring
             onChange
             wrapProps
             ...passThrough
         } = @props
+
+        let options = React.Children.toArray(children)
 
         let props = {
             className: classes({
@@ -80,11 +89,15 @@ class Select extends Component {
                 required
                 optional
                 disabled
+                boring
             })
             ...passThrough
         }
         let selectProps = {
-            value: selectedIndex
+            // value: selectedIndex
+            value: (value == void)
+                ? selectedIndex
+                : options.findIndex((item) => item.props.value == value)
             onChange(evt) => {
                 evt.value = values[evt.target.value]
                 onChange?(evt)
@@ -93,11 +106,11 @@ class Select extends Component {
         }
 
         let list = placeholder != void
-            ? [<option hidden value="-1">{placeholder}</option>]
+            ? [<option key="-1" hidden value="-1">{placeholder}</option>]
             : []
         let values = []
 
-        let groups = React.Children.toArray(children)
+        let groups = options
             .reduce(
                 ({list, current, name}, option, index) => {
                     let {group = "_", value, label} = option.props

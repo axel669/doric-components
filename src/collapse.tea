@@ -56,7 +56,7 @@ class Collapse extends React.Component {
 
     render() => {
         let {
-            className, text = "Collapse", tabIndex = 1
+            className, label = "Collapse", tabIndex = 1
             children
             ...passThrough
         } = @props
@@ -73,7 +73,7 @@ class Collapse extends React.Component {
 
         return <doric-collapse {...props} class=_classes>
             <doric-collapse-label>
-                {icon} {text}
+                {icon} {label}
                 <CustomListeners onTap=@toggle />
             </doric-collapse-label>
             <div>{children}</div>

@@ -1,0 +1,511 @@
+/*
+    bags
+        backpack
+        bacg of holding
+        hewards handy haversack
+        pouch
+        portable hole
+*/
+
+(() => {
+    let getHash = () => {
+        let hash = document.location.hash
+        .toString()
+        .replace(/^#?/, "")
+        .trim()
+
+        if hash.startsWith("/") == false {
+            return `/${hash}`
+        }
+        return hash
+    }
+    let mut lastHash = null
+    setInterval(
+        () => {
+            let current = getHash()
+
+            if current == lastHash {
+                return
+            }
+
+            lastHash = current
+            PubSub.publishSync("hashchange", current)
+        }
+        50
+    )
+})()
+
+let RouteContext = React.createContext(null)
+let Router = (context) =>
+    (Component) => class extends React.Component {
+        static displayName = "Router[${Component.name ?? Component.displayName}]"
+
+        constructor(props) => {
+            super(props)
+            @state = {hash: null}
+        }
+
+        componentDidMount() => {
+            @token = PubSub.subscribe(
+                "hashchange"
+                (msg, hash) => @setState({hash})
+            )
+        }
+        componentWillUnmount() => {
+            PubSub.unsubscribe(@token)
+        }
+
+        render() => <context.Provider value=@state.hash>
+            <Component {...@props} />
+        </context.Provider>
+    }
+let Route = (path, options = {}) =>
+    (Parent) => {
+        let {exact = false} = options
+
+        let groupNames = (path.match(/(\/:|\*)\w+/g) ?? [])
+            .map((name) => name.replace(/^[^\w]+/, ""))
+
+        let pathRegexBase = path
+            .replace(
+                /\//g
+                "\\/"
+            )
+            .replace(
+                /\*\w+/g
+                "(\\.*?)"
+            )
+            .replace(
+                /\/:\w+/g
+                "/(\\w+)"
+            )
+        let regexString = (exact == false)
+            ? `^${pathRegexBase}`
+            : `^${pathRegexBase}$`
+        let regex = RegExp*(regexString, "i")
+
+        return class extends React.Component {
+            static contextType = RouteContext
+            static displayName = "Route[${path}: ${Parent.name ?? Parent.displayName}]"
+            render() => {
+                if @context == null {
+                    return null
+                }
+
+                let match = @context.match(regex)
+
+                if match == null {
+                    return null
+                }
+
+                let params = groupNames.reduce(
+                    (params, name, index) => {
+                        ...params
+                        [name]: match[index + 1]
+                    }
+                    {}
+                )
+                let route = {params, path: @context}
+                let child = <Parent {...@props} routeInfo=route />
+
+                return child
+            }
+        }
+    }
+let navigate = (path) =>
+    () => {
+        document.location.hash = path
+    }
+navigate.rel = (relative) =>
+    () => {
+        document.location.hash += relative
+    }
+navigate.back = () => history.back()
+
+let storage = {
+    read(name, defaultValue) => {
+        let source = localStorage.getItem(name)
+
+        if source == null {
+            return defaultValue
+        }
+
+        return JSON.parse(source)
+    }
+    write(name, value) => localStorage.setItem(name, JSON.stringify(value))
+}
+
+let genID = () => Date.now().toString()
+let app = Norn(
+    {
+        bags: {
+            initial: storage.read("bags", {})
+            $add(bags, {bag, id}) => {
+                ...bags
+                [id]: {...bag, items: []}
+            }
+            $addItem(bags, {bagID, item}) => immutableUpdate(
+                bags
+                {[`${bagID}.items.$push`]: item}
+            )
+        }
+        chars: {
+            initial: storage.read("chars", {})
+            $add(chars, {id, name}) => {
+                ...chars
+                [id]: {name, bags: []}
+            }
+            "bags.$add"(chars, {charID, id}) => immutableUpdate(
+                chars
+                {[`${charID}.bags.$push`]: id}
+            )
+        }
+    }
+    {
+        "bags.$add"(charID, bag) => {charID, bag, id: genID()}
+        "bags.$addItem"(bagID, item) => {bagID, item: {...item, id: genID()}}
+        "chars.$add"(name) => {name, id: genID()}
+    }
+)
+let {actions} = app
+
+app.subscribe(
+    (newState) => {
+        storage.write("bags", newState.bags)
+        storage.write("chars", newState.chars)
+        console.log(newState)
+    }
+)
+
+window.actions = actions
+
+class Container extends React.PureComponent {
+    render() => {
+        let {name, items, weight, magical} = @props
+        let totalWeight = (magical == true)
+            ? weight
+            : weight + items.reduce((w, {weight, count}) => w + weight * count, 0)
+
+        let itemList = (items.length == 0)
+            ? "No items"
+            : items
+                .sort(compare.prop(".name", compare.string))
+                .map(
+                    (item) => <div key=item.id>{item.name} ({item.count})</div>
+                )
+
+        return <doric.panel>
+            <doric.panel.title title={`${name} (${totalWeight}lbs)`} />
+            {itemList}
+        </doric.panel>
+    }
+}
+
+let compare = {
+    string(a, b) => {
+        if a < b {
+            return -1
+        }
+        if a > b {
+            return 1
+        }
+        return 0
+    }
+    reverse(func) =>
+        (a, b) => -func(a, b)
+    prop(name, func) => {
+        let read = Function*("obj", `return obj${name}`)
+        return (a, b) => func(read(a), read(b))
+    }
+}
+
+@Route("/", {exact: true})
+class CharList extends React.PureComponent {
+    addChar() => {
+        let name = prompt("Character Name")?.trim() ?? ""
+
+        if name == "" {
+            return
+        }
+
+        actions."chars.$add"(name)
+    }
+
+    reset() => {
+        let confirmed = confirm("Reset all data?")
+
+        if confirmed == true {
+            localStorage.clear()
+            document.location.reload()
+        }
+    }
+
+    render() => {
+        let {chars} = @props
+
+        return <div>
+            {Object.entries(chars)
+                .sort(compare.prop("[1].name", compare.string))
+                .map(
+                    ([id, {name}]) => <doric.button key=id text=name primary block raised onTap=navigate(`/char/${id}`) />
+                )
+            }
+            <doric.grid cols=1 style={position: "fixed", bottom: 0, right: 0}>
+                <doric.button circle=40 danger onTap=@reset>
+                    <ion-icon class="ion-md-alert" />
+                </doric.button>
+                <doric.button circle=40 secondary onTap=@addChar>
+                    <ion-icon class="ion-md-add" />
+                </doric.button>
+            </doric.grid>
+        </div>
+    }
+}
+
+@Route("/char/:charID", {exact: true})
+class CharacterBags extends React.PureComponent {
+    render() => {
+        let {charID} = @props.routeInfo.params
+
+        // console.log(@props)
+        let {name, bags} = @props.chars[charID]
+        let bagDisplay = bags.length == 0
+            ? "No bags :("
+            : bags.map(
+                (bagID) => <Container key=bagID {...@props.bags[bagID]} />
+            )
+
+        return <div>
+            <div>
+                <doric.button text="< Characters" onTap=navigate.back />
+                character: {name}
+            </div>
+            {bagDisplay}
+
+            <doric.grid cols=1 style={position: "fixed", bottom: 0, right: 0}>
+                <doric.button primary onTap=navigate.rel("/addItem") disabled={bags.length == 0}>
+                    <ion-icon class="ion-md-add" /> Item
+                </doric.button>
+                <doric.button secondary onTap=navigate.rel("/addBag")>
+                    <ion-icon class="ion-md-add" /> Bag
+                </doric.button>
+            </doric.grid>
+        </div>
+    }
+}
+
+let validNumber = (num) => (
+    isNaN(num) == false
+    && num >= 0
+)
+
+let bind = (target, name, desc) => {
+    let orig = desc.value
+
+    return {
+        desc.enumerable
+        configurable: true
+        get() =>* {
+            let bound = orig.bind(@)
+
+            Object.defineProperty(
+                @
+                name
+                {
+                    desc.enumerable
+                    configurable: false
+                    value: bound
+                }
+            )
+
+            return bound
+        }
+    }
+}
+@Route("/char/:charID/addBag")
+class AddBag extends React.Component {
+    constructor(props) => {
+        super(props)
+
+        @state = {
+            name: ""
+            magical: false
+            weight: ""
+            weightLimit: ""
+        }
+    }
+
+    @bind
+    update(name, prop = ".target.value") => {
+        let read = Function*("evt", `return evt${prop}`)
+        return (evt) => @setState({
+            [name]: read(evt)
+        })
+    }
+
+    @bind
+    addBag() => {
+        let {charID} = @props.routeInfo.params
+        let {name, magical, weight, weightLimit} = @state
+
+        let bag = {
+            name: name.trim()
+            magical
+            weight: parseFloat(weight)
+        }
+        if magical == true {
+            item.weightLimit = parseFloat(weightLimit)
+        }
+
+        let invalidWeightLimit = (
+            magical == true
+            && validNumber(bag.weightLimit) == false
+        )
+        if bag.name == "" || validNumber(bag.weight) == false || invalidWeightLimit == true {
+            alert("Invalid bag information")
+            return
+        }
+
+        await actions."bags.$add"(charID, bag)
+        navigate.back()
+    }
+
+    render() => {
+        let {name, magical, weight, weightLimit} = @state
+
+        let magicWeight = (magical == false)
+            ? null
+            : <doric.input label="Weight Limit"
+                type="number"
+                value=weightLimit
+                onChange=@update("weightLimit", ".target.value")
+            />
+
+        return <div>
+            <doric.panel>
+                <doric.panel.title title="Add New Bag" />
+
+                <doric.input label="Bag Name" value=name onChange=@update("name") />
+                <doric.input label="Bag Weight"
+                    type="number"
+                    value=weight
+                    onChange=@update("weight")
+                />
+                <doric.checkbox text="Magical"
+                    checked=magical
+                    onChange=@update("magical", ".checked")
+                />
+
+                {magicWeight}
+
+                <div style={height: 40} />
+                <doric.grid cols=2>
+                    <doric.button text="Cancel" danger onTap=navigate.back />
+                    <doric.button text="Add Bag" onTap=@addBag block primary />
+                </doric.grid>
+            </doric.panel>
+        </div>
+    }
+}
+
+@Route("/char/:charID/addItem")
+class AddItem extends React.Component {
+    constructor(props) => {
+        super(props)
+
+        @state = {
+            bagID: null
+            name: ""
+            weight: ""
+            count: ""
+        }
+    }
+
+    @bind
+    update(name, prop = ".target.value") => {
+        let read = Function*("evt", `return evt${prop}`)
+        return (evt) => @setState({
+            [name]: read(evt)
+        })
+    }
+
+    @bind
+    addItem() => {
+        let {bagID, name, weight, count} = @state
+
+        let item = {
+            name: name.trim()
+            weight: parseFloat(weight)
+            count: parseInt(count)
+        }
+
+        if name == "" || validNumber(item.weight) == false || validNumber(item.count) == false {
+            alert("Item weight or count is invalid")
+            return
+        }
+
+        await actions."bags.$addItem"(bagID, item)
+        navigate.back()
+    }
+
+    render() => {
+        let {name, weight, bagID, count} = @state
+        let {bags, chars, routeInfo} = @props
+        let bagList = chars[routeInfo.params.charID].bags.map(
+            (id) => <option key=id value=id label=bags[id].name />
+        )
+
+        return <div>
+            <doric.panel>
+                <doric.panel.title title="Add Item" />
+
+                <doric.select label="Bag" value=bagID onChange=@update("bagID", ".value") placeholder="Select Bag">
+                    {bagList}
+                </doric.select>
+                <doric.input label="Item Name" value=name onChange=@update("name") />
+                <doric.input label="Item Weight"
+                    type="number"
+                    value=weight
+                    onChange=@update("weight")
+                />
+                <doric.input label="Count"
+                    type="number"
+                    value=count
+                    onChange=@update("count")
+                />
+
+                <doric.grid cols=2>
+                    <doric.button text="Cancel" danger onTap=navigate.back />
+                    <doric.button text="Add Item" primary onTap=@addItem />
+                </doric.grid>
+            </doric.panel>
+        </div>
+    }
+}
+
+@Router(RouteContext)
+class App extends React.Component {
+    constructor(props) => {
+        super(props)
+        @state = app.state
+        app.subscribe(
+            (newState) => @setState(
+                () => newState
+            )
+        )
+    }
+
+    render() => {
+        return <div>
+            <CharList chars=@state.chars />
+            <CharacterBags bags=@state.bags chars=@state.chars />
+            <AddBag />
+            <AddItem bags=@state.bags chars=@state.chars />
+        </div>
+    }
+}
+
+ReactDOM.render(
+    <App />
+    document.querySelector("app-root")
+)

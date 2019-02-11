@@ -1,0 +1,155 @@
+let races = [
+    "Human"
+    "Elf"
+    "Half Elf"
+    "Teifling"
+    "Aasimar"
+    "Dwarf"
+    "Halfing"
+]
+let raceOptions = {
+    Human: [
+        ["Standard", "variant"]
+    ]
+    Tiefling: [
+        ["Standard", "Non standard"]
+        "Winged"
+    ]
+}
+
+let cost = [0, 1, 2, 3, 4, 5, 7, 9]
+let points = (stat) => cost[stat - 8]
+let bonus = (stat) => Math.floor((stat - 10) / 2)
+
+let statmng = (name) => {
+    initial: 8
+    $set(current, {value}) => value
+}
+let app = Norn(
+    {
+        stats: {
+            str: statmng("str")
+            dex: statmng("dex")
+            con: statmng("con")
+            int: statmng("int")
+            wis: statmng("wis")
+            cha: statmng("cha")
+        }
+        points: {
+            initial: 0
+            "stats.*.$set"(current, action) => {
+                let value = points(action.value)
+                let prev = points(action.prev)
+                return current + (value - prev)
+            }
+        }
+        race: {
+            type: {
+                initial: "Huming"
+                $set(current, {race}) => race
+            }
+            stats: {
+                initial: {
+                    str: 1
+                    dex: 1
+                    con: 1
+                    int: 1
+                    wis: 1
+                    cha: 1
+                }
+                "race.subtype.$update"(current, {stats}) => stats
+            }
+        }
+    }
+)
+let actions = app.actions
+window.actions = actions
+class Stat extends React.PureComponent {
+    inc(stat, value) =>
+        () => actions.`stats.${stat}.$set`({value: value + 1, prev: value})
+    dec(stat, value) =>
+        () => actions.`stats.${stat}.$set`({value: value - 1, prev: value})
+
+    render() => {
+        let {value, racial, name} = @props
+        let total = value + racial
+
+        return <fieldset>
+            <legend>{name.toUpperCase()}</legend>
+            <doric.grid cols=5>
+                <doric.button flush onTap=@dec(name, value) disabled={value == 8}><ion-icon class="ion-md-remove-circle" /></doric.button>
+                <div className="center fill">{value}</div>
+                <doric.button flush onTap=@inc(name, value) disabled={value == 15}><ion-icon class="ion-md-add-circle" /></doric.button>
+                <div className="center fill">{racial}</div>
+                <div className="center fill">
+                    {total} ({bonus(total)})
+                </div>
+            </doric.grid>
+        </fieldset>
+    }
+}
+
+class RaceSelector extends React.PureComponent {
+    changeType(evt) => {
+        console.log(evt.value)
+    }
+
+    render() => {
+        let {type, subtype} = @props
+
+        return <div>
+            <doric.select label="Race" value=type onChange=@changeType>
+                {races.map((race) => <option key=race label=race value=race />)}
+            </doric.select>
+            <doric.select label="Subtype">
+            </doric.select>
+        </div>
+    }
+}
+
+class Main extends React.Component {
+    constructor(props) => {
+        super(props)
+        @state = app.state
+        app.subscribe(
+            (newState) => @setState(() => newState)
+        )
+    }
+
+    render() => {
+        let {stats, race, points} = @state
+        let order = [
+            "str"
+            "dex"
+            "con"
+            "int"
+            "wis"
+            "cha"
+        ]
+
+        return <div style={width: "100%", maxWidth: 1280, margin: "auto"}>
+            <RaceSelector {...race} />
+            <doric.panel>
+                {order.map(
+                    (stat) => <Stat key=stat name=stat value=stats[stat] racial=race.stats[stat] />
+                )}
+                Points Used: {points}/27
+            </doric.panel>
+        </div>
+    }
+}
+
+let appStyle = SSJS({
+    "doric-grid.test > :nth-child(odd)": {
+        backgroundColor: "#FF000030"
+    }
+    "doric-grid.test > :nth-child(even)": {
+        backgroundColor: "#0000FF30"
+    }
+})
+appStyle.generate()
+
+ReactDOM.render(
+    <Main />
+    document.querySelector("app-root")
+)
