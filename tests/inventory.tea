@@ -127,6 +127,22 @@ class Route extends React.Component {
         return  <Component {...@props} routeInfo=route />
     }
 }
+class Switch extends React.Component {
+    render() => {
+        let routes = React.Children.toArray(@props.children)
+
+        let mut first = null
+        for route in routes {
+            console.log(route)
+            first = route.render()
+            if first != null {
+                break
+            }
+        }
+
+        return first
+    }
+}
 
 let navigate = (path) =>
     () => {
@@ -250,7 +266,6 @@ let compare = {
     }
 }
 
-// @Route("/", {exact: true})
 @connect(app, ({chars}) => {chars})
 class CharList extends React.PureComponent {
     addChar() => {
@@ -294,7 +309,6 @@ class CharList extends React.PureComponent {
     }
 }
 
-// @Route("/char/:charID", {exact: true})
 @connect(
     app
     ({chars, bags}, {routeInfo}) => {
@@ -312,10 +326,6 @@ class CharList extends React.PureComponent {
 )
 class CharacterBags extends React.PureComponent {
     render() => {
-        // let {charID} = @props.routeInfo.params
-
-        // console.log(@props)
-        // let {name, bags} = @props.chars[charID]
         let {name, bags} = @props.charInfo
         let bagDisplay = bags.length == 0
             ? "No bags :("
@@ -371,7 +381,6 @@ let bind = (target, name, desc) => {
     }
 }
 
-// @Route("/char/:charID/addBag")
 class AddBag extends React.Component {
     constructor(props) => {
         super(props)
@@ -457,7 +466,18 @@ class AddBag extends React.Component {
     }
 }
 
-// @Route("/char/:charID/addItem")
+@connect(
+    app
+    ({chars, bags}, {routeInfo}) => {
+        let character = chars[routeInfo.params.charID]
+
+        return {
+            bags: character.bags.map(
+                (bagID) => {bagID, bags[bagID].name}
+            )
+        }
+    }
+)
 class AddItem extends React.Component {
     constructor(props) => {
         super(props)
@@ -499,9 +519,9 @@ class AddItem extends React.Component {
 
     render() => {
         let {name, weight, bagID, count} = @state
-        let {bags, chars, routeInfo} = @props
-        let bagList = chars[routeInfo.params.charID].bags.map(
-            (id) => <option key=id value=id label=bags[id].name />
+        let {bags} = @props
+        let bagList = bags.map(
+            ({bagID, ...bag}) => <option key=bagID value=bagID label=bag.name />
         )
 
         return <div>
@@ -534,20 +554,14 @@ class AddItem extends React.Component {
 
 @Router(RouteContext)
 class App extends React.Component {
-    // constructor(props) => {
-    //     super(props)
-    //     @state = app.state
-    //     app.subscribe(
-    //         (newState) => @setState(
-    //             () => newState
-    //         )
-    //     )
-    // }
-
     render() => {
         return <div>
-            <Route path="/" exact component=CharList />
-            <Route path="/char/:charID" exact component=CharacterBags />
+            <Switch>
+                <Route path="/" component=CharList />
+                <Route path="/char/:charID" component=CharacterBags />
+                <Route path="/char/:charID/addBag" component=AddBag />
+                <Route path="/char/:charID/addItem" component=AddItem />
+            </Switch>
         </div>
     }
 }
