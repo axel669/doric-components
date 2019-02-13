@@ -60,67 +60,64 @@ let Router = (context) =>
         </context.Provider>
     }
 
-class Route extends React.Component {
-    static contextType = RouteContext
-
-    constructor(props) => {
-        super(props)
-        @path = null
-        @exact = null
-        @updateRegex()
-    }
-
-    updateRegex() => {
-        let {path, exact = false} = @props
-
-        if @path == path && @exact == exact {
-            return
+let compile = (path, exact = false) => {
+    // console.time("compile")
+    let groups = []
+    let regstr = path.replace(
+        /(\/(:|\*)(\w+))|\//g
+        (match, a, type, name) => {
+            if a != void {
+                groups.push(name)
+                if type == ":" {
+                    return "\\/([\\w\\-]+)"
+                }
+                if type == "*" {
+                    return "\\/?(.*)"
+                }
+            }
+            return "\\/"
         }
+    )
+    let regex = RegExp*(
+        `^${regstr}${exact == true ? "$" : ":"}`
+        "i"
+    )
 
-        [@path, @exact] = [path, exact]
-
-        @groupNames = (path.match(/(\/:|\*)\w+/g) ?? [])
-            .map((name) => name.replace(/^[^\w]+/, ""))
-
-        let pathRegexBase = path
-            .replace(
-                /\//g
-                "\\/"
-            )
-            .replace(
-                /\*\w+/g
-                "(\\.*?)"
-            )
-            .replace(
-                /\/:\w+/g
-                "/(\\w+)"
-            )
-        let regexString = (exact == false)
-            ? `^${pathRegexBase}`
-            : `^${pathRegexBase}$`
-        @regex = RegExp*(regexString, "i")
-    }
-
-    render() => {
-        @updateRegex()
-
-        if @context == null {
-            return null
-        }
-
-        let match = @context.match(@regex)
+    let parse = (path, group = true) => {
+        let match = path?.match(regex)
 
         if match == null {
             return null
         }
+        if (group == false) {
+            return true
+        }
 
-        let params = @groupNames.reduce(
-            (params, name, index) => {
-                ...params
-                [name]: match[index + 1]
+        return groups.reduce(
+            (g, name, index) => {
+                g[name] = match[index + 1]
+                return g
             }
             {}
         )
+    }
+    // console.timeEnd("compile")
+
+    return parse
+}
+class Route extends React.Component {
+    static contextType = RouteContext
+
+    render() => {
+        if @context == null {
+            return null
+        }
+
+        let params = compile(@props.path, @props.exact)(@context)
+
+        if params == null {
+            return null
+        }
         let Component = @props.component
         let route = {params, path: @context}
 
@@ -128,19 +125,21 @@ class Route extends React.Component {
     }
 }
 class Switch extends React.Component {
+    static contextType = RouteContext
+
     render() => {
         let routes = React.Children.toArray(@props.children)
 
-        let mut first = null
         for route in routes {
-            console.log(route)
-            first = route.render()
-            if first != null {
-                break
+            let {path, exact} = route.props
+            let show = compile(path, exact)(@context, false)
+
+            if show == true {
+                return route
             }
         }
 
-        return first
+        return null
     }
 }
 
@@ -557,10 +556,10 @@ class App extends React.Component {
     render() => {
         return <div>
             <Switch>
-                <Route path="/" component=CharList />
-                <Route path="/char/:charID" component=CharacterBags />
-                <Route path="/char/:charID/addBag" component=AddBag />
-                <Route path="/char/:charID/addItem" component=AddItem />
+                <Route path="/" exact component=CharList />
+                <Route path="/char/:charID" exact component=CharacterBags />
+                <Route path="/char/:charID/addBag" exact component=AddBag />
+                <Route path="/char/:charID/addItem" exact component=AddItem />
             </Switch>
         </div>
     }
