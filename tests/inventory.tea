@@ -205,12 +205,14 @@ let connect = (app, reducer = (state, props) => state) =>
         constructor(props) => {
             super(props)
             @state = reducer(app.state, @props)
-            app.subscribe(
+            @unsub = app.subscribe(
                 (newState) => @setState(
                     () => reducer(newState, @props)
                 )
             )
         }
+
+        componentWillUnmount() => @unsub()
 
         render() => <Component {...{...@props, ...@state}} />
     }
@@ -227,10 +229,11 @@ window.actions = actions
 
 class Container extends React.PureComponent {
     render() => {
-        let {name, items, weight, magical} = @props
-        let totalWeight = (magical == true)
-            ? weight
-            : weight + items.reduce((w, {weight, count}) => w + weight * count, 0)
+        let {name, items, weight, magical, weightLimit} = @props
+        let itemWeight = items.reduce((w, {weight, count}) => w + weight * count, 0)
+        let weightDisplay = magical == true
+            ? `${weight}lbs [${itemWeight}/${weightLimit}]`
+            : `${weight + itemWeight}lbs`
 
         let itemList = (items.length == 0)
             ? "No items"
@@ -241,7 +244,7 @@ class Container extends React.PureComponent {
                 )
 
         return <doric.panel>
-            <doric.panel.title title={`${name} (${totalWeight}lbs)`} />
+            <doric.panel.title title=name subtitle={`(${weightDisplay})`} />
             {itemList}
         </doric.panel>
     }
@@ -411,7 +414,7 @@ class AddBag extends React.Component {
             weight: parseFloat(weight)
         }
         if magical == true {
-            item.weightLimit = parseFloat(weightLimit)
+            bag.weightLimit = parseFloat(weightLimit)
         }
 
         let invalidWeightLimit = (
