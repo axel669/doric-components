@@ -1450,6 +1450,48 @@ var doric = (function (react) {
         }
     }
 
+    const listCSS = ss({
+        "doric-list": {
+            display: "block",
+            "& doric-item": {
+                display: "block",
+                padding: 8,
+                ...tappable(Color(0, 0, 0, 0.4).toString())
+            }
+        }
+    });
+    listCSS.generate(theme);
+    class List extends React.PureComponent {
+        render() {
+            const { items } = this.props;
+            const onTap = (evt) => {
+                const index = parseInt(evt.target.dataset.index);
+                console.log(items[index]);
+            };
+            return React.createElement(
+                "doric-list",
+                {},
+                React.createElement(
+                    "doric-list-content",
+                    {},
+                    React.createElement(CustomListeners, {
+                        onTap: onTap
+                    }),
+                    items.map(({ text }, index) =>
+                        React.createElement(
+                            "doric-item",
+                            {
+                                key: index,
+                                "data-index": index
+                            },
+                            text
+                        )
+                    )
+                )
+            );
+        }
+    }
+
     const mainCSS = ss(
         {
             "*": {
@@ -1496,7 +1538,8 @@ var doric = (function (react) {
         checkbox: Checkbox,
         input: Input,
         grid: Grid,
-        select: Select
+        select: Select,
+        list: List
     };
 
     return doric;

@@ -12,7 +12,7 @@
         <script src="https://unpkg.com/react-dom@16.7.0/umd/react-dom.development.js"></script>
         <script src="https://unpkg.com/pubsub-js@1.7.0/src/pubsub.js"></script>
 
-        <script src="https://unpkg.com/@axel669/teascript@0.14.2/standalone/transpiler.js"></script>
+        <script src="https://unpkg.com/@axel669/teascript@0.14.3/standalone/transpiler.js"></script>
         <script src="https://unpkg.com/@axel669/norn@0.4.1/standalone/norn.js"></script>
         <script src="https://unpkg.com/@axel669/immutable-update@0.1.0/browser/update.js"></script>
         <script src="https://unpkg.com/ssjs@1.0.0/standalone/ss.js"></script>
@@ -20,6 +20,24 @@
     <body>
         <app-root></app-root>
         <script src="../standalone/doric-components.js"></script>
-        <script type="text/teascript" src="inventory.tea"></script>
+        <!-- <script type="text/teascript" src="inventory.tea"></script> -->
+        <script type="text/teascript">
+        class Main extends React.Component {
+            render() => {
+                let items = [0...10: (n) =>
+                    {value: n ** n, text: `Item ${n}`}
+                ]
+
+                return <div>
+                    <doric.list items=items />
+                </div>
+            }
+        }
+
+        ReactDOM.render(
+            <Main />
+            document.querySelector("app-root")
+        )
+        </script>
     </body>
 </html>
