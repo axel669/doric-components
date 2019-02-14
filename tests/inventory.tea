@@ -227,137 +227,85 @@ app.subscribe(
 
 window.actions = actions
 
-class Container extends React.PureComponent {
-    render() => {
-        let {name, items, weight, magical, weightLimit} = @props
-        let itemWeight = items.reduce((w, {weight, count}) => w + weight * count, 0)
-        let weightDisplay = magical == true
-            ? `${weight}lbs [${itemWeight}/${weightLimit}]`
-            : `${weight + itemWeight}lbs`
-
-        let itemList = (items.length == 0)
-            ? "No items"
-            : items
-                .sort(compare.prop(".name", compare.string))
-                .map(
-                    (item) => <div key=item.id>{item.name} ({item.count})</div>
-                )
-
-        return <doric.panel>
-            <doric.panel.title title=name subtitle={`(${weightDisplay})`} />
-            {itemList}
-        </doric.panel>
-    }
-}
-
-let compare = {
-    string(a, b) => {
-        if a < b {
-            return -1
+let dialogCSS = SSJS(
+    {
+        "dialog-root": {
+            position: "absolute"
+            top: 0
+            left: 0
         }
-        if a > b {
-            return 1
-        }
-        return 0
-    }
-    reverse(func) =>
-        (a, b) => -func(a, b)
-    prop(name, func) => {
-        let read = Function*("obj", `return obj${name}`)
-        return (a, b) => func(read(a), read(b))
-    }
-}
-
-@connect(app, ({chars}) => {chars})
-class CharList extends React.PureComponent {
-    addChar() => {
-        let name = prompt("Character Name")?.trim() ?? ""
-
-        if name == "" {
-            return
-        }
-
-        actions."chars.$add"(name)
-    }
-
-    reset() => {
-        let confirmed = confirm("Reset all data?")
-
-        if confirmed == true {
-            localStorage.clear()
-            document.location.reload()
-        }
-    }
-
-    render() => {
-        let {chars} = @props
-
-        return <div>
-            {Object.entries(chars)
-                .sort(compare.prop("[1].name", compare.string))
-                .map(
-                    ([id, {name}]) => <doric.button key=id text=name primary block raised onTap=navigate(`/char/${id}`) />
-                )
-            }
-            <doric.grid cols=1 style={position: "fixed", bottom: 0, right: 0}>
-                <doric.button circle=40 danger onTap=@reset>
-                    <ion-icon class="ion-md-alert" />
-                </doric.button>
-                <doric.button circle=40 secondary onTap=@addChar>
-                    <ion-icon class="ion-md-add" />
-                </doric.button>
-            </doric.grid>
-        </div>
-    }
-}
-
-@connect(
-    app
-    ({chars, bags}, {routeInfo}) => {
-        let character = chars[routeInfo.params.charID]
-
-        return {
-            charInfo: {
-                ...character
-                bags: character.bags.map(
-                    (bagID) => {bagID, ...bags[bagID]}
-                )
+        "dialog-list": {
+            position: "fixed"
+            top: 0
+            left: 0
+            right: 0
+            bottom: 0
+            backgroundColor: "rgba(0, 0, 0, 0.6)"
+            "&:empty": {
+                display: "none"
             }
         }
+        "dialog-window": {
+            backgroundColor: "white"
+            position: "absolute"
+            top: "25%"
+            left: "50%"
+            transform: "translateX(-50%)"
+            width: "80%"
+            height: "50%"
+            maxWidth: 640
+            maxHeight: 480
+        }
     }
+    {name: "dialog-css"}
 )
-class CharacterBags extends React.PureComponent {
-    render() => {
-        let {name, bags} = @props.charInfo
-        let bagDisplay = bags.length == 0
-            ? "No bags :("
-            : bags.map(
-                ({bagID, ...bag}) => <Container key=bagID {...bag} />
-            )
+dialogCSS.generate()
 
-        return <div>
-            <div>
-                <doric.button text="< Characters" onTap=navigate.back />
-                character: {name}
-            </div>
-            {bagDisplay}
+let dialog = (() => {
+    let rootElem = document.createElement("dialog-root")
 
-            <doric.grid cols=1 style={position: "fixed", bottom: 0, right: 0}>
-                <doric.button primary onTap=navigate.rel("/addItem") disabled={bags.length == 0}>
-                    <ion-icon class="ion-md-add" /> Item
-                </doric.button>
-                <doric.button secondary onTap=navigate.rel("/addBag")>
-                    <ion-icon class="ion-md-add" /> Bag
-                </doric.button>
-            </doric.grid>
-        </div>
+    document.body.appendChild(rootElem)
+
+    class DialogList extends React.Component {
+        constructor(props) => {
+            super(props)
+
+            @state = {dialogs: {}}
+        }
+
+        render() => {
+            return <dialog-list>
+                {Object.values(@state.dialogs)}
+            </dialog-list>
+        }
     }
-}
+    let rootComponent = ReactDOM.render(
+        <DialogList />
+        rootElem
+    )
 
-let validNumber = (num) => (
-    isNaN(num) == false
-    && num >= 0
-)
+    return {
+        show(Component, props = {}) => {
+            let id = genID()
+            let close = () => {
+                let {dialogs} = rootComponent.state
+                delete dialogs[id]
+
+                rootComponent.setState({dialogs})
+            }
+
+            let {dialogs as current} = rootComponent.state
+            let dialogs = {
+                ...current
+                [id]: <dialog-window key=id>
+                    <Component close=close {...props} />
+                </dialog-window>
+            }
+
+            rootComponent.setState({dialogs})
+        }
+    }
+})()
 
 let bind = (target, name, desc) => {
     let orig = desc.value
@@ -382,6 +330,190 @@ let bind = (target, name, desc) => {
         }
     }
 }
+
+class Container extends React.PureComponent {
+    @bind
+    showItem(item) => {
+        let {bagID} = @props
+        @props.onItemTap({
+            item
+            bagID
+        })
+    }
+
+    render() => {
+        let {name, items, weight, magical, weightLimit} = @props
+        let itemWeight = items.reduce((w, {weight, count}) => w + weight * count, 0)
+        let weightDisplay = magical == true
+            ? `${weight}lbs [${itemWeight}/${weightLimit}]`
+            : `${weight + itemWeight}lbs`
+
+        let itemList =  items
+            .sort(compare.prop(".name", compare.string))
+            .map(
+                (item, index) => {
+                    label: `${item.name} (${item.count})`
+                    index
+                    ...item
+                }
+            )
+
+        return <doric.panel>
+            <doric.panel.title title=name subtitle=weightDisplay />
+            <doric.list items=itemList propName="label" onItemTap=@showItem />
+        </doric.panel>
+    }
+}
+
+let compare = {
+    string(a, b) => {
+        if a < b {
+            return -1
+        }
+        if a > b {
+            return 1
+        }
+        return 0
+    }
+    reverse(func) =>
+        (a, b) => -func(a, b)
+    prop(name, func) => {
+        let read = Function*("obj", `return obj${name}`)
+        return (a, b) => func(read(a), read(b))
+    }
+}
+
+let headerCSS = SSJS({
+    "screen-header": {
+        position: "sticky"
+        top: 0
+        backgroundColor: "#1d62d5"
+        color: "white"
+        boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.4)"
+        height: 40
+        display: "block"
+        fontSize: 20
+    }
+})
+headerCSS.generate()
+
+@connect(app, ({chars}) => {chars})
+class CharList extends React.PureComponent {
+    addChar() => {
+        let name = prompt("Character Name")?.trim() ?? ""
+
+        if name == "" {
+            return
+        }
+
+        actions."chars.$add"(name)
+    }
+
+    reset() => {
+        let confirmed = confirm("Reset all data?")
+
+        if confirmed == true {
+            localStorage.clear()
+            document.location.reload()
+        }
+    }
+
+    showChar({id}) => navigate(`/char/${id}`)()
+
+    render() => {
+        let {chars} = @props
+
+        let charList = Object.entries(chars)
+            .sort(compare.prop("[1].name", compare.string))
+            .map(
+                ([id, character]) => {id, ...character}
+            )
+
+        return <div>
+            <screen-header>
+                <div className="center" style={height: "100%"}>
+                    Characters
+                </div>
+            </screen-header>
+            <doric.list items=charList propName="name" onItemTap=@showChar />
+            <doric.grid cols=1 style={position: "fixed", bottom: 0, right: 0}>
+                <doric.button circle=40 danger onTap=@reset>
+                    <ion-icon class="ion-md-alert" />
+                </doric.button>
+                <doric.button circle=40 secondary onTap=@addChar>
+                    <ion-icon class="ion-md-add" />
+                </doric.button>
+            </doric.grid>
+        </div>
+    }
+}
+
+let Test = ({bagID, name, index, close}) =>
+    <div>
+        <doric.customListeners onTap=close />
+        {bagID}: {index} {name}
+    </div>
+
+@connect(
+    app
+    ({chars, bags}, {routeInfo}) => {
+        let character = chars[routeInfo.params.charID]
+
+        return {
+            charInfo: {
+                ...character
+                bags: character.bags.map(
+                    (bagID) => {bagID, ...bags[bagID]}
+                )
+            }
+        }
+    }
+)
+class CharacterBags extends React.PureComponent {
+    showItem({bagID, item}) => {
+        dialog.show(
+            Test
+            {bagID, ...item}
+        )
+    }
+
+    render() => {
+        let {name, bags} = @props.charInfo
+        let bagDisplay = bags.length == 0
+            ? "No bags :("
+            : bags.map(
+                (bag) => <Container key=bag.bagID {...bag} onItemTap=@showItem />
+            )
+
+        return <div>
+            <screen-header>
+                <doric.grid cols=8>
+                    <doric.button flush onTap=navigate.back>
+                        <ion-icon class="ion-ios-arrow-back" />
+                    </doric.button>
+                    <div />
+                    <div className="center" gcolspan=4 style={fontSize: 22, height: "100%"}>{name}</div>
+                </doric.grid>
+            </screen-header>
+
+            {bagDisplay}
+
+            <doric.grid cols=1 style={position: "fixed", bottom: 0, right: 0}>
+                <doric.button primary onTap=navigate.rel("/addItem") disabled={bags.length == 0}>
+                    <ion-icon class="ion-md-add" /> Item
+                </doric.button>
+                <doric.button secondary onTap=navigate.rel("/addBag")>
+                    <ion-icon class="ion-md-add" /> Bag
+                </doric.button>
+            </doric.grid>
+        </div>
+    }
+}
+
+let validNumber = (num) => (
+    isNaN(num) == false
+    && num >= 0
+)
 
 class AddBag extends React.Component {
     constructor(props) => {

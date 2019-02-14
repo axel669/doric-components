@@ -13,7 +13,23 @@ let listCSS = ssjs({
         "& doric-item": {
             display: "block"
             padding: 8
+            borderBottom: "1px solid black"
             ...tappable(Color(0, 0, 0, 0.4).toString())
+        }
+        "& doric-list-header": {
+            position: "sticky"
+            display: "block"
+            top: 0
+            zIndex: "+10"
+            padding: 4
+            fontSize: 16
+            textTransform: "uppercase"
+            borderBottom: "1px solid lightgray"
+            boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.4)"
+            backgroundColor: "white"
+            "&:empty": {
+                display: "none"
+            }
         }
     }
 })
@@ -21,19 +37,26 @@ listCSS.generate(theme)
 
 class List extends React.PureComponent {
     render() => {
-        let {items} = @props
+        let {
+            items, label, propName = "text",
+            onItemTap
+            ...passThrough
+        } = @props
         let onTap = (evt) => {
             let index = parseInt(evt.target.dataset.index)
 
-            console.log(items[index])
+            onItemTap?(items[index])
         }
 
-        return <doric-list>
+        return <doric-list {...passThrough}>
+            <doric-list-header>
+                {label}
+            </doric-list-header>
             <doric-list-content>
                 <CustomListeners onTap=onTap />
                 {items.map(
-                    ({text}, index) => <doric-item key=index data-index=index>
-                        {text}
+                    (item, index) => <doric-item key=index data-index=index>
+                        {item[propName]}
                     </doric-item>
                 )}
             </doric-list-content>

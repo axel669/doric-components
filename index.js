@@ -768,7 +768,7 @@ const panelCSS = ss(
     {
         "doric-panel": {
             display: "block",
-            margin: 2,
+            margin: 4,
             boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.4)",
             borderTop: "1px solid lightgray",
             backgroundColor: (theme$$1) => theme$$1.bg.color,
@@ -776,7 +776,8 @@ const panelCSS = ss(
             padding: 12,
             position: "relative",
             top: 0,
-            left: 0
+            left: 0,
+            borderRadius: 4
         },
         "doric-panel-title": {
             display: "block",
@@ -1457,35 +1458,62 @@ const listCSS = ss({
         "& doric-item": {
             display: "block",
             padding: 8,
+            borderBottom: "1px solid black",
             ...tappable(Color(0, 0, 0, 0.4).toString())
+        },
+        "& doric-list-header": {
+            position: "sticky",
+            display: "block",
+            top: 0,
+            zIndex: "+10",
+            padding: 4,
+            fontSize: 16,
+            textTransform: "uppercase",
+            borderBottom: "1px solid lightgray",
+            boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.4)",
+            backgroundColor: "white",
+            "&:empty": {
+                display: "none"
+            }
         }
     }
 });
 listCSS.generate(theme);
 class List extends React.PureComponent {
     render() {
-        const { items } = this.props;
+        const {
+            items,
+            label,
+            propName = "text",
+            onItemTap,
+            ...passThrough
+        } = this.props;
         const onTap = (evt) => {
+            var nullref0;
+
             const index = parseInt(evt.target.dataset.index);
-            console.log(items[index]);
+            (nullref0 = onItemTap) != null ? nullref0(items[index]) : undefined;
         };
         return React.createElement(
             "doric-list",
-            {},
+            {
+                ...passThrough
+            },
+            React.createElement("doric-list-header", {}, label),
             React.createElement(
                 "doric-list-content",
                 {},
                 React.createElement(CustomListeners, {
                     onTap: onTap
                 }),
-                items.map(({ text }, index) =>
+                items.map((item, index) =>
                     React.createElement(
                         "doric-item",
                         {
                             key: index,
                             "data-index": index
                         },
-                        text
+                        item[propName]
                     )
                 )
             )
@@ -1540,7 +1568,8 @@ var doric = {
     input: Input,
     grid: Grid,
     select: Select,
-    list: List
+    list: List,
+    customListeners: CustomListeners
 };
 
 module.exports = doric;
