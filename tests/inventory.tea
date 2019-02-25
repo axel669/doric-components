@@ -203,6 +203,12 @@ let app = Norn(
                 bags
                 {[`${bagID}.items.$push`]: item}
             )
+            $removeItem(bags, {bagID, id}) => immutableUpdate(
+                bags
+                {[`${bagID}.items.$apply`]: (bag) => bag.filter(
+                    (item) => item.id != id
+                )}
+            )
         }
         chars: {
             initial: storage.read("chars", {})
@@ -219,6 +225,7 @@ let app = Norn(
     {
         "bags.$add"(charID, bag) => {charID, bag, id: genID()}
         "bags.$addItem"(bagID, item) => {bagID, item: {...item, id: genID()}}
+        "bags.$removeItem"(bagID, id) => {bagID, id}
         "chars.$add"(name) => {name, id: genID()}
     }
 )
@@ -251,181 +258,8 @@ app.subscribe(
 
 window.actions = actions
 
-let dialogCSS = SSJS(
-    {
-        "dialog-root": {
-            position: "absolute"
-            top: 0
-            left: 0
-        }
-        "dialog-container": {
-            position: "fixed"
-            top: 0
-            left: 0
-            right: 0
-            bottom: 0
-            backgroundColor: "rgba(0, 0, 0, 0.6)"
-            "&:empty": {
-                display: "none"
-            }
-        }
-        "dialog-window": {
-            backgroundColor: "white"
-            border: "1px solid lightgray"
-            borderRadius: 4
-            padding: 4
-            overflow: "auto"
-            position: "absolute"
-            top: "20%"
-            left: "50%"
-            transform: "translateX(-50%)"
-            maxWidth: 640
-            maxHeight: 480
-            "&[fill-space='true']": {
-                width: "75%"
-                height: "50%"
-            }
-        }
-        "alert-dialog": {
-            display: "block"
-            minWidth: 150
-            "& alert-title": {
-                display: "flex"
-                borderBottom: "1px solid black"
-                padding: 12
-                alignItems: "center"
-                justifyContent: "center"
-                fontSize: 20
-            }
-            "& alert-content": {
-                display: "block"
-                textAlign: "center"
-                padding: "12px 0px"
-                "&[wide]": {
-                    minWidth: 220
-                }
-            }
-        }
-    }
-    {name: "dialog-css"}
-)
-dialogCSS.generate()
-
-let dialog = (() => {
-    let rootElem = document.createElement("dialog-root")
-    let stopTap = (evt) => {
-        evt.stopPropagation()
-        evt.preventDefault()
-    }
-
-    document.body.appendChild(rootElem)
-
-    class DialogList extends React.Component {
-        constructor(props) => {
-            super(props)
-
-            @state = {dialogs: {}}
-        }
-
-        render() => Object.values(@state.dialogs)
-    }
-    let rootComponent = ReactDOM.render(
-        <DialogList />
-        rootElem
-    )
-
-    let AlertDialog = ({message, title, close}) => {
-        let closeHandler = () => close(null)
-
-        return <alert-dialog>
-            <alert-title>{title}</alert-title>
-            <alert-content>{message}</alert-content>
-            <doric.button block primary text="OK" onTap=closeHandler />
-        </alert-dialog>
-    }
-    let ConfirmDialog = ({message, title, close}) => {
-        let okHandle = () => close(true)
-        let cancelHandle = () => close(false)
-
-        return <alert-dialog>
-            <alert-title>{title}</alert-title>
-            <alert-content wide>{message}</alert-content>
-            <doric.grid cols=2>
-                <doric.button block primary text="OK" onTap=okHandle />
-                <doric.button block danger text="Cancel" onTap=cancelHandle />
-            </doric.grid>
-        </alert-dialog>
-    }
-    class PromptDialog extends React.Component {
-        constructor(props) => {
-            super(props)
-            @state = {value: ""}
-
-            @cancel = () => @props.close(null)
-            @respond = (evt) => {
-                evt.preventDefault()
-                @props.close(@state.value)
-            }
-        }
-
-        @bind
-        update(evt) => @setState({evt.target.value})
-
-        render() => {
-            let {close, message, title} = @props
-            let {value} = @state
-
-            return <alert-dialog>
-                <alert-title>{title}</alert-title>
-                <alert-content wide>
-                    {message}
-                    <form onSubmit=@respond>
-                        <doric.input value=value onChange=@update />
-                    </form>
-                </alert-content>
-                <doric.grid cols=2>
-                    <doric.button block primary text="OK" onTap=@respond />
-                    <doric.button block danger text="Cancel" onTap=@cancel />
-                </doric.grid>
-            </alert-dialog>
-        }
-    }
-
-    let show = (Component, props = {}, fillSpace = false) =>
-        Promise*((resolve) => {
-            let id = genID()
-            let close = (value) => {
-                let {dialogs} = rootComponent.state
-                delete dialogs[id]
-
-                rootComponent.setState({dialogs})
-                resolve(value)
-            }
-
-            let {dialogs as current} = rootComponent.state
-            let dialogs = {
-                ...current
-                [id]: <dialog-container key=id>
-                    <dialog-window fill-space=fillSpace>
-                        <Component close=close {...props} />
-                    </dialog-window>
-                </dialog-container>
-            }
-
-            rootComponent.setState({dialogs})
-        })
-
-    return {
-        show
-        alert(message, title = "Alert") => show(AlertDialog, {message, title})
-        confirm(message, title = "Confirm") => show(ConfirmDialog, {message, title})
-        prompt(message, title = "Promt") => show(PromptDialog, {message, title})
-    }
-})()
-window.dialog = dialog
-
 class Container extends React.PureComponent {
-    @bind
+    @bindDecorator
     showItem(item) => {
         let {bagID} = @props
         @props.onItemTap({
@@ -493,7 +327,7 @@ headerCSS.generate()
 @connect(app, ({chars}) => {chars})
 class CharList extends React.PureComponent {
     addChar() => {
-        let pname = await dialog.prompt("Character Name")
+        let pname = await doric.dialog.prompt("Character Name")
         let name = pname?.trim() ?? ""
 
         if name == "" {
@@ -504,7 +338,7 @@ class CharList extends React.PureComponent {
     }
 
     reset() => {
-        let confirmed = await dialog.confirm("Reset all data?")
+        let confirmed = await doric.dialog.confirm("Reset all data?")
 
         if confirmed == true {
             localStorage.clear()
@@ -565,9 +399,9 @@ let Test = ({bagID, name, index, close}) =>
 )
 class CharacterBags extends React.PureComponent {
     showItem({bagID, item}) => {
-        dialog.show(
-            Test
-            {bagID, ...item}
+        doric.dialog.show(
+            ItemInfo
+            {bagID, item}
         )
     }
 
@@ -621,7 +455,7 @@ class AddBag extends React.Component {
         }
     }
 
-    @bind
+    @bindDecorator
     update(name, prop = ".target.value") => {
         let read = Function*("evt", `return evt${prop}`)
         return (evt) => @setState({
@@ -629,7 +463,7 @@ class AddBag extends React.Component {
         })
     }
 
-    @bind
+    @bindDecorator
     addBag() => {
         let {charID} = @props.routeInfo.params
         let {name, magical, weight, weightLimit} = @state
@@ -718,7 +552,7 @@ class AddItem extends React.Component {
         }
     }
 
-    @bind
+    @bindDecorator
     update(name, prop = ".target.value") => {
         let read = Function*("evt", `return evt${prop}`)
         return (evt) => @setState({
@@ -726,7 +560,7 @@ class AddItem extends React.Component {
         })
     }
 
-    @bind
+    @bindDecorator
     addItem() => {
         let {bagID, name, weight, count} = @state
 
@@ -737,7 +571,7 @@ class AddItem extends React.Component {
         }
 
         if name == "" || validNumber(item.weight) == false || validNumber(item.count) == false {
-            alert("Item weight or count is invalid")
+            doric.dialog.alert("Item weight or count is invalid", null)
             return
         }
 
@@ -777,6 +611,57 @@ class AddItem extends React.Component {
                 </doric.grid>
             </doric.panel>
         </div>
+    }
+}
+
+class ItemInfo extends React.Component {
+    constructor(props) => {
+        super(props)
+        @state = {...@props.item}
+    }
+
+    @bindDecorator
+    cancel() => @props.close(null)
+
+    @bindDecorator
+    save() => {
+        console.log(@state)
+    }
+
+    @bindDecorator
+    remove() => {
+        let {bagID, item} = @props
+        let userConfirm = await doric.dialog.confirm(`Remove ${item.name}?`)
+
+        if userConfirm == true {
+            actions."bags.$removeItem"(bagID, item.id)
+            @props.close(null)
+        }
+    }
+
+    render() => {
+        let {bagID, item} = @props
+
+        return <alert-dialog>
+            <alert-title>{item.name}</alert-title>
+            <alert-content>
+                <pre>{JSON.stringify([bagID, item])}</pre>
+            </alert-content>
+            <doric.grid cols=2>
+                <doric.button block danger onTap=@remove>
+                    <ion-icon class="ion-md-trash" />
+                </doric.button>
+                <doric.button block secondary onTap=@save>
+                    <ion-icon class="ion-md-save" />
+                </doric.button>
+                <doric.button block primary onTap=@move>
+                    <ion-icon class="ion-md-send" />
+                </doric.button>
+                <doric.button block primary onTap=@cancel>
+                    <ion-icon class="ion-md-close" />
+                </doric.button>
+            </doric.grid>
+        </alert-dialog>
     }
 }
 

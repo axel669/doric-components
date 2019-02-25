@@ -1,0 +1,211 @@
+import {Component} from "react"
+import ReactDOM from "react-dom"
+import ssjs from "ssjs"
+import bind from "@axel669/bind"
+
+import CustomListeners from "./customListeners.tea"
+import Button from "./button.tea"
+import Grid from "./grid.tea"
+
+let dialogCSS = ssjs(
+    {
+        "dialog-root": {
+            position: "absolute"
+            top: 0
+            left: 0
+        }
+        "dialog-container": {
+            position: "fixed"
+            top: 0
+            left: 0
+            right: 0
+            bottom: 0
+            backgroundColor: "rgba(0, 0, 0, 0.6)"
+            "&:empty": {
+                display: "none"
+            }
+        }
+        "dialog-window": {
+            backgroundColor: "white"
+            border: "1px solid lightgray"
+            borderRadius: 4
+            padding: 4
+            overflow: "auto"
+            position: "absolute"
+            top: "20%"
+            left: "50%"
+            transform: "translateX(-50%)"
+            maxHeight: 480
+            overflow: "hidden"
+            "&[fill-space='true']": {
+                width: "75%"
+                height: "50%"
+            }
+        }
+        "@media (max-width: 768px)": {
+            "dialog-window": {
+                maxWidth: "75%"
+            }
+        }
+        "@media (min-width: 768px)": {
+            "dialog-window": {
+                maxWidth: 640
+            }
+        }
+        "alert-dialog": {
+            display: "block"
+            minWidth: 150
+            "& alert-title": {
+                display: "flex"
+                borderBottom: "1px solid black"
+                padding: 12
+                alignItems: "center"
+                justifyContent: "center"
+                fontSize: 20
+            }
+            "& alert-content": {
+                display: "block"
+                textAlign: "center"
+                padding: "12px 0px"
+                "&[wide]": {
+                    minWidth: 220
+                }
+                overflow: "auto"
+            }
+        }
+    }
+    {name: "dialog-css"}
+)
+dialogCSS.generate()
+
+let rootElem = document.createElement("dialog-root")
+let stopTap = (evt) => {
+    evt.stopPropagation()
+    evt.preventDefault()
+}
+
+if document.readyState == "loading" {
+    document.addEventListener(
+        "DOMContentLoaded"
+        () => document.body.appendChild(rootElem)
+    )
+}
+else {
+    document.body.appendChild(rootElem)
+}
+
+class DialogList extends Component {
+    constructor(props) => {
+        super(props)
+
+        @state = {dialogs: {}}
+    }
+
+    render() => Object.values(@state.dialogs)
+}
+let rootComponent = ReactDOM.render(
+    <DialogList />
+    rootElem
+)
+
+let AlertDialog = ({message, title, close}) => {
+    let closeHandler = () => close(null)
+
+    return <alert-dialog>
+        <alert-title>{title}</alert-title>
+        <alert-content>{message}</alert-content>
+        <Button block primary flat text="OK" onTap=closeHandler />
+    </alert-dialog>
+}
+let ConfirmDialog = ({message, title, close}) => {
+    let okHandle = () => close(true)
+    let cancelHandle = () => close(false)
+
+    return <alert-dialog>
+        <alert-title>{title}</alert-title>
+        <alert-content wide>{message}</alert-content>
+        <Grid cols=2>
+            <Button block danger flat text="Cancel" onTap=cancelHandle />
+            <Button block primary flat text="OK" onTap=okHandle />
+        </Grid>
+    </alert-dialog>
+}
+class PromptDialog extends Component {
+    constructor(props) => {
+        super(props)
+        @state = {value: ""}
+
+        @cancel = () => @props.close(null)
+        @respond = (evt) => {
+            evt.preventDefault()
+            @props.close(@state.value)
+        }
+
+        @update = (evt) => @setState({evt.target.value})
+    }
+
+    @bind
+    register(input) => {
+        @input = input
+    }
+
+    componentDidMount() => setTimeout(() => @input.focus(), 0)
+
+    render() => {
+        let {close, message, title} = @props
+        let {value} = @state
+
+        return <alert-dialog>
+            <alert-title>{title}</alert-title>
+            <alert-content wide>
+                {message}
+                <form onSubmit=@respond>
+                    <doric.input domRef=@register value=value onChange=@update />
+                </form>
+            </alert-content>
+            <Grid cols=2>
+                <Button block danger flat text="Cancel" onTap=@cancel />
+                <Button block primary flat text="OK" onTap=@respond />
+            </Grid>
+        </alert-dialog>
+    }
+}
+
+let genID = () => Date.now().toString()
+let show = (Component, props = {}, fillSpace = false) =>
+    Promise*((resolve) => {
+        let id = genID()
+        let close = (value) => {
+            let {dialogs} = rootComponent.state
+            delete dialogs[id]
+
+            rootComponent.setState({dialogs})
+            resolve(value)
+        }
+
+        let tapHandler = (evt) => {
+            if evt.target.tagName.toLowerCase() == "dialog-container" {
+                close(null)
+            }
+        }
+
+        let {dialogs as current} = rootComponent.state
+        let dialogs = {
+            ...current
+            [id]: <dialog-container key=id>
+                <CustomListeners onTap=tapHandler />
+                <dialog-window fill-space=fillSpace>
+                    <Component close=close {...props} />
+                </dialog-window>
+            </dialog-container>
+        }
+
+        rootComponent.setState({dialogs})
+    })
+
+export default {
+    show
+    alert(message, title = "Alert") => show(AlertDialog, {message, title})
+    confirm(message, title = "Confirm") => show(ConfirmDialog, {message, title})
+    prompt(message, title = "Promt") => show(PromptDialog, {message, title})
+}

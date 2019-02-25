@@ -9,6 +9,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@axel669/bind": "^1.0.0",
     "@axel669/teascript": "^0.14.3",
     "gesturesjs": "^1.0.0",
     "ionicons": "^4.5.5",

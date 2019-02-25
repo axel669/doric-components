@@ -75,7 +75,7 @@ inputCSS.generate(theme)
 class Input extends PureComponent {
     render() => {
         let {
-            label, value, onChange
+            label, value, onChange, domRef
             disabled, optional, required, className, boring
             type = "text"
             wrapProps
@@ -96,7 +96,7 @@ class Input extends PureComponent {
         return <doric-input {...wrapProps}>
             <fieldset {...props}>
                 <legend>{label}</legend>
-                <input type=type disabled=disabled value=value onChange=onChange />
+                <input ref=domRef type=type disabled=disabled value=value onChange=onChange />
             </fieldset>
         </doric-input>
     }

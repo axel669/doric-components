@@ -1,6 +1,9 @@
 'use strict';
 
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
 var react = require('react');
+var ReactDOM = _interopDefault(require('react-dom'));
 
 const isMobile =
     typeof orientation !== "undefined" ||
@@ -1147,6 +1150,7 @@ class Input extends react.PureComponent {
             label,
             value,
             onChange,
+            domRef,
             disabled,
             optional,
             required,
@@ -1178,6 +1182,7 @@ class Input extends react.PureComponent {
                 },
                 React.createElement("legend", {}, label),
                 React.createElement("input", {
+                    ref: domRef,
                     type: type,
                     disabled: disabled,
                     value: value,
@@ -1521,6 +1526,314 @@ class List extends React.PureComponent {
     }
 }
 
+const bind = (target, name, desc) => {
+    const unbound = desc.value;
+    return {
+        enumerable: desc.enumerable,
+        configurable: true,
+        get: function() {
+            const bound = unbound.bind(this);
+            Object.defineProperty(this, name, {
+                enumerable: desc.enumerable,
+                configurable: false,
+                value: bound
+            });
+            return bound;
+        }
+    };
+};
+
+var bind_1 = bind;
+
+const dialogCSS = ss(
+    {
+        "dialog-root": {
+            position: "absolute",
+            top: 0,
+            left: 0
+        },
+        "dialog-container": {
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.6)",
+            "&:empty": {
+                display: "none"
+            }
+        },
+        "dialog-window": {
+            backgroundColor: "white",
+            border: "1px solid lightgray",
+            borderRadius: 4,
+            padding: 4,
+            overflow: "auto",
+            position: "absolute",
+            top: "20%",
+            left: "50%",
+            transform: "translateX(-50%)",
+            maxHeight: 480,
+            overflow: "hidden",
+            "&[fill-space='true']": {
+                width: "75%",
+                height: "50%"
+            }
+        },
+        "@media (max-width: 768px)": {
+            "dialog-window": {
+                maxWidth: "75%"
+            }
+        },
+        "@media (min-width: 768px)": {
+            "dialog-window": {
+                maxWidth: 640
+            }
+        },
+        "alert-dialog": {
+            display: "block",
+            minWidth: 150,
+            "& alert-title": {
+                display: "flex",
+                borderBottom: "1px solid black",
+                padding: 12,
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 20
+            },
+            "& alert-content": {
+                display: "block",
+                textAlign: "center",
+                padding: "12px 0px",
+                "&[wide]": {
+                    minWidth: 220
+                },
+                overflow: "auto"
+            }
+        }
+    },
+    {
+        name: "dialog-css"
+    }
+);
+dialogCSS.generate();
+const rootElem = document.createElement("dialog-root");
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () =>
+        document.body.appendChild(rootElem)
+    );
+} else {
+    document.body.appendChild(rootElem);
+}
+class DialogList extends react.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            dialogs: {}
+        };
+    }
+    render() {
+        return Object.values(this.state.dialogs);
+    }
+}
+const rootComponent = ReactDOM.render(
+    React.createElement(DialogList, {}),
+    rootElem
+);
+const AlertDialog = ({ message, title, close }) => {
+    const closeHandler = () => close(null);
+    return React.createElement(
+        "alert-dialog",
+        {},
+        React.createElement("alert-title", {}, title),
+        React.createElement("alert-content", {}, message),
+        React.createElement(Button, {
+            block: true,
+            primary: true,
+            flat: true,
+            text: "OK",
+            onTap: closeHandler
+        })
+    );
+};
+const ConfirmDialog = ({ message, title, close }) => {
+    const okHandle = () => close(true);
+    const cancelHandle = () => close(false);
+    return React.createElement(
+        "alert-dialog",
+        {},
+        React.createElement("alert-title", {}, title),
+        React.createElement(
+            "alert-content",
+            {
+                wide: true
+            },
+            message
+        ),
+        React.createElement(
+            Grid,
+            {
+                cols: 2
+            },
+            React.createElement(Button, {
+                block: true,
+                danger: true,
+                flat: true,
+                text: "Cancel",
+                onTap: cancelHandle
+            }),
+            React.createElement(Button, {
+                block: true,
+                primary: true,
+                flat: true,
+                text: "OK",
+                onTap: okHandle
+            })
+        )
+    );
+};
+class PromptDialog extends react.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            value: ``
+        };
+        this.cancel = () => this.props.close(null);
+        this.respond = (evt) => {
+            evt.preventDefault();
+            this.props.close(this.state.value);
+        };
+        this.update = (evt) =>
+            this.setState({
+                value: evt.target.value
+            });
+    }
+    register(input) {
+        this.input = input;
+    }
+    componentDidMount() {
+        return setTimeout(() => this.input.focus(), 0);
+    }
+    render() {
+        const { close, message, title } = this.props;
+        const { value } = this.state;
+        return React.createElement(
+            "alert-dialog",
+            {},
+            React.createElement("alert-title", {}, title),
+            React.createElement(
+                "alert-content",
+                {
+                    wide: true
+                },
+                message,
+                React.createElement(
+                    "form",
+                    {
+                        onSubmit: this.respond
+                    },
+                    React.createElement(doric.input, {
+                        domRef: this.register,
+                        value: value,
+                        onChange: this.update
+                    })
+                )
+            ),
+            React.createElement(
+                Grid,
+                {
+                    cols: 2
+                },
+                React.createElement(Button, {
+                    block: true,
+                    danger: true,
+                    flat: true,
+                    text: "Cancel",
+                    onTap: this.cancel
+                }),
+                React.createElement(Button, {
+                    block: true,
+                    primary: true,
+                    flat: true,
+                    text: "OK",
+                    onTap: this.respond
+                })
+            )
+        );
+    }
+}
+Object.defineProperty(
+    PromptDialog.prototype,
+    "register",
+    [bind_1].reduceRight(
+        (descriptor, decorator) =>
+            decorator(PromptDialog.prototype, "register", descriptor),
+        Object.getOwnPropertyDescriptor(PromptDialog.prototype, "register")
+    )
+);
+const genID = () => Date.now().toString();
+const show = (Component, props = {}, fillSpace = false) =>
+    new Promise((resolve) => {
+        const id = genID();
+        const close = (value) => {
+            const { dialogs } = rootComponent.state;
+            delete dialogs[id];
+            rootComponent.setState({
+                dialogs: dialogs
+            });
+            resolve(value);
+        };
+        const tapHandler = (evt) => {
+            if (evt.target.tagName.toLowerCase() === "dialog-container") {
+                close(null);
+            }
+        };
+        const { dialogs: current } = rootComponent.state;
+        const dialogs = {
+            ...current,
+            [id]: React.createElement(
+                "dialog-container",
+                {
+                    key: id
+                },
+                React.createElement(CustomListeners, {
+                    onTap: tapHandler
+                }),
+                React.createElement(
+                    "dialog-window",
+                    {
+                        "fill-space": fillSpace
+                    },
+                    React.createElement(Component, {
+                        close: close,
+                        ...props
+                    })
+                )
+            )
+        };
+        rootComponent.setState({
+            dialogs: dialogs
+        });
+    });
+var dialog = {
+    show: show,
+    alert: (message, title = "Alert") =>
+        show(AlertDialog, {
+            message: message,
+            title: title
+        }),
+    confirm: (message, title = "Confirm") =>
+        show(ConfirmDialog, {
+            message: message,
+            title: title
+        }),
+    prompt: (message, title = "Promt") =>
+        show(PromptDialog, {
+            message: message,
+            title: title
+        })
+};
+
 const mainCSS = ss(
     {
         "*": {
@@ -1558,7 +1871,7 @@ const mainCSS = ss(
     }
 );
 mainCSS.generate(theme);
-var doric = {
+var doric$1 = {
     button: Button,
     panel: Panel,
     image: Image,
@@ -1569,7 +1882,8 @@ var doric = {
     grid: Grid,
     select: Select,
     list: List,
-    customListeners: CustomListeners
+    customListeners: CustomListeners,
+    dialog: dialog
 };
 
-module.exports = doric;
+module.exports = doric$1;
