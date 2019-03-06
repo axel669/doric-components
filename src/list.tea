@@ -38,14 +38,15 @@ listCSS.generate(theme)
 class List extends React.PureComponent {
     render() => {
         let {
-            items, label, propName = "text",
+            items, label, propName = "label",
             onItemTap
             ...passThrough
         } = @props
         let onTap = (evt) => {
             let index = parseInt(evt.target.dataset.index)
 
-            onItemTap?(items[index])
+            evt.item = items[index]
+            onItemTap?(evt)
         }
 
         return <doric-list {...passThrough}>
