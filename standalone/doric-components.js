@@ -1487,7 +1487,7 @@ var doric = (function (react, ReactDOM) {
             const {
                 items,
                 label,
-                propName = "text",
+                propName = "label",
                 onItemTap,
                 ...passThrough
             } = this.props;
@@ -1495,7 +1495,8 @@ var doric = (function (react, ReactDOM) {
                 var nullref0;
 
                 const index = parseInt(evt.target.dataset.index);
-                (nullref0 = onItemTap) != null ? nullref0(items[index]) : undefined;
+                evt.item = items[index];
+                (nullref0 = onItemTap) != null ? nullref0(evt) : undefined;
             };
             return React.createElement(
                 "doric-list",
@@ -1832,6 +1833,64 @@ var doric = (function (react, ReactDOM) {
             })
     };
 
+    const radioCSS = ss({
+        "doric-radio": {
+            display: "block",
+            "& doric-item": {
+                display: "block",
+                padding: 8,
+                borderBottom: "1px solid black",
+                ...tappable(Color(0, 0, 0, 0.4).toString())
+            }
+        }
+    });
+    radioCSS.generate(theme);
+    class Radio extends react.PureComponent {
+        render() {
+            const {
+                items,
+                propName = "label",
+                value,
+                onItemTap,
+                ...passThrough
+            } = this.props;
+            const onTap = (evt) => {
+                var nullref0;
+
+                const index = parseInt(evt.target.dataset.index);
+                evt.item = items[index];
+                (nullref0 = onItemTap) != null ? nullref0(evt) : undefined;
+            };
+            return React.createElement(
+                "doric-radio",
+                {
+                    ...passThrough
+                },
+                React.createElement(CustomListeners, {
+                    onTap: onTap
+                }),
+                items.map((item, index) => {
+                    const iconName =
+                        item.value === value
+                            ? "ion-md-radio-button-on"
+                            : "ion-md-radio-button-off";
+                    return React.createElement(
+                        "doric-item",
+                        {
+                            key: index,
+                            "data-index": index
+                        },
+                        React.createElement("ion-icon", {
+                            class: iconName
+                        }),
+                        " ",
+                        item[propName]
+                    );
+                })
+            );
+        }
+    }
+
     const mainCSS = ss(
         {
             "*": {
@@ -1881,7 +1940,8 @@ var doric = (function (react, ReactDOM) {
         select: Select,
         list: List,
         customListeners: CustomListeners,
-        dialog: dialog
+        dialog: dialog,
+        radio: Radio
     };
 
     return doric$1;
