@@ -21,16 +21,30 @@
     <body>
         <app-root></app-root>
         <script src="../standalone/doric-components.js"></script>
-        <script type="text/teascript" src="inventory.tea"></script>
-        <!-- <script type="text/teascript">
+        <!-- <script type="text/teascript" src="inventory.tea"></script> -->
+        <script type="text/teascript">
         class Main extends React.Component {
+            constructor(props) => {
+                super(props)
+                @state = {
+                    value: 4
+                }
+            }
+
             render() => {
-                let items = [0...30: (n) =>
-                    {value: n ** n, text: `Item ${n}`}
+                let items = [0...6: (n) =>
+                    {
+                        value: n,
+                        label: `Item ${n}`
+                    }
                 ]
 
+                let handle = (evt) => @setState({
+                    value: evt.item.value
+                })
+
                 return <div>
-                    <doric.list items=items />
+                    <doric.radio items=items value=@state.value onItemTap=handle />
                 </div>
             }
         }
@@ -39,6 +53,6 @@
             <Main />
             document.querySelector("app-root")
         )
-        </script> -->
+        </script>
     </body>
 </html>

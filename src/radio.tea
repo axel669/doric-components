@@ -1,0 +1,55 @@
+import {PureComponent} from "react"
+import ssjs from "ssjs"
+
+import theme from "./helpers/theme.tea"
+import {tappable, Color} from "./helpers/css-color.tea"
+
+import CustomListeners from "./customListeners.tea"
+
+let radioCSS = ssjs({
+    "doric-radio": {
+        display: "block"
+        "& doric-item": {
+            display: "block"
+            padding: 8
+            borderBottom: "1px solid black"
+            ...tappable(Color(0, 0, 0, 0.4).toString())
+        }
+    }
+})
+radioCSS.generate(theme)
+
+class Radio extends PureComponent {
+    render() => {
+        let {
+            items, propName = "label",
+            value,
+            onItemTap,
+            ...passThrough
+        } = @props
+        let onTap = (evt) => {
+            let index = parseInt(evt.target.dataset.index)
+
+            evt.item = items[index]
+            onItemTap?(evt)
+        }
+
+        return <doric-radio {...passThrough}>
+            <CustomListeners onTap=onTap />
+            {items.map(
+                (item, index) => {
+                    let iconName = (item.value == value)
+                        ? "ion-md-radio-button-on"
+                        : "ion-md-radio-button-off"
+                    return <doric-item key=index data-index=index>
+                        <ion-icon class=iconName />
+                        {" "}
+                        {item[propName]}
+                    </doric-item>
+                }
+            )}
+        </doric-radio>
+    }
+}
+
+export default Radio
