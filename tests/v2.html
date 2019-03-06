@@ -27,27 +27,63 @@
             constructor(props) => {
                 super(props)
                 @state = {
-                    value: 4
+                    active: false
                 }
             }
 
             render() => {
-                let items = [0...6: (n) =>
-                    {
-                        value: n,
-                        label: `Item ${n}`
-                    }
-                ]
-
-                let handle = (evt) => @setState({
-                    value: evt.item.value
-                })
-
                 return <div>
-                    <doric.radio items=items value=@state.value onItemTap=handle />
+                    <Tabs>
+                        <Tab label="test">
+                            test
+                        </Tab>
+                        <Tab label="test #2">
+                            test #2
+                        </Tab>
+                    </Tabs>
                 </div>
             }
         }
+
+        let tabCSS = SSJS(
+            {
+                "doric-tabs": {
+                    display: "block"
+                    "& doric-tab-bar": {
+                        display: "block"
+                        borderBottom: "1px solid black"
+                    }
+                    "& tab": {
+                        display: "block"
+                    }
+                }
+            }
+            {name: "doric-tabs"}
+        )
+        tabCSS.generate()
+        class Tabs extends React.PureComponent {
+            render() => {
+                let {selectedTab = 0} = @props
+                let children = React.Children.toArray(@props.children)
+
+                let list = children.map(
+                    (child) => child.props.label
+                )
+                let displayed = children[selectedTab]
+
+                console.log(list)
+
+                return <doric-tabs>
+                    <doric-tab-bar>
+                        {list.map(
+                            (label, index) => <doric-tab key=index active={index == selectedTab}>{label}</doric-tab>
+                        )}
+                    </doric-tab-bar>
+                    {displayed}
+                </doric-tabs>
+            }
+        }
+        const Tab = (props) => <doric-tab {...props} />
 
         ReactDOM.render(
             <Main />
