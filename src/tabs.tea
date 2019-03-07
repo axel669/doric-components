@@ -1,0 +1,74 @@
+import {Component} from "react"
+import ssjs from "ssjs"
+
+import theme from "./helpers/theme.tea"
+import classes from "./helpers/classes.tea"
+import {tappable, Color} from "./helpers/css-color.tea"
+
+import Grid from "./grid.tea"
+
+let tabCSS = ssjs(
+    {
+        "doric-tabs": {
+            display: "block"
+            "& doric-tab-bar": {
+                display: "block"
+            }
+            "& doric-tab": {
+                display: "inline-block"
+                padding: "8px 0px"
+                textAlign: "center"
+                borderBottom: "2px solid transparent"
+                ...tappable((theme) => theme.highlightColor)
+                "&[active='true']": {
+                    color: (theme) => theme.color.primary
+                    borderBottomColor: (theme) => theme.color.primary
+                }
+            }
+        }
+    }
+    {name: "doric-tabs"}
+)
+tabCSS.generate(theme)
+class Tabs extends React.PureComponent {
+    render() => {
+        let {
+            selectedTab = 0, cols = 4, onTabChange,
+            children as _children,
+            ...passThrough
+        } = @props
+        let children = React.Children.toArray(_children)
+
+        let list = children.map(
+            (child) => child.props.label
+        )
+        let displayed = children[selectedTab]
+        let tabChange = (evt) => {
+            let newTab = parseInt(evt.target.dataset.index)
+
+            evt.selectedTab = newTab
+            onTabChange?(evt)
+        }
+
+        return <doric-tabs {...passThrough}>
+            <doric-tab-bar>
+                <doric.customListeners onTap=tabChange />
+                <Grid cols=cols>
+                    {list.map(
+                        (label, index) => <doric-tab
+                            key=index
+                            data-index=index
+                            active={index == selectedTab}
+                        >
+                            {label}
+                        </doric-tab>
+                    )}
+                </Grid>
+            </doric-tab-bar>
+            {displayed}
+        </doric-tabs>
+    }
+}
+let Tab = (props) => <doric-tab {...props} />
+
+export {Tabs, Tab}

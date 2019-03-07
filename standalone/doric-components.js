@@ -1839,7 +1839,6 @@ var doric = (function (react, ReactDOM) {
             "& doric-item": {
                 display: "block",
                 padding: 8,
-                borderBottom: "1px solid black",
                 ...tappable(Color(0, 0, 0, 0.4).toString())
             }
         }
@@ -1891,6 +1890,88 @@ var doric = (function (react, ReactDOM) {
         }
     }
 
+    const tabCSS = ss(
+        {
+            "doric-tabs": {
+                display: "block",
+                "& doric-tab-bar": {
+                    display: "block"
+                },
+                "& doric-tab": {
+                    display: "inline-block",
+                    padding: "8px 0px",
+                    textAlign: "center",
+                    borderBottom: "2px solid transparent",
+                    ...tappable((theme$$1) => theme$$1.highlightColor),
+                    "&[active='true']": {
+                        color: (theme$$1) => theme$$1.color.primary,
+                        borderBottomColor: (theme$$1) => theme$$1.color.primary
+                    }
+                }
+            }
+        },
+        {
+            name: "doric-tabs"
+        }
+    );
+    tabCSS.generate(theme);
+    class Tabs extends React.PureComponent {
+        render() {
+            const {
+                selectedTab = 0,
+                cols = 4,
+                onTabChange,
+                children: _children,
+                ...passThrough
+            } = this.props;
+            const children = React.Children.toArray(_children);
+            const list = children.map((child) => child.props.label);
+            const displayed = children[selectedTab];
+            const tabChange = (evt) => {
+                var nullref0;
+
+                const newTab = parseInt(evt.target.dataset.index);
+                evt.selectedTab = newTab;
+                (nullref0 = onTabChange) != null ? nullref0(evt) : undefined;
+            };
+            return React.createElement(
+                "doric-tabs",
+                {
+                    ...passThrough
+                },
+                React.createElement(
+                    "doric-tab-bar",
+                    {},
+                    React.createElement(doric.customListeners, {
+                        onTap: tabChange
+                    }),
+                    React.createElement(
+                        Grid,
+                        {
+                            cols: cols
+                        },
+                        list.map((label, index) =>
+                            React.createElement(
+                                "doric-tab",
+                                {
+                                    key: index,
+                                    "data-index": index,
+                                    active: index === selectedTab
+                                },
+                                label
+                            )
+                        )
+                    )
+                ),
+                displayed
+            );
+        }
+    }
+    const Tab = (props) =>
+        React.createElement("doric-tab", {
+            ...props
+        });
+
     const mainCSS = ss(
         {
             "*": {
@@ -1941,7 +2022,9 @@ var doric = (function (react, ReactDOM) {
         list: List,
         customListeners: CustomListeners,
         dialog: dialog,
-        radio: Radio
+        radio: Radio,
+        tab: Tab,
+        tabs: Tabs
     };
 
     return doric$1;

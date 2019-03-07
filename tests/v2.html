@@ -27,63 +27,34 @@
             constructor(props) => {
                 super(props)
                 @state = {
-                    active: false
+                    tab: 0
                 }
             }
 
             render() => {
+                let change = (evt) => @setState({
+                    tab: evt.selectedTab
+                })
+                let items = [0...10: (n) =>
+                    {value: n, label: `Item ${n}`}
+                ]
+
                 return <div>
-                    <Tabs>
-                        <Tab label="test">
+                    <doric.tabs selectedTab=@state.tab onTabChange=change cols=3>
+                        <doric.tab label="test">
                             test
-                        </Tab>
-                        <Tab label="test #2">
+                        </doric.tab>
+                        <doric.tab label="test #2">
                             test #2
-                        </Tab>
-                    </Tabs>
+                        </doric.tab>
+                        <doric.tab label="test #3">
+                            test #3
+                        </doric.tab>
+                    </doric.tabs>
+                    <doric.radio value=0 items=items />
                 </div>
             }
         }
-
-        let tabCSS = SSJS(
-            {
-                "doric-tabs": {
-                    display: "block"
-                    "& doric-tab-bar": {
-                        display: "block"
-                        borderBottom: "1px solid black"
-                    }
-                    "& tab": {
-                        display: "block"
-                    }
-                }
-            }
-            {name: "doric-tabs"}
-        )
-        tabCSS.generate()
-        class Tabs extends React.PureComponent {
-            render() => {
-                let {selectedTab = 0} = @props
-                let children = React.Children.toArray(@props.children)
-
-                let list = children.map(
-                    (child) => child.props.label
-                )
-                let displayed = children[selectedTab]
-
-                console.log(list)
-
-                return <doric-tabs>
-                    <doric-tab-bar>
-                        {list.map(
-                            (label, index) => <doric-tab key=index active={index == selectedTab}>{label}</doric-tab>
-                        )}
-                    </doric-tab-bar>
-                    {displayed}
-                </doric-tabs>
-            }
-        }
-        const Tab = (props) => <doric-tab {...props} />
 
         ReactDOM.render(
             <Main />
