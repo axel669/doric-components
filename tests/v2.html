@@ -12,7 +12,7 @@
         <script src="https://unpkg.com/react-dom@16.7.0/umd/react-dom.development.js"></script>
         <script src="https://unpkg.com/pubsub-js@1.7.0/src/pubsub.js"></script>
 
-        <script src="https://unpkg.com/@axel669/teascript@0.14.3/standalone/transpiler.js"></script>
+        <script src="https://unpkg.com/@axel669/teascript@0.14.4/standalone/transpiler.js"></script>
         <script src="https://unpkg.com/@axel669/norn@0.4.1/standalone/norn.js"></script>
         <script src="https://unpkg.com/@axel669/immutable-update@0.1.0/browser/update.js"></script>
         <script src="https://unpkg.com/ssjs@1.0.0/standalone/ss.js"></script>
@@ -23,6 +23,8 @@
         <script src="../standalone/doric-components.js"></script>
         <!-- <script type="text/teascript" src="inventory.tea"></script> -->
         <script type="text/teascript">
+        let Test = ({item}) => <div style={textAlign: "center"}>{item.label}</div>
+
         class Main extends React.Component {
             constructor(props) => {
                 super(props)
@@ -51,7 +53,7 @@
                             test #3
                         </doric.tab>
                     </doric.tabs>
-                    <doric.radio value=0 items=items />
+                    <doric.list items=items itemRenderer=Test />
                 </div>
             }
         }

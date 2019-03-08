@@ -1484,6 +1484,8 @@ const listCSS = ss({
     }
 });
 listCSS.generate(theme);
+const ListItem = ({ item, propName }) =>
+    React.createElement("div", {}, item[propName]);
 class List extends React.PureComponent {
     render() {
         const {
@@ -1491,6 +1493,7 @@ class List extends React.PureComponent {
             label,
             propName = "label",
             onItemTap,
+            itemRenderer: ItemRenderer = ListItem,
             ...passThrough
         } = this.props;
         const onTap = (evt) => {
@@ -1519,7 +1522,10 @@ class List extends React.PureComponent {
                             key: index,
                             "data-index": index
                         },
-                        item[propName]
+                        React.createElement(ItemRenderer, {
+                            item: item,
+                            propName: propName
+                        })
                     )
                 )
             )
@@ -1695,9 +1701,10 @@ const ConfirmDialog = ({ message, title, close }) => {
 };
 class PromptDialog extends react.Component {
     constructor(props) {
+        var nullref0;
         super(props);
         this.state = {
-            value: ``
+            value: (nullref0 = this.props.value) != null ? nullref0 : ``
         };
         this.cancel = () => this.props.close(null);
         this.respond = (evt) => {
@@ -1716,7 +1723,7 @@ class PromptDialog extends react.Component {
         return setTimeout(() => this.input.focus(), 0);
     }
     render() {
-        const { close, message, title } = this.props;
+        const { close, message, title, type } = this.props;
         const { value } = this.state;
         return React.createElement(
             "alert-dialog",
@@ -1734,6 +1741,7 @@ class PromptDialog extends react.Component {
                         onSubmit: this.respond
                     },
                     React.createElement(doric.input, {
+                        type: type,
                         domRef: this.register,
                         value: value,
                         onChange: this.update
@@ -1828,10 +1836,12 @@ var dialog = {
             message: message,
             title: title
         }),
-    prompt: (message, title = "Promt") =>
+    prompt: (value, message, type = "text", title = "Promt") =>
         show(PromptDialog, {
+            value: value,
             message: message,
-            title: title
+            title: title,
+            type: type
         })
 };
 

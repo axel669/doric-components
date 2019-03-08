@@ -133,7 +133,7 @@ let ConfirmDialog = ({message, title, close}) => {
 class PromptDialog extends Component {
     constructor(props) => {
         super(props)
-        @state = {value: ""}
+        @state = {value: @props.value ?? ""}
 
         @cancel = () => @props.close(null)
         @respond = (evt) => {
@@ -152,7 +152,7 @@ class PromptDialog extends Component {
     componentDidMount() => setTimeout(() => @input.focus(), 0)
 
     render() => {
-        let {close, message, title} = @props
+        let {close, message, title, type} = @props
         let {value} = @state
 
         return <alert-dialog>
@@ -160,7 +160,7 @@ class PromptDialog extends Component {
             <alert-content wide>
                 {message}
                 <form onSubmit=@respond>
-                    <doric.input domRef=@register value=value onChange=@update />
+                    <doric.input type=type domRef=@register value=value onChange=@update />
                 </form>
             </alert-content>
             <Grid cols=2>
@@ -207,5 +207,5 @@ export default {
     show
     alert(message, title = "Alert") => show(AlertDialog, {message, title})
     confirm(message, title = "Confirm") => show(ConfirmDialog, {message, title})
-    prompt(message, title = "Promt") => show(PromptDialog, {message, title})
+    prompt(value, message, type = "text", title = "Promt") => show(PromptDialog, {value, message, title, type})
 }

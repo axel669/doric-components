@@ -35,11 +35,14 @@ let listCSS = ssjs({
 })
 listCSS.generate(theme)
 
+let ListItem = ({item, propName}) => <div>{item[propName]}</div>
+
 class List extends React.PureComponent {
     render() => {
         let {
             items, label, propName = "label",
-            onItemTap
+            onItemTap, onItemHold
+            itemRenderer as ItemRenderer = ListItem
             ...passThrough
         } = @props
         let onTap = (evt) => {
@@ -48,16 +51,22 @@ class List extends React.PureComponent {
             evt.item = items[index]
             onItemTap?(evt)
         }
+        let onHold = (evt) => {
+            let index = parseInt(evt.target.dataset.index)
+
+            evt.item = items[index]
+            onItemHold?(evt)
+        }
 
         return <doric-list {...passThrough}>
             <doric-list-header>
                 {label}
             </doric-list-header>
             <doric-list-content>
-                <CustomListeners onTap=onTap />
+                <CustomListeners onTap=onTap onHold=onHold />
                 {items.map(
                     (item, index) => <doric-item key=index data-index=index>
-                        {item[propName]}
+                        <ItemRenderer item=item propName=propName />
                     </doric-item>
                 )}
             </doric-list-content>
