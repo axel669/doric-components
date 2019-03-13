@@ -13,24 +13,45 @@
         <script src="https://unpkg.com/pubsub-js@1.7.0/src/pubsub.js"></script>
 
         <script src="https://unpkg.com/@axel669/teascript@0.14.4/standalone/transpiler.js"></script>
-        <script src="https://unpkg.com/@axel669/norn@0.4.1/standalone/norn.js"></script>
+        <script src="https://unpkg.com/@axel669/norn@0.5.1/standalone/norn.js"></script>
+        <script src="https://unpkg.com/@axel669/norn@0.5.1/standalone/connect.js"></script>
         <script src="https://unpkg.com/@axel669/immutable-update@0.1.0/browser/update.js"></script>
         <script src="https://unpkg.com/ssjs@1.0.0/standalone/ss.js"></script>
         <script src="https://unpkg.com/@axel669/bind@1.0.0/standalone/bind.js"></script>
+
+        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/muicss/0.9.41/css/mui.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/muicss/0.9.41/react/mui-react.js"></script> -->
     </head>
     <body>
         <app-root></app-root>
         <script src="../standalone/doric-components.js"></script>
         <!-- <script type="text/teascript" src="inventory.tea"></script> -->
         <script type="text/teascript">
+        let {actions, ...store} = Norn({
+            wat: {
+                initial: true
+                $toggle(wat) => wat == false
+            }
+        })
+        window.actions = actions
+
+
         let Test = ({item}) => <div style={textAlign: "center"}>{item.label}</div>
 
+        @NornConnect(store)
         class Main extends React.Component {
             constructor(props) => {
                 super(props)
                 @state = {
                     tab: 0
+                    wat: true
                 }
+            }
+
+            @bindDecorator
+            toggle() => {
+                let wat = @state.wat == false
+                @setState({wat})
             }
 
             render() => {
@@ -44,16 +65,19 @@
                 return <div>
                     <doric.tabs selectedTab=@state.tab onTabChange=change cols=3>
                         <doric.tab label="test">
-                            test
+                            <doric.input label="test" />
                         </doric.tab>
                         <doric.tab label="test #2">
-                            test #2
+                            <doric.textarea boring label="Wat" />
                         </doric.tab>
                         <doric.tab label="test #3">
-                            test #3
+                            <doric.input type="range" min=0 max=100 step=1 label="Range" />
                         </doric.tab>
+                        <doric.tab label="test #4">
+                            <doric.button secondary flat=@props.wat disabled=@props.wat text="Submit" />
+                        </doric.tab>
+                        <doric.tab label={<ion-icon class="ion-md-refresh" />} />
                     </doric.tabs>
-                    <doric.list items=items itemRenderer=Test />
                 </div>
             }
         }
