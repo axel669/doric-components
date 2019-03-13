@@ -3,9 +3,6 @@ import ssjs from "ssjs"
 
 import theme from "./helpers/theme.tea"
 import classes from "./helpers/classes.tea"
-import {tappable, Color} from "./helpers/css-color.tea"
-
-import CustomListeners from "./customListeners.tea"
 
 let inputCSS = ssjs(
     {
@@ -62,7 +59,7 @@ let inputCSS = ssjs(
                 outline: "none"
             }
             "& fieldset.boring input": {
-                border: "1px solid black"
+                border: "1px solid lightgray"
                 padding: "6px 12px"
                 borderRadius: 4
             }
@@ -78,7 +75,8 @@ class Input extends PureComponent {
             label, value, onChange, domRef
             disabled, optional, required, className, boring
             type = "text"
-            wrapProps
+            wrapProps,
+            min, max, step,
             ...rest
         } = @props
 
@@ -92,11 +90,12 @@ class Input extends PureComponent {
                 boring
             })
         }
+        let inputProps = {min, max, step}
 
         return <doric-input {...wrapProps}>
             <fieldset {...props}>
                 <legend>{label}</legend>
-                <input ref=domRef type=type disabled=disabled value=value onChange=onChange />
+                <input ref=domRef type=type disabled=disabled value=value onChange=onChange {...inputProps} />
             </fieldset>
         </doric-input>
     }

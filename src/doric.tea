@@ -8,6 +8,7 @@ import label from "./label.tea"
 import collapse from "./collapse.tea"
 import checkbox from "./checkbox.tea"
 import input from "./input.tea"
+import textarea from "./textarea.tea"
 import grid from "./grid.tea"
 import select from "./select.tea"
 import list from "./list.tea"
@@ -39,7 +40,7 @@ let mainCSS = ssjs(
             width: "100%"
             height: "100%"
             fontFamily: "Roboto"
-            backgroundColor: "#F0F0F0"
+            backgroundColor: theme.bg
         }
         "div.center": {
             display: "flex"
@@ -57,18 +58,19 @@ mainCSS.generate(theme)
 
 export default {
     button
-    panel
-    image
-    label
-    collapse
     checkbox
-    input
-    grid
-    select
-    list
+    collapse
     customListeners
     dialog
-    radio,
-    tab,
+    grid
+    image
+    input
+    label
+    list
+    panel
+    radio
+    select
+    tab
     tabs
+    textarea
 }
