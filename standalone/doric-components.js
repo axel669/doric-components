@@ -513,6 +513,7 @@ var doric = (function (react, ReactDOM) {
     });
 
     const blue = Color("#1d62d5");
+    const lightblue = Color("#2196F3");
     const theme = {
         highlightColor: Color(0, 0, 0, 0.4),
         outline: blue,
@@ -524,7 +525,7 @@ var doric = (function (react, ReactDOM) {
             accent: Color("#FF4081")
         },
         bg: {
-            color: "white"
+            color: Color("#F0F0F0")
         },
         label: {
             text: {
@@ -546,6 +547,9 @@ var doric = (function (react, ReactDOM) {
                 required: Color(255, 0, 0),
                 optional: blue
             }
+        },
+        tabs: {
+            selected: lightblue
         }
     };
 
@@ -636,6 +640,7 @@ var doric = (function (react, ReactDOM) {
                 justifyContent: "center",
                 alignItems: "center",
                 margin: 2,
+                transition: "background-color 150ms linear",
                 "&:hover": {
                     cursor: "pointer"
                 },
@@ -1131,7 +1136,7 @@ var doric = (function (react, ReactDOM) {
                     outline: "none"
                 },
                 "& fieldset.boring input": {
-                    border: "1px solid black",
+                    border: "1px solid lightgray",
                     padding: "6px 12px",
                     borderRadius: 4
                 }
@@ -1156,6 +1161,86 @@ var doric = (function (react, ReactDOM) {
                 boring,
                 type = "text",
                 wrapProps,
+                min,
+                max,
+                step,
+                ...rest
+            } = this.props;
+            const props = {
+                ...rest,
+                className: classes({
+                    className: className,
+                    disabled: disabled,
+                    optional: optional,
+                    required: required,
+                    boring: boring
+                })
+            };
+            const inputProps = {
+                min: min,
+                max: max,
+                step: step
+            };
+            return React.createElement(
+                "doric-input",
+                {
+                    ...wrapProps
+                },
+                React.createElement(
+                    "fieldset",
+                    {
+                        ...props
+                    },
+                    React.createElement("legend", {}, label),
+                    React.createElement("input", {
+                        ref: domRef,
+                        type: type,
+                        disabled: disabled,
+                        value: value,
+                        onChange: onChange,
+                        ...inputProps
+                    })
+                )
+            );
+        }
+    }
+
+    const textareaCSS = ss(
+        {
+            "doric-input": {
+                "& textarea": {
+                    display: "block",
+                    width: "100%",
+                    fontSize: 16,
+                    padding: 6,
+                    borderWidth: 0,
+                    backgroundColor: "transparent",
+                    height: 80
+                },
+                "& fieldset.boring textarea": {
+                    border: "1px solid lightgray",
+                    borderRadius: 4
+                }
+            }
+        },
+        {
+            name: "doric-tetarea"
+        }
+    );
+    textareaCSS.generate(theme);
+    class Textarea extends react.PureComponent {
+        render() {
+            const {
+                label,
+                value,
+                onChange,
+                domRef,
+                disabled,
+                optional,
+                required,
+                className,
+                boring,
+                wrapProps,
                 ...rest
             } = this.props;
             const props = {
@@ -1179,9 +1264,8 @@ var doric = (function (react, ReactDOM) {
                         ...props
                     },
                     React.createElement("legend", {}, label),
-                    React.createElement("input", {
+                    React.createElement("textarea", {
                         ref: domRef,
-                        type: type,
                         disabled: disabled,
                         value: value,
                         onChange: onChange
@@ -1491,6 +1575,7 @@ var doric = (function (react, ReactDOM) {
                 label,
                 propName = "label",
                 onItemTap,
+                onItemHold,
                 itemRenderer: ItemRenderer = ListItem,
                 ...passThrough
             } = this.props;
@@ -1500,6 +1585,13 @@ var doric = (function (react, ReactDOM) {
                 const index = parseInt(evt.target.dataset.index);
                 evt.item = items[index];
                 (nullref0 = onItemTap) != null ? nullref0(evt) : undefined;
+            };
+            const onHold = (evt) => {
+                var nullref0;
+
+                const index = parseInt(evt.target.dataset.index);
+                evt.item = items[index];
+                (nullref0 = onItemHold) != null ? nullref0(evt) : undefined;
             };
             return React.createElement(
                 "doric-list",
@@ -1511,7 +1603,8 @@ var doric = (function (react, ReactDOM) {
                     "doric-list-content",
                     {},
                     React.createElement(CustomListeners, {
-                        onTap: onTap
+                        onTap: onTap,
+                        onHold: onHold
                     }),
                     items.map((item, index) =>
                         React.createElement(
@@ -1604,7 +1697,10 @@ var doric = (function (react, ReactDOM) {
                     padding: 12,
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: 20
+                    fontSize: 20,
+                    "&:empty": {
+                        display: "none"
+                    }
                 },
                 "& alert-content": {
                     display: "block",
@@ -1905,19 +2001,24 @@ var doric = (function (react, ReactDOM) {
             "doric-tabs": {
                 display: "block",
                 "& doric-tab-bar": {
-                    display: "block"
-                },
-                "& doric-tab": {
-                    display: "inline-block",
-                    padding: "8px 0px",
-                    textAlign: "center",
-                    borderBottom: "2px solid transparent",
-                    ...tappable((theme$$1) => theme$$1.highlightColor),
-                    "&[active='true']": {
-                        color: (theme$$1) => theme$$1.color.primary,
-                        borderBottomColor: (theme$$1) => theme$$1.color.primary
+                    display: "block",
+                    backgroundColor: "rgba(0, 0, 0, 0.05)",
+                    "& doric-tab": {
+                        display: "inline-block",
+                        padding: "8px 0px",
+                        textAlign: "center",
+                        borderBottom: "2px solid transparent",
+                        fontSize: 14,
+                        ...tappable((theme$$1) => theme$$1.highlightColor),
+                        "&[active='true']": {
+                            color: (theme$$1) => theme$$1.tabs.selected,
+                            borderBottomColor: (theme$$1) => theme$$1.tabs.selected
+                        }
                     }
                 }
+            },
+            "doric-tab[selected='false']": {
+                display: "none"
             }
         },
         {
@@ -1931,12 +2032,23 @@ var doric = (function (react, ReactDOM) {
                 selectedTab = 0,
                 cols = 4,
                 onTabChange,
+                liveHidden = false,
                 children: _children,
                 ...passThrough
             } = this.props;
             const children = React.Children.toArray(_children);
             const list = children.map((child) => child.props.label);
-            const displayed = children[selectedTab];
+            const tabs = children.map((child, index) =>
+                React.createElement(
+                    "doric-tab",
+                    {
+                        selected: index === selectedTab,
+                        key: index
+                    },
+                    child.props.children
+                )
+            );
+            const displayed = liveHidden === true ? tabs : tabs[selectedTab];
             const tabChange = (evt) => {
                 var nullref0;
 
@@ -2002,7 +2114,7 @@ var doric = (function (react, ReactDOM) {
                 width: "100%",
                 height: "100%",
                 fontFamily: "Roboto",
-                backgroundColor: "#F0F0F0"
+                backgroundColor: theme.bg
             },
             "div.center": {
                 display: "flex",
@@ -2021,20 +2133,21 @@ var doric = (function (react, ReactDOM) {
     mainCSS.generate(theme);
     var doric$1 = {
         button: Button,
-        panel: Panel,
-        image: Image,
-        label: Label,
-        collapse: Collapse,
         checkbox: Checkbox,
-        input: Input,
-        grid: Grid,
-        select: Select,
-        list: List,
+        collapse: Collapse,
         customListeners: CustomListeners,
         dialog: dialog,
+        grid: Grid,
+        image: Image,
+        input: Input,
+        label: Label,
+        list: List,
+        panel: Panel,
         radio: Radio,
+        select: Select,
         tab: Tab,
-        tabs: Tabs
+        tabs: Tabs,
+        textarea: Textarea
     };
 
     return doric$1;
