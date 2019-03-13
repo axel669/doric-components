@@ -71,6 +71,7 @@ import {Color} from "./css-color.tea"
 // }
 
 let blue = Color("#1d62d5")
+let lightblue = Color("#2196F3")
 let theme = {
     highlightColor: Color(0, 0, 0, 0.4)
     outline: blue,
@@ -82,7 +83,7 @@ let theme = {
         accent: Color("#FF4081")
     }
     bg: {
-        color: "white"
+        color: Color("#F0F0F0")
     }
     label: {
         text: {
@@ -104,6 +105,9 @@ let theme = {
             required: Color(255, 0, 0)
             optional: blue
         }
+    }
+    tabs: {
+        selected: lightblue
     }
 }
 
