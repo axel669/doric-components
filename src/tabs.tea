@@ -13,18 +13,23 @@ let tabCSS = ssjs(
             display: "block"
             "& doric-tab-bar": {
                 display: "block"
-            }
-            "& doric-tab": {
-                display: "inline-block"
-                padding: "8px 0px"
-                textAlign: "center"
-                borderBottom: "2px solid transparent"
-                ...tappable((theme) => theme.highlightColor)
-                "&[active='true']": {
-                    color: (theme) => theme.color.primary
-                    borderBottomColor: (theme) => theme.color.primary
+                backgroundColor: "rgba(0, 0, 0, 0.05)"
+                "& doric-tab": {
+                    display: "inline-block"
+                    padding: "8px 0px"
+                    textAlign: "center"
+                    borderBottom: "2px solid transparent"
+                    fontSize: 14
+                    ...tappable((theme) => theme.highlightColor)
+                    "&[active='true']": {
+                        color: (theme) => theme.tabs.selected
+                        borderBottomColor: (theme) => theme.tabs.selected
+                    }
                 }
             }
+        }
+        "doric-tab[selected='false']": {
+            display: "none"
         }
     }
     {name: "doric-tabs"}
@@ -33,8 +38,9 @@ tabCSS.generate(theme)
 class Tabs extends React.PureComponent {
     render() => {
         let {
-            selectedTab = 0, cols = 4, onTabChange,
-            children as _children,
+            selectedTab = 0, cols = 4, onTabChange
+            liveHidden = false
+            children as _children
             ...passThrough
         } = @props
         let children = React.Children.toArray(_children)
@@ -42,7 +48,14 @@ class Tabs extends React.PureComponent {
         let list = children.map(
             (child) => child.props.label
         )
-        let displayed = children[selectedTab]
+        let tabs = children.map(
+            (child, index) => <doric-tab selected={index == selectedTab} key=index>
+                {child.props.children}
+            </doric-tab>
+        )
+        let displayed = (liveHidden == true)
+            ? tabs
+            : tabs[selectedTab]
         let tabChange = (evt) => {
             let newTab = parseInt(evt.target.dataset.index)
 
