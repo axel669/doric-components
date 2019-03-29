@@ -996,7 +996,9 @@ var doric = (function (react, ReactDOM) {
             "doric-checkbox": {
                 display: "block",
                 margin: 2,
-                padding: 4,
+                padding: 8,
+                borderRadius: 4,
+                overflow: "hidden",
                 ...tappable(Color(0, 0, 0, 0.4).toString()),
                 "&.left": {
                     paddingLeft: 24

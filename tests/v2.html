@@ -27,60 +27,66 @@
         <script src="../standalone/doric-components.js"></script>
         <!-- <script type="text/teascript" src="inventory.tea"></script> -->
         <script type="text/teascript">
-        let {actions, ...store} = Norn({
-            wat: {
-                initial: true
-                $toggle(wat) => wat == false
-            }
-        })
-        window.actions = actions
+        let Buttons = () => <React.Fragment>
+            <div>
+                <doric.button text="Normal" />
+                <doric.button text="Primary" primary />
+                <doric.button text="Secondary" secondary />
+                <doric.button text="Danger" danger />
+                <doric.button text="Accent" accent />
+            </div>
+            <div>
+                <doric.button flat text="Flat Normal" />
+                <doric.button flat text="Flat Primary" primary />
+                <doric.button flat text="Flat Secondary" secondary />
+                <doric.button flat text="Flat Danger" danger />
+                <doric.button flat text="Flat Accent" accent />
+            </div>
+            <div>
+                <doric.button block text="Normal" />
+                <doric.button block text="Primary" primary />
+                <doric.button block text="Secondary" secondary />
+                <doric.button block text="Danger" danger />
+                <doric.button block text="Accent" accent />
+            </div>
+            <div>
+                <doric.button block flat text="Normal" />
+                <doric.button block flat text="Primary" primary />
+                <doric.button block flat text="Secondary" secondary />
+                <doric.button block flat text="Danger" danger />
+                <doric.button block flat text="Accent" accent />
+            </div>
+        </React.Fragment>
 
-
-        let Test = ({item}) => <div style={textAlign: "center"}>{item.label}</div>
-
-        @NornConnect(store)
-        class Main extends React.Component {
+        class Checkboxes extends React.Component {
             constructor(props) => {
                 super(props)
                 @state = {
-                    tab: 0
-                    wat: true
+                    c1: false
+                    c2: false
                 }
             }
 
-            @bindDecorator
-            toggle() => {
-                let wat = @state.wat == false
-                @setState({wat})
-            }
+            // @bindDecorator
+            // toggle1() => @setState({c1:
 
             render() => {
-                let change = (evt) => @setState({
-                    tab: evt.selectedTab
-                })
-                let items = [0...10: (n) =>
-                    {value: n, label: `Item ${n}`}
-                ]
-
-                return <div>
-                    <doric.tabs selectedTab=@state.tab onTabChange=change cols=3>
-                        <doric.tab label="test">
-                            <doric.input label="test" />
-                        </doric.tab>
-                        <doric.tab label="test #2">
-                            <doric.textarea boring label="Wat" />
-                        </doric.tab>
-                        <doric.tab label="test #3">
-                            <doric.input type="range" min=0 max=100 step=1 label="Range" />
-                        </doric.tab>
-                        <doric.tab label="test #4">
-                            <doric.button secondary flat=@props.wat disabled=@props.wat text="Submit" />
-                        </doric.tab>
-                        <doric.tab label={<ion-icon class="ion-md-refresh" />} />
-                    </doric.tabs>
-                </div>
+                let {checked} = @state
             }
         }
+
+        let Main = () => <div>
+            <doric.collapse label="Buttons">
+                <Buttons />
+            </doric.collapse>
+            <fieldset>
+                <legend>Checkbox</legend>
+                <doric.checkbox text="Normal Checkbox" />
+                <doric.checkbox text="Normal Checkbox" checked />
+                <doric.checkbox text="Normal Checkbox" checkSide="right" />
+                <doric.checkbox text="Normal Checkbox" checkSide="right" checked />
+            </fieldset>
+        </div>
 
         ReactDOM.render(
             <Main />
