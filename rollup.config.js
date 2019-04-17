@@ -1,9 +1,9 @@
-import tea from "@axel669/teascript/rollup";
+// import tea from "@axel669/teascript/rollup";
 import resolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
 
 export default {
-    input: "./src/doric.tea",
+    input: "./src/doric.js",
     output: [
         {
             file: "./standalone/doric-components.js",
@@ -20,7 +20,7 @@ export default {
         }
     ],
     plugins: [
-        tea({include: "src/**.tea"}),
+        // tea({include: "src/**.tea"}),
         resolve(),
         commonjs()
     ],
