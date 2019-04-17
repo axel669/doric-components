@@ -67,11 +67,20 @@
                 }
             }
 
-            // @bindDecorator
-            // toggle1() => @setState({c1:
-
             render() => {
-                let {checked} = @state
+                let {c1, c2} = @state
+
+                let toggle = (n) =>
+                    () => @setState({
+                        [`c${n}`]: @state[`c${n}`] == false
+                    })
+
+                return <React.Fragment>
+                    <doric.checkbox text="Normal Checkbox" onChange=toggle(1) checked=c1 />
+                    <doric.checkbox text="Normal Checkbox" onChange=toggle(1) checked={!c1} />
+                    <doric.checkbox text="Normal Checkbox" onChange=toggle(2) checkSide="right" checked=c2 />
+                    <doric.checkbox text="Normal Checkbox" onChange=toggle(2) checkSide="right" checked={!c2} />
+                </React.Fragment>
             }
         }
 
@@ -79,13 +88,10 @@
             <doric.collapse label="Buttons">
                 <Buttons />
             </doric.collapse>
-            <fieldset>
-                <legend>Checkbox</legend>
-                <doric.checkbox text="Normal Checkbox" />
-                <doric.checkbox text="Normal Checkbox" checked />
-                <doric.checkbox text="Normal Checkbox" checkSide="right" />
-                <doric.checkbox text="Normal Checkbox" checkSide="right" checked />
-            </fieldset>
+
+            <doric.collapse>
+                <Checkboxes />
+            </doric.collapse>
         </div>
 
         ReactDOM.render(
