@@ -10,8 +10,8 @@
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
         <link href="https://unpkg.com/ionicons@4.5.5/dist/css/ionicons.min.css" rel="stylesheet">
 
-        <script src="https://unpkg.com/react@16.7.0/umd/react.development.js"></script>
-        <script src="https://unpkg.com/react-dom@16.7.0/umd/react-dom.development.js"></script>
+        <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+        <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
 
         <script crossorigin src="https://unpkg.com/@axel669/norn@1/standalone/norn.js"></script>
         <script crossorigin src="https://unpkg.com/@axel669/norn@1/standalone/connect-hook.js"></script>
@@ -30,7 +30,8 @@
         <script type="text/custom">
         function Main(props) {
             return <div>
-                <doric.button text="Test Button" />
+                <doric.button text="Test Button" icon="ion-md-add" onTap={console.log} _={{testing: "wat"}} />
+                <doric.button primary text="Test Button" onTap={console.log} />
             </div>
         }
 

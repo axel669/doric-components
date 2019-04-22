@@ -1,7 +1,7 @@
-var doric = (function (React) {
+var doric = (function (React$1) {
     'use strict';
 
-    React = React && React.hasOwnProperty('default') ? React['default'] : React;
+    var React$1__default = 'default' in React$1 ? React$1['default'] : React$1;
 
     const isMobile =
         typeof orientation !== "undefined" ||
@@ -426,14 +426,252 @@ var doric = (function (React) {
 
     var ss = Sheet;
 
+    const Color = (...args) => {
+      const [r, g, b, a = 1] = (() => {
+        if (typeof args[0] === "string") {
+          const color = args[0].startsWith("#") ? args[0].slice(1) : args[0];
+          const alpha = color.length > 6 ? color.slice(6, 8) : "FF";
+          return [parseInt(color.slice(0, 2), 16), parseInt(color.slice(2, 4), 16), parseInt(color.slice(4, 6), 16), parseInt(alpha, 16) / 255];
+        }
+
+        return args;
+      })();
+
+      const color = () => {
+
+        return `rgba(${r}, ${g}, ${b}, ${a})`;
+      };
+
+      color.inverse = () => Color(255 - r, 255 - g, 255 - b, a)();
+
+      color.opacity = alpha => Color(r, g, b, alpha);
+
+      return color;
+    };
+
+    const tapActive = ".gjs-tap-active:not(.disabled):not(.flat)::after";
+
+    const bcolorVariant = color => ({
+      [`&.${color}`]: {
+        backgroundColor: theme => theme.color[color](),
+        color: "white",
+        [`&.flat`]: {
+          backgroundColor: "transparent",
+          color: theme => theme.color[color]()
+        },
+        [`&${tapActive}`]: {
+          backgroundColor: theme => theme.highlightColor.inverse()
+        }
+      }
+    });
+
+    const tappable = color => ({
+      position: "relative",
+      "&::after": {
+        content: "''",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        transition: "background-color 250ms linear"
+      },
+      "&.gjs-tap-active:not(.disabled)::after": {
+        transition: "none",
+        backgroundColor: color
+      }
+    });
+
+    const classes = obj => {
+      let list = [];
+
+      for (const [key, value] of Object.entries(obj)) {
+        if (key === "className" && value !== undefined) {
+          list.push(value);
+        }
+
+        if (value === true) {
+          list.push(key);
+        }
+      }
+
+      return list.join(" ");
+    };
+
+    const blue = Color("#1d62d5");
+    const lightblue = Color("#2196F3");
+    const theme = {
+      highlightColor: Color(0, 0, 0, 0.4),
+      outline: blue,
+      focusOutline: `2px solid ${blue.opacity(0.5)}`,
+      color: {
+        primary: blue,
+        secondary: Color("#128f12"),
+        danger: Color("#F44336"),
+        accent: Color("#FF4081")
+      },
+      bg: {
+        color: Color("#F0F0F0")
+      },
+      label: {
+        text: {
+          normal: Color(0, 0, 0),
+          required: Color(255, 0, 0),
+          optional: Color(0, 128, 255)
+        }
+      },
+      collapse: {
+        border: {
+          color: Color(0, 0, 0)
+        }
+      },
+      input: {
+        border: {
+          focus: blue
+        },
+        label: {
+          required: Color(255, 0, 0),
+          optional: blue
+        }
+      },
+      tabs: {
+        selected: lightblue
+      }
+    };
+
+    const climbDOM$1 = (start, func) => {
+      let current = start;
+
+      while (current !== null && current !== document.documentElement) {
+        func(current);
+        current = current.parentNode;
+      }
+    };
+
+    const globalListeners = {};
+
+    const registerGlobalListener = (type, elem, handler) => {
+      if (globalListeners[type] === undefined) {
+        globalListeners[type] = new Map();
+        window.addEventListener(type, evt => {
+          const handlers = globalListeners[type];
+          climbDOM$1(evt.target, node => {
+            var _handlers$get;
+
+            return (_handlers$get = handlers.get(node)) === null || _handlers$get === void 0 ? void 0 : _handlers$get(evt);
+          });
+        });
+      }
+
+      globalListeners[type].set(elem, handler);
+    };
+
+    const removeGlobalListener = (type, elem) => globalListeners[type].delete(elem);
+
+    const useMounts = effect => React$1.useEffect(effect, []);
+
+    function CustomListeners(props) {
+      const element = React$1.useRef(null);
+      const pRef = React$1.useRef(props);
+      pRef.current = props;
+      useMounts(() => {
+        const types = Object.keys(props);
+
+        for (const name of types) {
+          const type = name.slice(2).toLowerCase();
+          registerGlobalListener(type, element.current.parentNode, evt => {
+            var _pRef$current$name, _pRef$current;
+
+            return (_pRef$current$name = (_pRef$current = pRef.current)[name]) === null || _pRef$current$name === void 0 ? void 0 : _pRef$current$name.call(_pRef$current, evt);
+          });
+        }
+
+        return () => {
+          for (const name of types) {
+            removeGlobalListener(name, element.current.parentNode);
+          }
+        };
+      });
+      return React.createElement("doric-custom-listeners", {
+        ref: element
+      });
+    }
+
+    const buttonSheet = ss({
+      "doric-button": {
+        display: "inline-flex",
+        padding: "8px 16px",
+        borderRadius: 4,
+        userSelect: "none",
+        overflow: "hidden",
+        justifyContent: "center",
+        alignItems: "center",
+        textAlign: "center",
+        userSelect: "none",
+        margin: 2,
+        transition: "background-color 150ms linear",
+        "&:hover": {
+          cursor: "pointer"
+        },
+        ...tappable(theme.highlightColor),
+        ...bcolorVariant("primary"),
+        ...bcolorVariant("secondary"),
+        ...bcolorVariant("danger"),
+        ...bcolorVariant("accent"),
+        "&.block": {
+          display: "flex"
+        },
+        "&.disabled": {
+          opacity: 0.4
+        },
+        "&.snug": {
+          padding: 0
+        },
+        "&.flush": {
+          margin: 0
+        },
+        "&.raised": {
+          boxShadow: "2px 2px 3px rgba(0, 0, 0, 0.4)"
+        }
+      }
+    }, {
+      name: "doric-button"
+    });
+    buttonSheet.generate(theme);
+
     function Button(props) {
       const {
         text,
+        onTap,
+        children,
+        tabIndex = 1,
+        style = {},
+        icon = null,
+        circle,
+        _,
         ...rest
       } = props;
-      return React.createElement("div", null, text);
+
+      if (circle !== undefined) {
+        style.width = circle;
+        style.height = circle;
+        style.padding = 0;
+        style.borderRadius = "50%";
+      }
+
+      const iconElem = icon === null ? null : React$1__default.createElement("ion-icon", {
+        class: icon
+      });
+      const wrapProps = { ..._,
+        tabIndex,
+        style,
+        class: classes(rest)
+      };
+      return React$1__default.createElement("doric-button", wrapProps, React$1__default.createElement(CustomListeners, {
+        onTap: onTap
+      }), iconElem, text, children);
     }
-    var button = React.memo(Button);
+    var button = React$1__default.memo(Button);
 
     let mainCSS = ss({
       "*": {
@@ -444,7 +682,8 @@ var doric = (function (React) {
         }
       },
       "@media screen and (min-width: 640px)": {
-        "*:focus": {// outline: (theme) => theme.focusOutline
+        "*:focus": {
+          outline: theme => theme.focusOutline
         }
       },
       "html body": {
@@ -452,8 +691,8 @@ var doric = (function (React) {
         margin: 0,
         width: "100%",
         height: "100%",
-        fontFamily: "Roboto" // backgroundColor: theme.bg
-
+        fontFamily: "Roboto",
+        backgroundColor: theme.bg
       },
       "div.center": {
         display: "flex",
@@ -467,9 +706,10 @@ var doric = (function (React) {
     }, {
       name: "main-style"
     });
-    mainCSS.generate();
+    mainCSS.generate(theme);
     var main = {
-      button
+      button,
+      customListeners: CustomListeners
     };
 
     return main;

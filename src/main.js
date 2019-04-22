@@ -1,7 +1,10 @@
 import "gesturesjs";
 import ssjs from "ssjs";
 
-import button from "./components/button.js";
+import theme from "@theme";
+
+import button from "@components/button.js";
+import customListeners from "@components/customListeners.js";
 
 let mainCSS = ssjs(
     {
@@ -14,7 +17,7 @@ let mainCSS = ssjs(
         },
         "@media screen and (min-width: 640px)": {
             "*:focus": {
-                // outline: (theme) => theme.focusOutline
+                outline: (theme) => theme.focusOutline
             }
         },
         "html body": {
@@ -23,7 +26,7 @@ let mainCSS = ssjs(
             width: "100%",
             height: "100%",
             fontFamily: "Roboto",
-            // backgroundColor: theme.bg
+            backgroundColor: theme.bg
         },
         "div.center": {
             display: "flex",
@@ -37,8 +40,9 @@ let mainCSS = ssjs(
     },
     {name: "main-style"}
 );
-mainCSS.generate();
+mainCSS.generate(theme);
 
 export default {
-    button
+    button,
+    customListeners
 };

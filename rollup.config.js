@@ -1,7 +1,9 @@
-// import tea from "@axel669/teascript/rollup";
+import path from "path";
+
 import resolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
 import babel from "rollup-plugin-babel";
+import alias from "@axel669/rollup-plugin-path-alias";
 
 export default {
     input: "./src/main.js",
@@ -21,7 +23,12 @@ export default {
         }
     ],
     plugins: [
-        // tea({include: "src/**.tea"}),
+        alias({
+            root: path.resolve(__dirname, "src"),
+            "@css": "helpers/css.js",
+            "@theme": "helpers/theme.js",
+            "@components": "components"
+        }),
         babel({
             exclude: "node_modules/**",
             include: "src/**/*.js",
