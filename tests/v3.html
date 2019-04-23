@@ -28,10 +28,38 @@
         </script>
         <script src="../standalone/doric-components.js"></script>
         <script type="text/custom">
+        const range = (start, end = null, step = 1, map = i => i) => {
+            if (typeof end === "function") {
+                map = end;
+                end = null;
+            }
+            if (typeof step === "function") {
+                map = step;
+                step = 1;
+            }
+            if (end === null) {
+                [start, end] = [0, start];
+            }
+            const factor = (end < start) ? -step : step;
+            return Array.from(
+                {length: Math.floor(Math.abs(end - start) / step)},
+                (_, i) => map(start + i * factor)
+            );
+        };
+
         function Main(props) {
+            const [checked, updateChecked] = React.useState(false);
+
             return <div>
                 <doric.button text="Test Button" icon="ion-md-add" onTap={console.log} _={{testing: "wat"}} />
                 <doric.button primary text="Test Button" onTap={console.log} />
+                <doric.collapse text="Testing">
+                    <doric.checkbox text="Testing" checked={checked} onChange={i => updateChecked(i.checked)} />
+                    <doric.checkbox text="Testing" checkSide="right" checked={checked} onChange={i => updateChecked(i.checked)} />
+                </doric.collapse>
+                <doric.grid cols={3}>
+                    {range(12, i => <doric.button text={i} primary />)}
+                </doric.grid>
             </div>
         }
 

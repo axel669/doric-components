@@ -1,3 +1,7 @@
+const query = {
+    mobile: screen.availWidth <= 640
+};
+
 const Color = (...args) => {
     const [r, g, b, a = 1] = (() => {
         if (typeof args[0] === "string") {
@@ -24,8 +28,9 @@ const Color = (...args) => {
         }
         return `rgba(${r}, ${g}, ${b}, ${a})`;
     };
-    color.inverse = () => Color(255 - r, 255 - g, 255 - b, a)();
+    color.inverse = () => Color(255 - r, 255 - g, 255 - b, a);
     color.opacity = alpha => Color(r, g, b, alpha);
+    color.toString = color;
 
     return color;
 };
@@ -33,11 +38,11 @@ const Color = (...args) => {
 const tapActive = ".gjs-tap-active:not(.disabled):not(.flat)::after";
 const bcolorVariant = (color) => ({
     [`&.${color}`]: {
-        backgroundColor: (theme) => theme.color[color](),
+        backgroundColor: theme => theme.color[color],
         color: "white",
         [`&.flat`]: {
             backgroundColor: "transparent",
-            color: (theme) => theme.color[color]()
+            color: theme => theme.color[color]
         },
         [`&${tapActive}`]: {
             backgroundColor: (theme) =>
@@ -46,22 +51,32 @@ const bcolorVariant = (color) => ({
     }
 });
 
-const tappable = (color) => ({
-    position: "relative",
-    "&::after": {
-        content: "''",
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        transition: "background-color 250ms linear"
-    },
-    "&.gjs-tap-active:not(.disabled)::after": {
-        transition: "none",
-        backgroundColor: color
+const tappable = (color) => {
+    const style = {
+        position: "relative",
+        "&::after": {
+            content: "''",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            transition: "background-color 250ms linear"
+        },
+        "&.gjs-tap-active:not(.disabled)::after": {
+            transition: "none",
+            backgroundColor: color
+        }
+    };
+
+    if (query.mobile === false) {
+        style["&:hover"] = {
+            boxShadow: "0px 2px 4px 2px rgba(0, 0, 0, 0.25)"
+        };
     }
-});
+
+    return style;
+}
 
 const classes = (obj) => {
     let list = [];
@@ -80,5 +95,6 @@ export {
     Color,
     bcolorVariant,
     tappable,
-    classes
+    classes,
+    query
 };

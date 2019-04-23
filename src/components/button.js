@@ -1,4 +1,4 @@
-import React from "react";
+import {memo} from "react";
 
 import ssjs from "ssjs";
 
@@ -20,6 +20,7 @@ const buttonSheet = ssjs(
             userSelect: "none",
             margin: 2,
             transition: "background-color 150ms linear",
+            cursor: "pointer",
             "&:hover": {
                 cursor: "pointer"
             },
@@ -81,4 +82,4 @@ function Button(props) {
     </doric-button>
 };
 
-export default React.memo(Button);
+export default memo(Button);

@@ -428,6 +428,10 @@ const Sheet = (() => {
 
 var ss = Sheet;
 
+const query = {
+  mobile: screen.availWidth <= 640
+};
+
 const Color = (...args) => {
   const [r, g, b, a = 1] = (() => {
     if (typeof args[0] === "string") {
@@ -444,10 +448,11 @@ const Color = (...args) => {
     return `rgba(${r}, ${g}, ${b}, ${a})`;
   };
 
-  color.inverse = () => Color(255 - r, 255 - g, 255 - b, a)();
+  color.inverse = () => Color(255 - r, 255 - g, 255 - b, a);
 
   color.opacity = alpha => Color(r, g, b, alpha);
 
+  color.toString = color;
   return color;
 };
 
@@ -455,11 +460,11 @@ const tapActive = ".gjs-tap-active:not(.disabled):not(.flat)::after";
 
 const bcolorVariant = color => ({
   [`&.${color}`]: {
-    backgroundColor: theme => theme.color[color](),
+    backgroundColor: theme => theme.color[color],
     color: "white",
     [`&.flat`]: {
       backgroundColor: "transparent",
-      color: theme => theme.color[color]()
+      color: theme => theme.color[color]
     },
     [`&${tapActive}`]: {
       backgroundColor: theme => theme.highlightColor.inverse()
@@ -467,22 +472,32 @@ const bcolorVariant = color => ({
   }
 });
 
-const tappable = color => ({
-  position: "relative",
-  "&::after": {
-    content: "''",
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    transition: "background-color 250ms linear"
-  },
-  "&.gjs-tap-active:not(.disabled)::after": {
-    transition: "none",
-    backgroundColor: color
+const tappable = color => {
+  const style = {
+    position: "relative",
+    "&::after": {
+      content: "''",
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      transition: "background-color 250ms linear"
+    },
+    "&.gjs-tap-active:not(.disabled)::after": {
+      transition: "none",
+      backgroundColor: color
+    }
+  };
+
+  if (query.mobile === false) {
+    style["&:hover"] = {
+      boxShadow: "0px 2px 4px 2px rgba(0, 0, 0, 0.25)"
+    };
   }
-});
+
+  return style;
+};
 
 const classes = obj => {
   let list = [];
@@ -612,6 +627,7 @@ const buttonSheet = ss({
     userSelect: "none",
     margin: 2,
     transition: "background-color 150ms linear",
+    cursor: "pointer",
     "&:hover": {
       cursor: "pointer"
     },
@@ -661,7 +677,7 @@ function Button(props) {
     style.borderRadius = "50%";
   }
 
-  const iconElem = icon === null ? null : React$1__default.createElement("ion-icon", {
+  const iconElem = icon === null ? null : React.createElement("ion-icon", {
     class: icon
   });
   const wrapProps = { ..._,
@@ -669,11 +685,310 @@ function Button(props) {
     style,
     class: classes(rest)
   };
-  return React$1__default.createElement("doric-button", wrapProps, React$1__default.createElement(CustomListeners, {
+  return React.createElement("doric-button", wrapProps, React.createElement(CustomListeners, {
     onTap: onTap
   }), iconElem, text, children);
 }
-var button = React$1__default.memo(Button);
+var button = React$1.memo(Button);
+
+const checkboxCSS = ss({
+  "doric-checkbox": {
+    display: "block",
+    margin: 2,
+    padding: 8,
+    borderRadius: 4,
+    overflow: "hidden",
+    userSelect: "none",
+    cursor: "pointer",
+    margin: 2,
+    ...tappable(Color(0, 0, 0, 0.4)),
+    "&.left": {
+      paddingLeft: 24
+    },
+    "&.right": {
+      paddingRight: 24
+    },
+    "&-icon": {
+      position: "absolute",
+      display: "flex",
+      top: 0,
+      bottom: 0,
+      width: 24,
+      fontSize: 20,
+      alignItems: "center",
+      justifyContent: "center",
+      "&.left": {
+        left: 0
+      },
+      "&.right": {
+        left: "auto",
+        right: 0
+      }
+    }
+  }
+}, {
+  name: "doric-checkbox"
+});
+checkboxCSS.generate(theme);
+
+function Checkbox(props) {
+  const {
+    checked,
+    checkSide = "left",
+    tabIndex = 1,
+    onChange,
+    text,
+    children,
+    className,
+    ...rest
+  } = props;
+  const iconName = checked == true ? "checkbox" : "square-outline";
+  const wrapProps = {
+    tabIndex,
+    class: classes({
+      className,
+      [checkSide]: true
+    }),
+    ...rest
+  };
+  const iconClass = classes({
+    [`ion-md-${iconName}`]: true,
+    [checkSide]: true
+  });
+
+  const toggle = evt => {
+    evt.checked = checked === false;
+    onChange === null || onChange === void 0 ? void 0 : onChange(evt);
+  };
+
+  return React$1__default.createElement("doric-checkbox", wrapProps, React$1__default.createElement("doric-checkbox-icon", {
+    class: iconClass
+  }), text, children, React$1__default.createElement(CustomListeners, {
+    onTap: toggle
+  }));
+}
+
+var checkbox = React$1__default.memo(Checkbox);
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+let collapseCSS = ss({
+  "doric-collapse": {
+    display: "block",
+    borderRadius: 2,
+    overflow: "hidden",
+    margin: 4,
+    padding: 0,
+    border: theme => {
+      let {
+        width = 1,
+        type = "solid",
+        color
+      } = theme.collapse.border;
+      return `${width}px ${type} ${color}`;
+    },
+    "&.hide > div": {
+      display: "none"
+    },
+    "&-label": {
+      display: "block",
+      padding: 4,
+      fontSize: 16,
+      userSelect: "none",
+      ...tappable(Color(0, 0, 0, 0.4))
+    },
+    "&-icon": {
+      display: "inline-block",
+      width: 16,
+      textAlign: "center"
+    }
+  }
+}, {
+  name: "doric-collapse"
+});
+collapseCSS.generate(theme);
+
+function Collapse(props) {
+  const [hide, toggleVis] = React$1.useState(true);
+  const {
+    className,
+    text = "Collapse",
+    tabIndex = 1,
+    children,
+    ...passThrough
+  } = props;
+
+  const _classes = classes({
+    className,
+    hide
+  });
+
+  const direction = hide == true ? "right" : "down";
+  const icon = React.createElement("doric-collapse-icon", {
+    class: `ion-md-arrow-drop${direction}`
+  });
+  const pass = {
+    tabIndex,
+    ...passThrough
+  };
+
+  const toggle = () => toggleVis(hide === false);
+
+  return React.createElement("doric-collapse", _extends({}, pass, {
+    class: _classes
+  }), React.createElement("doric-collapse-label", null, icon, " ", text, React.createElement(CustomListeners, {
+    onTap: toggle
+  })), React.createElement("div", null, children));
+}
+
+var collapse = React$1.memo(Collapse); // class Collapse extends React.Component {
+//     constructor(props) => {
+//         super(props)
+//
+//         @state = {
+//             hide: true
+//         }
+//         @toggle = () => {
+//             let hide = !@state.hide
+//             @setState({hide})
+//         }
+//     }
+//
+//     render() => {
+//         let {
+//             className, label = "Collapse", tabIndex = 1
+//             children
+//             ...passThrough
+//         } = @props
+//         let {hide} = @state
+//         let _classes = classes({className, hide})
+//
+//         let direction = (hide == true) ? "right" : "down"
+//         let icon = <doric-collapse-icon class=`ion-md-arrow-drop${direction}` />
+//
+//         let props = {
+//             tabIndex
+//             ...passThrough
+//         }
+//
+//         return <doric-collapse {...props} class=_classes>
+//             <doric-collapse-label>
+//                 {icon} {label}
+//                 <CustomListeners onTap=@toggle />
+//             </doric-collapse-label>
+//             <div>{children}</div>
+//         </doric-collapse>
+//     }
+// }
+//
+// export default Collapse
+
+// import {Component} from "react"
+
+const range = (start, end = null, step = 1, map = i => i) => {
+  if (typeof end === "function") {
+    map = end;
+    end = null;
+  }
+
+  if (typeof step === "function") {
+    map = step;
+    step = 1;
+  }
+
+  if (end === null) {
+    [start, end] = [0, start];
+  }
+
+  const factor = end < start ? -step : step;
+  return Array.from({
+    length: Math.floor(Math.abs(end - start) / step)
+  }, (_, i) => map(start + i * factor));
+};
+
+const gridSpans = range(12).reduce((spans, i) => ({ ...spans,
+  [`& [gcolspan="${i}"]`]: {
+    gridColumn: `span ${i}`
+  }
+}), {});
+const gridCSS = ss({
+  "doric-grid": {
+    display: "grid",
+    gridGap: 2,
+    ...gridSpans,
+    "&[clearmargin='true'] > *": {
+      margin: 0
+    }
+  }
+}, {
+  name: "doric-grid"
+});
+gridCSS.generate(theme);
+
+function Grid(props) {
+  const {
+    cols = 12,
+    vAlign = "start",
+    colGap = 0,
+    children,
+    className,
+    ...passThrough
+  } = props;
+  const style = { ...passThrough.style,
+    // gridTemplateColumns: [0...cols: () => "1fr"].join(" "),
+    gridTemplateColumns: range(cols, () => "1fr").join(" "),
+    alignItems: vAlign,
+    columnGap: colGap
+  };
+  const _ = { ...passThrough,
+    class: className,
+    style
+  };
+  return React.createElement("doric-grid", _, children);
+}
+//     render() => {
+//         let {
+//             cols = 12, vAlign = "start", colGap = 0
+//             children, className
+//             ...passThrough
+//         } = @props
+//
+//         let style = {
+//             ...passThrough.style
+//             gridTemplateColumns: [0...cols: () => "1fr"].join(" ")
+//             alignItems: vAlign
+//             columnGap: colGap
+//         }
+//
+//         let props = {
+//             ...passThrough
+//             class: className
+//             style
+//         }
+//
+//         return <doric-grid {...props}>
+//             {children}
+//         </doric-grid>
+//     }
+// }
+//
+// export default Grid
 
 let mainCSS = ss({
   "*": {
@@ -683,11 +998,15 @@ let mainCSS = ss({
       outline: "none"
     }
   },
-  "@media screen and (min-width: 640px)": {
+  ...(query.mobile === false ? {
     "*:focus": {
-      outline: theme => theme.focusOutline
+      outline: theme.focusOutline
     }
-  },
+  } : {
+    "*:focus": {
+      boxShadow: "0px 2px 4px 2px rgba(0, 0, 0, 0.25)"
+    }
+  }),
   "html body": {
     padding: 0,
     margin: 0,
@@ -711,7 +1030,10 @@ let mainCSS = ss({
 mainCSS.generate(theme);
 var main = {
   button,
-  customListeners: CustomListeners
+  checkbox,
+  collapse,
+  customListeners: CustomListeners,
+  grid: Grid
 };
 
 module.exports = main;

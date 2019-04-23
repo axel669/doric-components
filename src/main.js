@@ -4,7 +4,12 @@ import ssjs from "ssjs";
 import theme from "@theme";
 
 import button from "@components/button.js";
+import checkbox from "@components/checkbox.js";
+import collapse from "@components/collapse.js";
 import customListeners from "@components/customListeners.js";
+import grid from "@components/grid.js";
+
+import {query} from "@css";
 
 let mainCSS = ssjs(
     {
@@ -15,11 +20,18 @@ let mainCSS = ssjs(
                 outline: "none"
             }
         },
-        "@media screen and (min-width: 640px)": {
-            "*:focus": {
-                outline: (theme) => theme.focusOutline
+        ...(query.mobile === false
+            ? {
+                "*:focus": {
+                    outline: theme.focusOutline
+                }
             }
-        },
+            : {
+                "*:focus": {
+                    boxShadow: "0px 2px 4px 2px rgba(0, 0, 0, 0.25)"
+                }
+            }
+        ),
         "html body": {
             padding: 0,
             margin: 0,
@@ -44,5 +56,8 @@ mainCSS.generate(theme);
 
 export default {
     button,
-    customListeners
+    checkbox,
+    collapse,
+    customListeners,
+    grid
 };
