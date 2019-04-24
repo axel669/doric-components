@@ -8,6 +8,10 @@ import checkbox from "@components/checkbox.js";
 import collapse from "@components/collapse.js";
 import customListeners from "@components/customListeners.js";
 import grid from "@components/grid.js";
+import image from "@components/image.js";
+import label from "@components/label.js";
+import panel from "@components/panel.js";
+import title from "@components/title.js";
 
 import {query} from "@css";
 
@@ -59,5 +63,9 @@ export default {
     checkbox,
     collapse,
     customListeners,
-    grid
+    grid,
+    image,
+    label,
+    panel,
+    title
 };

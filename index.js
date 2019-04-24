@@ -899,30 +899,28 @@ var collapse = React$1.memo(Collapse); // class Collapse extends React.Component
 //
 // export default Collapse
 
-// import {Component} from "react"
-
 const range = (start, end = null, step = 1, map = i => i) => {
-  if (typeof end === "function") {
-    map = end;
-    end = null;
-  }
-
-  if (typeof step === "function") {
-    map = step;
-    step = 1;
-  }
-
-  if (end === null) {
-    [start, end] = [0, start];
-  }
-
-  const factor = end < start ? -step : step;
-  return Array.from({
-    length: Math.floor(Math.abs(end - start) / step)
-  }, (_, i) => map(start + i * factor));
+  	if (typeof end === "function") {
+      	map = end;
+      	end = null;
+    }
+    if (typeof step === "function") {
+        map = step;
+        step = 1;
+    }
+  	if (end === null) {
+      	[start, end] = [0, start];
+    }
+    const factor = (end < start) ? -step : step;
+    return Array.from(
+        {length: Math.floor(Math.abs(end - start) / step)},
+        (_, i) => map(start + i * factor)
+    );
 };
 
-const gridSpans = range(12).reduce((spans, i) => ({ ...spans,
+var range_1 = range;
+
+const gridSpans = range_1(2, 13).reduce((spans, i) => ({ ...spans,
   [`& [gcolspan="${i}"]`]: {
     gridColumn: `span ${i}`
   }
@@ -951,8 +949,7 @@ function Grid(props) {
     ...passThrough
   } = props;
   const style = { ...passThrough.style,
-    // gridTemplateColumns: [0...cols: () => "1fr"].join(" "),
-    gridTemplateColumns: range(cols, () => "1fr").join(" "),
+    gridTemplateColumns: range_1(cols, () => "1fr").join(" "),
     alignItems: vAlign,
     columnGap: colGap
   };
@@ -962,33 +959,183 @@ function Grid(props) {
   };
   return React.createElement("doric-grid", _, children);
 }
-//     render() => {
-//         let {
-//             cols = 12, vAlign = "start", colGap = 0
-//             children, className
-//             ...passThrough
-//         } = @props
-//
-//         let style = {
-//             ...passThrough.style
-//             gridTemplateColumns: [0...cols: () => "1fr"].join(" ")
-//             alignItems: vAlign
-//             columnGap: colGap
-//         }
-//
-//         let props = {
-//             ...passThrough
-//             class: className
-//             style
-//         }
-//
-//         return <doric-grid {...props}>
-//             {children}
-//         </doric-grid>
-//     }
-// }
-//
-// export default Grid
+
+let imageCSS = ss({
+  "doric-image": {
+    display: "inline-block",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center center",
+    backgroundSize: "contain",
+    "& > img": {
+      width: "100%",
+      height: "100%",
+      opacity: 0
+    }
+  }
+}, {
+  name: "doric-image"
+});
+imageCSS.generate(theme);
+
+function Image(props) {
+  const {
+    source,
+    width,
+    height,
+    size,
+    round,
+    ...passThrough
+  } = props;
+  const border = round == true ? {
+    borderRadius: Math.max(width, height)
+  } : {};
+  const style = { ...passThrough.style,
+    backgroundImage: `url('${source}')`,
+    backgroundSize: size,
+    width,
+    height,
+    ...border
+  };
+  return React.createElement("doric-image", _extends({}, passThrough, {
+    style: style
+  }), React.createElement("img", {
+    src: source
+  }));
+}
+
+let labelCSS = ss({
+  "doric-label": {
+    display: "block",
+    padding: 2,
+    color: theme.label.text.normal,
+    fontSize: 12,
+    "&.required": {
+      color: theme.label.text.required
+    },
+    "&.optional": {
+      color: theme.label.text.optional
+    },
+    "&:empty": {
+      display: "none"
+    }
+  }
+}, {
+  name: "doric-label"
+});
+labelCSS.generate(theme);
+
+function Label(props) {
+  const {
+    required,
+    optional,
+    className,
+    text = "Label",
+    ...passThrough
+  } = props;
+
+  const _class = classes({
+    className,
+    required,
+    optional
+  });
+
+  return React.createElement("doric-label", _extends({}, passThrough, {
+    class: _class
+  }), text);
+}
+
+const panelCSS = ss({
+  "doric-panel": {
+    display: "block",
+    margin: 4,
+    boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.4)",
+    borderTop: "1px solid lightgray",
+    backgroundColor: theme.bg.color,
+    overflow: "hidden",
+    padding: 12,
+    position: "relative",
+    top: 0,
+    left: 0,
+    borderRadius: 4,
+    "& > doric-title": {
+      margin: -12,
+      marginBottom: 4,
+      borderWidth: 0
+    }
+  },
+  "doric-panel-top": {
+    position: "relative",
+    display: "block",
+    margin: -12,
+    marginBottom: 0,
+    padding: 4
+  },
+  "doric-panel-bottom": {
+    position: "relative",
+    display: "block",
+    margin: -12,
+    marginTop: 0,
+    padding: 4
+  }
+}, {
+  name: "doric-panel"
+});
+panelCSS.generate(theme);
+
+function Panel({
+  children
+}) {
+  return React.createElement("doric-panel", null, children);
+}
+
+Panel.top = function PanelTop(props) {
+  return React.createElement("doric-panel-top", props);
+};
+
+Panel.bottom = function PanelBottom(props) {
+  return React.createElement("doric-panel-bottom", props);
+};
+
+const titleCSS = ss({
+  "doric-title": {
+    display: "block",
+    margin: 2,
+    padding: 4,
+    boxShadow: "0px 1px 5px rgba(0, 0, 0, 0.25)",
+    border: "1px solid lightgray",
+    backgroundColor: "white",
+    "&::after": {
+      content: "' '",
+      display: "table",
+      clear: "both"
+    },
+    "& > div": {
+      fontSize: 20
+    },
+    "& > span": {
+      fontSize: 12,
+      color: "gray",
+      float: "left"
+    },
+    "& > doric-image": {
+      float: "left",
+      marginRight: 8
+    }
+  }
+}, {
+  name: "doric-title"
+});
+titleCSS.generate(theme);
+
+function Title(props) {
+  const {
+    title,
+    subtitle,
+    profile,
+    image
+  } = props;
+  return React.createElement("doric-title", null, React.createElement("div", null, title), React.createElement("span", null, subtitle));
+}
 
 let mainCSS = ss({
   "*": {
@@ -1033,7 +1180,11 @@ var main = {
   checkbox,
   collapse,
   customListeners: CustomListeners,
-  grid: Grid
+  grid: Grid,
+  image: Image,
+  label: Label,
+  panel: Panel,
+  title: Title
 };
 
 module.exports = main;

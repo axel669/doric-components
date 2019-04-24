@@ -17,6 +17,7 @@
         <script crossorigin src="https://unpkg.com/@axel669/norn@1/standalone/connect-hook.js"></script>
         <script crossorigin src="https://unpkg.com/@axel669/immutable-update@0.2.1/standalone/update.js"></script>
         <script crossorigin src="https://unpkg.com/@axel669/array-sort@0.1.0/standalone/array-sort.js"></script>
+        <script crossorigin src="https://unpkg.com/@axel669/range@1.0.0/standalone/range.js"></script>
 
         <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/muicss/0.9.41/css/mui.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/muicss/0.9.41/react/mui-react.js"></script> -->
@@ -28,38 +29,16 @@
         </script>
         <script src="../standalone/doric-components.js"></script>
         <script type="text/custom">
-        const range = (start, end = null, step = 1, map = i => i) => {
-            if (typeof end === "function") {
-                map = end;
-                end = null;
-            }
-            if (typeof step === "function") {
-                map = step;
-                step = 1;
-            }
-            if (end === null) {
-                [start, end] = [0, start];
-            }
-            const factor = (end < start) ? -step : step;
-            return Array.from(
-                {length: Math.floor(Math.abs(end - start) / step)},
-                (_, i) => map(start + i * factor)
-            );
-        };
-
         function Main(props) {
             const [checked, updateChecked] = React.useState(false);
 
             return <div>
-                <doric.button text="Test Button" icon="ion-md-add" onTap={console.log} _={{testing: "wat"}} />
-                <doric.button primary text="Test Button" onTap={console.log} />
-                <doric.collapse text="Testing">
-                    <doric.checkbox text="Testing" checked={checked} onChange={i => updateChecked(i.checked)} />
-                    <doric.checkbox text="Testing" checkSide="right" checked={checked} onChange={i => updateChecked(i.checked)} />
-                </doric.collapse>
-                <doric.grid cols={3}>
-                    {range(12, i => <doric.button text={i} primary />)}
-                </doric.grid>
+                <doric.title title="Title" subtitle="Subtitle" />
+                testing
+                <doric.panel>
+                    <doric.title title="Panel \\o/" />
+                    Panel test
+                </doric.panel>
             </div>
         }
 
