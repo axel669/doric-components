@@ -42,7 +42,16 @@ let mainCSS = ssjs(
             width: "100%",
             height: "100%",
             fontFamily: "Roboto",
-            backgroundColor: theme.bg
+            backgroundColor: {
+                r: 0,
+                g: 255,
+                b: 255,
+                a: 1,
+                toString() {
+                    return `rgba(${this.r}, ${this.g}, ${this.b}, ${this.a})`;
+                }
+            }
+            // backgroundColor: theme.bg
         },
         "div.center": {
             display: "flex",

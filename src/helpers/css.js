@@ -2,6 +2,35 @@ const query = {
     mobile: screen.availWidth <= 640
 };
 
+const parseColor = (args) => {
+    if (typeof args[0] === "string") {
+        const color = args[0].startsWith("#")
+            ? args[0].slice(1)
+            : args[0];
+        const alpha = color.length > 6
+            ? color.slice(6, 8)
+            : "FF";
+
+        return [
+            parseInt(color.slice(0, 2), 16),
+            parseInt(color.slice(2, 4), 16),
+            parseInt(color.slice(4, 6), 16),
+            parseInt(alpha, 16) / 255
+        ];
+    }
+    return args;
+};
+const Color = (...args) => {
+    const [r, g, b, a] = parseColor(args);
+    if (a === 1) {
+        `rgb(${r}, ${g}, ${b})`;
+    }
+    return `rgba(${r}, ${g}, ${b}, ${a})`;
+};
+Color.inverse = (color) => {
+    const [r, g, b, a] = parseColor(color);
+    return Color(255 - r, 255 - g, 255 - b, a);
+};
 const Color = (...args) => {
     const [r, g, b, a = 1] = (() => {
         if (typeof args[0] === "string") {
