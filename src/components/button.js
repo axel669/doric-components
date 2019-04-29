@@ -54,7 +54,7 @@ function Button(props) {
     const {
         text, onTap, children,
         tabIndex = 1, style = {},
-        icon = null,
+        icon = null, iconSize = null,
         circle,
         _,
         ...rest
@@ -67,7 +67,9 @@ function Button(props) {
         style.borderRadius = "50%";
     }
 
-    const iconElem = (icon === null) ? null : <ion-icon class={icon} />;
+    const iconElem = (icon === null)
+        ? null
+        : <ion-icon class={icon} style={{fontSize: iconSize}} />;
 
     const wrapProps = {
         ..._,

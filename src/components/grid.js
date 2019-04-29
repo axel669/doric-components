@@ -2,7 +2,7 @@ import ssjs from "ssjs";
 import range from "@axel669/range";
 
 import theme from "@theme";
-import {tappable, Color, classes} from "@css";
+import {tappable, classes} from "@css";
 
 const gridSpans = range(2, 13).reduce(
     (spans, i) => ({

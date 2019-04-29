@@ -37,9 +37,19 @@ const theme = {
             optional: blue
         }
     },
+    panel: {
+        bg: {
+            color: "white"
+        }
+    },
     tabs: {
         selected: lightblue
-    }
+    },
+    title: {
+        bg: {
+            color: "white"
+        }
+    },
 };
 
 export default theme;

@@ -8,13 +8,13 @@ let labelCSS = ssjs(
         "doric-label": {
             display: "block",
             padding: 2,
-            color: theme.label.text.normal,
+            color: theme => theme.label.text.normal,
             fontSize: 12,
             "&.required": {
-                color: theme.label.text.required
+                color: theme => theme.label.text.required
             },
             "&.optional": {
-                color: theme.label.text.optional
+                color: theme => theme.label.text.optional
             },
             "&:empty": {
                 display: "none"

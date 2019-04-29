@@ -1,3 +1,4 @@
+import {Children} from "react";
 import ssjs from "ssjs";
 
 import theme from "@theme";
@@ -6,53 +7,67 @@ import Image from "@components/image.js";
 const panelCSS = ssjs(
     {
         "doric-panel": {
-            display: "block",
+            display: "flex",
             margin: 4,
             boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.4)",
             borderTop: "1px solid lightgray",
-            backgroundColor: theme.bg.color,
+            backgroundColor: theme => theme.panel.bg.color,
             overflow: "hidden",
-            padding: 12,
             position: "relative",
             top: 0,
             left: 0,
             borderRadius: 4,
-            "& > doric-title": {
-                margin: -12,
+            "& doric-title": {
+                padding: 0,
+                margin: 0,
                 marginBottom: 4,
-                borderWidth: 0
+                borderWidth: 0,
+                boxShadow: "none"
             }
         },
-        "doric-panel-top": {
+        "doric-panel-actions": {
             position: "relative",
-            display: "block",
-            margin: -12,
-            marginBottom: 0,
-            padding: 4
-        },
-        "doric-panel-bottom": {
-            position: "relative",
-            display: "block",
-            margin: -12,
+            display: "flex",
+            margin: -8,
             marginTop: 0,
-            padding: 4
+            "& > doric-button": {
+                padding: 8
+            }
+        },
+        "doric-panel-content": {
+            flexGrow: 1,
+            padding: 12
+        },
+        "doric-panel-media": {
+            display: "block"
         }
     },
     {name: "doric-panel"}
 )
 panelCSS.generate(theme);
 
-function Panel({children}) {
-    return <doric-panel>
-        {children}
+function Panel({children, ...passThrough}) {
+    const list = Children.toArray(children);
+
+    const normal = list.filter(child => child.type !== Panel.media);
+    const media = list.find(child => child.type === Panel.media);
+
+    return <doric-panel {...passThrough}>
+        <doric-panel-content>
+            {normal}
+        </doric-panel-content>
+        {media}
     </doric-panel>
 }
 
 Panel.top = function PanelTop(props) {
     return <doric-panel-top {...props} />
 };
-Panel.bottom = function PanelBottom(props) {
-    return <doric-panel-bottom {...props} />
+Panel.actions = function PanelBottom(props) {
+    return <doric-panel-actions {...props} />
+};
+Panel.media = function PanelMedia(props) {
+    return <doric-panel-media {...props} />
 };
 
 export default Panel;

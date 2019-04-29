@@ -9,7 +9,11 @@ let imageCSS = ssjs(
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center center",
             backgroundSize: "contain",
+            position: "relative",
             "& > img": {
+                position: "absolute",
+                top: 0,
+                left: 0,
                 width: "100%",
                 height: "100%",
                 opacity: 0

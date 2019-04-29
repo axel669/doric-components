@@ -2,7 +2,7 @@ import React from "react";
 import ssjs from "ssjs";
 
 import theme from "@theme";
-import {tappable, Color, classes} from "@css";
+import {tappable, classes} from "@css";
 
 import CustomListeners from "@components/customListeners.js"
 
@@ -17,7 +17,7 @@ const checkboxCSS = ssjs(
             userSelect: "none",
             cursor: "pointer",
             margin: 2,
-            ...tappable(Color(0, 0, 0, 0.4)),
+            ...tappable(theme => theme.highlightColor),
             "&.left": {
                 paddingLeft: 24
             },

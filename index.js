@@ -297,249 +297,442 @@ addHandler("hold", () => {
     };
 });
 
-var nullref0, ref0;
 const cssNoMeasurement = new Set([
-    "animationIterationCount",
-    "boxFlex",
-    "boxFlexGroup",
-    "boxOrdinalGroup",
-    "columnCount",
-    "fillOpacity",
+    "animation-iteration-count",
+    "box-flex",
+    "box-flex-group",
+    "box-ordinal-group",
+    "column-count",
+    "fill-opacity",
     "flex",
-    "flexGrow",
-    "flexPositive",
-    "flexShrink",
-    "flexNegative",
-    "flexOrder",
-    "fontWeight",
-    "lineClamp",
-    "lineHeight",
+    "flex-grow",
+    "flex-positive",
+    "flex-shrink",
+    "flex-negative",
+    "flex-order",
+    "font-weight",
+    "line-clamp",
+    "line-height",
     "opacity",
     "order",
     "orphans",
-    "stopOpacity",
-    "strokeDashoffset",
-    "strokeOpacity",
-    "strokeWidth",
-    "tabSize",
+    "stop-opacity",
+    "stroke-dashoffset",
+    "stroke-opacity",
+    "stroke-width",
+    "tab-size",
     "widows",
-    "zIndex",
+    "z-index",
     "zoom"
 ]);
-const cssPrefixed = new Set(["userSelect"]);
-const cssPrefixes = ["-webkit-", "-moz-", "-ms-", "-o-", ``];
-const processValue = (key, value) => {
-    const type = typeof value;
-    if (type === "string") {
-        return value;
-    }
-    if (type === "number" && cssNoMeasurement.has(key) === false) {
-        return `${value}px`;
-    }
-    if (Array.isArray(value) === true) {
-        return value.map((val) => cssValue(key, val));
-    }
-    return value;
-};
-const genParts = (css, theme, parent = ``, depth = -1) => {
-    var ref0;
+const cssPrefixes = ["-webkit-", "-moz-", "-ms-", "-o-", ""];
+const prefixMap = ["user-select"].reduce(
+    (prefixes, name) => ({
+        ...prefixes,
+        [name]: cssPrefixes
+    }),
+    {}
+);
+
+const renderCSS = ([selector, valueBase], tab, depth, theme) => {
+    const tabString = tab.repeat(depth);
 
     const parts = [];
-    const tabs = "    ".repeat(Math.max(0, depth));
-    const innerTabs = "    ".repeat(depth + 1);
-    const attachments = [];
-    if (parent !== ``) {
-        parts.push(`${tabs}${parent} {`);
+
+    if (Array.isArray(valueBase) === true) {
+        parts.push(`${tabString}${selector} {`);
+        parts.push(...valueBase.map(
+            value => renderCSS(value, tab, depth + 1, theme)
+        ));
+        parts.push(`${tabString}}`);
     }
-    for (const key of Object.keys((ref0 = css))) {
-        const value = ref0[key];
-        switch (true) {
-            case key.indexOf("&") !== -1:
-                attachments.push(
-                    genParts(value, theme, key.replace(/&/g, parent), depth)
-                );
-                break;
-            case typeof value === "object" && Array.isArray(value) === false:
-                parts.push(genParts(value, theme, key, depth + 1));
-                break;
-            default: {
-                const keyStr = key.replace(
-                    /[A-Z]/g,
-                    (letter) => `-${letter.toLowerCase()}`
-                );
-                const rawValue =
-                    typeof value === "function" ? value(theme) : value;
-                const cssValue = processValue(key, rawValue);
-                switch (true) {
-                    case cssPrefixed.has(key) === true:
-                        for (const prefix of cssPrefixes) {
-                            parts.push(
-                                `${innerTabs}${prefix}${keyStr}: ${cssValue};`
-                            );
-                        }
-                        break;
-                    case Array.isArray(cssValue) === true:
-                        for (const value of cssValue) {
-                            parts.push(`${innerTabs}${keyStr}: ${value};`);
-                        }
-                        break;
-                    default:
-                        parts.push(`${innerTabs}${keyStr}: ${cssValue};`);
+    else {
+        const name = getCSSName(selector);
+        const value = getCSSValue(valueBase, name, theme);
+        if (value !== null) {
+            const selectors = getPrefixedSelector(name);
+            for (const _name of selectors) {
+                for (const _value of value) {
+                    parts.push(`${tabString}${_name}: ${_value};`);
                 }
             }
         }
     }
-    if (parent !== ``) {
-        parts.push(`${tabs}}`);
-    }
-    parts.push(...attachments);
+
     return parts.join("\n");
 };
-const Sheet = (() => {
-    const construct = function construct(css, attr) {
-        const self = {};
-        const publicAPI = {};
-        Object.defineProperties(publicAPI, {
-            generate: {
-                configurable: false,
-                get: () => (theme) => {
-                    self.elem.innerHTML = genParts(self.css, theme);
+const getPrefixedSelector = selector => (prefixMap[selector] || [""])
+    .map(prefix => `${prefix}${selector}`);
+const getCSSName = name => name.replace(
+    /[A-Z]/g,
+    (s) => `-${s.toLowerCase()}`
+);
+const getCSSValue = (value, name, theme) => {
+    if (value === null || value === undefined) {
+        return null;
+    }
+
+    if (typeof value === "function") {
+        return getCSSValue(value(theme), name, theme);
+    }
+
+    if (Array.isArray(value) === true) {
+        return value.map(
+            val => getCSSValue(val, name, theme)
+        );
+    }
+
+    if (value.toCSS !== undefined) {
+        return [value.toCSS()];
+    }
+
+    if (typeof value === "number" && cssNoMeasurement.has(name) === false) {
+        return [`${value}px`];
+    }
+
+    return [value];
+};
+
+const prepObj = (obj, parent = "", current = [], top = []) => {
+    for (const [selectorBase, value] of Object.entries(obj)) {
+        const selector = selectorBase.replace(/&/g, parent);
+
+        if (parent === "" || selectorBase.indexOf("&") !== -1) {
+            const items = [];
+            top.push([selector, items]);
+            prepObj(value, selector, items, top);
+        }
+        else {
+            if (typeof value === "object" && value.toCSS === undefined) {
+                const items = [];
+                current.push([selector, items]);
+                prepObj(value, selector, items, top);
+            }
+            else {
+                current.push([selector, value]);
+            }
+        }
+    }
+
+    return top;
+};
+const lerp = (from, to, by) => from + ((to - from) * by);
+const sumsq = values => values.reduce((total, n) => total + (n ** 2), 0);
+const blendValues = values => Math.sqrt(sumsq(values) / values.length);
+const color = (r, g, b, a = 1) => ({
+    get r() {return r},
+    get g() {return g},
+    get b() {return b},
+    get a() {return a},
+    opacity: alpha => color(r, g, b, alpha),
+    invert: () => color(255 - r, 255 - g, 255 - b, a),
+    darken: factor => color(
+        lerp(r, 0, factor)|0,
+        lerp(g, 0, factor)|0,
+        lerp(b, 0, factor)|0,
+        a
+    ),
+    lighten: factor => color(
+        lerp(r, 255, factor)|0,
+        lerp(g, 255, factor)|0,
+        lerp(b, 255, factor)|0,
+        a
+    ),
+    toCSS: () => `rgba(${r}, ${g}, ${b}, ${a})`
+});
+color.fromHex = hex => {
+    if (hex.startsWith("#") === true) {
+        hex = hex.slice(1);
+    }
+    const [r, g, b, a] = (hex.length <= 4)
+        ? [
+            parseInt(hex.slice(0, 1).repeat(2), 16),
+            parseInt(hex.slice(1, 2).repeat(2), 16),
+            parseInt(hex.slice(2, 3).repeat(2), 16),
+            parseInt(hex.slice(3, 4).repeat(2) || "FF", 16) / 255,
+        ]
+        : [
+            parseInt(hex.slice(0, 2), 16),
+            parseInt(hex.slice(2, 4), 16),
+            parseInt(hex.slice(4, 6), 16),
+            parseInt(hex.slice(6, 8) || "FF", 16) / 255,
+        ];
+
+    return color(r, g, b, a);
+};
+color.blend = (...colors) => color(
+    blendValues(colors.map(c => c.r))|0,
+    blendValues(colors.map(c => c.g))|0,
+    blendValues(colors.map(c => c.b))|0,
+    blendValues(colors.map(c => c.a))
+);
+
+const initUpdate = (attrs) => {
+    if (typeof window !== "undefined") {
+        const element = document.createElement("style");
+
+        for (const [attr, value] of Object.entries(attrs)) {
+            element.setAttribute(attr, value);
+        }
+
+        document.querySelector("head").appendChild(element);
+
+        return css => {
+            element.innerHTML = css;
+            return css;
+        };
+    }
+
+    return css => css;
+};
+const sheet = (styles, attrs = {}) => {
+    const cssSource = prepObj(styles);
+
+    const update = initUpdate(attrs);
+
+    return {
+        generate: (theme, tab = "    ") => update(
+            cssSource
+                .map(decl => renderCSS(decl, tab, 0, theme))
+                .join("\n")
+        )
+    };
+};
+
+sheet.color = color;
+
+var ssjs = sheet;
+
+const cssNoMeasurement$1 = new Set([
+    "animation-iteration-count",
+    "box-flex",
+    "box-flex-group",
+    "box-ordinal-group",
+    "column-count",
+    "fill-opacity",
+    "flex",
+    "flex-grow",
+    "flex-positive",
+    "flex-shrink",
+    "flex-negative",
+    "flex-order",
+    "font-weight",
+    "line-clamp",
+    "line-height",
+    "opacity",
+    "order",
+    "orphans",
+    "stop-opacity",
+    "stroke-dashoffset",
+    "stroke-opacity",
+    "stroke-width",
+    "tab-size",
+    "widows",
+    "z-index",
+    "zoom"
+]);
+const cssPrefixes$1 = ["-webkit-", "-moz-", "-ms-", "-o-", ""];
+const prefixMap$1 = ["user-select"].reduce(
+    (prefixes, name) => ({
+        ...prefixes,
+        [name]: cssPrefixes$1
+    }),
+    {}
+);
+
+const renderCSS$1 = ([selector, valueBase], tab, depth, theme) => {
+    const tabString = tab.repeat(depth);
+
+    const parts = [];
+
+    if (Array.isArray(valueBase) === true) {
+        parts.push(`${tabString}${selector} {`);
+        parts.push(...valueBase.map(
+            value => renderCSS$1(value, tab, depth + 1, theme)
+        ));
+        parts.push(`${tabString}}`);
+    }
+    else {
+        const value = getCSSValue$1(valueBase, selector, theme);
+        const name = getCSSName$1(selector);
+        if (value !== null) {
+            const selectors = getPrefixedSelector$1(name);
+            for (const _name of selectors) {
+                for (const _value of value) {
+                    parts.push(`${tabString}${_name}: ${_value};`);
                 }
             }
-        });
-        Object.defineProperties(self, {});
-        Object.defineProperties(
-            self,
-            Object.getOwnPropertyDescriptors(publicAPI)
-        );
-        Object.defineProperties(publicAPI, {});
-        self.css = css;
-        self.elem = document.createElement("style");
-        const attributes = (nullref0 = attr) != null ? nullref0 : {};
-        for (const key of Object.keys((ref0 = attributes))) {
-            const value = ref0[key];
-            self.elem.setAttribute(key, value);
         }
-        document.querySelector("head").appendChild(self.elem);
-        return publicAPI;
-    };
-    return (...args) => construct.apply({}, args);
-})();
-
-var ss = Sheet;
-
-const query = {
-  mobile: screen.availWidth <= 640
-};
-
-const Color = (...args) => {
-  const [r, g, b, a = 1] = (() => {
-    if (typeof args[0] === "string") {
-      const color = args[0].startsWith("#") ? args[0].slice(1) : args[0];
-      const alpha = color.length > 6 ? color.slice(6, 8) : "FF";
-      return [parseInt(color.slice(0, 2), 16), parseInt(color.slice(2, 4), 16), parseInt(color.slice(4, 6), 16), parseInt(alpha, 16) / 255];
     }
 
-    return args;
-  })();
+    return parts.join("\n");
+};
+const getPrefixedSelector$1 = selector => (prefixMap$1[selector] || [""])
+    .map(prefix => `${prefix}${selector}`);
+const getCSSName$1 = name => name.replace(
+    /[A-Z]/g,
+    (s) => `-${s.toLowerCase()}`
+);
+const getCSSValue$1 = (value, name, theme) => {
+    if (value === null || value === undefined) {
+        return null;
+    }
 
-  const color = () => {
+    if (typeof value === "function") {
+        return getCSSValue$1(value(theme), name, theme);
+    }
 
-    return `rgba(${r}, ${g}, ${b}, ${a})`;
-  };
+    if (Array.isArray(value) === true) {
+        return value.map(
+            val => getCSSValue$1(val, name, theme)
+        );
+    }
 
-  color.inverse = () => Color(255 - r, 255 - g, 255 - b, a);
+    if (value.toCSS !== undefined) {
+        return [value.toCSS()];
+    }
 
-  color.opacity = alpha => Color(r, g, b, alpha);
+    if (typeof value === "number" && cssNoMeasurement$1.has(name) === false) {
+        return [`${value}px`];
+    }
 
-  color.toString = color;
-  return color;
+    return [value];
 };
 
-const tapActive = ".gjs-tap-active:not(.disabled):not(.flat)::after";
+const prepObj$1 = (obj, parent = "", current = [], top = []) => {
+    for (const [selectorBase, value] of Object.entries(obj)) {
+        const selector = selectorBase.replace(/&/g, parent);
 
-const bcolorVariant = color => ({
-  [`&.${color}`]: {
-    backgroundColor: theme => theme.color[color],
-    color: "white",
-    [`&.flat`]: {
-      backgroundColor: "transparent",
-      color: theme => theme.color[color]
-    },
-    [`&${tapActive}`]: {
-      backgroundColor: theme => theme.highlightColor.inverse()
+        if (parent === "" || selectorBase.indexOf("&") !== -1) {
+            const items = [];
+            top.push([selector, items]);
+            prepObj$1(value, selector, items, top);
+        }
+        else {
+            if (typeof value === "object" && value.toCSS === undefined) {
+                const items = [];
+                current.push([selector, items]);
+                prepObj$1(value, selector, items, top);
+            }
+            else {
+                current.push([selector, value]);
+            }
+        }
     }
-  }
+
+    return top;
+};
+const lerp$1 = (from, to, by) => from + ((to - from) * by);
+const sumsq$1 = values => values.reduce((total, n) => total + (n ** 2), 0);
+const blendValues$1 = values => Math.sqrt(sumsq$1(values) / values.length);
+const color$1 = (r, g, b, a = 1) => ({
+    get r() {return r},
+    get g() {return g},
+    get b() {return b},
+    get a() {return a},
+    opacity: alpha => color$1(r, g, b, alpha),
+    invert: () => color$1(255 - r, 255 - g, 255 - b, a),
+    darken: factor => color$1(
+        lerp$1(r, 0, factor)|0,
+        lerp$1(g, 0, factor)|0,
+        lerp$1(b, 0, factor)|0,
+        a
+    ),
+    lighten: factor => color$1(
+        lerp$1(r, 255, factor)|0,
+        lerp$1(g, 255, factor)|0,
+        lerp$1(b, 255, factor)|0,
+        a
+    ),
+    toCSS: () => `rgba(${r}, ${g}, ${b}, ${a})`
 });
-
-const tappable = color => {
-  const style = {
-    position: "relative",
-    "&::after": {
-      content: "''",
-      position: "absolute",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      transition: "background-color 250ms linear"
-    },
-    "&.gjs-tap-active:not(.disabled)::after": {
-      transition: "none",
-      backgroundColor: color
+color$1.fromHex = hex => {
+    if (hex.startsWith("#") === true) {
+        hex = hex.slice(1);
     }
-  };
+    const [r, g, b, a] = (hex.length <= 4)
+        ? [
+            parseInt(hex.slice(0, 1).repeat(2), 16),
+            parseInt(hex.slice(1, 2).repeat(2), 16),
+            parseInt(hex.slice(2, 3).repeat(2), 16),
+            parseInt(hex.slice(3, 4).repeat(2) || "FF", 16) / 255,
+        ]
+        : [
+            parseInt(hex.slice(0, 2), 16),
+            parseInt(hex.slice(2, 4), 16),
+            parseInt(hex.slice(4, 6), 16),
+            parseInt(hex.slice(6, 8) || "FF", 16) / 255,
+        ];
 
-  if (query.mobile === false) {
-    style["&:hover"] = {
-      boxShadow: "0px 2px 4px 2px rgba(0, 0, 0, 0.25)"
+    return color$1(r, g, b, a);
+};
+color$1.blend = (...colors) => color$1(
+    blendValues$1(colors.map(c => c.r))|0,
+    blendValues$1(colors.map(c => c.g))|0,
+    blendValues$1(colors.map(c => c.b))|0,
+    blendValues$1(colors.map(c => c.a))
+);
+
+const initUpdate$1 = (attrs) => {
+    if (typeof window !== "undefined") {
+        const element = document.createElement("style");
+
+        for (const [attr, value] of Object.entries(attrs)) {
+            element.setAttribute(attr, value);
+        }
+
+        document.querySelector("head").appendChild(element);
+
+        return css => {
+            element.innerHTML = css;
+            return css;
+        };
+    }
+
+    return css => css;
+};
+const sheet$1 = (styles, attrs = {}) => {
+    const cssSource = prepObj$1(styles);
+
+    const update = initUpdate$1(attrs);
+
+    return {
+        generate: (theme, tab = "    ") => update(
+            cssSource
+                .map(decl => renderCSS$1(decl, tab, 0, theme))
+                .join("\n")
+        )
     };
-  }
-
-  return style;
 };
 
-const classes = obj => {
-  let list = [];
+sheet$1.color = color$1;
 
-  for (const [key, value] of Object.entries(obj)) {
-    if (key === "className" && value !== undefined) {
-      list.push(value);
-    }
-
-    if (value === true) {
-      list.push(key);
-    }
-  }
-
-  return list.join(" ");
-};
-
-const blue = Color("#1d62d5");
-const lightblue = Color("#2196F3");
+// import {Color} from "@css";
+const blue = sheet$1.color.fromHex("#1d62d5");
+const lightblue = sheet$1.color.fromHex("#2196F3");
 const theme = {
-  highlightColor: Color(0, 0, 0, 0.4),
+  highlightColor: sheet$1.color(0, 0, 0, 0.4),
   outline: blue,
   focusOutline: `2px solid ${blue.opacity(0.5)}`,
   color: {
     primary: blue,
-    secondary: Color("#128f12"),
-    danger: Color("#F44336"),
-    accent: Color("#FF4081")
+    secondary: sheet$1.color.fromHex("#128f12"),
+    danger: sheet$1.color.fromHex("#F44336"),
+    accent: sheet$1.color.fromHex("#FF4081")
   },
   bg: {
-    color: Color("#F0F0F0")
+    color: sheet$1.color.fromHex("#F0F0F0")
   },
   label: {
     text: {
-      normal: Color(0, 0, 0),
-      required: Color(255, 0, 0),
-      optional: Color(0, 128, 255)
+      normal: sheet$1.color(0, 0, 0),
+      required: sheet$1.color(255, 0, 0),
+      optional: sheet$1.color(0, 128, 255)
     }
   },
   collapse: {
     border: {
-      color: Color(0, 0, 0)
+      color: sheet$1.color(0, 0, 0)
     }
   },
   input: {
@@ -547,12 +740,22 @@ const theme = {
       focus: blue
     },
     label: {
-      required: Color(255, 0, 0),
+      required: sheet$1.color(255, 0, 0),
       optional: blue
+    }
+  },
+  panel: {
+    bg: {
+      color: "white"
     }
   },
   tabs: {
     selected: lightblue
+  },
+  title: {
+    bg: {
+      color: "white"
+    }
   }
 };
 
@@ -614,7 +817,128 @@ function CustomListeners(props) {
   });
 }
 
-const buttonSheet = ss({
+const query = {
+  mobile: screen.availWidth <= 640
+}; // const parseColor = (args) => {
+//     if (typeof args[0] === "string") {
+//         const color = args[0].startsWith("#")
+//             ? args[0].slice(1)
+//             : args[0];
+//         const alpha = color.length > 6
+//             ? color.slice(6, 8)
+//             : "FF";
+//
+//         return [
+//             parseInt(color.slice(0, 2), 16),
+//             parseInt(color.slice(2, 4), 16),
+//             parseInt(color.slice(4, 6), 16),
+//             parseInt(alpha, 16) / 255
+//         ];
+//     }
+//     return args;
+// };
+// const Color = (...args) => {
+//     const [r, g, b, a] = parseColor(args);
+//     if (a === 1) {
+//         `rgb(${r}, ${g}, ${b})`;
+//     }
+//     return `rgba(${r}, ${g}, ${b}, ${a})`;
+// };
+// Color.inverse = (color) => {
+//     const [r, g, b, a] = parseColor(color);
+//     return Color(255 - r, 255 - g, 255 - b, a);
+// };
+// const Color = (...args) => {
+//     const [r, g, b, a = 1] = (() => {
+//         if (typeof args[0] === "string") {
+//             const color = args[0].startsWith("#")
+//                 ? args[0].slice(1)
+//                 : args[0];
+//             const alpha = color.length > 6
+//                 ? color.slice(6, 8)
+//                 : "FF";
+//
+//             return [
+//                 parseInt(color.slice(0, 2), 16),
+//                 parseInt(color.slice(2, 4), 16),
+//                 parseInt(color.slice(4, 6), 16),
+//                 parseInt(alpha, 16) / 255
+//             ];
+//         }
+//         return args;
+//     })();
+//
+//     const color = () => {
+//         if (a === 1) {
+//             `rgb(${r}, ${g}, ${b})`;
+//         }
+//         return `rgba(${r}, ${g}, ${b}, ${a})`;
+//     };
+//     color.inverse = () => Color(255 - r, 255 - g, 255 - b, a);
+//     color.opacity = alpha => Color(r, g, b, alpha);
+//     color.toString = color;
+//
+//     return color;
+// };
+
+const tapActive = ".gjs-tap-active:not(.disabled):not(.flat)::after";
+
+const bcolorVariant = colorName => ({
+  [`&.${colorName}`]: {
+    backgroundColor: theme => theme.color[colorName],
+    color: "white",
+    [`&.flat`]: {
+      backgroundColor: "transparent",
+      color: theme => theme.color[colorName]
+    },
+    [`&${tapActive}`]: {
+      backgroundColor: theme => theme.highlightColor.invert()
+    }
+  }
+});
+
+const tappable = color => {
+  const style = {
+    position: "relative",
+    "&::after": {
+      content: "''",
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      transition: "background-color 250ms linear"
+    },
+    "&.gjs-tap-active:not(.disabled)::after": {
+      transition: "none",
+      backgroundColor: color
+    }
+  }; // if (query.mobile === false) {
+  //     style["&:hover"] = {
+  //         boxShadow: "0px 2px 4px 2px rgba(0, 0, 0, 0.25)"
+  //     };
+  // }
+
+  return style;
+};
+
+const classes = obj => {
+  let list = [];
+
+  for (const [key, value] of Object.entries(obj)) {
+    if (key === "className" && value !== undefined) {
+      list.push(value);
+    }
+
+    if (value === true) {
+      list.push(key);
+    }
+  }
+
+  return list.join(" ");
+};
+
+const buttonSheet = ssjs({
   "doric-button": {
     display: "inline-flex",
     padding: "8px 16px",
@@ -631,7 +955,7 @@ const buttonSheet = ss({
     "&:hover": {
       cursor: "pointer"
     },
-    ...tappable(theme.highlightColor),
+    ...tappable(theme => theme.highlightColor),
     ...bcolorVariant("primary"),
     ...bcolorVariant("secondary"),
     ...bcolorVariant("danger"),
@@ -665,6 +989,7 @@ function Button(props) {
     tabIndex = 1,
     style = {},
     icon = null,
+    iconSize = null,
     circle,
     _,
     ...rest
@@ -678,7 +1003,10 @@ function Button(props) {
   }
 
   const iconElem = icon === null ? null : React.createElement("ion-icon", {
-    class: icon
+    class: icon,
+    style: {
+      fontSize: iconSize
+    }
   });
   const wrapProps = { ..._,
     tabIndex,
@@ -691,7 +1019,7 @@ function Button(props) {
 }
 var button = React$1.memo(Button);
 
-const checkboxCSS = ss({
+const checkboxCSS = ssjs({
   "doric-checkbox": {
     display: "block",
     margin: 2,
@@ -701,7 +1029,7 @@ const checkboxCSS = ss({
     userSelect: "none",
     cursor: "pointer",
     margin: 2,
-    ...tappable(Color(0, 0, 0, 0.4)),
+    ...tappable(theme => theme.highlightColor),
     "&.left": {
       paddingLeft: 24
     },
@@ -788,7 +1116,7 @@ function _extends() {
   return _extends.apply(this, arguments);
 }
 
-let collapseCSS = ss({
+let collapseCSS = ssjs({
   "doric-collapse": {
     display: "block",
     borderRadius: 2,
@@ -811,7 +1139,7 @@ let collapseCSS = ss({
       padding: 4,
       fontSize: 16,
       userSelect: "none",
-      ...tappable(Color(0, 0, 0, 0.4))
+      ...tappable(theme => theme.highlightColor)
     },
     "&-icon": {
       display: "inline-block",
@@ -925,7 +1253,7 @@ const gridSpans = range_1(2, 13).reduce((spans, i) => ({ ...spans,
     gridColumn: `span ${i}`
   }
 }), {});
-const gridCSS = ss({
+const gridCSS = ssjs({
   "doric-grid": {
     display: "grid",
     gridGap: 2,
@@ -960,13 +1288,17 @@ function Grid(props) {
   return React.createElement("doric-grid", _, children);
 }
 
-let imageCSS = ss({
+let imageCSS = ssjs({
   "doric-image": {
     display: "inline-block",
     backgroundRepeat: "no-repeat",
     backgroundPosition: "center center",
     backgroundSize: "contain",
+    position: "relative",
     "& > img": {
+      position: "absolute",
+      top: 0,
+      left: 0,
       width: "100%",
       height: "100%",
       opacity: 0
@@ -1003,17 +1335,17 @@ function Image(props) {
   }));
 }
 
-let labelCSS = ss({
+let labelCSS = ssjs({
   "doric-label": {
     display: "block",
     padding: 2,
-    color: theme.label.text.normal,
+    color: theme => theme.label.text.normal,
     fontSize: 12,
     "&.required": {
-      color: theme.label.text.required
+      color: theme => theme.label.text.required
     },
     "&.optional": {
-      color: theme.label.text.optional
+      color: theme => theme.label.text.optional
     },
     "&:empty": {
       display: "none"
@@ -1044,38 +1376,114 @@ function Label(props) {
   }), text);
 }
 
-const panelCSS = ss({
-  "doric-panel": {
+const listCSS = ssjs({
+  "doric-list": {
     display: "block",
+    "& doric-item": {
+      display: "block",
+      padding: 8,
+      borderBottom: "1px solid black",
+      ...tappable(theme => theme.highlightColor)
+    },
+    "& doric-list-header": {
+      position: "sticky",
+      display: "block",
+      top: 0,
+      zIndex: "+10",
+      padding: 4,
+      fontSize: 16,
+      textTransform: "uppercase",
+      borderBottom: "1px solid lightgray",
+      boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.4)",
+      backgroundColor: "white",
+      "&:empty": {
+        display: "none"
+      }
+    }
+  }
+}, {
+  name: "doric-list"
+});
+listCSS.generate(theme);
+const ListItem = React$1.memo(function ListItem({
+  item,
+  propName
+}) {
+  return React.createElement("div", null, item[propName]);
+});
+
+function List(props) {
+  const {
+    items,
+    title,
+    propName = "label",
+    onItemTap,
+    onItemHold,
+    itemRenderer: ItemRenderer = ListItem,
+    ...passThrough
+  } = props;
+
+  const onTap = evt => {
+    let index = parseInt(evt.target.dataset.index);
+    evt.item = items[index];
+    onItemTap === null || onItemTap === void 0 ? void 0 : onItemTap(evt);
+  };
+
+  const onHold = evt => {
+    let index = parseInt(evt.target.dataset.index);
+    evt.item = items[index];
+    onItemHold === null || onItemHold === void 0 ? void 0 : onItemHold(evt);
+  };
+
+  return React.createElement("doric-list", passThrough, React.createElement("doric-list-header", null, title), React.createElement("doric-list-content", null, React.createElement(CustomListeners, {
+    onTap: onTap,
+    onHold: onHold
+  }), items.map((item, index) => React.createElement("doric-item", {
+    key: index,
+    "data-index": index
+  }, React.createElement(ItemRenderer, {
+    item: item,
+    propName: propName
+  })))));
+}
+
+var list = React$1.memo(List);
+
+const panelCSS = ssjs({
+  "doric-panel": {
+    display: "flex",
     margin: 4,
     boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.4)",
     borderTop: "1px solid lightgray",
-    backgroundColor: theme.bg.color,
+    backgroundColor: theme => theme.panel.bg.color,
     overflow: "hidden",
-    padding: 12,
     position: "relative",
     top: 0,
     left: 0,
     borderRadius: 4,
-    "& > doric-title": {
-      margin: -12,
+    "& doric-title": {
+      padding: 0,
+      margin: 0,
       marginBottom: 4,
-      borderWidth: 0
+      borderWidth: 0,
+      boxShadow: "none"
     }
   },
-  "doric-panel-top": {
+  "doric-panel-actions": {
     position: "relative",
-    display: "block",
-    margin: -12,
-    marginBottom: 0,
-    padding: 4
-  },
-  "doric-panel-bottom": {
-    position: "relative",
-    display: "block",
-    margin: -12,
+    display: "flex",
+    margin: -8,
     marginTop: 0,
-    padding: 4
+    "& > doric-button": {
+      padding: 8
+    }
+  },
+  "doric-panel-content": {
+    flexGrow: 1,
+    padding: 12
+  },
+  "doric-panel-media": {
+    display: "block"
   }
 }, {
   name: "doric-panel"
@@ -1083,27 +1491,35 @@ const panelCSS = ss({
 panelCSS.generate(theme);
 
 function Panel({
-  children
+  children,
+  ...passThrough
 }) {
-  return React.createElement("doric-panel", null, children);
+  const list = React$1.Children.toArray(children);
+  const normal = list.filter(child => child.type !== Panel.media);
+  const media = list.find(child => child.type === Panel.media);
+  return React.createElement("doric-panel", passThrough, React.createElement("doric-panel-content", null, normal), media);
 }
 
 Panel.top = function PanelTop(props) {
   return React.createElement("doric-panel-top", props);
 };
 
-Panel.bottom = function PanelBottom(props) {
-  return React.createElement("doric-panel-bottom", props);
+Panel.actions = function PanelBottom(props) {
+  return React.createElement("doric-panel-actions", props);
 };
 
-const titleCSS = ss({
+Panel.media = function PanelMedia(props) {
+  return React.createElement("doric-panel-media", props);
+};
+
+const titleCSS = ssjs({
   "doric-title": {
     display: "block",
     margin: 2,
-    padding: 4,
+    padding: "4px 12px",
     boxShadow: "0px 1px 5px rgba(0, 0, 0, 0.25)",
     border: "1px solid lightgray",
-    backgroundColor: "white",
+    backgroundColor: theme => theme.title.bg.color,
     "&::after": {
       content: "' '",
       display: "table",
@@ -1137,7 +1553,7 @@ function Title(props) {
   return React.createElement("doric-title", null, React.createElement("div", null, title), React.createElement("span", null, subtitle));
 }
 
-let mainCSS = ss({
+let mainCSS = ssjs({
   "*": {
     boxSizing: "border-box",
     WebkitTapHighlightColor: "transparent",
@@ -1147,20 +1563,16 @@ let mainCSS = ss({
   },
   ...(query.mobile === false ? {
     "*:focus": {
-      outline: theme.focusOutline
+      outline: theme => theme.focusOutline
     }
-  } : {
-    "*:focus": {
-      boxShadow: "0px 2px 4px 2px rgba(0, 0, 0, 0.25)"
-    }
-  }),
+  } : {}),
   "html body": {
     padding: 0,
     margin: 0,
     width: "100%",
     height: "100%",
     fontFamily: "Roboto",
-    backgroundColor: theme.bg
+    backgroundColor: theme => theme.bg.color
   },
   "div.center": {
     display: "flex",
@@ -1183,6 +1595,7 @@ var main = {
   grid: Grid,
   image: Image,
   label: Label,
+  list,
   panel: Panel,
   title: Title
 };

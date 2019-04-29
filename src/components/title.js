@@ -7,10 +7,10 @@ const titleCSS = ssjs(
         "doric-title": {
             display: "block",
             margin: 2,
-            padding: 4,
+            padding: "4px 12px",
             boxShadow: "0px 1px 5px rgba(0, 0, 0, 0.25)",
             border: "1px solid lightgray",
-            backgroundColor: "white",
+            backgroundColor: theme => theme.title.bg.color,
             "&::after": {
                 content: "' '",
                 display: "table",

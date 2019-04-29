@@ -31,14 +31,33 @@
         <script type="text/custom">
         function Main(props) {
             const [checked, updateChecked] = React.useState(false);
+            const items = range(
+                0,
+                25,
+                i => ({
+                    value: i,
+                    label: `Item ${i}`
+                })
+            );
+            const showItem = (evt) => console.log(evt.item);
 
             return <div>
                 <doric.title title="Title" subtitle="Subtitle" />
                 testing
                 <doric.panel>
-                    <doric.title title="Panel \\o/" />
+                    <doric.panel.media>
+                        <doric.image source="images/cthulhu.jpg" width={120} height="100%" />
+                    </doric.panel.media>
+                    <doric.title title="Panel \o/" subtitle="Praise Cthulhu" />
                     Panel test
+                    <doric.panel.actions>
+                        <doric.button iconSize={24} icon="ion-md-skip-backward" circle={40} />
+                        <doric.button iconSize={24} icon="ion-md-play" circle={40} />
+                        <doric.button iconSize={24} icon="ion-md-skip-forward" circle={40} />
+                    </doric.panel.actions>
                 </doric.panel>
+                <doric.list items={items} onItemTap={showItem} title="Test List 1" />
+                <doric.list items={items} onItemTap={showItem} title="Test List 2" />
             </div>
         }
 

@@ -2,7 +2,7 @@ import {useState, memo} from "react";
 import ssjs from "ssjs";
 
 import theme from "@theme";
-import {tappable, Color, classes} from "@css";
+import {tappable, classes} from "@css";
 
 import CustomListeners from "@components/customListeners.js"
 
@@ -28,7 +28,7 @@ let collapseCSS = ssjs(
                 padding: 4,
                 fontSize: 16,
                 userSelect: "none",
-                ...tappable(Color(0, 0, 0, 0.4))
+                ...tappable(theme => theme.highlightColor)
             },
             "&-icon": {
                 display: "inline-block",

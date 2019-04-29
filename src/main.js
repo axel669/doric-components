@@ -10,6 +10,7 @@ import customListeners from "@components/customListeners.js";
 import grid from "@components/grid.js";
 import image from "@components/image.js";
 import label from "@components/label.js";
+import list from "@components/list.js";
 import panel from "@components/panel.js";
 import title from "@components/title.js";
 
@@ -30,11 +31,7 @@ let mainCSS = ssjs(
                     outline: theme => theme.focusOutline
                 }
             }
-            : {
-                "*:focus": {
-                    boxShadow: "0px 2px 4px 2px rgba(0, 0, 0, 0.25)"
-                }
-            }
+            : {}
         ),
         "html body": {
             padding: 0,
@@ -42,7 +39,7 @@ let mainCSS = ssjs(
             width: "100%",
             height: "100%",
             fontFamily: "Roboto",
-            backgroundColor: theme => theme.bg
+            backgroundColor: theme => theme.bg.color
         },
         "div.center": {
             display: "flex",
@@ -66,6 +63,7 @@ export default {
     grid,
     image,
     label,
+    list,
     panel,
     title
 };
