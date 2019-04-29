@@ -65,22 +65,22 @@ const Color = (...args) => {
 };
 
 const tapActive = ".gjs-tap-active:not(.disabled):not(.flat)::after";
-const bcolorVariant = (color) => ({
+const bcolorVariant = (colorName) => ({
     [`&.${color}`]: {
-        backgroundColor: theme => theme.color[color],
+        backgroundColor: theme => theme.color[colorName],
         color: "white",
         [`&.flat`]: {
             backgroundColor: "transparent",
-            color: theme => theme.color[color]
+            color: theme => theme.color[colorName]
         },
         [`&${tapActive}`]: {
             backgroundColor: (theme) =>
-                theme.highlightColor.inverse()
+                theme.highlightColor.invert()
         }
     }
 });
 
-const tappable = (color) => {
+const tappable = () => {
     const style = {
         position: "relative",
         "&::after": {

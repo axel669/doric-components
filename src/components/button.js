@@ -24,7 +24,7 @@ const buttonSheet = ssjs(
             "&:hover": {
                 cursor: "pointer"
             },
-            ...css.tappable(theme.highlightColor),
+            ...css.tappable(theme => theme.highlightColor),
             ...css.bcolorVariant("primary"),
             ...css.bcolorVariant("secondary"),
             ...css.bcolorVariant("danger"),
