@@ -32,12 +32,12 @@ export default {
         babel({
             exclude: "node_modules/**",
             include: "src/**/*.js",
-            babelrc: false,
-            plugins: [
-                "@babel/plugin-transform-react-jsx",
-                "@babel/plugin-proposal-optional-chaining",
-                "@babel/plugin-proposal-nullish-coalescing-operator"
-            ]
+            // babelrc: false,
+            // plugins: [
+            //     "@babel/plugin-transform-react-jsx",
+            //     "@babel/plugin-proposal-optional-chaining",
+            //     "@babel/plugin-proposal-nullish-coalescing-operator"
+            // ]
         }),
         resolve(),
         commonjs()

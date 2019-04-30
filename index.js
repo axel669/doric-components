@@ -553,8 +553,8 @@ const renderCSS$1 = ([selector, valueBase], tab, depth, theme) => {
         parts.push(`${tabString}}`);
     }
     else {
-        const value = getCSSValue$1(valueBase, selector, theme);
         const name = getCSSName$1(selector);
+        const value = getCSSValue$1(valueBase, name, theme);
         if (value !== null) {
             const selectors = getPrefixedSelector$1(name);
             for (const _name of selectors) {
@@ -1379,10 +1379,11 @@ function Label(props) {
 const listCSS = ssjs({
   "doric-list": {
     display: "block",
-    "& doric-item": {
+    margin: 4,
+    "& doric-list-item": {
       display: "block",
       padding: 8,
-      borderBottom: "1px solid black",
+      flexGrow: 1,
       ...tappable(theme => theme.highlightColor)
     },
     "& doric-list-header": {
@@ -1392,9 +1393,7 @@ const listCSS = ssjs({
       zIndex: "+10",
       padding: 4,
       fontSize: 16,
-      textTransform: "uppercase",
-      borderBottom: "1px solid lightgray",
-      boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.4)",
+      border: "1px solid lightgray",
       backgroundColor: "white",
       "&:empty": {
         display: "none"
@@ -1405,11 +1404,25 @@ const listCSS = ssjs({
   name: "doric-list"
 });
 listCSS.generate(theme);
-const ListItem = React$1.memo(function ListItem({
+const DefaultListRenderer = React$1.memo(function ListItem({
   item,
   propName
 }) {
   return React.createElement("div", null, item[propName]);
+});
+const ListItem = React$1.memo(function ListItem(props) {
+  const {
+    index,
+    item,
+    propName,
+    ItemRenderer
+  } = props;
+  return React.createElement("doric-list-item", {
+    "data-index": index
+  }, React.createElement(ItemRenderer, {
+    item: item,
+    propName: propName
+  }));
 });
 
 function List(props) {
@@ -1419,7 +1432,8 @@ function List(props) {
     propName = "label",
     onItemTap,
     onItemHold,
-    itemRenderer: ItemRenderer = ListItem,
+    itemRenderer: ItemRenderer = DefaultListRenderer,
+    itemContainer: ItemContainer = "div",
     ...passThrough
   } = props;
 
@@ -1438,13 +1452,14 @@ function List(props) {
   return React.createElement("doric-list", passThrough, React.createElement("doric-list-header", null, title), React.createElement("doric-list-content", null, React.createElement(CustomListeners, {
     onTap: onTap,
     onHold: onHold
-  }), items.map((item, index) => React.createElement("doric-item", {
-    key: index,
-    "data-index": index
-  }, React.createElement(ItemRenderer, {
-    item: item,
-    propName: propName
-  })))));
+  }), React.createElement(ItemContainer, null, items.map((item, index) => React.createElement(ListItem, _extends({
+    key: index
+  }, {
+    item,
+    propName,
+    index,
+    ItemRenderer
+  }))))));
 }
 
 var list = React$1.memo(List);
@@ -1511,6 +1526,164 @@ Panel.actions = function PanelBottom(props) {
 Panel.media = function PanelMedia(props) {
   return React.createElement("doric-panel-media", props);
 };
+
+let selectCSS = ssjs({
+  "doric-select": {
+    margin: 2,
+    display: "block",
+    "& fieldset": {
+      borderRadius: 4,
+      overflow: "hidden",
+      padding: 0,
+      paddingRight: 1,
+      backgroundColor: "white",
+      border: "1px solid black",
+      margin: 0,
+      "&.disabled": {
+        backgroundColor: "lightgray"
+      },
+      "&.boring": {
+        borderWidth: 0,
+        backgroundColor: "transparent"
+      },
+      "& legend": {
+        marginLeft: 16,
+        fontSize: 12,
+        "&:empty": {
+          display: "none"
+        },
+        "&:not(:empty) + input": {
+          paddingTop: 6
+        }
+      },
+      "&.required legend": {
+        color: theme => theme.input.label.required
+      },
+      "&.optional legend": {
+        color: theme => theme.input.label.optional
+      },
+      "&:focus-within": {
+        borderColor: theme => theme.input.border.focus
+      }
+    },
+    "& select": {
+      display: "block",
+      width: "100%",
+      fontSize: 16,
+      padding: "0px 12px",
+      borderWidth: 0,
+      margin: 0,
+      backgroundColor: "transparent",
+      height: 40,
+      "&:focus": {
+        outline: "none"
+      },
+      "&.disabled": {
+        backgroundColor: "transparent"
+      }
+    },
+    "& fieldset.boring select": {
+      border: "1px solid black",
+      borderRadius: 4,
+      backgroundColor: "white",
+      "&:focus": {
+        borderColor: theme => theme.input.border.focus
+      }
+    }
+  }
+}, {
+  name: "doric-select"
+});
+selectCSS.generate(theme);
+
+function Select(props) {
+  const {
+    options = [],
+    value,
+    placeholder,
+    label,
+    className,
+    required,
+    optional,
+    disabled,
+    boring,
+    onChange,
+    wrapProps,
+    ...passThrough
+  } = props;
+  let realValue = "-1";
+  const {
+    lookup,
+    mapped
+  } = options.reduce(({
+    lookup,
+    mapped
+  }, item, index) => {
+    const key = index.toString();
+
+    if (Array.isArray(item) === false) {
+      lookup[key] = item.value;
+      mapped.push(React.createElement("option", {
+        key: key,
+        value: key
+      }, item.label));
+
+      if (item.value === value) {
+        realValue = key;
+      }
+    } else {
+      mapped.push(React.createElement("optgroup", {
+        label: item[0],
+        key: index
+      }, item.slice(1).map((_item, _index) => {
+        const _key = `${key}:${_index}`;
+        lookup[_key] = _item.value;
+
+        if (_item.value === value) {
+          realValue = _key;
+        }
+
+        return React.createElement("option", {
+          key: _key,
+          value: _key
+        }, _item.label);
+      })));
+    }
+
+    return {
+      lookup,
+      mapped
+    };
+  }, {
+    lookup: {},
+    mapped: placeholder !== undefined ? [React.createElement("option", {
+      key: "-1",
+      hidden: true,
+      value: "-1"
+    }, placeholder)] : []
+  });
+  const labelProps = {
+    className: classes({
+      className,
+      required,
+      optional,
+      disabled,
+      boring
+    }),
+    ...passThrough
+  };
+  const selectProps = {
+    value: realValue,
+    onChange: evt => {
+      evt.value = lookup[evt.target.value];
+      onChange === null || onChange === void 0 ? void 0 : onChange(evt);
+    },
+    disabled
+  };
+  return React.createElement("doric-select", wrapProps, React.createElement("fieldset", labelProps, React.createElement("legend", null, label), React.createElement("select", selectProps, mapped)));
+}
+
+var select = React$1.memo(Select);
 
 const titleCSS = ssjs({
   "doric-title": {
@@ -1597,6 +1770,7 @@ var main = {
   label: Label,
   list,
   panel: Panel,
+  select,
   title: Title
 };
 

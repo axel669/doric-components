@@ -17,7 +17,7 @@
         <script crossorigin src="https://unpkg.com/@axel669/norn@1/standalone/connect-hook.js"></script>
         <script crossorigin src="https://unpkg.com/@axel669/immutable-update@0.2.1/standalone/update.js"></script>
         <script crossorigin src="https://unpkg.com/@axel669/array-sort@0.1.0/standalone/array-sort.js"></script>
-        <script crossorigin src="https://unpkg.com/@axel669/range@1.0.0/standalone/range.js"></script>
+        <script crossorigin src="https://unpkg.com/@axel669/range@1/standalone/range.js"></script>
 
         <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/muicss/0.9.41/css/mui.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/muicss/0.9.41/react/mui-react.js"></script> -->
@@ -29,35 +29,42 @@
         </script>
         <script src="../standalone/doric-components.js"></script>
         <script type="text/custom">
+        const options = [
+            {value: "hi", label: "LUL"},
+            [
+                "Memes",
+                {value: [1, 2, 3], label: "Wat"},
+                {value: {a: 10}, label: "Pepe"}
+            ],
+            {value: "maybe", label: "CRJ"}
+        ];
+
         function Main(props) {
             const [checked, updateChecked] = React.useState(false);
-            const items = range(
-                0,
-                25,
-                i => ({
-                    value: i,
-                    label: `Item ${i}`
-                })
-            );
-            const showItem = (evt) => console.log(evt.item);
+            const [selected, updateSelected] = React.useState(null);
+            const onChangeSelect = evt => {
+                updateSelected(evt.value);
+            };
 
             return <div>
-                <doric.title title="Title" subtitle="Subtitle" />
-                testing
-                <doric.panel>
-                    <doric.panel.media>
-                        <doric.image source="images/cthulhu.jpg" width={120} height="100%" />
-                    </doric.panel.media>
-                    <doric.title title="Panel \o/" subtitle="Praise Cthulhu" />
-                    Panel test
-                    <doric.panel.actions>
-                        <doric.button iconSize={24} icon="ion-md-skip-backward" circle={40} />
-                        <doric.button iconSize={24} icon="ion-md-play" circle={40} />
-                        <doric.button iconSize={24} icon="ion-md-skip-forward" circle={40} />
-                    </doric.panel.actions>
-                </doric.panel>
-                <doric.list items={items} onItemTap={showItem} title="Test List 1" />
-                <doric.list items={items} onItemTap={showItem} title="Test List 2" />
+                <div style={{height: 20}} />
+                <doric.select
+                    value={selected}
+                    options={options}
+                    onChange={onChangeSelect}
+                    placeholder="Nothin"
+                    label="Testing"
+                    boring
+                    required
+                />
+                <doric.select
+                    value={selected}
+                    options={options}
+                    onChange={onChangeSelect}
+                    placeholder="Nothin"
+                    label="Testing"
+                    optional
+                />
             </div>
         }
 

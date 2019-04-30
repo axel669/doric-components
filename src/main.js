@@ -12,6 +12,7 @@ import image from "@components/image.js";
 import label from "@components/label.js";
 import list from "@components/list.js";
 import panel from "@components/panel.js";
+import select from "@components/select.js";
 import title from "@components/title.js";
 
 import {query} from "@css";
@@ -65,5 +66,6 @@ export default {
     label,
     list,
     panel,
+    select,
     title
 };

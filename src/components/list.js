@@ -10,10 +10,11 @@ const listCSS = ssjs(
     {
         "doric-list": {
             display: "block",
-            "& doric-item": {
+            margin: 4,
+            "& doric-list-item": {
                 display: "block",
                 padding: 8,
-                borderBottom: "1px solid black",
+                flexGrow: 1,
                 ...tappable(theme => theme.highlightColor)
             },
             "& doric-list-header": {
@@ -23,9 +24,7 @@ const listCSS = ssjs(
                 zIndex: "+10",
                 padding: 4,
                 fontSize: 16,
-                textTransform: "uppercase",
-                borderBottom: "1px solid lightgray",
-                boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.4)",
+                border: "1px solid lightgray",
                 backgroundColor: "white",
                 "&:empty": {
                     display: "none"
@@ -37,17 +36,27 @@ const listCSS = ssjs(
 );
 listCSS.generate(theme);
 
-const ListItem = memo(
+const DefaultListRenderer = memo(
     function ListItem({item, propName}) {
         return <div>{item[propName]}</div>
     }
 );
 
+const ListItem = memo(
+    function ListItem(props) {
+        const {index, item, propName, ItemRenderer} = props;
+
+        return <doric-list-item data-index={index}>
+            <ItemRenderer item={item} propName={propName} />
+        </doric-list-item>
+    }
+);
 function List(props) {
     const {
         items, title, propName = "label",
         onItemTap, onItemHold,
-        itemRenderer: ItemRenderer = ListItem,
+        itemRenderer: ItemRenderer = DefaultListRenderer,
+        itemContainer: ItemContainer = "div",
         ...passThrough
     } = props;
     const onTap = (evt) => {
@@ -69,11 +78,14 @@ function List(props) {
         </doric-list-header>
         <doric-list-content>
             <CustomListeners onTap={onTap} onHold={onHold} />
-            {items.map(
-                (item, index) => <doric-item key={index} data-index={index}>
-                    <ItemRenderer item={item} propName={propName} />
-                </doric-item>
-            )}
+            <ItemContainer>
+                {items.map(
+                    (item, index) => <ListItem
+                        key={index}
+                        {...{item, propName, index, ItemRenderer}}
+                    />
+                )}
+            </ItemContainer>
         </doric-list-content>
     </doric-list>
 }
