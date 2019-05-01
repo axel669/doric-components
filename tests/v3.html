@@ -29,13 +29,23 @@
         </script>
         <script src="../standalone/doric-components.js"></script>
         <script type="text/custom">
+
+        function GridLayout({children}) {
+            return <doric.grid cols={3}>{children}</doric.grid>
+        }
+
+        const ItemRender = React.memo(
+            function RadioItem({item, propName, selected}) {
+                return <div style={{textAlign: "center", backgroundColor: selected && "cyan", padding: 8}}>
+                    {item[propName]}
+                </div>
+            }
+        );
+
         const options = [
             {value: "hi", label: "LUL"},
-            [
-                "Memes",
-                {value: [1, 2, 3], label: "Wat"},
-                {value: {a: 10}, label: "Pepe"}
-            ],
+            {value: [1, 2, 3], label: "Wat"},
+            {value: {a: 10}, label: "Pepe"},
             {value: "maybe", label: "CRJ"}
         ];
 
@@ -47,24 +57,14 @@
             };
 
             return <div>
-                <div style={{height: 20}} />
-                <doric.select
-                    value={selected}
+                <doric.radio
                     options={options}
-                    onChange={onChangeSelect}
-                    placeholder="Nothin"
-                    label="Testing"
-                    boring
-                    required
-                />
-                <doric.select
                     value={selected}
-                    options={options}
                     onChange={onChangeSelect}
-                    placeholder="Nothin"
-                    label="Testing"
-                    optional
+                    layout={GridLayout}
+                    itemRender={ItemRender}
                 />
+                <doric.list items={options} />
             </div>
         }
 

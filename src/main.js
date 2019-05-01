@@ -12,6 +12,7 @@ import image from "@components/image.js";
 import label from "@components/label.js";
 import list from "@components/list.js";
 import panel from "@components/panel.js";
+import radio from "@components/radio.js";
 import select from "@components/select.js";
 import title from "@components/title.js";
 
@@ -66,6 +67,7 @@ export default {
     label,
     list,
     panel,
+    radio,
     select,
     title
 };

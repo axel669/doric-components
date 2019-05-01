@@ -15,6 +15,8 @@ const listCSS = ssjs(
                 display: "block",
                 padding: 8,
                 flexGrow: 1,
+                borderRadius: 4,
+                overflow: "hidden",
                 ...tappable(theme => theme.highlightColor)
             },
             "& doric-list-header": {
@@ -38,7 +40,7 @@ listCSS.generate(theme);
 
 const DefaultListRenderer = memo(
     function ListItem({item, propName}) {
-        return <div>{item[propName]}</div>
+        return item[propName]
     }
 );
 
@@ -55,8 +57,8 @@ function List(props) {
     const {
         items, title, propName = "label",
         onItemTap, onItemHold,
-        itemRenderer: ItemRenderer = DefaultListRenderer,
-        itemContainer: ItemContainer = "div",
+        itemRender: ItemRenderer = DefaultListRenderer,
+        layout: Layout = "div",
         ...passThrough
     } = props;
     const onTap = (evt) => {
@@ -68,6 +70,10 @@ function List(props) {
     const onHold = (evt) => {
         let index = parseInt(evt.target.dataset.index);
 
+        if (isNaN(index) === true) {
+            return;
+        }
+
         evt.item = items[index];
         onItemHold?.(evt);
     };
@@ -78,14 +84,14 @@ function List(props) {
         </doric-list-header>
         <doric-list-content>
             <CustomListeners onTap={onTap} onHold={onHold} />
-            <ItemContainer>
+            <Layout>
                 {items.map(
                     (item, index) => <ListItem
                         key={index}
                         {...{item, propName, index, ItemRenderer}}
                     />
                 )}
-            </ItemContainer>
+            </Layout>
         </doric-list-content>
     </doric-list>
 }

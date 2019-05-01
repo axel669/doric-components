@@ -1183,47 +1183,7 @@ var doric = (function (React$1) {
       })), React.createElement("div", null, children));
     }
 
-    var collapse = React$1.memo(Collapse); // class Collapse extends React.Component {
-    //     constructor(props) => {
-    //         super(props)
-    //
-    //         @state = {
-    //             hide: true
-    //         }
-    //         @toggle = () => {
-    //             let hide = !@state.hide
-    //             @setState({hide})
-    //         }
-    //     }
-    //
-    //     render() => {
-    //         let {
-    //             className, label = "Collapse", tabIndex = 1
-    //             children
-    //             ...passThrough
-    //         } = @props
-    //         let {hide} = @state
-    //         let _classes = classes({className, hide})
-    //
-    //         let direction = (hide == true) ? "right" : "down"
-    //         let icon = <doric-collapse-icon class=`ion-md-arrow-drop${direction}` />
-    //
-    //         let props = {
-    //             tabIndex
-    //             ...passThrough
-    //         }
-    //
-    //         return <doric-collapse {...props} class=_classes>
-    //             <doric-collapse-label>
-    //                 {icon} {label}
-    //                 <CustomListeners onTap=@toggle />
-    //             </doric-collapse-label>
-    //             <div>{children}</div>
-    //         </doric-collapse>
-    //     }
-    // }
-    //
-    // export default Collapse
+    var collapse = React$1.memo(Collapse);
 
     const range = (start, end = null, step = 1, map = i => i) => {
       	if (typeof end === "function") {
@@ -1382,6 +1342,8 @@ var doric = (function (React$1) {
           display: "block",
           padding: 8,
           flexGrow: 1,
+          borderRadius: 4,
+          overflow: "hidden",
           ...tappable(theme => theme.highlightColor)
         },
         "& doric-list-header": {
@@ -1406,7 +1368,7 @@ var doric = (function (React$1) {
       item,
       propName
     }) {
-      return React.createElement("div", null, item[propName]);
+      return item[propName];
     });
     const ListItem = React$1.memo(function ListItem(props) {
       const {
@@ -1430,8 +1392,8 @@ var doric = (function (React$1) {
         propName = "label",
         onItemTap,
         onItemHold,
-        itemRenderer: ItemRenderer = DefaultListRenderer,
-        itemContainer: ItemContainer = "div",
+        itemRender: ItemRenderer = DefaultListRenderer,
+        layout: Layout = "div",
         ...passThrough
       } = props;
 
@@ -1443,6 +1405,11 @@ var doric = (function (React$1) {
 
       const onHold = evt => {
         let index = parseInt(evt.target.dataset.index);
+
+        if (isNaN(index) === true) {
+          return;
+        }
+
         evt.item = items[index];
         onItemHold === null || onItemHold === void 0 ? void 0 : onItemHold(evt);
       };
@@ -1450,7 +1417,7 @@ var doric = (function (React$1) {
       return React.createElement("doric-list", passThrough, React.createElement("doric-list-header", null, title), React.createElement("doric-list-content", null, React.createElement(CustomListeners, {
         onTap: onTap,
         onHold: onHold
-      }), React.createElement(ItemContainer, null, items.map((item, index) => React.createElement(ListItem, _extends({
+      }), React.createElement(Layout, null, items.map((item, index) => React.createElement(ListItem, _extends({
         key: index
       }, {
         item,
@@ -1524,6 +1491,93 @@ var doric = (function (React$1) {
     Panel.media = function PanelMedia(props) {
       return React.createElement("doric-panel-media", props);
     };
+
+    const radioCSS = ssjs({
+      "doric-radio": {
+        display: "block",
+        margin: 4,
+        "& doric-radio-item": {
+          display: "block",
+          flexGrow: 1,
+          borderRadius: 4,
+          overflow: "hidden",
+          ...tappable(theme => theme.highlightColor)
+        }
+      }
+    }, {
+      name: "doric-radio"
+    });
+    radioCSS.generate(theme);
+    const DefaultRadioRenderer = React$1.memo(function RadioItem({
+      item,
+      propName,
+      selected
+    }) {
+      const icon = React.createElement("ion-icon", {
+        class: `ion-md-radio-button-${selected === true ? "on" : "off"}`
+      });
+      return React.createElement("div", {
+        style: {
+          padding: 8
+        }
+      }, icon, "\xA0", item[propName]);
+    });
+    const RadioItem = React$1.memo(function RadioItem(props) {
+      const {
+        index,
+        item,
+        propName,
+        ItemRenderer,
+        selected
+      } = props;
+      return React.createElement("doric-radio-item", {
+        "data-index": index
+      }, React.createElement(ItemRenderer, {
+        item: item,
+        propName: propName,
+        selected: selected
+      }));
+    });
+
+    function Radio(props) {
+      const {
+        options,
+        value,
+        propName = "label",
+        onChange,
+        itemRender: ItemRenderer = DefaultRadioRenderer,
+        layout: Layout = "div",
+        ...passThrough
+      } = props;
+
+      const onTap = evt => {
+        let index = parseInt(evt.target.dataset.index);
+
+        if (isNaN(index) === true) {
+          return;
+        }
+
+        evt.option = options[index];
+        evt.value = evt.option.value;
+        onChange === null || onChange === void 0 ? void 0 : onChange(evt);
+      };
+
+      const selectedIndex = options.findIndex(item => item.value === value);
+      return React.createElement("doric-radio", passThrough, React.createElement(CustomListeners, {
+        onTap: onTap
+      }), React.createElement(Layout, null, options.map((item, index) => React.createElement(RadioItem, _extends({
+        key: index
+      }, {
+        item,
+        propName,
+        index,
+        ItemRenderer
+      }, {
+        selected: selectedIndex === index
+      })))));
+    }
+
+    var radio = React$1.memo(Radio);
 
     let selectCSS = ssjs({
       "doric-select": {
@@ -1768,6 +1822,7 @@ var doric = (function (React$1) {
       label: Label,
       list,
       panel: Panel,
+      radio,
       select,
       title: Title
     };
