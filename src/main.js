@@ -14,6 +14,7 @@ import list from "@components/list.js";
 import panel from "@components/panel.js";
 import radio from "@components/radio.js";
 import select from "@components/select.js";
+import {Tabs, Tab} from "@components/tabs.js";
 import title from "@components/title.js";
 
 import {query} from "@css";
@@ -69,5 +70,7 @@ export default {
     panel,
     radio,
     select,
+    tab: Tab,
+    tabs: Tabs,
     title
 };

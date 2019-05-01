@@ -52,19 +52,24 @@
         function Main(props) {
             const [checked, updateChecked] = React.useState(false);
             const [selected, updateSelected] = React.useState(null);
+            const [tab, updateTab] = React.useState(0);
+
             const onChangeSelect = evt => {
                 updateSelected(evt.value);
             };
+            const changeTab = evt => {
+                updateTab(evt.selectedTab);
+            };
 
             return <div>
-                <doric.radio
-                    options={options}
-                    value={selected}
-                    onChange={onChangeSelect}
-                    layout={GridLayout}
-                    itemRender={ItemRender}
-                />
-                <doric.list items={options} />
+                <doric.tabs selectedTab={tab} onTabChange={changeTab}>
+                    <doric.tab label="test">
+                        Testing?
+                    </doric.tab>
+                    <doric.tab label="test 2">
+                        Testing? #2
+                    </doric.tab>
+                </doric.tabs>
             </div>
         }
 
