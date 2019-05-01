@@ -1,5 +1,5 @@
 import ssjs from "ssjs";
-import theme from "@theme";
+import theme from "../helpers/theme.js";
 const titleCSS = ssjs({
   "doric-title": {
     display: "block",

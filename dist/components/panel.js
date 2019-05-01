@@ -1,7 +1,7 @@
 import { Children } from "react";
 import ssjs from "ssjs";
-import theme from "@theme";
-import Image from "@components/image.js";
+import theme from "../helpers/theme.js";
+import Image from "./image.js";
 const panelCSS = ssjs({
   "doric-panel": {
     display: "flex",

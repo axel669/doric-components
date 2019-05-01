@@ -1,8 +1,8 @@
 import React from "react";
 import ssjs from "ssjs";
-import theme from "@theme";
-import { tappable, classes } from "@css";
-import CustomListeners from "@components/customListeners.js";
+import theme from "../helpers/theme.js";
+import { tappable, classes } from "../helpers/css.js";
+import CustomListeners from "./customListeners.js";
 const checkboxCSS = ssjs({
   "doric-checkbox": {
     display: "block",

@@ -1,7 +1,7 @@
 import { memo } from "react";
 import ssjs from "ssjs";
-import theme from "@theme";
-import { tappable, classes } from "@css";
+import theme from "../helpers/theme.js";
+import { tappable, classes } from "../helpers/css.js";
 let selectCSS = ssjs({
   "doric-select": {
     margin: 2,

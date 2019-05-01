@@ -6,7 +6,8 @@ module.exports = {
         ["babel-plugin-search-and-replace", {
             rules: [
                 {search: "@css", replace: "../helpers/css.js"},
-                {search: "@theme", replace("../helpers/theme.js"}
+                {search: "@theme", replace: "../helpers/theme.js"},
+                {search: /@components/, replace: "."}
             ]
         }]
     ]

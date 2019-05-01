@@ -2,9 +2,9 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
 import { memo } from "react";
 import ssjs from "ssjs";
-import theme from "@theme";
-import { tappable, classes } from "@css";
-import CustomListeners from "@components/customListeners.js";
+import theme from "../helpers/theme.js";
+import { tappable, classes } from "../helpers/css.js";
+import CustomListeners from "./customListeners.js";
 const listCSS = ssjs({
   "doric-list": {
     display: "block",

@@ -1,7 +1,7 @@
 import ssjs from "ssjs";
 import range from "@axel669/range";
-import theme from "@theme";
-import { tappable, classes } from "@css";
+import theme from "../helpers/theme.js";
+import { tappable, classes } from "../helpers/css.js";
 const gridSpans = range(2, 13).reduce((spans, i) => ({ ...spans,
   [`& [gcolspan="${i}"]`]: {
     gridColumn: `span ${i}`

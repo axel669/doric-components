@@ -1,8 +1,8 @@
 import { memo } from "react";
 import ssjs from "ssjs";
-import CustomListeners from "@components/customListeners.js";
-import * as css from "@css";
-import theme from "@theme";
+import CustomListeners from "./customListeners.js";
+import * as css from "../helpers/css.js";
+import theme from "../helpers/theme.js";
 const buttonSheet = ssjs({
   "doric-button": {
     display: "inline-flex",
