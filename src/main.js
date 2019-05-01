@@ -3,19 +3,19 @@ import ssjs from "ssjs";
 
 import theme from "@theme";
 
-import button from "@components/button.js";
-import checkbox from "@components/checkbox.js";
-import collapse from "@components/collapse.js";
-import customListeners from "@components/customListeners.js";
-import grid from "@components/grid.js";
-import image from "@components/image.js";
-import label from "@components/label.js";
-import list from "@components/list.js";
-import panel from "@components/panel.js";
-import radio from "@components/radio.js";
-import select from "@components/select.js";
+import Button from "@components/button.js";
+import Checkbox from "@components/checkbox.js";
+import Collapse from "@components/collapse.js";
+import CustomListeners from "@components/customListeners.js";
+import Grid from "@components/grid.js";
+import Image from "@components/image.js";
+import Label from "@components/label.js";
+import List from "@components/list.js";
+import Panel from "@components/panel.js";
+import Radio from "@components/radio.js";
+import Select from "@components/select.js";
 import {Tabs, Tab} from "@components/tabs.js";
-import title from "@components/title.js";
+import Title from "@components/title.js";
 
 import {query} from "@css";
 
@@ -58,19 +58,19 @@ let mainCSS = ssjs(
 );
 mainCSS.generate(theme);
 
-export default {
-    button,
-    checkbox,
-    collapse,
-    customListeners,
-    grid,
-    image,
-    label,
-    list,
-    panel,
-    radio,
-    select,
-    tab: Tab,
-    tabs: Tabs,
-    title
+export {
+    Button,
+    Checkbox,
+    Collapse,
+    CustomListeners,
+    Grid,
+    Image,
+    Label,
+    List,
+    Panel,
+    Radio,
+    Select,
+    Tab,
+    Tabs,
+    Title
 };

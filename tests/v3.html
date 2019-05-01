@@ -62,14 +62,15 @@
             };
 
             return <div>
-                <doric.tabs selectedTab={tab} onTabChange={changeTab}>
-                    <doric.tab label="test">
+                <doric.Button primary block text="Wat" />
+                <doric.Tabs selectedTab={tab} onTabChange={changeTab}>
+                    <doric.Tab label="test">
                         Testing?
-                    </doric.tab>
-                    <doric.tab label="test 2">
+                    </doric.Tab>
+                    <doric.Tab label="test 2">
                         Testing? #2
-                    </doric.tab>
-                </doric.tabs>
+                    </doric.Tab>
+                </doric.Tabs>
             </div>
         }
 

@@ -1,7 +1,5 @@
-var doric = (function (React$1) {
+var doric = (function (exports, react) {
     'use strict';
-
-    var React$1__default = 'default' in React$1 ? React$1['default'] : React$1;
 
     const isMobile =
         typeof orientation !== "undefined" ||
@@ -786,11 +784,11 @@ var doric = (function (React$1) {
 
     const removeGlobalListener = (type, elem) => globalListeners[type].delete(elem);
 
-    const useMounts = effect => React$1.useEffect(effect, []);
+    const useMounts = effect => react.useEffect(effect, []);
 
     function CustomListeners(props) {
-      const element = React$1.useRef(null);
-      const pRef = React$1.useRef(props);
+      const element = react.useRef(null);
+      const pRef = react.useRef(props);
       pRef.current = props;
       useMounts(() => {
         const types = Object.keys(props);
@@ -1015,7 +1013,7 @@ var doric = (function (React$1) {
         onTap: onTap
       }), iconElem, text, children);
     }
-    var button = React$1.memo(Button);
+    var button = react.memo(Button);
 
     const checkboxCSS = ssjs({
       "doric-checkbox": {
@@ -1087,14 +1085,14 @@ var doric = (function (React$1) {
         onChange === null || onChange === void 0 ? void 0 : onChange(evt);
       };
 
-      return React$1__default.createElement("doric-checkbox", wrapProps, React$1__default.createElement("doric-checkbox-icon", {
+      return React.createElement("doric-checkbox", wrapProps, React.createElement("doric-checkbox-icon", {
         class: iconClass
-      }), text, children, React$1__default.createElement(CustomListeners, {
+      }), text, children, React.createElement(CustomListeners, {
         onTap: toggle
       }));
     }
 
-    var checkbox = React$1__default.memo(Checkbox);
+    var checkbox = react.memo(Checkbox);
 
     function _extends() {
       _extends = Object.assign || function (target) {
@@ -1151,7 +1149,7 @@ var doric = (function (React$1) {
     collapseCSS.generate(theme);
 
     function Collapse(props) {
-      const [hide, toggleVis] = React$1.useState(true);
+      const [hide, toggleVis] = react.useState(true);
       const {
         className,
         text = "Collapse",
@@ -1183,7 +1181,7 @@ var doric = (function (React$1) {
       })), React.createElement("div", null, children));
     }
 
-    var collapse = React$1.memo(Collapse);
+    var collapse = react.memo(Collapse);
 
     const range = (start, end = null, step = 1, map = i => i) => {
       	if (typeof end === "function") {
@@ -1364,13 +1362,13 @@ var doric = (function (React$1) {
       name: "doric-list"
     });
     listCSS.generate(theme);
-    const DefaultListRenderer = React$1.memo(function ListItem({
+    const DefaultListRenderer = react.memo(function ListItem({
       item,
       propName
     }) {
       return item[propName];
     });
-    const ListItem = React$1.memo(function ListItem(props) {
+    const ListItem = react.memo(function ListItem(props) {
       const {
         index,
         item,
@@ -1427,7 +1425,7 @@ var doric = (function (React$1) {
       }))))));
     }
 
-    var list = React$1.memo(List);
+    var list = react.memo(List);
 
     const panelCSS = ssjs({
       "doric-panel": {
@@ -1474,7 +1472,7 @@ var doric = (function (React$1) {
       children,
       ...passThrough
     }) {
-      const list = React$1.Children.toArray(children);
+      const list = react.Children.toArray(children);
       const normal = list.filter(child => child.type !== Panel.media);
       const media = list.find(child => child.type === Panel.media);
       return React.createElement("doric-panel", passThrough, React.createElement("doric-panel-content", null, normal), media);
@@ -1508,7 +1506,7 @@ var doric = (function (React$1) {
       name: "doric-radio"
     });
     radioCSS.generate(theme);
-    const DefaultRadioRenderer = React$1.memo(function RadioItem({
+    const DefaultRadioRenderer = react.memo(function RadioItem({
       item,
       propName,
       selected
@@ -1522,7 +1520,7 @@ var doric = (function (React$1) {
         }
       }, icon, "\xA0", item[propName]);
     });
-    const RadioItem = React$1.memo(function RadioItem(props) {
+    const RadioItem = react.memo(function RadioItem(props) {
       const {
         index,
         item,
@@ -1577,7 +1575,7 @@ var doric = (function (React$1) {
       })))));
     }
 
-    var radio = React$1.memo(Radio);
+    var radio = react.memo(Radio);
 
     let selectCSS = ssjs({
       "doric-select": {
@@ -1735,7 +1733,65 @@ var doric = (function (React$1) {
       return React.createElement("doric-select", wrapProps, React.createElement("fieldset", labelProps, React.createElement("legend", null, label), React.createElement("select", selectProps, mapped)));
     }
 
-    var select = React$1.memo(Select);
+    var select = react.memo(Select);
+
+    const climbDOM$2 = (start, func) => {
+      let current = start;
+
+      while (current !== null && current !== document.documentElement) {
+        func(current);
+        current = current.parentNode;
+      }
+    };
+
+    const globalListeners$1 = {};
+
+    const registerGlobalListener$1 = (type, elem, handler) => {
+      if (globalListeners$1[type] === undefined) {
+        globalListeners$1[type] = new Map();
+        window.addEventListener(type, evt => {
+          const handlers = globalListeners$1[type];
+          climbDOM$2(evt.target, node => {
+            var _handlers$get;
+
+            return (_handlers$get = handlers.get(node)) === null || _handlers$get === void 0 ? void 0 : _handlers$get(evt);
+          });
+        });
+      }
+
+      globalListeners$1[type].set(elem, handler);
+    };
+
+    const removeGlobalListener$1 = (type, elem) => globalListeners$1[type].delete(elem);
+
+    const useMounts$1 = effect => react.useEffect(effect, []);
+
+    function CustomListeners$1(props) {
+      const element = react.useRef(null);
+      const pRef = react.useRef(props);
+      pRef.current = props;
+      useMounts$1(() => {
+        const types = Object.keys(props);
+
+        for (const name of types) {
+          const type = name.slice(2).toLowerCase();
+          registerGlobalListener$1(type, element.current.parentNode, evt => {
+            var _pRef$current$name, _pRef$current;
+
+            return (_pRef$current$name = (_pRef$current = pRef.current)[name]) === null || _pRef$current$name === void 0 ? void 0 : _pRef$current$name.call(_pRef$current, evt);
+          });
+        }
+
+        return () => {
+          for (const name of types) {
+            removeGlobalListener$1(name, element.current.parentNode);
+          }
+        };
+      });
+      return React.createElement("doric-custom-listeners", {
+        ref: element
+      });
+    }
 
     const tabCSS = ssjs({
       "doric-tabs": {
@@ -1766,56 +1822,7 @@ var doric = (function (React$1) {
     }, {
       name: "doric-tabs"
     });
-    tabCSS.generate(theme); // class Tabs extends React.PureComponent {
-    //     render() => {
-    //         let {
-    //             selectedTab = 0, cols = 4, onTabChange
-    //             liveHidden = false
-    //             children as _children
-    //             ...passThrough
-    //         } = @props
-    //         let children = React.Children.toArray(_children)
-    //
-    //         let list = children.map(
-    //             (child) => child.props.label
-    //         )
-    //         let tabs = children.map(
-    //             (child, index) => <doric-tab selected={index == selectedTab} key=index>
-    //                 {child.props.children}
-    //             </doric-tab>
-    //         )
-    //         let displayed = (liveHidden == true)
-    //             ? tabs
-    //             : tabs[selectedTab]
-    //         let tabChange = (evt) => {
-    //             let newTab = parseInt(evt.target.dataset.index)
-    //
-    //             evt.selectedTab = newTab
-    //             onTabChange?(evt)
-    //         }
-    //
-    //         return <doric-tabs {...passThrough}>
-    //             <doric-tab-bar>
-    //                 <doric.customListeners onTap=tabChange />
-    //                 <Grid cols=cols>
-    //                     {list.map(
-    //                         (label, index) => <doric-tab
-    //                             key=index
-    //                             data-index=index
-    //                             active={index == selectedTab}
-    //                         >
-    //                             {label}
-    //                         </doric-tab>
-    //                     )}
-    //                 </Grid>
-    //             </doric-tab-bar>
-    //             {displayed}
-    //         </doric-tabs>
-    //     }
-    // }
-    // let Tab = (props) => <doric-tab {...props} />
-    //
-    // export {Tabs, Tab}
+    tabCSS.generate(theme);
 
     function Tabs(props) {
       const {
@@ -1826,7 +1833,7 @@ var doric = (function (React$1) {
         children: _children,
         ...passThrough
       } = props;
-      const children = React$1.Children.toArray(_children);
+      const children = react.Children.toArray(_children);
       const tabLabelList = children.map(child => child.props.label);
       const tabs = children.map((child, index) => React.createElement("doric-tab", {
         selected: index === selectedTab,
@@ -1845,7 +1852,7 @@ var doric = (function (React$1) {
         "data-index": index,
         active: index == selectedTab
       }, label));
-      return React.createElement("doric-tabs", passThrough, React.createElement("doric-tab-bar", null, React.createElement(doric.customListeners, {
+      return React.createElement("doric-tabs", passThrough, React.createElement("doric-tab-bar", null, React.createElement(CustomListeners$1, {
         onTap: tabChange
       }), React.createElement(Grid, {
         cols: cols
@@ -1931,23 +1938,22 @@ var doric = (function (React$1) {
       name: "main-style"
     });
     mainCSS.generate(theme);
-    var main = {
-      button,
-      checkbox,
-      collapse,
-      customListeners: CustomListeners,
-      grid: Grid,
-      image: Image,
-      label: Label,
-      list,
-      panel: Panel,
-      radio,
-      select,
-      tab: Tab,
-      tabs: Tabs,
-      title: Title
-    };
 
-    return main;
+    exports.Button = button;
+    exports.Checkbox = checkbox;
+    exports.Collapse = collapse;
+    exports.CustomListeners = CustomListeners;
+    exports.Grid = Grid;
+    exports.Image = Image;
+    exports.Label = Label;
+    exports.List = list;
+    exports.Panel = Panel;
+    exports.Radio = radio;
+    exports.Select = select;
+    exports.Tab = Tab;
+    exports.Tabs = Tabs;
+    exports.Title = Title;
 
-}(React));
+    return exports;
+
+}({}, React));

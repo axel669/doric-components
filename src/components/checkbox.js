@@ -1,4 +1,4 @@
-import React from "react";
+import {memo} from "react";
 import ssjs from "ssjs";
 
 import theme from "@theme";
@@ -84,4 +84,4 @@ function Checkbox(props) {
     </doric-checkbox>
 }
 
-export default React.memo(Checkbox);
+export default memo(Checkbox);
