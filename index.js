@@ -1294,6 +1294,138 @@ function Image(props) {
   }));
 }
 
+const inputCSS = ssjs({
+  "doric-input": {
+    margin: 2,
+    display: "block",
+    "& fieldset": {
+      borderRadius: 4,
+      overflow: "hidden",
+      padding: 0,
+      paddingRight: 1,
+      backgroundColor: "white",
+      border: "1px solid lightgray",
+      margin: 0,
+      "&.disabled": {
+        backgroundColor: "lightgray",
+        "& input": {
+          backgroundColor: "transparent"
+        }
+      },
+      "&.boring, &.minimal": {
+        borderWidth: 0,
+        backgroundColor: "transparent"
+      },
+      "& legend": {
+        marginLeft: 16,
+        fontSize: 12,
+        "&:empty": {
+          display: "none"
+        },
+        "&:not(:empty) + input": {
+          paddingTop: 6
+        }
+      },
+      "&.required legend": {
+        color: theme => theme.input.label.required
+      },
+      "&.optional legend": {
+        color: theme => theme.input.label.optional
+      },
+      "&:focus-within": {
+        borderColor: theme => theme.input.border.focus
+      }
+    },
+    "& input": {
+      display: "block",
+      width: "100%",
+      fontSize: 16,
+      padding: 12,
+      borderWidth: 0,
+      backgroundColor: "transparent",
+      height: 40
+    },
+    "& fieldset:not(.boring):not(.minimal) input": {
+      outline: "none"
+    },
+    "& fieldset.boring input": {
+      border: "1px solid lightgray",
+      padding: "6px 12px",
+      borderRadius: 4,
+      backgroundColor: "white",
+      "&:focus": {
+        borderColor: theme => theme.input.border.focus
+      },
+      "&[disabled]": {
+        backgroundColor: "lightgray"
+      }
+    },
+    "& fieldset.minimal input": {
+      borderWidth: 0,
+      borderBottom: "1px solid lightgray",
+      padding: "6px 12px",
+      borderRadius: 0,
+      "&:focus": {
+        borderColor: theme => theme.input.border.focus
+      },
+      "&[disabled]": {
+        backgroundColor: "lightgray"
+      }
+    }
+  }
+}, {
+  name: "doric-input"
+});
+inputCSS.generate(theme);
+
+function Input(props) {
+  const {
+    label,
+    value,
+    onChange,
+    disabled,
+    optional,
+    required,
+    className,
+    boring,
+    minimal,
+    type = "text",
+    wrapProps,
+    ...rest
+  } = props;
+  const fieldProps = { ...rest,
+    className: classes({
+      className,
+      disabled,
+      optional,
+      required,
+      boring,
+      minimal
+    })
+  };
+  const inputProps = {};
+  const inputRef = react.useRef();
+  react.useImperativeHandle(inputRef, () => ({
+    focus() {
+      inputRef.current.focus();
+    },
+
+    get handle() {
+      return inputRef.current;
+    }
+
+  }));
+  return React.createElement("doric-input", wrapProps, React.createElement("fieldset", fieldProps, React.createElement("legend", null, label), React.createElement("input", _extends({
+    ref: inputRef,
+    type: type,
+    disabled: disabled,
+    value: value,
+    onChange: onChange
+  }, inputProps))));
+}
+
+var input = react.memo(Input);
+
 let labelCSS = ssjs({
   "doric-label": {
     display: "block",
@@ -1866,6 +1998,70 @@ function Tab(props) {
   return props;
 }
 
+const textareaCSS = ssjs({
+  "doric-input": {
+    "& textarea": {
+      display: "block",
+      width: "100%",
+      fontSize: 16,
+      padding: 6,
+      borderWidth: 0,
+      backgroundColor: "transparent",
+      height: 80
+    },
+    "& fieldset.boring textarea": {
+      border: "1px solid lightgray",
+      borderRadius: 4
+    }
+  }
+}, {
+  name: "doric-tetarea"
+});
+textareaCSS.generate(theme);
+
+function Textarea(props) {
+  let {
+    label,
+    value,
+    onChange,
+    disabled,
+    optional,
+    required,
+    className,
+    boring,
+    wrapProps,
+    ...rest
+  } = props;
+  const fieldProps = { ...rest,
+    className: classes({
+      className,
+      disabled,
+      optional,
+      required,
+      boring
+    })
+  };
+  const taRef = react.useRef();
+  react.useImperativeHandle(taRef, () => ({
+    focus() {
+      inputRef.current.focus();
+    },
+
+    get handle() {
+      return inputRef.current;
+    }
+
+  }));
+  return React.createElement("doric-input", wrapProps, React.createElement("fieldset", fieldProps, React.createElement("legend", null, label), React.createElement("textarea", {
+    ref: taRef,
+    disabled: disabled,
+    value: value,
+    onChange: onChange
+  })));
+}
+
+var textarea = react.memo(Textarea);
+
 const titleCSS = ssjs({
   "doric-title": {
     display: "block",
@@ -1948,6 +2144,7 @@ exports.Collapse = collapse;
 exports.CustomListeners = CustomListeners;
 exports.Grid = Grid;
 exports.Image = Image;
+exports.Input = input;
 exports.Label = Label;
 exports.List = list;
 exports.Panel = Panel;
@@ -1955,4 +2152,5 @@ exports.Radio = radio;
 exports.Select = select;
 exports.Tab = Tab;
 exports.Tabs = Tabs;
+exports.Textarea = textarea;
 exports.Title = Title;

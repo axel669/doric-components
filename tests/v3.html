@@ -53,6 +53,7 @@
             const [checked, updateChecked] = React.useState(false);
             const [selected, updateSelected] = React.useState(null);
             const [tab, updateTab] = React.useState(0);
+            const [text, updateText] = React.useState("");
 
             const onChangeSelect = evt => {
                 updateSelected(evt.value);
@@ -62,15 +63,12 @@
             };
 
             return <div>
-                <doric.Button primary block text="Wat" />
-                <doric.Tabs selectedTab={tab} onTabChange={changeTab}>
-                    <doric.Tab label="test">
-                        Testing?
-                    </doric.Tab>
-                    <doric.Tab label="test 2">
-                        Testing? #2
-                    </doric.Tab>
-                </doric.Tabs>
+                <doric.Input label="Testing" value={text} onChange={evt => updateText(evt.target.value)} />
+                <doric.Input label="Testing" value={text} onChange={evt => updateText(evt.target.value)} boring />
+                <doric.Input label="Testing" value={text} onChange={evt => updateText(evt.target.value)} minimal />
+                <doric.Input disabled label="Testing" value={text} onChange={evt => updateText(evt.target.value)} />
+                <doric.Input disabled label="Testing" value={text} onChange={evt => updateText(evt.target.value)} boring />
+                <doric.Input disabled label="Testing" value={text} onChange={evt => updateText(evt.target.value)} minimal />
             </div>
         }
 

@@ -9,12 +9,14 @@ import Collapse from "@components/collapse.js";
 import CustomListeners from "@components/customListeners.js";
 import Grid from "@components/grid.js";
 import Image from "@components/image.js";
+import Input from "@components/input.js";
 import Label from "@components/label.js";
 import List from "@components/list.js";
 import Panel from "@components/panel.js";
 import Radio from "@components/radio.js";
 import Select from "@components/select.js";
 import {Tabs, Tab} from "@components/tabs.js";
+import Textarea from "@components/textarea.js";
 import Title from "@components/title.js";
 
 import {query} from "@css";
@@ -65,6 +67,7 @@ export {
     CustomListeners,
     Grid,
     Image,
+    Input,
     Label,
     List,
     Panel,
@@ -72,5 +75,6 @@ export {
     Select,
     Tab,
     Tabs,
+    Textarea,
     Title
 };
