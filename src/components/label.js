@@ -1,3 +1,4 @@
+import React from "react";
 import ssjs from "ssjs";
 
 import theme from "@theme";

@@ -1,4 +1,4 @@
-import {useEffect, useRef} from "react";
+import React, {useEffect, useRef} from "react";
 
 const climbDOM = (start, func) => {
     let current = start;

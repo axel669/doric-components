@@ -1,4 +1,4 @@
-import {memo, useRef, useImperativeHandle} from "react";
+import React, {memo, useRef, useImperativeHandle} from "react";
 import ssjs from "ssjs";
 
 import theme from "@theme";
@@ -18,7 +18,25 @@ const textareaCSS = ssjs(
             },
             "& fieldset.boring textarea": {
                 border: "1px solid lightgray",
-                borderRadius: 4
+                borderRadius: 4,
+                backgroundColor: "white",
+                "&:focus": {
+                    borderColor: (theme) => theme.input.border.focus
+                }
+            },
+            "& fieldset.minimal textarea": {
+                borderWidth: 0,
+                borderRadius: 0,
+                borderBottom: "1px solid lightgray",
+                "&:focus": {
+                    borderColor: (theme) => theme.input.border.focus
+                }
+            },
+            "& fieldset.disabled:not(.boring):not(.minimal)": {
+                backgroundColor: "lightgray"
+            },
+            "& fieldset.disabled textarea": {
+                backgroundColor: "lightgray"
             }
         }
     },
@@ -29,7 +47,7 @@ textareaCSS.generate(theme);
 function Textarea(props) {
     let {
         label, value, onChange,
-        disabled, optional, required, className, boring,
+        disabled, optional, required, className, boring, minimal,
         wrapProps,
         ...rest
     } = props;
@@ -41,7 +59,8 @@ function Textarea(props) {
             disabled,
             optional,
             required,
-            boring
+            boring,
+            minimal
         })
     };
 

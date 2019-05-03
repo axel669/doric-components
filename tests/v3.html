@@ -63,12 +63,9 @@
             };
 
             return <div>
-                <doric.Input label="Testing" value={text} onChange={evt => updateText(evt.target.value)} />
-                <doric.Input label="Testing" value={text} onChange={evt => updateText(evt.target.value)} boring />
-                <doric.Input label="Testing" value={text} onChange={evt => updateText(evt.target.value)} minimal />
-                <doric.Input disabled label="Testing" value={text} onChange={evt => updateText(evt.target.value)} />
-                <doric.Input disabled label="Testing" value={text} onChange={evt => updateText(evt.target.value)} boring />
-                <doric.Input disabled label="Testing" value={text} onChange={evt => updateText(evt.target.value)} minimal />
+                <doric.Textarea disabled label="Testing" value={text} onChange={evt => updateText(evt.target.value)} />
+                <doric.Textarea disabled label="Testing" value={text} onChange={evt => updateText(evt.target.value)} boring />
+                <doric.Textarea disabled label="Testing" value={text} onChange={evt => updateText(evt.target.value)} minimal />
             </div>
         }
 

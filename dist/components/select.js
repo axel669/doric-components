@@ -1,4 +1,4 @@
-import { memo } from "react";
+import React, { memo } from "react";
 import ssjs from "ssjs";
 import theme from "../helpers/theme.js";
 import { tappable, classes } from "../helpers/css.js";

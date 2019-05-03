@@ -1,5 +1,7 @@
-var doric = (function (exports, react) {
+var doric = (function (exports, React) {
     'use strict';
+
+    var React__default = 'default' in React ? React['default'] : React;
 
     const isMobile =
         typeof orientation !== "undefined" ||
@@ -784,11 +786,11 @@ var doric = (function (exports, react) {
 
     const removeGlobalListener = (type, elem) => globalListeners[type].delete(elem);
 
-    const useMounts = effect => react.useEffect(effect, []);
+    const useMounts = effect => React.useEffect(effect, []);
 
     function CustomListeners(props) {
-      const element = react.useRef(null);
-      const pRef = react.useRef(props);
+      const element = React.useRef(null);
+      const pRef = React.useRef(props);
       pRef.current = props;
       useMounts(() => {
         const types = Object.keys(props);
@@ -808,7 +810,7 @@ var doric = (function (exports, react) {
           }
         };
       });
-      return React.createElement("doric-custom-listeners", {
+      return React__default.createElement("doric-custom-listeners", {
         ref: element
       });
     }
@@ -998,7 +1000,7 @@ var doric = (function (exports, react) {
         style.borderRadius = "50%";
       }
 
-      const iconElem = icon === null ? null : React.createElement("ion-icon", {
+      const iconElem = icon === null ? null : React__default.createElement("ion-icon", {
         class: icon,
         style: {
           fontSize: iconSize
@@ -1009,11 +1011,11 @@ var doric = (function (exports, react) {
         style,
         class: classes(rest)
       };
-      return React.createElement("doric-button", wrapProps, React.createElement(CustomListeners, {
+      return React__default.createElement("doric-button", wrapProps, React__default.createElement(CustomListeners, {
         onTap: onTap
       }), iconElem, text, children);
     }
-    var button = react.memo(Button);
+    var button = React.memo(Button);
 
     const checkboxCSS = ssjs({
       "doric-checkbox": {
@@ -1085,14 +1087,14 @@ var doric = (function (exports, react) {
         onChange === null || onChange === void 0 ? void 0 : onChange(evt);
       };
 
-      return React.createElement("doric-checkbox", wrapProps, React.createElement("doric-checkbox-icon", {
+      return React__default.createElement("doric-checkbox", wrapProps, React__default.createElement("doric-checkbox-icon", {
         class: iconClass
-      }), text, children, React.createElement(CustomListeners, {
+      }), text, children, React__default.createElement(CustomListeners, {
         onTap: toggle
       }));
     }
 
-    var checkbox = react.memo(Checkbox);
+    var checkbox = React.memo(Checkbox);
 
     function _extends() {
       _extends = Object.assign || function (target) {
@@ -1149,7 +1151,7 @@ var doric = (function (exports, react) {
     collapseCSS.generate(theme);
 
     function Collapse(props) {
-      const [hide, toggleVis] = react.useState(true);
+      const [hide, toggleVis] = React.useState(true);
       const {
         className,
         text = "Collapse",
@@ -1164,7 +1166,7 @@ var doric = (function (exports, react) {
       });
 
       const direction = hide == true ? "right" : "down";
-      const icon = React.createElement("doric-collapse-icon", {
+      const icon = React__default.createElement("doric-collapse-icon", {
         class: `ion-md-arrow-drop${direction}`
       });
       const pass = {
@@ -1174,14 +1176,14 @@ var doric = (function (exports, react) {
 
       const toggle = () => toggleVis(hide === false);
 
-      return React.createElement("doric-collapse", _extends({}, pass, {
+      return React__default.createElement("doric-collapse", _extends({}, pass, {
         class: _classes
-      }), React.createElement("doric-collapse-label", null, icon, " ", text, React.createElement(CustomListeners, {
+      }), React__default.createElement("doric-collapse-label", null, icon, " ", text, React__default.createElement(CustomListeners, {
         onTap: toggle
-      })), React.createElement("div", null, children));
+      })), React__default.createElement("div", null, children));
     }
 
-    var collapse = react.memo(Collapse);
+    var collapse = React.memo(Collapse);
 
     const range = (start, end = null, step = 1, map = i => i) => {
       	if (typeof end === "function") {
@@ -1241,7 +1243,7 @@ var doric = (function (exports, react) {
         class: className,
         style
       };
-      return React.createElement("doric-grid", _, children);
+      return React__default.createElement("doric-grid", _, children);
     }
 
     let imageCSS = ssjs({
@@ -1284,9 +1286,9 @@ var doric = (function (exports, react) {
         height,
         ...border
       };
-      return React.createElement("doric-image", _extends({}, passThrough, {
+      return React__default.createElement("doric-image", _extends({}, passThrough, {
         style: style
-      }), React.createElement("img", {
+      }), React__default.createElement("img", {
         src: source
       }));
     }
@@ -1401,8 +1403,8 @@ var doric = (function (exports, react) {
         })
       };
       const inputProps = {};
-      const inputRef = react.useRef();
-      react.useImperativeHandle(inputRef, () => ({
+      const inputRef = React.useRef();
+      React.useImperativeHandle(inputRef, () => ({
         focus() {
           inputRef.current.focus();
         },
@@ -1412,7 +1414,7 @@ var doric = (function (exports, react) {
         }
 
       }));
-      return React.createElement("doric-input", wrapProps, React.createElement("fieldset", fieldProps, React.createElement("legend", null, label), React.createElement("input", _extends({
+      return React__default.createElement("doric-input", wrapProps, React__default.createElement("fieldset", fieldProps, React__default.createElement("legend", null, label), React__default.createElement("input", _extends({
         ref: inputRef,
         type: type,
         disabled: disabled,
@@ -1421,7 +1423,7 @@ var doric = (function (exports, react) {
       }, inputProps))));
     }
 
-    var input = react.memo(Input);
+    var input = React.memo(Input);
 
     let labelCSS = ssjs({
       "doric-label": {
@@ -1459,7 +1461,7 @@ var doric = (function (exports, react) {
         optional
       });
 
-      return React.createElement("doric-label", _extends({}, passThrough, {
+      return React__default.createElement("doric-label", _extends({}, passThrough, {
         class: _class
       }), text);
     }
@@ -1494,22 +1496,22 @@ var doric = (function (exports, react) {
       name: "doric-list"
     });
     listCSS.generate(theme);
-    const DefaultListRenderer = react.memo(function ListItem({
+    const DefaultListRenderer = React.memo(function ListItem({
       item,
       propName
     }) {
       return item[propName];
     });
-    const ListItem = react.memo(function ListItem(props) {
+    const ListItem = React.memo(function ListItem(props) {
       const {
         index,
         item,
         propName,
         ItemRenderer
       } = props;
-      return React.createElement("doric-list-item", {
+      return React__default.createElement("doric-list-item", {
         "data-index": index
-      }, React.createElement(ItemRenderer, {
+      }, React__default.createElement(ItemRenderer, {
         item: item,
         propName: propName
       }));
@@ -1544,10 +1546,10 @@ var doric = (function (exports, react) {
         onItemHold === null || onItemHold === void 0 ? void 0 : onItemHold(evt);
       };
 
-      return React.createElement("doric-list", passThrough, React.createElement("doric-list-header", null, title), React.createElement("doric-list-content", null, React.createElement(CustomListeners, {
+      return React__default.createElement("doric-list", passThrough, React__default.createElement("doric-list-header", null, title), React__default.createElement("doric-list-content", null, React__default.createElement(CustomListeners, {
         onTap: onTap,
         onHold: onHold
-      }), React.createElement(Layout, null, items.map((item, index) => React.createElement(ListItem, _extends({
+      }), React__default.createElement(Layout, null, items.map((item, index) => React__default.createElement(ListItem, _extends({
         key: index
       }, {
         item,
@@ -1557,7 +1559,7 @@ var doric = (function (exports, react) {
       }))))));
     }
 
-    var list = react.memo(List);
+    var list = React.memo(List);
 
     const panelCSS = ssjs({
       "doric-panel": {
@@ -1604,22 +1606,22 @@ var doric = (function (exports, react) {
       children,
       ...passThrough
     }) {
-      const list = react.Children.toArray(children);
+      const list = React.Children.toArray(children);
       const normal = list.filter(child => child.type !== Panel.media);
       const media = list.find(child => child.type === Panel.media);
-      return React.createElement("doric-panel", passThrough, React.createElement("doric-panel-content", null, normal), media);
+      return React__default.createElement("doric-panel", passThrough, React__default.createElement("doric-panel-content", null, normal), media);
     }
 
     Panel.top = function PanelTop(props) {
-      return React.createElement("doric-panel-top", props);
+      return React__default.createElement("doric-panel-top", props);
     };
 
     Panel.actions = function PanelBottom(props) {
-      return React.createElement("doric-panel-actions", props);
+      return React__default.createElement("doric-panel-actions", props);
     };
 
     Panel.media = function PanelMedia(props) {
-      return React.createElement("doric-panel-media", props);
+      return React__default.createElement("doric-panel-media", props);
     };
 
     const radioCSS = ssjs({
@@ -1638,21 +1640,21 @@ var doric = (function (exports, react) {
       name: "doric-radio"
     });
     radioCSS.generate(theme);
-    const DefaultRadioRenderer = react.memo(function RadioItem({
+    const DefaultRadioRenderer = React.memo(function RadioItem({
       item,
       propName,
       selected
     }) {
-      const icon = React.createElement("ion-icon", {
+      const icon = React__default.createElement("ion-icon", {
         class: `ion-md-radio-button-${selected === true ? "on" : "off"}`
       });
-      return React.createElement("div", {
+      return React__default.createElement("div", {
         style: {
           padding: 8
         }
       }, icon, "\xA0", item[propName]);
     });
-    const RadioItem = react.memo(function RadioItem(props) {
+    const RadioItem = React.memo(function RadioItem(props) {
       const {
         index,
         item,
@@ -1660,9 +1662,9 @@ var doric = (function (exports, react) {
         ItemRenderer,
         selected
       } = props;
-      return React.createElement("doric-radio-item", {
+      return React__default.createElement("doric-radio-item", {
         "data-index": index
-      }, React.createElement(ItemRenderer, {
+      }, React__default.createElement(ItemRenderer, {
         item: item,
         propName: propName,
         selected: selected
@@ -1693,9 +1695,9 @@ var doric = (function (exports, react) {
       };
 
       const selectedIndex = options.findIndex(item => item.value === value);
-      return React.createElement("doric-radio", passThrough, React.createElement(CustomListeners, {
+      return React__default.createElement("doric-radio", passThrough, React__default.createElement(CustomListeners, {
         onTap: onTap
-      }), React.createElement(Layout, null, options.map((item, index) => React.createElement(RadioItem, _extends({
+      }), React__default.createElement(Layout, null, options.map((item, index) => React__default.createElement(RadioItem, _extends({
         key: index
       }, {
         item,
@@ -1707,7 +1709,7 @@ var doric = (function (exports, react) {
       })))));
     }
 
-    var radio = react.memo(Radio);
+    var radio = React.memo(Radio);
 
     let selectCSS = ssjs({
       "doric-select": {
@@ -1805,7 +1807,7 @@ var doric = (function (exports, react) {
 
         if (Array.isArray(item) === false) {
           lookup[key] = item.value;
-          mapped.push(React.createElement("option", {
+          mapped.push(React__default.createElement("option", {
             key: key,
             value: key
           }, item.label));
@@ -1814,7 +1816,7 @@ var doric = (function (exports, react) {
             realValue = key;
           }
         } else {
-          mapped.push(React.createElement("optgroup", {
+          mapped.push(React__default.createElement("optgroup", {
             label: item[0],
             key: index
           }, item.slice(1).map((_item, _index) => {
@@ -1825,7 +1827,7 @@ var doric = (function (exports, react) {
               realValue = _key;
             }
 
-            return React.createElement("option", {
+            return React__default.createElement("option", {
               key: _key,
               value: _key
             }, _item.label);
@@ -1838,7 +1840,7 @@ var doric = (function (exports, react) {
         };
       }, {
         lookup: {},
-        mapped: placeholder !== undefined ? [React.createElement("option", {
+        mapped: placeholder !== undefined ? [React__default.createElement("option", {
           key: "-1",
           hidden: true,
           value: "-1"
@@ -1862,10 +1864,10 @@ var doric = (function (exports, react) {
         },
         disabled
       };
-      return React.createElement("doric-select", wrapProps, React.createElement("fieldset", labelProps, React.createElement("legend", null, label), React.createElement("select", selectProps, mapped)));
+      return React__default.createElement("doric-select", wrapProps, React__default.createElement("fieldset", labelProps, React__default.createElement("legend", null, label), React__default.createElement("select", selectProps, mapped)));
     }
 
-    var select = react.memo(Select);
+    var select = React.memo(Select);
 
     const climbDOM$2 = (start, func) => {
       let current = start;
@@ -1896,11 +1898,11 @@ var doric = (function (exports, react) {
 
     const removeGlobalListener$1 = (type, elem) => globalListeners$1[type].delete(elem);
 
-    const useMounts$1 = effect => react.useEffect(effect, []);
+    const useMounts$1 = effect => React.useEffect(effect, []);
 
     function CustomListeners$1(props) {
-      const element = react.useRef(null);
-      const pRef = react.useRef(props);
+      const element = React.useRef(null);
+      const pRef = React.useRef(props);
       pRef.current = props;
       useMounts$1(() => {
         const types = Object.keys(props);
@@ -1920,7 +1922,7 @@ var doric = (function (exports, react) {
           }
         };
       });
-      return React.createElement("doric-custom-listeners", {
+      return React__default.createElement("doric-custom-listeners", {
         ref: element
       });
     }
@@ -1965,9 +1967,9 @@ var doric = (function (exports, react) {
         children: _children,
         ...passThrough
       } = props;
-      const children = react.Children.toArray(_children);
+      const children = React.Children.toArray(_children);
       const tabLabelList = children.map(child => child.props.label);
-      const tabs = children.map((child, index) => React.createElement("doric-tab", {
+      const tabs = children.map((child, index) => React__default.createElement("doric-tab", {
         selected: index === selectedTab,
         key: index
       }, child.props.children));
@@ -1979,14 +1981,14 @@ var doric = (function (exports, react) {
         onTabChange === null || onTabChange === void 0 ? void 0 : onTabChange(evt);
       };
 
-      const tabLabels = tabLabelList.map((label, index) => React.createElement("doric-tab-label", {
+      const tabLabels = tabLabelList.map((label, index) => React__default.createElement("doric-tab-label", {
         key: index,
         "data-index": index,
         active: index == selectedTab
       }, label));
-      return React.createElement("doric-tabs", passThrough, React.createElement("doric-tab-bar", null, React.createElement(CustomListeners$1, {
+      return React__default.createElement("doric-tabs", passThrough, React__default.createElement("doric-tab-bar", null, React__default.createElement(CustomListeners$1, {
         onTap: tabChange
-      }), React.createElement(Grid, {
+      }), React__default.createElement(Grid, {
         cols: cols
       }, tabLabels)), displayed);
     }
@@ -2008,7 +2010,25 @@ var doric = (function (exports, react) {
         },
         "& fieldset.boring textarea": {
           border: "1px solid lightgray",
-          borderRadius: 4
+          borderRadius: 4,
+          backgroundColor: "white",
+          "&:focus": {
+            borderColor: theme => theme.input.border.focus
+          }
+        },
+        "& fieldset.minimal textarea": {
+          borderWidth: 0,
+          borderRadius: 0,
+          borderBottom: "1px solid lightgray",
+          "&:focus": {
+            borderColor: theme => theme.input.border.focus
+          }
+        },
+        "& fieldset.disabled:not(.boring):not(.minimal)": {
+          backgroundColor: "lightgray"
+        },
+        "& fieldset.disabled textarea": {
+          backgroundColor: "lightgray"
         }
       }
     }, {
@@ -2026,6 +2046,7 @@ var doric = (function (exports, react) {
         required,
         className,
         boring,
+        minimal,
         wrapProps,
         ...rest
       } = props;
@@ -2035,11 +2056,12 @@ var doric = (function (exports, react) {
           disabled,
           optional,
           required,
-          boring
+          boring,
+          minimal
         })
       };
-      const taRef = react.useRef();
-      react.useImperativeHandle(taRef, () => ({
+      const taRef = React.useRef();
+      React.useImperativeHandle(taRef, () => ({
         focus() {
           inputRef.current.focus();
         },
@@ -2049,7 +2071,7 @@ var doric = (function (exports, react) {
         }
 
       }));
-      return React.createElement("doric-input", wrapProps, React.createElement("fieldset", fieldProps, React.createElement("legend", null, label), React.createElement("textarea", {
+      return React__default.createElement("doric-input", wrapProps, React__default.createElement("fieldset", fieldProps, React__default.createElement("legend", null, label), React__default.createElement("textarea", {
         ref: taRef,
         disabled: disabled,
         value: value,
@@ -2057,7 +2079,7 @@ var doric = (function (exports, react) {
       })));
     }
 
-    var textarea = react.memo(Textarea);
+    var textarea = React.memo(Textarea);
 
     const titleCSS = ssjs({
       "doric-title": {
@@ -2097,7 +2119,7 @@ var doric = (function (exports, react) {
         profile,
         image
       } = props;
-      return React.createElement("doric-title", null, React.createElement("div", null, title), React.createElement("span", null, subtitle));
+      return React__default.createElement("doric-title", null, React__default.createElement("div", null, title), React__default.createElement("span", null, subtitle));
     }
 
     let mainCSS = ssjs({

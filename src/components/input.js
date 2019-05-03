@@ -1,4 +1,4 @@
-import {memo, useRef, useImperativeHandle} from "react";
+import React, {memo, useRef, useImperativeHandle} from "react";
 import ssjs from "ssjs";
 
 import theme from "@theme";

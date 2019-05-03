@@ -1,4 +1,4 @@
-import { Children } from "react";
+import React, { Children } from "react";
 import ssjs from "ssjs";
 import theme from "../helpers/theme.js";
 import Image from "./image.js";

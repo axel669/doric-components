@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import ssjs from "ssjs";
 import theme from "../helpers/theme.js";
 import { tappable, classes } from "../helpers/css.js";
@@ -80,4 +80,4 @@ function Checkbox(props) {
   }));
 }
 
-export default React.memo(Checkbox);
+export default memo(Checkbox);

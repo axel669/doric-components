@@ -1,4 +1,4 @@
-import {useState, memo} from "react";
+import React, {useState, memo} from "react";
 import ssjs from "ssjs";
 
 import theme from "@theme";

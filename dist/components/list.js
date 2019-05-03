@@ -1,6 +1,6 @@
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
-import { memo } from "react";
+import React, { memo } from "react";
 import ssjs from "ssjs";
 import theme from "../helpers/theme.js";
 import { tappable, classes } from "../helpers/css.js";
@@ -13,6 +13,8 @@ const listCSS = ssjs({
       display: "block",
       padding: 8,
       flexGrow: 1,
+      borderRadius: 4,
+      overflow: "hidden",
       ...tappable(theme => theme.highlightColor)
     },
     "& doric-list-header": {
@@ -37,7 +39,7 @@ const DefaultListRenderer = memo(function ListItem({
   item,
   propName
 }) {
-  return React.createElement("div", null, item[propName]);
+  return item[propName];
 });
 const ListItem = memo(function ListItem(props) {
   const {
@@ -61,8 +63,8 @@ function List(props) {
     propName = "label",
     onItemTap,
     onItemHold,
-    itemRenderer: ItemRenderer = DefaultListRenderer,
-    itemContainer: ItemContainer = "div",
+    itemRender: ItemRenderer = DefaultListRenderer,
+    layout: Layout = "div",
     ...passThrough
   } = props;
 
@@ -74,6 +76,11 @@ function List(props) {
 
   const onHold = evt => {
     let index = parseInt(evt.target.dataset.index);
+
+    if (isNaN(index) === true) {
+      return;
+    }
+
     evt.item = items[index];
     onItemHold === null || onItemHold === void 0 ? void 0 : onItemHold(evt);
   };
@@ -81,7 +88,7 @@ function List(props) {
   return React.createElement("doric-list", passThrough, React.createElement("doric-list-header", null, title), React.createElement("doric-list-content", null, React.createElement(CustomListeners, {
     onTap: onTap,
     onHold: onHold
-  }), React.createElement(ItemContainer, null, items.map((item, index) => React.createElement(ListItem, _extends({
+  }), React.createElement(Layout, null, items.map((item, index) => React.createElement(ListItem, _extends({
     key: index
   }, {
     item,

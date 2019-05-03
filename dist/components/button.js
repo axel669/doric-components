@@ -1,4 +1,4 @@
-import { memo } from "react";
+import React, { memo } from "react";
 import ssjs from "ssjs";
 import CustomListeners from "./customListeners.js";
 import * as css from "../helpers/css.js";
