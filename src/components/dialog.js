@@ -1,4 +1,4 @@
-// import {Component} from "react";
+import {useState, useEffect, useImperativeHandle} from "react";
 import ReactDOM from "react-dom";
 import ssjs from "ssjs";
 
@@ -21,9 +21,21 @@ const dialogCSS = ssjs(
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.6)",
-            "&:empty": {
-                display: "none"
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: "10000"
+        },
+        "dialog-window": {
+            display: "block",
+            position: "absolute",
+            "&.center": {
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)"
+            },
+            "&.top": {
+                top: "20%",
+                left: "50%",
+                transform: "translateX(-50%)"
             }
         }
     },
@@ -47,4 +59,68 @@ else {
     document.body.appendChild(rootElem);
 }
 
-export default () => {};
+const dialog = (() => {
+    let handle = null;
+    const dialogs = new Map();
+
+    const current = () => [...dialogs.values()];
+
+    return {
+        current,
+        subscribe(handler) {
+            handle = handler;
+        },
+        show(component, dialogInfo) {
+            const dialog = {...dialogInfo, id: Date.now()};
+            dialogs.set(dialog.id, [dialog, component]);
+            handle(current());
+        },
+        close(id) {
+            if (id === undefined) {
+                return;
+            }
+            dialogs.delete(id);
+            handle(current());
+        }
+    };
+})();
+
+function DialogList() {
+    const [dialogs, updateDialogs] = useState(dialog.current());
+    useEffect(
+        () => {
+            dialog.subscribe(updateDialogs);
+        },
+        []
+    );
+
+    return dialogs.map(
+        info => {
+            const [{window, ...props}, Component] = info;
+
+            return <dialog-container key={props.id}>
+                <dialog-window {...window}>
+                    <Component {...props} />
+                </dialog-window>
+            </dialog-container>
+        }
+    );
+}
+ReactDOM.render(
+    <DialogList />,
+    rootElem
+);
+
+const publicAPI = {
+    show(component, options) {
+        dialog.show(component, options);
+    },
+    register(name, component) {
+        if (name === "show" || name === "register") {
+            return;
+        }
+        publicAPI[name] = options => dialog.show(component, options);
+    }
+};
+
+export default publicAPI;
