@@ -25,7 +25,55 @@
     <body>
         <app-root></app-root>
         <script type="text/javascript">
-            document.addEventListener("DOMContentLoaded",() => {eval(Babel.transform(document.querySelector("script[type='text/custom']").innerText,{presets: [["stage-2", {decoratorsLegacy: true}],"react"]}).code)});
+        (async () => {
+            console.log("loading cached items");
+
+            const items = [
+                "https://unpkg.com/@babel/standalone/babel.min.js",
+            ];
+
+            const loadFromCache = async (cache, url) => {
+                const raw = await cache.match(url);
+
+                if (raw === undefined) {
+                    try {
+                        await cache.add(url);
+                        return await cache.match(url);
+                    }
+                    catch (error) {
+                        console.error(error);
+                        return null;
+                    }
+                }
+
+                return raw;
+            };
+
+            const cache = await caches.open("app-cache");
+            for (const item of items) {
+                const thing = await loadFromCache(cache, item);
+                const code = await thing.text();
+
+                console.log(`executing: ${item}`);
+                const wrapper = new Function(code).bind(window);
+                wrapper();
+                // console.log(code.length);
+            }
+
+            console.log("done");
+            eval(
+                Babel.transform(
+                    document.querySelector("script[type='text/custom']").innerText,
+                    {
+                        presets: [
+                            ["stage-2", {decoratorsLegacy: true}],
+                            "react"
+                        ]
+                    }
+                ).code
+            );
+        });
+        document.addEventListener("DOMContentLoaded",() => {eval(Babel.transform(document.querySelector("script[type='text/custom']").innerText,{presets: [["stage-2", {decoratorsLegacy: true}],"react"]}).code)});
         </script>
         <script src="../standalone/doric-components.js"></script>
         <script type="text/custom">
@@ -63,9 +111,8 @@
             };
 
             return <div>
-                <doric.Textarea disabled label="Testing" value={text} onChange={evt => updateText(evt.target.value)} />
-                <doric.Textarea disabled label="Testing" value={text} onChange={evt => updateText(evt.target.value)} boring />
-                <doric.Textarea disabled label="Testing" value={text} onChange={evt => updateText(evt.target.value)} minimal />
+                <doric.Navbar title="Navbar Test" />
+                {range(20, i => <doric.Button block text={i} />)}
             </div>
         }
 

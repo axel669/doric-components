@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, memo, useState, useImperativeHandle, Children } from 'react';
+import 'react-dom';
 
 const isMobile =
     typeof orientation !== "undefined" ||
@@ -739,6 +740,14 @@ const theme = {
       optional: blue
     }
   },
+  navbar: {
+    bg: {
+      color: blue
+    },
+    text: {
+      color: "white"
+    }
+  },
   panel: {
     bg: {
       color: "white"
@@ -1243,6 +1252,38 @@ function Grid(props) {
   return React.createElement("doric-grid", _, children);
 }
 
+// import {Component} from "react";
+const dialogCSS = ssjs({
+  "dialog-root": {
+    position: "absolute",
+    top: 0,
+    left: 0
+  },
+  "dialog-container": {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    "&:empty": {
+      display: "none"
+    }
+  }
+}, {
+  name: "doric-dialog"
+});
+dialogCSS.generate(theme);
+const rootElem = document.createElement("dialog-root");
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => document.body.appendChild(rootElem));
+} else {
+  document.body.appendChild(rootElem);
+}
+
+var dialog = (() => {});
+
 let imageCSS = ssjs({
   "doric-image": {
     display: "inline-block",
@@ -1557,6 +1598,36 @@ function List(props) {
 }
 
 var list = memo(List);
+
+const navbarCSS = ssjs({
+  "doric-navbar": {
+    position: "sticky",
+    backgroundColor: theme => theme.navbar.bg.color,
+    color: theme => theme.navbar.text.color,
+    paddingTop: 8,
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 40,
+    display: "block",
+    zIndex: "+100",
+    textAlign: "center",
+    fontSize: 20,
+    boxShadow: "0px 2px 3px 1px rgba(0, 0, 0, 0.35)"
+  }
+}, {
+  name: "doric-navbar"
+});
+navbarCSS.generate(theme);
+
+function Navbar(props) {
+  const {
+    title
+  } = props;
+  return React.createElement("doric-navbar", null, title);
+}
+
+var navbar = memo(Navbar);
 
 const panelCSS = ssjs({
   "doric-panel": {
@@ -2154,4 +2225,4 @@ let mainCSS = ssjs({
 });
 mainCSS.generate(theme);
 
-export { button as Button, checkbox as Checkbox, collapse as Collapse, CustomListeners, Grid, Image, input as Input, Label, list as List, Panel, radio as Radio, select as Select, Tab, Tabs, textarea as Textarea, Title };
+export { button as Button, checkbox as Checkbox, collapse as Collapse, CustomListeners, dialog as Dialog, Grid, Image, input as Input, Label, list as List, navbar as Navbar, Panel, radio as Radio, select as Select, Tab, Tabs, textarea as Textarea, Title };

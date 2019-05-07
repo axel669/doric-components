@@ -37,6 +37,14 @@ const theme = {
             optional: blue
         }
     },
+    navbar: {
+        bg: {
+            color: blue
+        },
+        text: {
+            color: "white"
+        }
+    },
     panel: {
         bg: {
             color: "white"

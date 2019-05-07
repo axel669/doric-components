@@ -7,11 +7,13 @@ import Button from "@components/button.js";
 import Checkbox from "@components/checkbox.js";
 import Collapse from "@components/collapse.js";
 import CustomListeners from "@components/customListeners.js";
+import Dialog from "@components/dialog.js";
 import Grid from "@components/grid.js";
 import Image from "@components/image.js";
 import Input from "@components/input.js";
 import Label from "@components/label.js";
 import List from "@components/list.js";
+import Navbar from "@components/navbar.js";
 import Panel from "@components/panel.js";
 import Radio from "@components/radio.js";
 import Select from "@components/select.js";
@@ -65,11 +67,13 @@ export {
     Checkbox,
     Collapse,
     CustomListeners,
+    Dialog,
     Grid,
     Image,
     Input,
     Label,
     List,
+    Navbar,
     Panel,
     Radio,
     Select,

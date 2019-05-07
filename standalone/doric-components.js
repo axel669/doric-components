@@ -1,7 +1,8 @@
-var doric = (function (exports, React) {
+var doric = (function (exports, React, reactDom) {
     'use strict';
 
     var React__default = 'default' in React ? React['default'] : React;
+    reactDom = reactDom && reactDom.hasOwnProperty('default') ? reactDom['default'] : reactDom;
 
     const isMobile =
         typeof orientation !== "undefined" ||
@@ -742,6 +743,14 @@ var doric = (function (exports, React) {
           optional: blue
         }
       },
+      navbar: {
+        bg: {
+          color: blue
+        },
+        text: {
+          color: "white"
+        }
+      },
       panel: {
         bg: {
           color: "white"
@@ -1246,6 +1255,38 @@ var doric = (function (exports, React) {
       return React__default.createElement("doric-grid", _, children);
     }
 
+    // import {Component} from "react";
+    const dialogCSS = ssjs({
+      "dialog-root": {
+        position: "absolute",
+        top: 0,
+        left: 0
+      },
+      "dialog-container": {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(0, 0, 0, 0.6)",
+        "&:empty": {
+          display: "none"
+        }
+      }
+    }, {
+      name: "doric-dialog"
+    });
+    dialogCSS.generate(theme);
+    const rootElem = document.createElement("dialog-root");
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", () => document.body.appendChild(rootElem));
+    } else {
+      document.body.appendChild(rootElem);
+    }
+
+    var dialog = (() => {});
+
     let imageCSS = ssjs({
       "doric-image": {
         display: "inline-block",
@@ -1560,6 +1601,36 @@ var doric = (function (exports, React) {
     }
 
     var list = React.memo(List);
+
+    const navbarCSS = ssjs({
+      "doric-navbar": {
+        position: "sticky",
+        backgroundColor: theme => theme.navbar.bg.color,
+        color: theme => theme.navbar.text.color,
+        paddingTop: 8,
+        top: 0,
+        left: 0,
+        right: 0,
+        height: 40,
+        display: "block",
+        zIndex: "+100",
+        textAlign: "center",
+        fontSize: 20,
+        boxShadow: "0px 2px 3px 1px rgba(0, 0, 0, 0.35)"
+      }
+    }, {
+      name: "doric-navbar"
+    });
+    navbarCSS.generate(theme);
+
+    function Navbar(props) {
+      const {
+        title
+      } = props;
+      return React__default.createElement("doric-navbar", null, title);
+    }
+
+    var navbar = React.memo(Navbar);
 
     const panelCSS = ssjs({
       "doric-panel": {
@@ -2161,11 +2232,13 @@ var doric = (function (exports, React) {
     exports.Checkbox = checkbox;
     exports.Collapse = collapse;
     exports.CustomListeners = CustomListeners;
+    exports.Dialog = dialog;
     exports.Grid = Grid;
     exports.Image = Image;
     exports.Input = input;
     exports.Label = Label;
     exports.List = list;
+    exports.Navbar = navbar;
     exports.Panel = Panel;
     exports.Radio = radio;
     exports.Select = select;
@@ -2176,4 +2249,4 @@ var doric = (function (exports, React) {
 
     return exports;
 
-}({}, React));
+}({}, React, ReactDOM));
