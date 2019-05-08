@@ -27,7 +27,10 @@ const registerGlobalListener = (type, elem, handler) => {
   globalListeners[type].set(elem, handler);
 };
 
-const removeGlobalListener = (type, elem) => globalListeners[type].delete(elem);
+const removeGlobalListener = (name, elem) => {
+  const type = name.slice(2).toLowerCase();
+  globalListeners[type].delete(elem);
+};
 
 const useMounts = effect => useEffect(effect, []);
 

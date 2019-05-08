@@ -1,6 +1,6 @@
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
-import React, { memo, useRef, useImperativeHandle } from "react";
+import React, { memo, useRef, useImperativeHandle, forwardRef } from "react";
 import ssjs from "ssjs";
 import theme from "../helpers/theme.js";
 import { classes } from "../helpers/css.js";
@@ -100,6 +100,7 @@ function Input(props) {
     boring,
     minimal,
     type = "text",
+    forwardedRef,
     wrapProps,
     ...rest
   } = props;
@@ -115,16 +116,20 @@ function Input(props) {
   };
   const inputProps = {};
   const inputRef = useRef();
-  useImperativeHandle(inputRef, () => ({
-    focus() {
-      inputRef.current.focus();
-    },
 
-    get handle() {
-      return inputRef.current;
-    }
+  if (forwardedRef !== undefined) {
+    useImperativeHandle(forwardedRef, () => ({
+      focus() {
+        inputRef.current.focus();
+      },
 
-  }));
+      get handle() {
+        return inputRef.current;
+      }
+
+    }));
+  }
+
   return React.createElement("doric-input", wrapProps, React.createElement("fieldset", fieldProps, React.createElement("legend", null, label), React.createElement("input", _extends({
     ref: inputRef,
     type: type,
@@ -134,4 +139,8 @@ function Input(props) {
   }, inputProps))));
 }
 
-export default memo(Input);
+const forward = forwardRef((props, ref) => React.createElement(Input, _extends({}, props, {
+  forwardedRef: ref
+})));
+forward.displayName = "Input";
+export default memo(forward);

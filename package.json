@@ -39,5 +39,12 @@
     "url": "https://github.com/axel669/doric-components/issues"
   },
   "homepage": "https://github.com/axel669/doric-components#readme",
-  "dependencies": {}
+  "dependencies": {},
+  "files": [
+      "/dist",
+      "/esm",
+      "/min",
+      "/standalone",
+      "index.js"
+  ]
 }
