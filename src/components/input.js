@@ -14,8 +14,8 @@ const inputCSS = ssjs(
                 overflow: "hidden",
                 padding: 0,
                 paddingRight: 1,
-                backgroundColor: "white",
-                border: "1px solid lightgray",
+                backgroundColor: theme => theme.input.bg.color,
+                border: theme => `1px solid ${theme.input.border.normal}`,
                 margin: 0,
                 "&.disabled": {
                     backgroundColor: "lightgray",
@@ -38,10 +38,10 @@ const inputCSS = ssjs(
                     }
                 },
                 "&.required legend": {
-                    color: (theme) => theme.input.label.required
+                    color: (theme) => theme.label.text.required
                 },
                 "&.optional legend": {
-                    color: (theme) => theme.input.label.optional
+                    color: (theme) => theme.label.text.optional
                 },
                 "&:focus-within": {
                     borderColor: (theme) => theme.input.border.focus
@@ -60,10 +60,10 @@ const inputCSS = ssjs(
                 outline: "none"
             },
             "& fieldset.boring input": {
-                border: "1px solid lightgray",
+                border: theme => `1px solid ${theme.input.border.normal}`,
                 padding: "6px 12px",
                 borderRadius: 4,
-                backgroundColor: "white",
+                backgroundColor: theme => theme.input.bg.color,
                 "&:focus": {
                     borderColor: (theme) => theme.input.border.focus
                 },
@@ -73,7 +73,7 @@ const inputCSS = ssjs(
             },
             "& fieldset.minimal input": {
                 borderWidth: 0,
-                borderBottom: "1px solid lightgray",
+                borderBottom: theme => `1px solid ${theme.input.border.normal}`,
                 padding: "6px 12px",
                 borderRadius: 0,
                 "&:focus": {

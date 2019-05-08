@@ -75,6 +75,12 @@
         });
         document.addEventListener("DOMContentLoaded",() => {eval(Babel.transform(document.querySelector("script[type='text/custom']").innerText,{presets: [["stage-2", {decoratorsLegacy: true}],"react"]}).code)});
         </script>
+        <script>
+        window.doricTheme = {
+            "body.bg.color": "black",
+            "body.text.color": "white"
+        };
+        </script>
         <script src="../standalone/doric-components.js"></script>
         <script type="text/custom">
 
@@ -144,6 +150,27 @@
                 <doric.Button text="Confirm" onTap={confirm} />
                 <doric.Button text="Prompt" onTap={prompt} />
                 <doric.Button text="Large" onTap={large} />
+                <doric.Panel>
+                    <doric.Title title="Testing?" />
+                    <div>wat</div>
+                    <doric.Panel.actions>
+                        <doric.Button text="Wat" block />
+                    </doric.Panel.actions>
+                </doric.Panel>
+                <doric.Panel>
+                    <doric.Title title="Testing?" />
+                    <div>wat</div>
+                    <doric.Panel.actions>
+                        <doric.Button text="Wat" block />
+                    </doric.Panel.actions>
+                </doric.Panel>
+                <doric.Panel>
+                    <doric.Title title="Testing?" />
+                    <div>wat</div>
+                    <doric.Panel.actions>
+                        <doric.Button text="Wat" block />
+                    </doric.Panel.actions>
+                </doric.Panel>
             </div>
         }
 

@@ -10,7 +10,7 @@ const titleCSS = ssjs(
             margin: 2,
             padding: "4px 12px",
             boxShadow: "0px 1px 5px rgba(0, 0, 0, 0.25)",
-            border: "1px solid lightgray",
+            border: theme => `1px solid ${theme.title.border.normal}`,
             backgroundColor: theme => theme.title.bg.color,
             "&::after": {
                 content: "' '",

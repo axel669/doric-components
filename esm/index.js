@@ -703,65 +703,115 @@ const sheet$1 = (styles, attrs = {}) => {
 
 sheet$1.color = color$1;
 
-// import {Color} from "@css";
+const actions = {
+    $set: (source, value) => value,
+    $unset: (source, names) => {
+        const copy = {
+            ...source
+        };
+        for (const name of names) {
+            delete copy[name];
+        }
+        return copy;
+    },
+    $push: (source, value) => [...source, value],
+    $append: (source, value) => [...source, ...value],
+    $apply: (source, func) => func(source),
+    $filter: (source, condition) => source.filter(condition),
+    $merge: (source, addition) => ({
+        ...source,
+        ...addition
+    })
+};
+const internal_copyObject = (obj, createIfVoid = false) => {
+    if (Array.isArray(obj) === true) {
+        return [...obj];
+    }
+    if (obj === undefined && createIfVoid === true) {
+        return {};
+    }
+    if (typeof obj !== "object" || obj === null) {
+        return obj;
+    }
+    if (obj instanceof Map) {
+        return new Map(obj);
+    }
+    if (obj instanceof Set) {
+        return new Set(obj);
+    }
+    if (obj.constructor !== Object) {
+        return obj;
+    }
+    return {
+        ...obj
+    };
+};
+const internal_setValues = (dest, key, n, value, create) => {
+    const name = key[n];
+    if (n === key.length - 1) {
+        return actions[name](dest, value);
+    } else {
+        dest = internal_copyObject(dest, create);
+        dest[name] = internal_setValues(dest[name], key, n + 1, value, create);
+    }
+    return dest;
+};
+const update = (source, obj, createIfUndefined = false) =>
+    Object.keys(obj).reduce(
+        (source, key) =>
+            internal_setValues(
+                source,
+                key.split("."),
+                0,
+                obj[key],
+                createIfUndefined
+            ),
+        source
+    );
+update.actions = actions;
+
+var immutableUpdate = update;
+
 const blue = sheet$1.color.fromHex("#1d62d5");
 const lightblue = sheet$1.color.fromHex("#2196F3");
-const theme = {
-  highlightColor: sheet$1.color(0, 0, 0, 0.4),
-  outline: blue,
-  focusOutline: `2px solid ${blue.opacity(0.5)}`,
-  color: {
-    primary: blue,
-    secondary: sheet$1.color.fromHex("#128f12"),
-    danger: sheet$1.color.fromHex("#F44336"),
-    accent: sheet$1.color.fromHex("#FF4081")
-  },
-  bg: {
-    color: sheet$1.color.fromHex("#F0F0F0")
-  },
-  label: {
-    text: {
-      normal: sheet$1.color(0, 0, 0),
-      required: sheet$1.color(255, 0, 0),
-      optional: sheet$1.color(0, 128, 255)
-    }
-  },
-  collapse: {
-    border: {
-      color: sheet$1.color(0, 0, 0)
-    }
-  },
-  input: {
-    border: {
-      focus: blue
-    },
-    label: {
-      required: sheet$1.color(255, 0, 0),
-      optional: blue
-    }
-  },
-  navbar: {
-    bg: {
-      color: blue
-    },
-    text: {
-      color: "white"
-    }
-  },
-  panel: {
-    bg: {
-      color: "white"
-    }
-  },
-  tabs: {
-    selected: lightblue
-  },
-  title: {
-    bg: {
-      color: "white"
-    }
-  }
+const baseTheme = {
+  "highlightColor": sheet$1.color(0, 0, 0, 0.4),
+  "outline": blue,
+  "focusOutline": "2px solid rgba(29, 98, 213, 0.5)",
+  "color.primary": blue,
+  "color.secondary": sheet$1.color.fromHex("#128f12"),
+  "color.danger": sheet$1.color.fromHex("#F44336"),
+  "color.accent": sheet$1.color.fromHex("#FF4081"),
+  "body.bg.color": sheet$1.color.fromHex("#F0F0F0"),
+  "body.text.color": "black",
+  "dialog.cover": sheet$1.color(0, 0, 0, 0.5),
+  "label.text.normal": sheet$1.color(0, 0, 0),
+  "label.text.required": sheet$1.color(255, 0, 0),
+  "label.text.optional": blue,
+  "collapse.border.color": sheet$1.color(0, 0, 0),
+  "input.bg.color": "white",
+  "input.border.normal": "lightgray",
+  "input.border.focus": blue,
+  "input.disabled": sheet$1.color.fromHex("#DDD"),
+  "input.label.required": sheet$1.color(255, 0, 0),
+  "input.label.optional": blue,
+  "list.bg.color": "transparent",
+  "list.header.border.color": "lightgray",
+  "list.header.bg.color": "white",
+  "navbar.bg.color": blue,
+  "navbar.text.color": "white",
+  "panel.bg.color": "white",
+  "select.bg.color": "white",
+  "select.border.color": "black",
+  "select.disabled": sheet$1.color.fromHex("#DDD"),
+  "tabs.selected": lightblue,
+  "title.bg.color": "white",
+  "title.border.normal": "lightgray",
+  ...window.doricTheme
 };
+const theme = immutableUpdate({}, Object.entries(baseTheme).reduce((all, [key, value]) => ({ ...all,
+  [`${key}.$set`]: value
+}), {}), true);
 
 const climbDOM$1 = (start, func) => {
   let current = start;
@@ -1264,8 +1314,8 @@ const inputCSS = ssjs({
       overflow: "hidden",
       padding: 0,
       paddingRight: 1,
-      backgroundColor: "white",
-      border: "1px solid lightgray",
+      backgroundColor: theme => theme.input.bg.color,
+      border: theme => `1px solid ${theme.input.border.normal}`,
       margin: 0,
       "&.disabled": {
         backgroundColor: "lightgray",
@@ -1288,10 +1338,10 @@ const inputCSS = ssjs({
         }
       },
       "&.required legend": {
-        color: theme => theme.input.label.required
+        color: theme => theme.label.text.required
       },
       "&.optional legend": {
-        color: theme => theme.input.label.optional
+        color: theme => theme.label.text.optional
       },
       "&:focus-within": {
         borderColor: theme => theme.input.border.focus
@@ -1310,10 +1360,10 @@ const inputCSS = ssjs({
       outline: "none"
     },
     "& fieldset.boring input": {
-      border: "1px solid lightgray",
+      border: theme => `1px solid ${theme.input.border.normal}`,
       padding: "6px 12px",
       borderRadius: 4,
-      backgroundColor: "white",
+      backgroundColor: theme => theme.input.bg.color,
       "&:focus": {
         borderColor: theme => theme.input.border.focus
       },
@@ -1323,7 +1373,7 @@ const inputCSS = ssjs({
     },
     "& fieldset.minimal input": {
       borderWidth: 0,
-      borderBottom: "1px solid lightgray",
+      borderBottom: theme => `1px solid ${theme.input.border.normal}`,
       padding: "6px 12px",
       borderRadius: 0,
       "&:focus": {
@@ -1448,7 +1498,6 @@ const panelCSS = ssjs({
     display: "flex",
     margin: 4,
     boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.4)",
-    borderTop: "1px solid lightgray",
     backgroundColor: theme => theme.panel.bg.color,
     overflow: "hidden",
     position: "relative",
@@ -1515,7 +1564,7 @@ const titleCSS = ssjs({
     margin: 2,
     padding: "4px 12px",
     boxShadow: "0px 1px 5px rgba(0, 0, 0, 0.25)",
-    border: "1px solid lightgray",
+    border: theme => `1px solid ${theme.title.border.normal}`,
     backgroundColor: theme => theme.title.bg.color,
     "&::after": {
       content: "' '",
@@ -1562,7 +1611,7 @@ const dialogCSS = ssjs({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: theme => theme.dialog.cover,
     zIndex: "10000"
   },
   "dialog-window": {
@@ -1863,6 +1912,7 @@ const listCSS = ssjs({
       flexGrow: 1,
       borderRadius: 4,
       overflow: "hidden",
+      backgroundColor: theme => theme.list.bg.color,
       ...tappable(theme => theme.highlightColor)
     },
     "& doric-list-header": {
@@ -1872,8 +1922,8 @@ const listCSS = ssjs({
       zIndex: "+10",
       padding: 4,
       fontSize: 16,
-      border: "1px solid lightgray",
-      backgroundColor: "white",
+      border: theme => `1px solid ${theme.list.header.border.color}`,
+      backgroundColor: theme => theme.list.header.bg.color,
       "&:empty": {
         display: "none"
       }
@@ -2074,11 +2124,11 @@ let selectCSS = ssjs({
       overflow: "hidden",
       padding: 0,
       paddingRight: 1,
-      backgroundColor: "white",
-      border: "1px solid black",
+      backgroundColor: theme => theme.select.bg.color,
+      border: theme => `1px solid ${theme.select.border.color}`,
       margin: 0,
       "&.disabled": {
-        backgroundColor: "lightgray"
+        backgroundColor: theme => theme.select.disabled
       },
       "&.boring": {
         borderWidth: 0,
@@ -2121,9 +2171,9 @@ let selectCSS = ssjs({
       }
     },
     "& fieldset.boring select": {
-      border: "1px solid black",
+      border: theme => `1px solid ${theme.select.border.color}`,
       borderRadius: 4,
-      backgroundColor: "white",
+      backgroundColor: theme => theme.select.bg.color,
       "&:focus": {
         borderColor: theme => theme.input.border.focus
       }
@@ -2289,7 +2339,6 @@ const tabCSS = ssjs({
     display: "block",
     "& doric-tab-bar": {
       display: "block",
-      backgroundColor: ssjs.color(0, 0, 0, 0.05),
       "& doric-tab-label": {
         display: "inline-block",
         padding: "8px 0px",
@@ -2366,9 +2415,9 @@ const textareaCSS = ssjs({
       height: 80
     },
     "& fieldset.boring textarea": {
-      border: "1px solid lightgray",
+      border: theme => `1px solid ${theme.input.border.normal}`,
       borderRadius: 4,
-      backgroundColor: "white",
+      backgroundColor: theme => theme.input.bg.color,
       "&:focus": {
         borderColor: theme => theme.input.border.focus
       }
@@ -2376,7 +2425,7 @@ const textareaCSS = ssjs({
     "& fieldset.minimal textarea": {
       borderWidth: 0,
       borderRadius: 0,
-      borderBottom: "1px solid lightgray",
+      borderBottom: theme => `1px solid ${theme.input.border.normal}`,
       "&:focus": {
         borderColor: theme => theme.input.border.focus
       }
@@ -2457,7 +2506,8 @@ let mainCSS = ssjs({
     width: "100%",
     height: "100%",
     fontFamily: "Roboto",
-    backgroundColor: theme => theme.bg.color
+    backgroundColor: theme => theme.body.bg.color,
+    color: theme => theme.body.text.color
   },
   "div.center": {
     display: "flex",

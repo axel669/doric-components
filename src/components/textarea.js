@@ -17,9 +17,9 @@ const textareaCSS = ssjs(
                 height: 80
             },
             "& fieldset.boring textarea": {
-                border: "1px solid lightgray",
+                border: theme => `1px solid ${theme.input.border.normal}`,
                 borderRadius: 4,
-                backgroundColor: "white",
+                backgroundColor: theme => theme.input.bg.color,
                 "&:focus": {
                     borderColor: (theme) => theme.input.border.focus
                 }
@@ -27,7 +27,7 @@ const textareaCSS = ssjs(
             "& fieldset.minimal textarea": {
                 borderWidth: 0,
                 borderRadius: 0,
-                borderBottom: "1px solid lightgray",
+                borderBottom: theme => `1px solid ${theme.input.border.normal}`,
                 "&:focus": {
                     borderColor: (theme) => theme.input.border.focus
                 }

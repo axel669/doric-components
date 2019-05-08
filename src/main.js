@@ -46,7 +46,8 @@ let mainCSS = ssjs(
             width: "100%",
             height: "100%",
             fontFamily: "Roboto",
-            backgroundColor: theme => theme.bg.color
+            backgroundColor: theme => theme.body.bg.color,
+            color: theme => theme.body.text.color
         },
         "div.center": {
             display: "flex",

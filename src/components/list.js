@@ -17,6 +17,7 @@ const listCSS = ssjs(
                 flexGrow: 1,
                 borderRadius: 4,
                 overflow: "hidden",
+                backgroundColor: theme => theme.list.bg.color,
                 ...tappable(theme => theme.highlightColor)
             },
             "& doric-list-header": {
@@ -26,8 +27,8 @@ const listCSS = ssjs(
                 zIndex: "+10",
                 padding: 4,
                 fontSize: 16,
-                border: "1px solid lightgray",
-                backgroundColor: "white",
+                border: theme => `1px solid ${theme.list.header.border.color}`,
+                backgroundColor: theme => theme.list.header.bg.color,
                 "&:empty": {
                     display: "none"
                 }

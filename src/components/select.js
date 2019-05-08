@@ -14,11 +14,11 @@ let selectCSS = ssjs(
                 overflow: "hidden",
                 padding: 0,
                 paddingRight: 1,
-                backgroundColor: "white",
-                border: "1px solid black",
+                backgroundColor: theme => theme.select.bg.color,
+                border: theme => `1px solid ${theme.select.border.color}`,
                 margin: 0,
                 "&.disabled": {
-                    backgroundColor: "lightgray"
+                    backgroundColor: theme => theme.select.disabled
                 },
                 "&.boring": {
                     borderWidth: 0,
@@ -61,9 +61,9 @@ let selectCSS = ssjs(
                 }
             },
             "& fieldset.boring select": {
-                border: "1px solid black",
+                border: theme => `1px solid ${theme.select.border.color}`,
                 borderRadius: 4,
-                backgroundColor: "white",
+                backgroundColor: theme => theme.select.bg.color,
                 "&:focus": {
                     borderColor: (theme) => theme.input.border.focus
                 }

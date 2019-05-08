@@ -11,7 +11,6 @@ const panelCSS = ssjs(
             display: "flex",
             margin: 4,
             boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.4)",
-            borderTop: "1px solid lightgray",
             backgroundColor: theme => theme.panel.bg.color,
             overflow: "hidden",
             position: "relative",

@@ -13,7 +13,6 @@ const tabCSS = ssjs(
             display: "block",
             "& doric-tab-bar": {
                 display: "block",
-                backgroundColor: ssjs.color(0, 0, 0, 0.05),
                 "& doric-tab-label": {
                     display: "inline-block",
                     padding: "8px 0px",
