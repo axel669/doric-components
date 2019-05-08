@@ -55,6 +55,7 @@ const inputCSS = ssjs(
                 borderWidth: 0,
                 backgroundColor: "transparent",
                 height: 40,
+                color: theme => theme.input.text.color
             },
             "& fieldset:not(.boring):not(.minimal) input": {
                 outline: "none"

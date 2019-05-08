@@ -1,4 +1,4 @@
-import React, {memo, useRef, useImperativeHandle} from "react";
+import React, {memo, useRef, useImperativeHandle, forwardRef} from "react";
 import ssjs from "ssjs";
 
 import theme from "@theme";
@@ -14,7 +14,7 @@ const textareaCSS = ssjs(
                 padding: 6,
                 borderWidth: 0,
                 backgroundColor: "transparent",
-                height: 80
+                color: theme => theme.input.text.color
             },
             "& fieldset.boring textarea": {
                 border: theme => `1px solid ${theme.input.border.normal}`,
@@ -46,7 +46,7 @@ textareaCSS.generate(theme);
 
 function Textarea(props) {
     let {
-        label, value, onChange,
+        label, value, onChange, height = 80,
         disabled, optional, required, className, boring, minimal,
         wrapProps,
         ...rest
@@ -62,6 +62,9 @@ function Textarea(props) {
             boring,
             minimal
         })
+    };
+    const taStyle = {
+        height
     };
 
     const taRef = useRef();
@@ -84,9 +87,14 @@ function Textarea(props) {
                 disabled={disabled}
                 value={value}
                 onChange={onChange}
+                style={taStyle}
             />
         </fieldset>
     </doric-input>
 }
+const forward = forwardRef(
+    (props, ref) => <Textarea {...props} forwardedRef={ref} />
+);
+forward.displayName = "Textarea";
 
-export default memo(Textarea);
+export default memo(forward);

@@ -802,6 +802,7 @@ const baseTheme = {
   "input.disabled": sheet$1.color.fromHex("#DDD"),
   "input.label.required": sheet$1.color(255, 0, 0),
   "input.label.optional": blue,
+  "input.text.color": "black",
   "list.bg.color": "transparent",
   "list.header.border.color": "lightgray",
   "list.header.bg.color": "white",
@@ -1361,7 +1362,8 @@ const inputCSS = ssjs({
       padding: 12,
       borderWidth: 0,
       backgroundColor: "transparent",
-      height: 40
+      height: 40,
+      color: theme => theme.input.text.color
     },
     "& fieldset:not(.boring):not(.minimal) input": {
       outline: "none"
@@ -2419,7 +2421,7 @@ const textareaCSS = ssjs({
       padding: 6,
       borderWidth: 0,
       backgroundColor: "transparent",
-      height: 80
+      color: theme => theme.input.text.color
     },
     "& fieldset.boring textarea": {
       border: theme => `1px solid ${theme.input.border.normal}`,
@@ -2454,6 +2456,7 @@ function Textarea(props) {
     label,
     value,
     onChange,
+    height = 80,
     disabled,
     optional,
     required,
@@ -2473,6 +2476,9 @@ function Textarea(props) {
       minimal
     })
   };
+  const taStyle = {
+    height
+  };
   const taRef = React$1.useRef();
   React$1.useImperativeHandle(taRef, () => ({
     focus() {
@@ -2488,11 +2494,16 @@ function Textarea(props) {
     ref: taRef,
     disabled: disabled,
     value: value,
-    onChange: onChange
+    onChange: onChange,
+    style: taStyle
   })));
 }
 
-var textarea = React$1.memo(Textarea);
+const forward$1 = React$1.forwardRef((props, ref) => React$1__default.createElement(Textarea, _extends({}, props, {
+  forwardedRef: ref
+})));
+forward$1.displayName = "Textarea";
+var textarea = React$1.memo(forward$1);
 
 let mainCSS = ssjs({
   "*": {

@@ -78,7 +78,9 @@
         <script>
         window.doricTheme = {
             "body.bg.color": "black",
-            "body.text.color": "white"
+            "body.text.color": "white",
+            "input.text.color": "white",
+            "input.bg.color": "black"
         };
         </script>
         <script src="../standalone/doric-components.js"></script>
@@ -146,6 +148,7 @@
 
             return <div>
                 <doric.Navbar title="Navbar Test" />
+                <doric.Input />
                 <doric.Button text="Alert" onTap={alert} />
                 <doric.Button text="Confirm" onTap={confirm} />
                 <doric.Button text="Prompt" onTap={prompt} />

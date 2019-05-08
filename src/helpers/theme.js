@@ -25,6 +25,7 @@ const baseTheme = {
     "input.disabled": ssjs.color.fromHex("#DDD"),
     "input.label.required": ssjs.color(255, 0, 0),
     "input.label.optional": blue,
+    "input.text.color": "black",
     "list.bg.color": "transparent",
     "list.header.border.color": "lightgray",
     "list.header.bg.color": "white",

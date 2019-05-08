@@ -798,6 +798,7 @@ var doric = (function (exports, React$1, ReactDOM) {
       "input.disabled": sheet$1.color.fromHex("#DDD"),
       "input.label.required": sheet$1.color(255, 0, 0),
       "input.label.optional": blue,
+      "input.text.color": "black",
       "list.bg.color": "transparent",
       "list.header.border.color": "lightgray",
       "list.header.bg.color": "white",
@@ -1357,7 +1358,8 @@ var doric = (function (exports, React$1, ReactDOM) {
           padding: 12,
           borderWidth: 0,
           backgroundColor: "transparent",
-          height: 40
+          height: 40,
+          color: theme => theme.input.text.color
         },
         "& fieldset:not(.boring):not(.minimal) input": {
           outline: "none"
@@ -2415,7 +2417,7 @@ var doric = (function (exports, React$1, ReactDOM) {
           padding: 6,
           borderWidth: 0,
           backgroundColor: "transparent",
-          height: 80
+          color: theme => theme.input.text.color
         },
         "& fieldset.boring textarea": {
           border: theme => `1px solid ${theme.input.border.normal}`,
@@ -2450,6 +2452,7 @@ var doric = (function (exports, React$1, ReactDOM) {
         label,
         value,
         onChange,
+        height = 80,
         disabled,
         optional,
         required,
@@ -2469,6 +2472,9 @@ var doric = (function (exports, React$1, ReactDOM) {
           minimal
         })
       };
+      const taStyle = {
+        height
+      };
       const taRef = React$1.useRef();
       React$1.useImperativeHandle(taRef, () => ({
         focus() {
@@ -2484,11 +2490,16 @@ var doric = (function (exports, React$1, ReactDOM) {
         ref: taRef,
         disabled: disabled,
         value: value,
-        onChange: onChange
+        onChange: onChange,
+        style: taStyle
       })));
     }
 
-    var textarea = React$1.memo(Textarea);
+    const forward$1 = React$1.forwardRef((props, ref) => React$1__default.createElement(Textarea, _extends({}, props, {
+      forwardedRef: ref
+    })));
+    forward$1.displayName = "Textarea";
+    var textarea = React$1.memo(forward$1);
 
     let mainCSS = ssjs({
       "*": {
