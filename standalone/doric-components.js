@@ -793,7 +793,10 @@ var doric = (function (exports, React$1, ReactDOM) {
       globalListeners[type].set(elem, handler);
     };
 
-    const removeGlobalListener = (type, elem) => globalListeners[type].delete(elem);
+    const removeGlobalListener = (name, elem) => {
+      const type = name.slice(2).toLowerCase();
+      globalListeners[type].delete(elem);
+    };
 
     const useMounts = effect => React$1.useEffect(effect, []);
 
@@ -1024,7 +1027,7 @@ var doric = (function (exports, React$1, ReactDOM) {
         onTap: onTap
       }), iconElem, text, children);
     }
-    var button = React$1.memo(Button);
+    var Button$1 = React$1.memo(Button);
 
     const checkboxCSS = ssjs({
       "doric-checkbox": {
@@ -1255,159 +1258,6 @@ var doric = (function (exports, React$1, ReactDOM) {
       return React$1__default.createElement("doric-grid", _, children);
     }
 
-    const dialogCSS = ssjs({
-      "dialog-root": {
-        position: "absolute",
-        top: 0,
-        left: 0
-      },
-      "dialog-container": {
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        zIndex: "10000"
-      },
-      "dialog-window": {
-        display: "block",
-        position: "absolute",
-        "&.center": {
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)"
-        },
-        "&.top": {
-          top: "20%",
-          left: "50%",
-          transform: "translateX(-50%)"
-        }
-      }
-    }, {
-      name: "doric-dialog"
-    });
-    dialogCSS.generate(theme);
-    const rootElem = document.createElement("dialog-root");
-
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", () => document.body.appendChild(rootElem));
-    } else {
-      document.body.appendChild(rootElem);
-    }
-
-    const dialog = (() => {
-      let handle = null;
-      const dialogs = new Map();
-
-      const current = () => [...dialogs.values()];
-
-      return {
-        current,
-
-        subscribe(handler) {
-          handle = handler;
-        },
-
-        show(component, dialogInfo) {
-          const dialog = { ...dialogInfo,
-            id: Date.now()
-          };
-          dialogs.set(dialog.id, [dialog, component]);
-          handle(current());
-        },
-
-        close(id) {
-          if (id === undefined) {
-            return;
-          }
-
-          dialogs.delete(id);
-          handle(current());
-        }
-
-      };
-    })();
-
-    function DialogList() {
-      const [dialogs, updateDialogs] = React$1.useState(dialog.current());
-      React$1.useEffect(() => {
-        dialog.subscribe(updateDialogs);
-      }, []);
-      return dialogs.map(info => {
-        const [{
-          window,
-          ...props
-        }, Component] = info;
-        return React.createElement("dialog-container", {
-          key: props.id
-        }, React.createElement("dialog-window", window, React.createElement(Component, props)));
-      });
-    }
-
-    ReactDOM.render(React.createElement(DialogList, null), rootElem);
-    const publicAPI = {
-      show(component, options) {
-        dialog.show(component, options);
-      },
-
-      register(name, component) {
-        if (name === "show" || name === "register") {
-          return;
-        }
-
-        publicAPI[name] = options => dialog.show(component, options);
-      }
-
-    };
-
-    let imageCSS = ssjs({
-      "doric-image": {
-        display: "inline-block",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center center",
-        backgroundSize: "contain",
-        position: "relative",
-        "& > img": {
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          opacity: 0
-        }
-      }
-    }, {
-      name: "doric-image"
-    });
-    imageCSS.generate(theme);
-
-    function Image(props) {
-      const {
-        source,
-        width,
-        height,
-        size,
-        round,
-        ...passThrough
-      } = props;
-      const border = round == true ? {
-        borderRadius: Math.max(width, height)
-      } : {};
-      const style = { ...passThrough.style,
-        backgroundImage: `url('${source}')`,
-        backgroundSize: size,
-        width,
-        height,
-        ...border
-      };
-      return React$1__default.createElement("doric-image", _extends({}, passThrough, {
-        style: style
-      }), React$1__default.createElement("img", {
-        src: source
-      }));
-    }
-
     const inputCSS = ssjs({
       "doric-input": {
         margin: 2,
@@ -1504,6 +1354,7 @@ var doric = (function (exports, React$1, ReactDOM) {
         boring,
         minimal,
         type = "text",
+        forwardedRef,
         wrapProps,
         ...rest
       } = props;
@@ -1519,16 +1370,20 @@ var doric = (function (exports, React$1, ReactDOM) {
       };
       const inputProps = {};
       const inputRef = React$1.useRef();
-      React$1.useImperativeHandle(inputRef, () => ({
-        focus() {
-          inputRef.current.focus();
-        },
 
-        get handle() {
-          return inputRef.current;
-        }
+      if (forwardedRef !== undefined) {
+        React$1.useImperativeHandle(forwardedRef, () => ({
+          focus() {
+            inputRef.current.focus();
+          },
 
-      }));
+          get handle() {
+            return inputRef.current;
+          }
+
+        }));
+      }
+
       return React$1__default.createElement("doric-input", wrapProps, React$1__default.createElement("fieldset", fieldProps, React$1__default.createElement("legend", null, label), React$1__default.createElement("input", _extends({
         ref: inputRef,
         type: type,
@@ -1538,7 +1393,427 @@ var doric = (function (exports, React$1, ReactDOM) {
       }, inputProps))));
     }
 
-    var input = React$1.memo(Input);
+    const forward = React$1.forwardRef((props, ref) => React$1__default.createElement(Input, _extends({}, props, {
+      forwardedRef: ref
+    })));
+    forward.displayName = "Input";
+    var Input$1 = React$1.memo(forward);
+
+    let imageCSS = ssjs({
+      "doric-image": {
+        display: "inline-block",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center center",
+        backgroundSize: "contain",
+        position: "relative",
+        "& > img": {
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          opacity: 0
+        }
+      }
+    }, {
+      name: "doric-image"
+    });
+    imageCSS.generate(theme);
+
+    function Image(props) {
+      const {
+        source,
+        width,
+        height,
+        size,
+        round,
+        ...passThrough
+      } = props;
+      const border = round == true ? {
+        borderRadius: Math.max(width, height)
+      } : {};
+      const style = { ...passThrough.style,
+        backgroundImage: `url('${source}')`,
+        backgroundSize: size,
+        width,
+        height,
+        ...border
+      };
+      return React$1__default.createElement("doric-image", _extends({}, passThrough, {
+        style: style
+      }), React$1__default.createElement("img", {
+        src: source
+      }));
+    }
+
+    const panelCSS = ssjs({
+      "doric-panel": {
+        display: "flex",
+        margin: 4,
+        boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.4)",
+        borderTop: "1px solid lightgray",
+        backgroundColor: theme => theme.panel.bg.color,
+        overflow: "hidden",
+        position: "relative",
+        top: 0,
+        left: 0,
+        borderRadius: 4,
+        "& doric-title": {
+          padding: 0,
+          margin: 0,
+          marginBottom: 4,
+          borderWidth: 0,
+          boxShadow: "none"
+        }
+      },
+      "doric-panel-actions": {
+        position: "relative",
+        display: "flex",
+        margin: -8,
+        marginTop: 0,
+        "& > doric-button": {
+          padding: 8
+        },
+        "& > *": {
+          flex: "1 1 33.333333%"
+        }
+      },
+      "doric-panel-content": {
+        flexGrow: 1,
+        padding: 12
+      },
+      "doric-panel-media": {
+        display: "block"
+      }
+    }, {
+      name: "doric-panel"
+    });
+    panelCSS.generate(theme);
+
+    function Panel({
+      children,
+      ...passThrough
+    }) {
+      const list = React$1.Children.toArray(children);
+      const normal = list.filter(child => child.type !== Panel.media);
+      const media = list.find(child => child.type === Panel.media);
+      return React$1__default.createElement("doric-panel", passThrough, React$1__default.createElement("doric-panel-content", null, normal), media);
+    }
+
+    Panel.top = function PanelTop(props) {
+      return React$1__default.createElement("doric-panel-top", props);
+    };
+
+    Panel.actions = function PanelBottom(props) {
+      return React$1__default.createElement("doric-panel-actions", props);
+    };
+
+    Panel.media = function PanelMedia(props) {
+      return React$1__default.createElement("doric-panel-media", props);
+    };
+
+    const titleCSS = ssjs({
+      "doric-title": {
+        display: "block",
+        margin: 2,
+        padding: "4px 12px",
+        boxShadow: "0px 1px 5px rgba(0, 0, 0, 0.25)",
+        border: "1px solid lightgray",
+        backgroundColor: theme => theme.title.bg.color,
+        "&::after": {
+          content: "' '",
+          display: "table",
+          clear: "both"
+        },
+        "& > div": {
+          fontSize: 20
+        },
+        "& > span": {
+          fontSize: 12,
+          color: "gray",
+          float: "left"
+        },
+        "& > doric-image": {
+          float: "left",
+          marginRight: 8
+        }
+      }
+    }, {
+      name: "doric-title"
+    });
+    titleCSS.generate(theme);
+
+    function Title(props) {
+      const {
+        title,
+        subtitle,
+        profile,
+        image
+      } = props;
+      return React$1__default.createElement("doric-title", null, React$1__default.createElement("div", null, title), React$1__default.createElement("span", null, subtitle));
+    }
+
+    const dialogCSS = ssjs({
+      "dialog-root": {
+        position: "absolute",
+        top: 0,
+        left: 0
+      },
+      "dialog-container": {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        zIndex: "10000"
+      },
+      "dialog-window": {
+        display: "block",
+        position: "absolute",
+        maxWidth: "80%",
+        "&.center": {
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)"
+        },
+        "&.top": {
+          top: "20%",
+          left: "50%",
+          transform: "translateX(-50%)"
+        },
+        "&.small": {
+          width: 320
+        },
+        "&.large": {
+          width: 720
+        }
+      }
+    }, {
+      name: "doric-dialog"
+    });
+    dialogCSS.generate(theme);
+    const rootElem = document.createElement("dialog-root");
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", () => document.body.appendChild(rootElem));
+    } else {
+      document.body.appendChild(rootElem);
+    }
+
+    const dialog = (() => {
+      let handle = null;
+      const dialogs = new Map();
+
+      const current = () => [...dialogs.values()];
+
+      const close = (id, value) => {
+        if (id === undefined) {
+          return;
+        }
+
+        const resolve = dialogs.get(id)[2];
+        dialogs.delete(id);
+        handle(current());
+        resolve(value);
+      };
+
+      const show = (component, dialogInfo) => new Promise(resolve => {
+        const dialog = { ...dialogInfo,
+          id: Date.now()
+        };
+        dialogs.set(dialog.id, [dialog, component, resolve]);
+        handle(current());
+      });
+
+      return {
+        current,
+
+        subscribe(handler) {
+          handle = handler;
+        },
+
+        show,
+        close
+      };
+    })();
+
+    function DialogList() {
+      const [dialogs, updateDialogs] = React$1.useState(dialog.current());
+      React$1.useEffect(() => {
+        dialog.subscribe(updateDialogs);
+      }, []);
+      return dialogs.map(info => {
+        var _ref, _window$class;
+
+        const [{
+          window,
+          ...props
+        }, Component] = info;
+
+        const close = value => dialog.close(props.id, value);
+
+        const windowProps = { ...window,
+          class: (_ref = (_window$class = window.class) === null || _window$class === void 0 ? void 0 : _window$class.join(" ")) !== null && _ref !== void 0 ? _ref : null
+        };
+
+        const tapClose = evt => {
+          if (evt.target.tagName.toLowerCase() === "dialog-container") {
+            close(null);
+          }
+        };
+
+        return React.createElement("dialog-container", {
+          key: props.id
+        }, React.createElement(CustomListeners, {
+          onTap: tapClose
+        }), React.createElement("dialog-window", windowProps, React.createElement(Component, _extends({}, props, {
+          close: close
+        }))));
+      });
+    }
+
+    ReactDOM.render(React.createElement(DialogList, null), rootElem);
+
+    const deepMerge = (first, second) => {
+      if (Array.isArray(first) === true) {
+        if (Array.isArray(second) === true) {
+          return [...first, ...second];
+        }
+
+        return [...first, second];
+      }
+
+      if (typeof first === "object" && typeof second === "object") {
+        const merged = {};
+        const keys = new Set([...Object.keys(first), ...Object.keys(second)]);
+
+        for (const key of keys) {
+          merged[key] = deepMerge(first[key], second[key]);
+        }
+
+        return merged;
+      }
+
+      if (second === undefined) {
+        return first;
+      }
+
+      return second;
+    };
+
+    const publicAPI = {
+      show(component, options) {
+        return dialog.show(component, options);
+      },
+
+      register(name, component, baseOptions) {
+        if (name === "show" || name === "register") {
+          return;
+        }
+
+        publicAPI[name] = options => dialog.show(component, deepMerge(baseOptions, options));
+      }
+
+    };
+
+    function AlertDialog(props) {
+      const close = () => props.close();
+
+      return React.createElement(Panel, null, React.createElement(Title, {
+        title: props.title
+      }), React.createElement("div", null, props.message), React.createElement(Panel.actions, null, React.createElement(Button$1, {
+        text: "OK",
+        block: true,
+        primary: true,
+        flat: true,
+        onTap: close
+      })));
+    }
+
+    function ConfirmDialog(props) {
+      const confirm = () => props.close(true);
+
+      const cancel = () => props.close(false);
+
+      return React.createElement(Panel, null, React.createElement(Title, {
+        title: props.title
+      }), React.createElement("div", null, props.message), React.createElement(Panel.actions, null, React.createElement(Button$1, {
+        text: "Cancel",
+        block: true,
+        danger: true,
+        flat: true,
+        onTap: cancel
+      }), React.createElement(Button$1, {
+        text: "OK",
+        block: true,
+        primary: true,
+        flat: true,
+        onTap: confirm
+      })));
+    }
+
+    const useMounts$1 = effect => React$1.useEffect(effect, []);
+
+    function PromptDialog(props) {
+      const inputRef = React$1.useRef();
+      const [value, updateValue] = React$1.useState(props.value);
+
+      const submit = evt => {
+        evt.preventDefault();
+        props.close(value);
+      };
+
+      const cancel = () => props.close(false);
+
+      const update = evt => updateValue(evt.target.value);
+
+      useMounts$1(() => inputRef.current.focus());
+      return React.createElement(Panel, null, React.createElement(Title, {
+        title: props.title
+      }), React.createElement("form", {
+        onSubmit: submit
+      }, React.createElement(Input$1, {
+        type: props.type,
+        label: props.label,
+        value: value,
+        onChange: update,
+        ref: inputRef
+      })), React.createElement(Panel.actions, null, React.createElement(Button$1, {
+        text: "Cancel",
+        block: true,
+        danger: true,
+        flat: true,
+        onTap: cancel
+      }), React.createElement(Button$1, {
+        text: "OK",
+        block: true,
+        primary: true,
+        flat: true,
+        onTap: submit
+      })));
+    }
+
+    publicAPI.register("alert", AlertDialog, {
+      title: "Alert",
+      window: {
+        class: ["top", "small"]
+      }
+    });
+    publicAPI.register("confirm", ConfirmDialog, {
+      title: "Confirm",
+      window: {
+        class: ["top", "small"]
+      }
+    });
+    publicAPI.register("prompt", PromptDialog, {
+      title: "Prompt",
+      type: "text",
+      value: "",
+      window: {
+        class: ["top", "small"]
+      }
+    });
 
     let labelCSS = ssjs({
       "doric-label": {
@@ -1705,69 +1980,6 @@ var doric = (function (exports, React$1, ReactDOM) {
     }
 
     var navbar = React$1.memo(Navbar);
-
-    const panelCSS = ssjs({
-      "doric-panel": {
-        display: "flex",
-        margin: 4,
-        boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.4)",
-        borderTop: "1px solid lightgray",
-        backgroundColor: theme => theme.panel.bg.color,
-        overflow: "hidden",
-        position: "relative",
-        top: 0,
-        left: 0,
-        borderRadius: 4,
-        "& doric-title": {
-          padding: 0,
-          margin: 0,
-          marginBottom: 4,
-          borderWidth: 0,
-          boxShadow: "none"
-        }
-      },
-      "doric-panel-actions": {
-        position: "relative",
-        display: "flex",
-        margin: -8,
-        marginTop: 0,
-        "& > doric-button": {
-          padding: 8
-        }
-      },
-      "doric-panel-content": {
-        flexGrow: 1,
-        padding: 12
-      },
-      "doric-panel-media": {
-        display: "block"
-      }
-    }, {
-      name: "doric-panel"
-    });
-    panelCSS.generate(theme);
-
-    function Panel({
-      children,
-      ...passThrough
-    }) {
-      const list = React$1.Children.toArray(children);
-      const normal = list.filter(child => child.type !== Panel.media);
-      const media = list.find(child => child.type === Panel.media);
-      return React$1__default.createElement("doric-panel", passThrough, React$1__default.createElement("doric-panel-content", null, normal), media);
-    }
-
-    Panel.top = function PanelTop(props) {
-      return React$1__default.createElement("doric-panel-top", props);
-    };
-
-    Panel.actions = function PanelBottom(props) {
-      return React$1__default.createElement("doric-panel-actions", props);
-    };
-
-    Panel.media = function PanelMedia(props) {
-      return React$1__default.createElement("doric-panel-media", props);
-    };
 
     const radioCSS = ssjs({
       "doric-radio": {
@@ -2041,15 +2253,18 @@ var doric = (function (exports, React$1, ReactDOM) {
       globalListeners$1[type].set(elem, handler);
     };
 
-    const removeGlobalListener$1 = (type, elem) => globalListeners$1[type].delete(elem);
+    const removeGlobalListener$1 = (name, elem) => {
+      const type = name.slice(2).toLowerCase();
+      globalListeners$1[type].delete(elem);
+    };
 
-    const useMounts$1 = effect => React$1.useEffect(effect, []);
+    const useMounts$2 = effect => React$1.useEffect(effect, []);
 
     function CustomListeners$1(props) {
       const element = React$1.useRef(null);
       const pRef = React$1.useRef(props);
       pRef.current = props;
-      useMounts$1(() => {
+      useMounts$2(() => {
         const types = Object.keys(props);
 
         for (const name of types) {
@@ -2226,47 +2441,6 @@ var doric = (function (exports, React$1, ReactDOM) {
 
     var textarea = React$1.memo(Textarea);
 
-    const titleCSS = ssjs({
-      "doric-title": {
-        display: "block",
-        margin: 2,
-        padding: "4px 12px",
-        boxShadow: "0px 1px 5px rgba(0, 0, 0, 0.25)",
-        border: "1px solid lightgray",
-        backgroundColor: theme => theme.title.bg.color,
-        "&::after": {
-          content: "' '",
-          display: "table",
-          clear: "both"
-        },
-        "& > div": {
-          fontSize: 20
-        },
-        "& > span": {
-          fontSize: 12,
-          color: "gray",
-          float: "left"
-        },
-        "& > doric-image": {
-          float: "left",
-          marginRight: 8
-        }
-      }
-    }, {
-      name: "doric-title"
-    });
-    titleCSS.generate(theme);
-
-    function Title(props) {
-      const {
-        title,
-        subtitle,
-        profile,
-        image
-      } = props;
-      return React$1__default.createElement("doric-title", null, React$1__default.createElement("div", null, title), React$1__default.createElement("span", null, subtitle));
-    }
-
     let mainCSS = ssjs({
       "*": {
         boxSizing: "border-box",
@@ -2301,27 +2475,15 @@ var doric = (function (exports, React$1, ReactDOM) {
       name: "main-style"
     });
     mainCSS.generate(theme);
-    setTimeout(() => {
-      publicAPI.show(function TestDialog(props) {
-        return React.createElement(Panel, null, React.createElement(Title, {
-          title: "testing"
-        }), React.createElement("div", null, props.message));
-      }, {
-        message: "test",
-        window: {
-          class: "top"
-        }
-      });
-    }, 0);
 
-    exports.Button = button;
+    exports.Button = Button$1;
     exports.Checkbox = checkbox;
     exports.Collapse = collapse;
     exports.CustomListeners = CustomListeners;
     exports.Dialog = publicAPI;
     exports.Grid = Grid;
     exports.Image = Image;
-    exports.Input = input;
+    exports.Input = Input$1;
     exports.Label = Label;
     exports.List = list;
     exports.Navbar = navbar;

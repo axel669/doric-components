@@ -110,9 +110,40 @@
                 updateTab(evt.selectedTab);
             };
 
+            const alert = async () => console.log(
+                await doric.Dialog.alert({message: "test"})
+            );
+            const confirm = async () => console.log(
+                await doric.Dialog.confirm({message: "test"})
+            );
+            const prompt = async () => console.log(
+                await doric.Dialog.prompt({label: "test"})
+            );
+            const large = async () => console.log(
+                await doric.Dialog.show(
+                    function LargeDialog(prop) {
+                        return <doric.Panel>
+                            <doric.Title title="Testing?" />
+                            <div>wat</div>
+                            <doric.Panel.actions>
+                                <doric.Button text="Wat" block />
+                            </doric.Panel.actions>
+                        </doric.Panel>
+                    },
+                    {
+                        window: {
+                            class: ["top", "large"]
+                        }
+                    }
+                )
+            );
+
             return <div>
                 <doric.Navbar title="Navbar Test" />
-                {range(20, i => <doric.Button block text={i} />)}
+                <doric.Button text="Alert" onTap={alert} />
+                <doric.Button text="Confirm" onTap={confirm} />
+                <doric.Button text="Prompt" onTap={prompt} />
+                <doric.Button text="Large" onTap={large} />
             </div>
         }
 

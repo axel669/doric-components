@@ -62,26 +62,6 @@ let mainCSS = ssjs(
 );
 mainCSS.generate(theme);
 
-setTimeout(
-    () => {
-        Dialog.show(
-            function TestDialog(props) {
-                return <Panel>
-                    <Title title="testing" />
-                    <div>{props.message}</div>
-                </Panel>
-            },
-            {
-                message: "test",
-                window: {
-                    class: "top"
-                }
-            }
-        );
-    },
-    0
-);
-
 export {
     Button,
     Checkbox,
