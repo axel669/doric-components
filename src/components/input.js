@@ -1,4 +1,4 @@
-import React, {memo, useRef, useImperativeHandle} from "react";
+import React, {memo, useRef, useImperativeHandle, forwardRef} from "react";
 import ssjs from "ssjs";
 
 import theme from "@theme";
@@ -93,7 +93,7 @@ function Input(props) {
     const {
         label, value, onChange,
         disabled, optional, required, className, boring, minimal,
-        type = "text",
+        type = "text", forwardedRef,
         wrapProps,
         ...rest
     } = props;
@@ -112,17 +112,19 @@ function Input(props) {
     const inputProps = {};
 
     const inputRef = useRef();
-    useImperativeHandle(
-        inputRef,
-        () => ({
-            focus() {
-                inputRef.current.focus();
-            },
-            get handle() {
-                return inputRef.current;
-            }
-        })
-    );
+    if (forwardedRef !== undefined) {
+        useImperativeHandle(
+            forwardedRef,
+            () => ({
+                focus() {
+                    inputRef.current.focus();
+                },
+                get handle() {
+                    return inputRef.current;
+                }
+            })
+        );
+    }
 
     return <doric-input {...wrapProps}>
         <fieldset {...fieldProps}>
@@ -137,5 +139,9 @@ function Input(props) {
         </fieldset>
     </doric-input>
 }
+const forward = forwardRef(
+    (props, ref) => <Input {...props} forwardedRef={ref} />
+);
+forward.displayName = "Input";
 
-export default memo(Input);
+export default memo(forward);
