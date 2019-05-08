@@ -2,6 +2,7 @@ import React, {Children} from "react";
 import ssjs from "ssjs";
 
 import theme from "@theme";
+import {classes} from "@css";
 import Image from "@components/image.js";
 
 const panelCSS = ssjs(
@@ -32,6 +33,9 @@ const panelCSS = ssjs(
             marginTop: 0,
             "& > doric-button": {
                 padding: 8
+            },
+            "& > *": {
+                flex: "1 1 33.333333%"
             }
         },
         "doric-panel-content": {
