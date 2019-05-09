@@ -113,10 +113,10 @@
             };
 
             const alert = async () => console.log(
-                await doric.Dialog.alert({message: "test"})
+                await doric.Dialog.alert({message: "test", button: "GOTTEM"})
             );
             const confirm = async () => console.log(
-                await doric.Dialog.confirm({message: "test"})
+                await doric.Dialog.confirm({message: "test", center: true})
             );
             const prompt = async () => console.log(
                 await doric.Dialog.prompt({label: "test"})
@@ -149,9 +149,9 @@
                     <doric.Button text="Button" secondary />
                     <doric.Button text="Button" danger />
                     <doric.Button text="Button" accent />
-                    <doric.Button text="Button" flat primary />
-                    <doric.Button text="Button" flat secondary />
-                    <doric.Button text="Button" flat danger />
+                    <doric.Button text="Button" flat primary onTap={alert} />
+                    <doric.Button text="Button" flat secondary onTap={confirm} />
+                    <doric.Button text="Button" flat danger onTap={prompt} />
                     <doric.Button text="Button" flat accent />
                 </doric.Grid>
 

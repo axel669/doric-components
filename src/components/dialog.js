@@ -47,6 +47,12 @@ const dialogCSS = ssjs(
             "&.large": {
                 width: 720
             }
+        },
+        "dialog-content": {
+            display: "block",
+            "&[center='true']": {
+                textAlign: "center"
+            }
         }
     },
     {name: "doric-dialog"}
@@ -107,7 +113,7 @@ function DialogList() {
 
     return dialogs.map(
         info => {
-            const [{window, ...props}, Component] = info;
+            const [{window = {}, ...props}, Component] = info;
             const close = value => dialog.close(props.id, value);
             const windowProps = {
                 ...window,
@@ -175,38 +181,41 @@ const publicAPI = {
 };
 
 function AlertDialog(props) {
-    const close = () => props.close();
+    const {message, title, button, close, ...rest} = props;
+    const _close = () => close();
 
     return <Panel>
-        <Title title={props.title} />
-        <div>{props.message}</div>
+        <Title title={title} />
+        <dialog-content {...rest}>{message}</dialog-content>
         <Panel.actions>
-            <Button text="OK" block primary flat onTap={close} />
+            <Button text={button} block primary flat onTap={_close} />
         </Panel.actions>
     </Panel>
 }
 function ConfirmDialog(props) {
-    const confirm = () => props.close(true);
-    const cancel = () => props.close(false);
+    const {okButton, cancelButton, close, title, message, ...rest} = props;
+    const confirm = () => close(true);
+    const cancel = () => close(false);
 
     return <Panel>
-        <Title title={props.title} />
-        <div>{props.message}</div>
+        <Title title={title} />
+        <dialog-content {...rest}>{message}</dialog-content>
         <Panel.actions>
-            <Button text="Cancel" block danger flat onTap={cancel} />
-            <Button text="OK" block primary flat onTap={confirm} />
+            <Button text={cancelButton} block danger flat onTap={cancel} />
+            <Button text={okButton} block primary flat onTap={confirm} />
         </Panel.actions>
     </Panel>
 }
 const useMounts = effect => useEffect(effect, []);
 function PromptDialog(props) {
+    const {okButton, cancelButton, close, ...rest} = props;
     const inputRef = useRef();
     const [value, updateValue] = useState(props.value);
     const submit = evt => {
         evt.preventDefault();
-        props.close(value);
+        close(value);
     }
-    const cancel = () => props.close(false);
+    const cancel = () => close(false);
     const update = evt => updateValue(evt.target.value);
 
     useMounts(
@@ -219,8 +228,8 @@ function PromptDialog(props) {
             <Input type={props.type} label={props.label} value={value} onChange={update} ref={inputRef} />
         </form>
         <Panel.actions>
-            <Button text="Cancel" block danger flat onTap={cancel} />
-            <Button text="OK" block primary flat onTap={submit} />
+            <Button text={props.cancelButton} block danger flat onTap={cancel} />
+            <Button text={props.okButton} block primary flat onTap={submit} />
         </Panel.actions>
     </Panel>
 }
@@ -230,6 +239,7 @@ publicAPI.register(
     AlertDialog,
     {
         title: "Alert",
+        button: "OK",
         window: {
             class: ["top", "small"]
         }
@@ -240,6 +250,8 @@ publicAPI.register(
     ConfirmDialog,
     {
         title: "Confirm",
+        okButton: "OK",
+        cancelButton: "Cancel",
         window: {
             class: ["top", "small"]
         }
@@ -252,6 +264,8 @@ publicAPI.register(
         title: "Prompt",
         type: "text",
         value: "",
+        okButton: "OK",
+        cancelButton: "Cancel",
         window: {
             class: ["top", "small"]
         }

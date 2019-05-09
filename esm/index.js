@@ -1640,6 +1640,12 @@ const dialogCSS = ssjs({
     "&.large": {
       width: 720
     }
+  },
+  "dialog-content": {
+    display: "block",
+    "&[center='true']": {
+      textAlign: "center"
+    }
   }
 }, {
   name: "doric-dialog"
@@ -1699,7 +1705,7 @@ function DialogList() {
     var _ref, _window$class;
 
     const [{
-      window,
+      window = {},
       ...props
     }, Component] = info;
 
@@ -1770,34 +1776,51 @@ const publicAPI = {
 };
 
 function AlertDialog(props) {
-  const close = () => props.close();
+  const {
+    message,
+    title,
+    button,
+    close,
+    ...rest
+  } = props;
+
+  const _close = () => close();
 
   return React.createElement(Panel, null, React.createElement(Title, {
-    title: props.title
-  }), React.createElement("div", null, props.message), React.createElement(Panel.actions, null, React.createElement(Button$1, {
-    text: "OK",
+    title: title
+  }), React.createElement("dialog-content", rest, message), React.createElement(Panel.actions, null, React.createElement(Button$1, {
+    text: button,
     block: true,
     primary: true,
     flat: true,
-    onTap: close
+    onTap: _close
   })));
 }
 
 function ConfirmDialog(props) {
-  const confirm = () => props.close(true);
+  const {
+    okButton,
+    cancelButton,
+    close,
+    title,
+    message,
+    ...rest
+  } = props;
 
-  const cancel = () => props.close(false);
+  const confirm = () => close(true);
+
+  const cancel = () => close(false);
 
   return React.createElement(Panel, null, React.createElement(Title, {
-    title: props.title
-  }), React.createElement("div", null, props.message), React.createElement(Panel.actions, null, React.createElement(Button$1, {
-    text: "Cancel",
+    title: title
+  }), React.createElement("dialog-content", rest, message), React.createElement(Panel.actions, null, React.createElement(Button$1, {
+    text: cancelButton,
     block: true,
     danger: true,
     flat: true,
     onTap: cancel
   }), React.createElement(Button$1, {
-    text: "OK",
+    text: okButton,
     block: true,
     primary: true,
     flat: true,
@@ -1808,15 +1831,21 @@ function ConfirmDialog(props) {
 const useMounts$1 = effect => useEffect(effect, []);
 
 function PromptDialog(props) {
+  const {
+    okButton,
+    cancelButton,
+    close,
+    ...rest
+  } = props;
   const inputRef = useRef();
   const [value, updateValue] = useState(props.value);
 
   const submit = evt => {
     evt.preventDefault();
-    props.close(value);
+    close(value);
   };
 
-  const cancel = () => props.close(false);
+  const cancel = () => close(false);
 
   const update = evt => updateValue(evt.target.value);
 
@@ -1832,13 +1861,13 @@ function PromptDialog(props) {
     onChange: update,
     ref: inputRef
   })), React.createElement(Panel.actions, null, React.createElement(Button$1, {
-    text: "Cancel",
+    text: props.cancelButton,
     block: true,
     danger: true,
     flat: true,
     onTap: cancel
   }), React.createElement(Button$1, {
-    text: "OK",
+    text: props.okButton,
     block: true,
     primary: true,
     flat: true,
@@ -1848,12 +1877,15 @@ function PromptDialog(props) {
 
 publicAPI.register("alert", AlertDialog, {
   title: "Alert",
+  button: "OK",
   window: {
     class: ["top", "small"]
   }
 });
 publicAPI.register("confirm", ConfirmDialog, {
   title: "Confirm",
+  okButton: "OK",
+  cancelButton: "Cancel",
   window: {
     class: ["top", "small"]
   }
@@ -1862,6 +1894,8 @@ publicAPI.register("prompt", PromptDialog, {
   title: "Prompt",
   type: "text",
   value: "",
+  okButton: "OK",
+  cancelButton: "Cancel",
   window: {
     class: ["top", "small"]
   }
