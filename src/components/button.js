@@ -1,10 +1,10 @@
-import {memo} from "react";
+import React, {memo} from "react";
 
 import ssjs from "ssjs";
 
 import CustomListeners from "@components/customListeners.js";
 import * as css from "@css";
-import theme from "@theme";
+import api from "@api";
 
 const buttonSheet = ssjs(
     {
@@ -48,7 +48,7 @@ const buttonSheet = ssjs(
     },
     {name: "doric-button"}
 );
-buttonSheet.generate(theme);
+api.addCSS(buttonSheet);
 
 function Button(props) {
     const {

@@ -1,7 +1,8 @@
-import {Children} from "react";
+import React, {Children} from "react";
 import ssjs from "ssjs";
 
-import theme from "@theme";
+import api from "@api";
+import {classes} from "@css";
 import Image from "@components/image.js";
 
 const panelCSS = ssjs(
@@ -10,13 +11,15 @@ const panelCSS = ssjs(
             display: "flex",
             margin: 4,
             boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.4)",
-            borderTop: "1px solid lightgray",
             backgroundColor: theme => theme.panel.bg.color,
             overflow: "hidden",
             position: "relative",
             top: 0,
             left: 0,
             borderRadius: 4,
+            borderWidth: theme => theme.panel.border.width,
+            borderStyle: theme => theme.panel.border.style,
+            borderColor: theme => theme.panel.border.color,
             "& doric-title": {
                 padding: 0,
                 margin: 0,
@@ -32,6 +35,9 @@ const panelCSS = ssjs(
             marginTop: 0,
             "& > doric-button": {
                 padding: 8
+            },
+            "& > *": {
+                flex: "1 1 33.333333%"
             }
         },
         "doric-panel-content": {
@@ -39,12 +45,13 @@ const panelCSS = ssjs(
             padding: 12
         },
         "doric-panel-media": {
-            display: "block"
+            display: "block",
+            width: 120
         }
     },
     {name: "doric-panel"}
 )
-panelCSS.generate(theme);
+api.addCSS(panelCSS);
 
 function Panel({children, ...passThrough}) {
     const list = Children.toArray(children);

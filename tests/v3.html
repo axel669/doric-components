@@ -8,6 +8,7 @@
         <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
         <link href="https://unpkg.com/ionicons@4.5.5/dist/css/ionicons.min.css" rel="stylesheet">
 
         <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
@@ -17,7 +18,8 @@
         <script crossorigin src="https://unpkg.com/@axel669/norn@1/standalone/connect-hook.js"></script>
         <script crossorigin src="https://unpkg.com/@axel669/immutable-update@0.2.1/standalone/update.js"></script>
         <script crossorigin src="https://unpkg.com/@axel669/array-sort@0.1.0/standalone/array-sort.js"></script>
-        <script crossorigin src="https://unpkg.com/@axel669/range@1.0.0/standalone/range.js"></script>
+        <script crossorigin src="https://unpkg.com/@axel669/range@1/standalone/range.js"></script>
+        <script crossorigin src="https://unpkg.com/ssjs@2/standalone/ss.js"></script>
 
         <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/muicss/0.9.41/css/mui.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/muicss/0.9.41/react/mui-react.js"></script> -->
@@ -25,39 +27,174 @@
     <body>
         <app-root></app-root>
         <script type="text/javascript">
-            document.addEventListener("DOMContentLoaded",() => {eval(Babel.transform(document.querySelector("script[type='text/custom']").innerText,{presets: [["stage-2", {decoratorsLegacy: true}],"react"]}).code)});
+        (async () => {
+            console.log("loading cached items");
+
+            const items = [
+                "https://unpkg.com/@babel/standalone/babel.min.js",
+            ];
+
+            const loadFromCache = async (cache, url) => {
+                const raw = await cache.match(url);
+
+                if (raw === undefined) {
+                    try {
+                        await cache.add(url);
+                        return await cache.match(url);
+                    }
+                    catch (error) {
+                        console.error(error);
+                        return null;
+                    }
+                }
+
+                return raw;
+            };
+
+            const cache = await caches.open("app-cache");
+            for (const item of items) {
+                const thing = await loadFromCache(cache, item);
+                const code = await thing.text();
+
+                console.log(`executing: ${item}`);
+                const wrapper = new Function(code).bind(window);
+                wrapper();
+                // console.log(code.length);
+            }
+
+            console.log("done");
+            eval(
+                Babel.transform(
+                    document.querySelector("script[type='text/custom']").innerText,
+                    {
+                        presets: [
+                            ["stage-2", {decoratorsLegacy: true}],
+                            "react"
+                        ]
+                    }
+                ).code
+            );
+        });
+        document.addEventListener("DOMContentLoaded",() => {eval(Babel.transform(document.querySelector("script[type='text/custom']").innerText,{presets: [["stage-2", {decoratorsLegacy: true}],"react"]}).code)});
         </script>
         <script src="../standalone/doric-components.js"></script>
         <script type="text/custom">
+
+        function GridLayout({children}) {
+            return <doric.grid cols={3}>{children}</doric.grid>
+        }
+
+        const ItemRender = React.memo(
+            function RadioItem({item, propName, selected}) {
+                return <div style={{textAlign: "center", backgroundColor: selected && "cyan", padding: 8}}>
+                    {item[propName]}
+                </div>
+            }
+        );
+
+        const options = [
+            {value: "hi", label: "LUL"},
+            {value: [1, 2, 3], label: "Wat"},
+            {value: {a: 10}, label: "Pepe"},
+            {value: "maybe", label: "CRJ"}
+        ];
+
         function Main(props) {
             const [checked, updateChecked] = React.useState(false);
-            const items = range(
-                0,
-                25,
-                i => ({
-                    value: i,
-                    label: `Item ${i}`
-                })
+            const [selected, updateSelected] = React.useState(null);
+            const [tab, updateTab] = React.useState(0);
+            const [text, updateText] = React.useState("");
+
+            const onChangeSelect = evt => {
+                updateSelected(evt.value);
+            };
+            const changeTab = evt => {
+                updateTab(evt.selectedTab);
+            };
+
+            const alert = async () => console.log(
+                await doric.Dialog.alert({message: "test"})
             );
-            const showItem = (evt) => console.log(evt.item);
+            const confirm = async () => console.log(
+                await doric.Dialog.confirm({message: "test"})
+            );
+            const prompt = async () => console.log(
+                await doric.Dialog.prompt({label: "test"})
+            );
+            const large = async () => console.log(
+                await doric.Dialog.show(
+                    function LargeDialog(prop) {
+                        return <doric.Panel>
+                            <doric.Title title="Testing?" />
+                            <div>wat</div>
+                            <doric.Panel.actions>
+                                <doric.Button text="Wat" block />
+                            </doric.Panel.actions>
+                        </doric.Panel>
+                    },
+                    {
+                        window: {
+                            class: ["top", "large"]
+                        }
+                    }
+                )
+            );
 
             return <div>
-                <doric.title title="Title" subtitle="Subtitle" />
-                testing
-                <doric.panel>
-                    <doric.panel.media>
-                        <doric.image source="images/cthulhu.jpg" width={120} height="100%" />
-                    </doric.panel.media>
-                    <doric.title title="Panel \o/" subtitle="Praise Cthulhu" />
-                    Panel test
-                    <doric.panel.actions>
-                        <doric.button iconSize={24} icon="ion-md-skip-backward" circle={40} />
-                        <doric.button iconSize={24} icon="ion-md-play" circle={40} />
-                        <doric.button iconSize={24} icon="ion-md-skip-forward" circle={40} />
-                    </doric.panel.actions>
-                </doric.panel>
-                <doric.list items={items} onItemTap={showItem} title="Test List 1" />
-                <doric.list items={items} onItemTap={showItem} title="Test List 2" />
+                <doric.Navbar title="Navbar Test" />
+
+                <doric.Grid cols={3}>
+                    <doric.Button text="Button" onTap={() => doric.generateCSS(doric.tronTheme)}/>
+                    <doric.Button text="Button" primary />
+                    <doric.Button text="Button" secondary />
+                    <doric.Button text="Button" danger />
+                    <doric.Button text="Button" accent />
+                    <doric.Button text="Button" flat primary />
+                    <doric.Button text="Button" flat secondary />
+                    <doric.Button text="Button" flat danger />
+                    <doric.Button text="Button" flat accent />
+                </doric.Grid>
+
+                <doric.Checkbox text="Checkbox" />
+                <doric.Checkbox checked text="Checkbox" />
+
+                <doric.Collapse text="Collapse">
+                    Demo
+                </doric.Collapse>
+
+                <doric.Input label="Input" value="Demo" />
+                <doric.Input label="Input" value="Demo" boring />
+                <doric.Input label="Input" value="Demo" minimal />
+                <doric.Input label="Input" value="Demo" disabled />
+                <doric.Input label="Input" value="Demo" disabled boring />
+                <doric.Input label="Input" value="Demo" disabled minimal />
+
+                <doric.List items={options} />
+
+                <doric.Panel>
+                    <doric.Title image="images/cthulhu.jpg" title="Woah" />
+                    <div>wat</div>
+                    <doric.Panel.actions>
+                        <doric.Button text="Wat" block />
+                    </doric.Panel.actions>
+                    <doric.Panel.media>
+                        <doric.Image width="100%" height="100%" source="images/anon.jpg" />
+                    </doric.Panel.media>
+                </doric.Panel>
+
+                <doric.Panel>
+                    <doric.Title title="Divider?" divider />
+                    Testing content
+                </doric.Panel>
+
+                <doric.Select options={options} label="Select" placeholder="Demo" />
+                <doric.Select options={options} label="Select" placeholder="Demo" boring />
+                <doric.Select options={options} label="Select" placeholder="Demo" disabled />
+
+                <doric.Tabs cols={3}>
+                    <doric.Tab label="Tab 1" />
+                    <doric.Tab label="Tab 2" />
+                </doric.Tabs>
             </div>
         }
 

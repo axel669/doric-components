@@ -1,4 +1,4 @@
-import {useEffect, useRef} from "react";
+import React, {useEffect, useRef} from "react";
 
 const climbDOM = (start, func) => {
     let current = start;
@@ -27,8 +27,10 @@ const registerGlobalListener = (type, elem, handler) => {
 
     globalListeners[type].set(elem, handler);
 }
-const removeGlobalListener = (type, elem) =>
+const removeGlobalListener = (name, elem) => {
+    const type = name.slice(2).toLowerCase();
     globalListeners[type].delete(elem);
+}
 
 const useMounts = effect => useEffect(effect, []);
 function CustomListeners(props) {

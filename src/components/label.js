@@ -1,6 +1,7 @@
+import React from "react";
 import ssjs from "ssjs";
 
-import theme from "@theme";
+import api from "@api";
 import {classes} from "@css";
 
 let labelCSS = ssjs(
@@ -23,7 +24,7 @@ let labelCSS = ssjs(
     },
     {name: "doric-label"}
 );
-labelCSS.generate(theme);
+api.addCSS(labelCSS);
 
 function Label(props) {
     const {

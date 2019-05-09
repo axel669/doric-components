@@ -1,7 +1,8 @@
+import React from "react";
 import ssjs from "ssjs";
 import range from "@axel669/range";
 
-import theme from "@theme";
+import api from "@api";
 import {tappable, classes} from "@css";
 
 const gridSpans = range(2, 13).reduce(
@@ -26,7 +27,7 @@ const gridCSS = ssjs(
     },
     {name: "doric-grid"}
 );
-gridCSS.generate(theme);
+api.addCSS(gridCSS);
 
 function Grid(props) {
     const {

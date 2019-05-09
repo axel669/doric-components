@@ -1,7 +1,7 @@
-import {useState, memo} from "react";
+import React, {useState, memo} from "react";
 import ssjs from "ssjs";
 
-import theme from "@theme";
+import api from "@api";
 import {tappable, classes} from "@css";
 
 import CustomListeners from "@components/customListeners.js"
@@ -39,7 +39,7 @@ let collapseCSS = ssjs(
     },
     {name: "doric-collapse"}
 )
-collapseCSS.generate(theme);
+api.addCSS(collapseCSS);
 
 function Collapse(props) {
     const [hide, toggleVis] = useState(true);
@@ -71,45 +71,3 @@ function Collapse(props) {
 }
 
 export default memo(Collapse);
-
-// class Collapse extends React.Component {
-//     constructor(props) => {
-//         super(props)
-//
-//         @state = {
-//             hide: true
-//         }
-//         @toggle = () => {
-//             let hide = !@state.hide
-//             @setState({hide})
-//         }
-//     }
-//
-//     render() => {
-//         let {
-//             className, label = "Collapse", tabIndex = 1
-//             children
-//             ...passThrough
-//         } = @props
-//         let {hide} = @state
-//         let _classes = classes({className, hide})
-//
-//         let direction = (hide == true) ? "right" : "down"
-//         let icon = <doric-collapse-icon class=`ion-md-arrow-drop${direction}` />
-//
-//         let props = {
-//             tabIndex
-//             ...passThrough
-//         }
-//
-//         return <doric-collapse {...props} class=_classes>
-//             <doric-collapse-label>
-//                 {icon} {label}
-//                 <CustomListeners onTap=@toggle />
-//             </doric-collapse-label>
-//             <div>{children}</div>
-//         </doric-collapse>
-//     }
-// }
-//
-// export default Collapse
