@@ -1377,6 +1377,7 @@ function Input(props) {
     type = "text",
     forwardedRef,
     wrapProps,
+    _,
     ...rest
   } = props;
   const fieldProps = { ...rest,
@@ -1389,7 +1390,6 @@ function Input(props) {
       minimal
     })
   };
-  const inputProps = {};
   const inputRef = React.useRef();
 
   if (forwardedRef !== undefined) {
@@ -1411,7 +1411,7 @@ function Input(props) {
     disabled: disabled,
     value: value,
     onChange: onChange
-  }, inputProps))));
+  }, _))));
 }
 
 const forward = React.forwardRef((props, ref) => React__default.createElement(Input, _extends({}, props, {

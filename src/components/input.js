@@ -95,7 +95,7 @@ function Input(props) {
         label, value, onChange,
         disabled, optional, required, className, boring, minimal,
         type = "text", forwardedRef,
-        wrapProps,
+        wrapProps, _,
         ...rest
     } = props;
 
@@ -110,7 +110,6 @@ function Input(props) {
             minimal
         })
     };
-    const inputProps = {};
 
     const inputRef = useRef();
     if (forwardedRef !== undefined) {
@@ -135,7 +134,7 @@ function Input(props) {
                 disabled={disabled}
                 value={value}
                 onChange={onChange}
-                {...inputProps}
+                {..._}
             />
         </fieldset>
     </doric-input>

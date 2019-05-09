@@ -1373,6 +1373,7 @@ var doric = (function (exports, React, ReactDOM) {
         type = "text",
         forwardedRef,
         wrapProps,
+        _,
         ...rest
       } = props;
       const fieldProps = { ...rest,
@@ -1385,7 +1386,6 @@ var doric = (function (exports, React, ReactDOM) {
           minimal
         })
       };
-      const inputProps = {};
       const inputRef = React.useRef();
 
       if (forwardedRef !== undefined) {
@@ -1407,7 +1407,7 @@ var doric = (function (exports, React, ReactDOM) {
         disabled: disabled,
         value: value,
         onChange: onChange
-      }, inputProps))));
+      }, _))));
     }
 
     const forward = React.forwardRef((props, ref) => React__default.createElement(Input, _extends({}, props, {
