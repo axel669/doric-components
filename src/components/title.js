@@ -2,6 +2,7 @@ import React from "react";
 import ssjs from "ssjs";
 
 import theme from "@theme";
+import Image from "@components/image.js";
 
 const titleCSS = ssjs(
     {
@@ -27,7 +28,7 @@ const titleCSS = ssjs(
             },
             "& > doric-image": {
                 float: "left",
-                marginRight: 8,
+                marginRight: 8
             }
         }
     },
@@ -38,7 +39,12 @@ titleCSS.generate(theme);
 function Title(props) {
     const {title, subtitle, profile, image} = props;
 
+    const imageElem = (image !== undefined)
+        ? <Image width={45} height={45} round source={image} />
+        : null;
+
     return <doric-title>
+        {imageElem}
         <div>{title}</div>
         <span>{subtitle}</span>
     </doric-title>

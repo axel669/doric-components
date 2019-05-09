@@ -1531,7 +1531,8 @@ const panelCSS = ssjs({
     padding: 12
   },
   "doric-panel-media": {
-    display: "block"
+    display: "block",
+    width: 120
   }
 }, {
   name: "doric-panel"
@@ -1598,7 +1599,13 @@ function Title(props) {
     profile,
     image
   } = props;
-  return React$1.createElement("doric-title", null, React$1.createElement("div", null, title), React$1.createElement("span", null, subtitle));
+  const imageElem = image !== undefined ? React$1.createElement(Image, {
+    width: 45,
+    height: 45,
+    round: true,
+    source: image
+  }) : null;
+  return React$1.createElement("doric-title", null, imageElem, React$1.createElement("div", null, title), React$1.createElement("span", null, subtitle));
 }
 
 const dialogCSS = ssjs({

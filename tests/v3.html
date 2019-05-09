@@ -76,12 +76,12 @@
         document.addEventListener("DOMContentLoaded",() => {eval(Babel.transform(document.querySelector("script[type='text/custom']").innerText,{presets: [["stage-2", {decoratorsLegacy: true}],"react"]}).code)});
         </script>
         <script>
-        window.doricTheme = {
-            "body.bg.color": "black",
-            "body.text.color": "white",
-            "input.text.color": "white",
-            "input.bg.color": "black"
-        };
+        // window.doricTheme = {
+        //     "body.bg.color": "black",
+        //     "body.text.color": "white",
+        //     "input.text.color": "white",
+        //     "input.bg.color": "black"
+        // };
         </script>
         <script src="../standalone/doric-components.js"></script>
         <script type="text/custom">
@@ -168,11 +168,14 @@
                     </doric.Panel.actions>
                 </doric.Panel>
                 <doric.Panel>
-                    <doric.Title title="Testing?" />
+                    <doric.Title image="images/cthulhu.jpg" title="Woah" />
                     <div>wat</div>
                     <doric.Panel.actions>
                         <doric.Button text="Wat" block />
                     </doric.Panel.actions>
+                    <doric.Panel.media>
+                        <doric.Image width="100%" height="100%" source="images/anon.jpg" />
+                    </doric.Panel.media>
                 </doric.Panel>
             </div>
         }

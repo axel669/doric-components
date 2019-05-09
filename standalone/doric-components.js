@@ -1534,7 +1534,8 @@ var doric = (function (exports, React$1, ReactDOM) {
         padding: 12
       },
       "doric-panel-media": {
-        display: "block"
+        display: "block",
+        width: 120
       }
     }, {
       name: "doric-panel"
@@ -1601,7 +1602,13 @@ var doric = (function (exports, React$1, ReactDOM) {
         profile,
         image
       } = props;
-      return React$1__default.createElement("doric-title", null, React$1__default.createElement("div", null, title), React$1__default.createElement("span", null, subtitle));
+      const imageElem = image !== undefined ? React$1__default.createElement(Image, {
+        width: 45,
+        height: 45,
+        round: true,
+        source: image
+      }) : null;
+      return React$1__default.createElement("doric-title", null, imageElem, React$1__default.createElement("div", null, title), React$1__default.createElement("span", null, subtitle));
     }
 
     const dialogCSS = ssjs({

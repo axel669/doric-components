@@ -42,7 +42,8 @@ const panelCSS = ssjs(
             padding: 12
         },
         "doric-panel-media": {
-            display: "block"
+            display: "block",
+            width: 120
         }
     },
     {name: "doric-panel"}
