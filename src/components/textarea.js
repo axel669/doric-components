@@ -1,7 +1,7 @@
 import React, {memo, useRef, useImperativeHandle, forwardRef} from "react";
 import ssjs from "ssjs";
 
-import theme from "@theme";
+import api from "@api";
 import {classes} from "@css";
 
 const textareaCSS = ssjs(
@@ -32,17 +32,17 @@ const textareaCSS = ssjs(
                     borderColor: (theme) => theme.input.border.focus
                 }
             },
-            "& fieldset.disabled:not(.boring):not(.minimal)": {
-                backgroundColor: "lightgray"
-            },
-            "& fieldset.disabled textarea": {
-                backgroundColor: "lightgray"
-            }
+            // "& fieldset.disabled:not(.boring):not(.minimal)": {
+            //     backgroundColor: "lightgray"
+            // },
+            // "& fieldset.disabled textarea": {
+            //     backgroundColor: "lightgray"
+            // }
         }
     },
-    {name: "doric-tetarea"}
+    {name: "doric-textarea"}
 );
-textareaCSS.generate(theme);
+api.addCSS(textareaCSS);
 
 function Textarea(props) {
     let {

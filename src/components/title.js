@@ -1,8 +1,9 @@
 import React from "react";
 import ssjs from "ssjs";
 
-import theme from "@theme";
+import api from "@api";
 import Image from "@components/image.js";
+import Divider from "@components/divider.js";
 
 const titleCSS = ssjs(
     {
@@ -29,24 +30,32 @@ const titleCSS = ssjs(
             "& > doric-image": {
                 float: "left",
                 marginRight: 8
+            },
+            "& doric-divider": {
+                borderTopColor: theme => theme.divider.color,
+                borderTopStyle: "solid",
+                borderTopWidth: 1,
+                marginRight: -12,
+                marginLeft: -12
             }
         }
     },
     {name: "doric-title"}
 );
-titleCSS.generate(theme);
+api.addCSS(titleCSS);
 
 function Title(props) {
-    const {title, subtitle, profile, image} = props;
+    const {title, subtitle, divider, image} = props;
 
     const imageElem = (image !== undefined)
         ? <Image width={45} height={45} round source={image} />
         : null;
 
-    return <doric-title>
+    return <doric-title divider={divider}>
         {imageElem}
         <div>{title}</div>
         <span>{subtitle}</span>
+        {divider && <Divider />}
     </doric-title>
 }
 

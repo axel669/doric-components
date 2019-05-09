@@ -5,7 +5,9 @@ const blue = ssjs.color.fromHex("#1d62d5");
 const lightblue = ssjs.color.fromHex("#2196F3");
 
 const baseTheme = {
+    "fontFamily": "Roboto, Arial",
     "highlightColor": ssjs.color(0, 0, 0, 0.4),
+    "secondaryHighlightColor": ssjs.color(255, 255, 255, 0.4),
     "outline": blue,
     "focusOutline": "2px solid rgba(29, 98, 213, 0.5)",
     "color.primary": blue,
@@ -15,6 +17,9 @@ const baseTheme = {
     "body.bg.color": ssjs.color.fromHex("#F0F0F0"),
     "body.text.color": "black",
     "dialog.cover": ssjs.color(0, 0, 0, 0.5),
+    "divider.size": 2,
+    "divider.style": "solid",
+    "divider.color": "black",
     "label.text.normal": ssjs.color(0, 0, 0),
     "label.text.required": ssjs.color(255, 0, 0),
     "label.text.optional": blue,
@@ -30,20 +35,27 @@ const baseTheme = {
     "list.header.border.color": "lightgray",
     "list.header.bg.color": "white",
     "navbar.bg.color": blue,
+    "navbar.border.width": 0,
+    "navbar.border.style": "",
+    "navbar.border.color": "",
     "navbar.text.color": "white",
     "panel.bg.color": "white",
+    "panel.border.width": 0,
+    "panel.border.style": "",
+    "panel.border.color": "",
     "select.bg.color": "white",
     "select.border.color": "black",
-    "select.disabled": ssjs.color.fromHex("#DDD"),
-    "tabs.selected": lightblue,
+    "select.disabled": ssjs.color(87, 87, 87),
+    "select.text.color": "black",
+    "tabs.selected.text": lightblue,
+    "tabs.selected.border": lightblue,
     "title.bg.color": "white",
-    "title.border.normal": "lightgray",
-    ...window.doricTheme
+    "title.border.normal": "lightgray"
 };
 
-const theme = update(
-    {},
-    Object.entries(baseTheme).reduce(
+const merge = (base, updates) => update(
+    base,
+    Object.entries(updates).reduce(
         (all, [key, value]) => ({
             ...all,
             [`${key}.$set`]: value
@@ -53,4 +65,7 @@ const theme = update(
     true
 );
 
+const theme = merge({}, baseTheme);
+
+export {merge};
 export default theme;

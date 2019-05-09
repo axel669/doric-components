@@ -1,7 +1,7 @@
 import React from "react";
 import ssjs from "ssjs";
 
-import theme from "@theme";
+import api from "@api";
 
 let imageCSS = ssjs(
     {
@@ -23,7 +23,7 @@ let imageCSS = ssjs(
     },
     {name: "doric-image"}
 )
-imageCSS.generate(theme);
+api.addCSS(imageCSS);
 
 function Image(props) {
     const {

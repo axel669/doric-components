@@ -1,7 +1,7 @@
 import React, {memo} from "react";
 import ssjs from "ssjs";
 
-import theme from "@theme";
+import api from "@api";
 import {tappable, classes} from "@css";
 
 import CustomListeners from "@components/customListeners.js";
@@ -37,7 +37,7 @@ const listCSS = ssjs(
     },
     {name: "doric-list"}
 );
-listCSS.generate(theme);
+api.addCSS(listCSS);
 
 const DefaultListRenderer = memo(
     function ListItem({item, propName}) {

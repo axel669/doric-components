@@ -1,7 +1,7 @@
 import React, {memo, useRef, useImperativeHandle, forwardRef} from "react";
 import ssjs from "ssjs";
 
-import theme from "@theme";
+import api from "@api";
 import {classes} from "@css";
 
 const inputCSS = ssjs(
@@ -18,7 +18,7 @@ const inputCSS = ssjs(
                 border: theme => `1px solid ${theme.input.border.normal}`,
                 margin: 0,
                 "&.disabled": {
-                    backgroundColor: "lightgray",
+                    backgroundColor: theme => theme.input.disabled,
                     "& input": {
                         backgroundColor: "transparent"
                     }
@@ -69,7 +69,7 @@ const inputCSS = ssjs(
                     borderColor: (theme) => theme.input.border.focus
                 },
                 "&[disabled]": {
-                    backgroundColor: "lightgray"
+                    backgroundColor: theme => theme.input.disabled
                 }
             },
             "& fieldset.minimal input": {
@@ -81,14 +81,14 @@ const inputCSS = ssjs(
                     borderColor: (theme) => theme.input.border.focus
                 },
                 "&[disabled]": {
-                    backgroundColor: "lightgray"
+                    backgroundColor: theme => theme.input.disabled
                 }
             }
         }
     },
     {name: "doric-input"}
 );
-inputCSS.generate(theme);
+api.addCSS(inputCSS);
 
 function Input(props) {
     const {

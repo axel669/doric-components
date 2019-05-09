@@ -31,7 +31,8 @@ export default {
             root: path.resolve(__dirname, "src"),
             "@css": "helpers/css.js",
             "@theme": "helpers/theme.js",
-            "@components": "components"
+            "@components": "components",
+            "@api": "helpers/internal-api.js"
         }),
         babel({
             exclude: "node_modules/**",

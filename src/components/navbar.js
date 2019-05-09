@@ -1,7 +1,7 @@
 import React, {memo} from "react";
 import ssjs from "ssjs";
 
-import theme from "@theme";
+import api from "@api";
 
 const navbarCSS = ssjs(
     {
@@ -18,12 +18,15 @@ const navbarCSS = ssjs(
             zIndex: "+100",
             textAlign: "center",
             fontSize: 20,
-            boxShadow: "0px 2px 3px 1px rgba(0, 0, 0, 0.35)"
+            boxShadow: "0px 2px 3px 1px rgba(0, 0, 0, 0.35)",
+            borderWidth: theme => theme.navbar.border.width,
+            borderStyle: theme => theme.navbar.border.style,
+            borderColor: theme => theme.navbar.border.color,
         }
     },
     {name: "doric-navbar"}
 );
-navbarCSS.generate(theme);
+api.addCSS(navbarCSS);
 
 function Navbar(props) {
     const {title} = props;

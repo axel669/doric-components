@@ -4,8 +4,8 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var React$1 = require('react');
-var React$1__default = _interopDefault(React$1);
+var React = require('react');
+var React__default = _interopDefault(React);
 var ReactDOM = _interopDefault(require('react-dom'));
 
 const isMobile =
@@ -782,7 +782,9 @@ var immutableUpdate = update;
 const blue = sheet$1.color.fromHex("#1d62d5");
 const lightblue = sheet$1.color.fromHex("#2196F3");
 const baseTheme = {
+  "fontFamily": "Roboto, Arial",
   "highlightColor": sheet$1.color(0, 0, 0, 0.4),
+  "secondaryHighlightColor": sheet$1.color(255, 255, 255, 0.4),
   "outline": blue,
   "focusOutline": "2px solid rgba(29, 98, 213, 0.5)",
   "color.primary": blue,
@@ -792,6 +794,9 @@ const baseTheme = {
   "body.bg.color": sheet$1.color.fromHex("#F0F0F0"),
   "body.text.color": "black",
   "dialog.cover": sheet$1.color(0, 0, 0, 0.5),
+  "divider.size": 2,
+  "divider.style": "solid",
+  "divider.color": "black",
   "label.text.normal": sheet$1.color(0, 0, 0),
   "label.text.required": sheet$1.color(255, 0, 0),
   "label.text.optional": blue,
@@ -807,19 +812,29 @@ const baseTheme = {
   "list.header.border.color": "lightgray",
   "list.header.bg.color": "white",
   "navbar.bg.color": blue,
+  "navbar.border.width": 0,
+  "navbar.border.style": "",
+  "navbar.border.color": "",
   "navbar.text.color": "white",
   "panel.bg.color": "white",
+  "panel.border.width": 0,
+  "panel.border.style": "",
+  "panel.border.color": "",
   "select.bg.color": "white",
   "select.border.color": "black",
-  "select.disabled": sheet$1.color.fromHex("#DDD"),
-  "tabs.selected": lightblue,
+  "select.disabled": sheet$1.color(87, 87, 87),
+  "select.text.color": "black",
+  "tabs.selected.text": lightblue,
+  "tabs.selected.border": lightblue,
   "title.bg.color": "white",
-  "title.border.normal": "lightgray",
-  ...window.doricTheme
+  "title.border.normal": "lightgray"
 };
-const theme = immutableUpdate({}, Object.entries(baseTheme).reduce((all, [key, value]) => ({ ...all,
+
+const merge = (base, updates) => immutableUpdate(base, Object.entries(updates).reduce((all, [key, value]) => ({ ...all,
   [`${key}.$set`]: value
 }), {}), true);
+
+const theme = merge({}, baseTheme);
 
 const climbDOM$1 = (start, func) => {
   let current = start;
@@ -853,11 +868,11 @@ const removeGlobalListener = (name, elem) => {
   globalListeners[type].delete(elem);
 };
 
-const useMounts = effect => React$1.useEffect(effect, []);
+const useMounts = effect => React.useEffect(effect, []);
 
 function CustomListeners(props) {
-  const element = React$1.useRef(null);
-  const pRef = React$1.useRef(props);
+  const element = React.useRef(null);
+  const pRef = React.useRef(props);
   pRef.current = props;
   useMounts(() => {
     const types = Object.keys(props);
@@ -877,75 +892,14 @@ function CustomListeners(props) {
       }
     };
   });
-  return React$1__default.createElement("doric-custom-listeners", {
+  return React__default.createElement("doric-custom-listeners", {
     ref: element
   });
 }
 
 const query = {
   mobile: screen.availWidth <= 640
-}; // const parseColor = (args) => {
-//     if (typeof args[0] === "string") {
-//         const color = args[0].startsWith("#")
-//             ? args[0].slice(1)
-//             : args[0];
-//         const alpha = color.length > 6
-//             ? color.slice(6, 8)
-//             : "FF";
-//
-//         return [
-//             parseInt(color.slice(0, 2), 16),
-//             parseInt(color.slice(2, 4), 16),
-//             parseInt(color.slice(4, 6), 16),
-//             parseInt(alpha, 16) / 255
-//         ];
-//     }
-//     return args;
-// };
-// const Color = (...args) => {
-//     const [r, g, b, a] = parseColor(args);
-//     if (a === 1) {
-//         `rgb(${r}, ${g}, ${b})`;
-//     }
-//     return `rgba(${r}, ${g}, ${b}, ${a})`;
-// };
-// Color.inverse = (color) => {
-//     const [r, g, b, a] = parseColor(color);
-//     return Color(255 - r, 255 - g, 255 - b, a);
-// };
-// const Color = (...args) => {
-//     const [r, g, b, a = 1] = (() => {
-//         if (typeof args[0] === "string") {
-//             const color = args[0].startsWith("#")
-//                 ? args[0].slice(1)
-//                 : args[0];
-//             const alpha = color.length > 6
-//                 ? color.slice(6, 8)
-//                 : "FF";
-//
-//             return [
-//                 parseInt(color.slice(0, 2), 16),
-//                 parseInt(color.slice(2, 4), 16),
-//                 parseInt(color.slice(4, 6), 16),
-//                 parseInt(alpha, 16) / 255
-//             ];
-//         }
-//         return args;
-//     })();
-//
-//     const color = () => {
-//         if (a === 1) {
-//             `rgb(${r}, ${g}, ${b})`;
-//         }
-//         return `rgba(${r}, ${g}, ${b}, ${a})`;
-//     };
-//     color.inverse = () => Color(255 - r, 255 - g, 255 - b, a);
-//     color.opacity = alpha => Color(r, g, b, alpha);
-//     color.toString = color;
-//
-//     return color;
-// };
-
+};
 const tapActive = ".gjs-tap-active:not(.disabled):not(.flat)::after";
 
 const bcolorVariant = colorName => ({
@@ -957,7 +911,7 @@ const bcolorVariant = colorName => ({
       color: theme => theme.color[colorName]
     },
     [`&${tapActive}`]: {
-      backgroundColor: theme => theme.highlightColor.invert()
+      backgroundColor: theme => theme.secondaryHighlightColor
     }
   }
 });
@@ -978,12 +932,7 @@ const tappable = color => {
       transition: "none",
       backgroundColor: color
     }
-  }; // if (query.mobile === false) {
-  //     style["&:hover"] = {
-  //         boxShadow: "0px 2px 4px 2px rgba(0, 0, 0, 0.25)"
-  //     };
-  // }
-
+  };
   return style;
 };
 
@@ -1001,6 +950,22 @@ const classes = obj => {
   }
 
   return list.join(" ");
+};
+
+const cssSheets = new Set();
+var api = {
+  generateCSS(newTheme) {
+    const _theme = merge(theme, newTheme);
+
+    for (const css of cssSheets) {
+      css.generate(_theme);
+    }
+  },
+
+  addCSS(css) {
+    cssSheets.add(css);
+  }
+
 };
 
 const buttonSheet = ssjs({
@@ -1044,7 +1009,7 @@ const buttonSheet = ssjs({
 }, {
   name: "doric-button"
 });
-buttonSheet.generate(theme);
+api.addCSS(buttonSheet);
 
 function Button(props) {
   const {
@@ -1067,7 +1032,7 @@ function Button(props) {
     style.borderRadius = "50%";
   }
 
-  const iconElem = icon === null ? null : React$1__default.createElement("ion-icon", {
+  const iconElem = icon === null ? null : React__default.createElement("ion-icon", {
     class: icon,
     style: {
       fontSize: iconSize
@@ -1078,11 +1043,11 @@ function Button(props) {
     style,
     class: classes(rest)
   };
-  return React$1__default.createElement("doric-button", wrapProps, React$1__default.createElement(CustomListeners, {
+  return React__default.createElement("doric-button", wrapProps, React__default.createElement(CustomListeners, {
     onTap: onTap
   }), iconElem, text, children);
 }
-var Button$1 = React$1.memo(Button);
+var Button$1 = React.memo(Button);
 
 const checkboxCSS = ssjs({
   "doric-checkbox": {
@@ -1122,7 +1087,7 @@ const checkboxCSS = ssjs({
 }, {
   name: "doric-checkbox"
 });
-checkboxCSS.generate(theme);
+api.addCSS(checkboxCSS);
 
 function Checkbox(props) {
   const {
@@ -1154,14 +1119,14 @@ function Checkbox(props) {
     onChange === null || onChange === void 0 ? void 0 : onChange(evt);
   };
 
-  return React$1__default.createElement("doric-checkbox", wrapProps, React$1__default.createElement("doric-checkbox-icon", {
+  return React__default.createElement("doric-checkbox", wrapProps, React__default.createElement("doric-checkbox-icon", {
     class: iconClass
-  }), text, children, React$1__default.createElement(CustomListeners, {
+  }), text, children, React__default.createElement(CustomListeners, {
     onTap: toggle
   }));
 }
 
-var checkbox = React$1.memo(Checkbox);
+var checkbox = React.memo(Checkbox);
 
 function _extends() {
   _extends = Object.assign || function (target) {
@@ -1215,10 +1180,10 @@ let collapseCSS = ssjs({
 }, {
   name: "doric-collapse"
 });
-collapseCSS.generate(theme);
+api.addCSS(collapseCSS);
 
 function Collapse(props) {
-  const [hide, toggleVis] = React$1.useState(true);
+  const [hide, toggleVis] = React.useState(true);
   const {
     className,
     text = "Collapse",
@@ -1233,7 +1198,7 @@ function Collapse(props) {
   });
 
   const direction = hide == true ? "right" : "down";
-  const icon = React$1__default.createElement("doric-collapse-icon", {
+  const icon = React__default.createElement("doric-collapse-icon", {
     class: `ion-md-arrow-drop${direction}`
   });
   const pass = {
@@ -1243,14 +1208,14 @@ function Collapse(props) {
 
   const toggle = () => toggleVis(hide === false);
 
-  return React$1__default.createElement("doric-collapse", _extends({}, pass, {
+  return React__default.createElement("doric-collapse", _extends({}, pass, {
     class: _classes
-  }), React$1__default.createElement("doric-collapse-label", null, icon, " ", text, React$1__default.createElement(CustomListeners, {
+  }), React__default.createElement("doric-collapse-label", null, icon, " ", text, React__default.createElement(CustomListeners, {
     onTap: toggle
-  })), React$1__default.createElement("div", null, children));
+  })), React__default.createElement("div", null, children));
 }
 
-var collapse = React$1.memo(Collapse);
+var collapse = React.memo(Collapse);
 
 const range = (start, end = null, step = 1, map = i => i) => {
   	if (typeof end === "function") {
@@ -1290,7 +1255,7 @@ const gridCSS = ssjs({
 }, {
   name: "doric-grid"
 });
-gridCSS.generate(theme);
+api.addCSS(gridCSS);
 
 function Grid(props) {
   const {
@@ -1310,7 +1275,7 @@ function Grid(props) {
     class: className,
     style
   };
-  return React$1__default.createElement("doric-grid", _, children);
+  return React__default.createElement("doric-grid", _, children);
 }
 
 const inputCSS = ssjs({
@@ -1326,7 +1291,7 @@ const inputCSS = ssjs({
       border: theme => `1px solid ${theme.input.border.normal}`,
       margin: 0,
       "&.disabled": {
-        backgroundColor: "lightgray",
+        backgroundColor: theme => theme.input.disabled,
         "& input": {
           backgroundColor: "transparent"
         }
@@ -1377,7 +1342,7 @@ const inputCSS = ssjs({
         borderColor: theme => theme.input.border.focus
       },
       "&[disabled]": {
-        backgroundColor: "lightgray"
+        backgroundColor: theme => theme.input.disabled
       }
     },
     "& fieldset.minimal input": {
@@ -1389,14 +1354,14 @@ const inputCSS = ssjs({
         borderColor: theme => theme.input.border.focus
       },
       "&[disabled]": {
-        backgroundColor: "lightgray"
+        backgroundColor: theme => theme.input.disabled
       }
     }
   }
 }, {
   name: "doric-input"
 });
-inputCSS.generate(theme);
+api.addCSS(inputCSS);
 
 function Input(props) {
   const {
@@ -1425,10 +1390,10 @@ function Input(props) {
     })
   };
   const inputProps = {};
-  const inputRef = React$1.useRef();
+  const inputRef = React.useRef();
 
   if (forwardedRef !== undefined) {
-    React$1.useImperativeHandle(forwardedRef, () => ({
+    React.useImperativeHandle(forwardedRef, () => ({
       focus() {
         inputRef.current.focus();
       },
@@ -1440,7 +1405,7 @@ function Input(props) {
     }));
   }
 
-  return React$1__default.createElement("doric-input", wrapProps, React$1__default.createElement("fieldset", fieldProps, React$1__default.createElement("legend", null, label), React$1__default.createElement("input", _extends({
+  return React__default.createElement("doric-input", wrapProps, React__default.createElement("fieldset", fieldProps, React__default.createElement("legend", null, label), React__default.createElement("input", _extends({
     ref: inputRef,
     type: type,
     disabled: disabled,
@@ -1449,11 +1414,11 @@ function Input(props) {
   }, inputProps))));
 }
 
-const forward = React$1.forwardRef((props, ref) => React$1__default.createElement(Input, _extends({}, props, {
+const forward = React.forwardRef((props, ref) => React__default.createElement(Input, _extends({}, props, {
   forwardedRef: ref
 })));
 forward.displayName = "Input";
-var Input$1 = React$1.memo(forward);
+var Input$1 = React.memo(forward);
 
 let imageCSS = ssjs({
   "doric-image": {
@@ -1474,7 +1439,7 @@ let imageCSS = ssjs({
 }, {
   name: "doric-image"
 });
-imageCSS.generate(theme);
+api.addCSS(imageCSS);
 
 function Image(props) {
   const {
@@ -1495,9 +1460,9 @@ function Image(props) {
     height,
     ...border
   };
-  return React$1__default.createElement("doric-image", _extends({}, passThrough, {
+  return React__default.createElement("doric-image", _extends({}, passThrough, {
     style: style
-  }), React$1__default.createElement("img", {
+  }), React__default.createElement("img", {
     src: source
   }));
 }
@@ -1513,6 +1478,9 @@ const panelCSS = ssjs({
     top: 0,
     left: 0,
     borderRadius: 4,
+    borderWidth: theme => theme.panel.border.width,
+    borderStyle: theme => theme.panel.border.style,
+    borderColor: theme => theme.panel.border.color,
     "& doric-title": {
       padding: 0,
       margin: 0,
@@ -1544,29 +1512,49 @@ const panelCSS = ssjs({
 }, {
   name: "doric-panel"
 });
-panelCSS.generate(theme);
+api.addCSS(panelCSS);
 
 function Panel({
   children,
   ...passThrough
 }) {
-  const list = React$1.Children.toArray(children);
+  const list = React.Children.toArray(children);
   const normal = list.filter(child => child.type !== Panel.media);
   const media = list.find(child => child.type === Panel.media);
-  return React$1__default.createElement("doric-panel", passThrough, React$1__default.createElement("doric-panel-content", null, normal), media);
+  return React__default.createElement("doric-panel", passThrough, React__default.createElement("doric-panel-content", null, normal), media);
 }
 
 Panel.top = function PanelTop(props) {
-  return React$1__default.createElement("doric-panel-top", props);
+  return React__default.createElement("doric-panel-top", props);
 };
 
 Panel.actions = function PanelBottom(props) {
-  return React$1__default.createElement("doric-panel-actions", props);
+  return React__default.createElement("doric-panel-actions", props);
 };
 
 Panel.media = function PanelMedia(props) {
-  return React$1__default.createElement("doric-panel-media", props);
+  return React__default.createElement("doric-panel-media", props);
 };
+
+const dividerCSS = ssjs({
+  "doric-divider": {
+    display: "block",
+    margin: "2px 0px",
+    borderTopWidth: theme => theme.divider.size,
+    borderTopStyle: theme => theme.divider.style,
+    borderTopColor: theme => theme.divider.color
+  }
+}, {
+  name: "doric-divider"
+});
+api.addCSS(dividerCSS);
+
+function Divider({
+  children,
+  ...props
+}) {
+  return React__default.createElement("doric-divider", props);
+}
 
 const titleCSS = ssjs({
   "doric-title": {
@@ -1592,27 +1580,36 @@ const titleCSS = ssjs({
     "& > doric-image": {
       float: "left",
       marginRight: 8
+    },
+    "& doric-divider": {
+      borderTopColor: theme => theme.divider.color,
+      borderTopStyle: "solid",
+      borderTopWidth: 1,
+      marginRight: -12,
+      marginLeft: -12
     }
   }
 }, {
   name: "doric-title"
 });
-titleCSS.generate(theme);
+api.addCSS(titleCSS);
 
 function Title(props) {
   const {
     title,
     subtitle,
-    profile,
+    divider,
     image
   } = props;
-  const imageElem = image !== undefined ? React$1__default.createElement(Image, {
+  const imageElem = image !== undefined ? React__default.createElement(Image, {
     width: 45,
     height: 45,
     round: true,
     source: image
   }) : null;
-  return React$1__default.createElement("doric-title", null, imageElem, React$1__default.createElement("div", null, title), React$1__default.createElement("span", null, subtitle));
+  return React__default.createElement("doric-title", {
+    divider: divider
+  }, imageElem, React__default.createElement("div", null, title), React__default.createElement("span", null, subtitle), divider && React__default.createElement(Divider, null));
 }
 
 const dialogCSS = ssjs({
@@ -1654,7 +1651,7 @@ const dialogCSS = ssjs({
 }, {
   name: "doric-dialog"
 });
-dialogCSS.generate(theme);
+api.addCSS(dialogCSS);
 const rootElem = document.createElement("dialog-root");
 
 if (document.readyState === "loading") {
@@ -1701,8 +1698,8 @@ const dialog = (() => {
 })();
 
 function DialogList() {
-  const [dialogs, updateDialogs] = React$1.useState(dialog.current());
-  React$1.useEffect(() => {
+  const [dialogs, updateDialogs] = React.useState(dialog.current());
+  React.useEffect(() => {
     dialog.subscribe(updateDialogs);
   }, []);
   return dialogs.map(info => {
@@ -1725,17 +1722,17 @@ function DialogList() {
       }
     };
 
-    return React.createElement("dialog-container", {
+    return React__default.createElement("dialog-container", {
       key: props.id
-    }, React.createElement(CustomListeners, {
+    }, React__default.createElement(CustomListeners, {
       onTap: tapClose
-    }), React.createElement("dialog-window", windowProps, React.createElement(Component, _extends({}, props, {
+    }), React__default.createElement("dialog-window", windowProps, React__default.createElement(Component, _extends({}, props, {
       close: close
     }))));
   });
 }
 
-ReactDOM.render(React.createElement(DialogList, null), rootElem);
+ReactDOM.render(React__default.createElement(DialogList, null), rootElem);
 
 const deepMerge = (first, second) => {
   if (Array.isArray(first) === true) {
@@ -1782,9 +1779,9 @@ const publicAPI = {
 function AlertDialog(props) {
   const close = () => props.close();
 
-  return React.createElement(Panel, null, React.createElement(Title, {
+  return React__default.createElement(Panel, null, React__default.createElement(Title, {
     title: props.title
-  }), React.createElement("div", null, props.message), React.createElement(Panel.actions, null, React.createElement(Button$1, {
+  }), React__default.createElement("div", null, props.message), React__default.createElement(Panel.actions, null, React__default.createElement(Button$1, {
     text: "OK",
     block: true,
     primary: true,
@@ -1798,15 +1795,15 @@ function ConfirmDialog(props) {
 
   const cancel = () => props.close(false);
 
-  return React.createElement(Panel, null, React.createElement(Title, {
+  return React__default.createElement(Panel, null, React__default.createElement(Title, {
     title: props.title
-  }), React.createElement("div", null, props.message), React.createElement(Panel.actions, null, React.createElement(Button$1, {
+  }), React__default.createElement("div", null, props.message), React__default.createElement(Panel.actions, null, React__default.createElement(Button$1, {
     text: "Cancel",
     block: true,
     danger: true,
     flat: true,
     onTap: cancel
-  }), React.createElement(Button$1, {
+  }), React__default.createElement(Button$1, {
     text: "OK",
     block: true,
     primary: true,
@@ -1815,11 +1812,11 @@ function ConfirmDialog(props) {
   })));
 }
 
-const useMounts$1 = effect => React$1.useEffect(effect, []);
+const useMounts$1 = effect => React.useEffect(effect, []);
 
 function PromptDialog(props) {
-  const inputRef = React$1.useRef();
-  const [value, updateValue] = React$1.useState(props.value);
+  const inputRef = React.useRef();
+  const [value, updateValue] = React.useState(props.value);
 
   const submit = evt => {
     evt.preventDefault();
@@ -1831,23 +1828,23 @@ function PromptDialog(props) {
   const update = evt => updateValue(evt.target.value);
 
   useMounts$1(() => inputRef.current.focus());
-  return React.createElement(Panel, null, React.createElement(Title, {
+  return React__default.createElement(Panel, null, React__default.createElement(Title, {
     title: props.title
-  }), React.createElement("form", {
+  }), React__default.createElement("form", {
     onSubmit: submit
-  }, React.createElement(Input$1, {
+  }, React__default.createElement(Input$1, {
     type: props.type,
     label: props.label,
     value: value,
     onChange: update,
     ref: inputRef
-  })), React.createElement(Panel.actions, null, React.createElement(Button$1, {
+  })), React__default.createElement(Panel.actions, null, React__default.createElement(Button$1, {
     text: "Cancel",
     block: true,
     danger: true,
     flat: true,
     onTap: cancel
-  }), React.createElement(Button$1, {
+  }), React__default.createElement(Button$1, {
     text: "OK",
     block: true,
     primary: true,
@@ -1896,7 +1893,7 @@ let labelCSS = ssjs({
 }, {
   name: "doric-label"
 });
-labelCSS.generate(theme);
+api.addCSS(labelCSS);
 
 function Label(props) {
   const {
@@ -1913,7 +1910,7 @@ function Label(props) {
     optional
   });
 
-  return React$1__default.createElement("doric-label", _extends({}, passThrough, {
+  return React__default.createElement("doric-label", _extends({}, passThrough, {
     class: _class
   }), text);
 }
@@ -1948,23 +1945,23 @@ const listCSS = ssjs({
 }, {
   name: "doric-list"
 });
-listCSS.generate(theme);
-const DefaultListRenderer = React$1.memo(function ListItem({
+api.addCSS(listCSS);
+const DefaultListRenderer = React.memo(function ListItem({
   item,
   propName
 }) {
   return item[propName];
 });
-const ListItem = React$1.memo(function ListItem(props) {
+const ListItem = React.memo(function ListItem(props) {
   const {
     index,
     item,
     propName,
     ItemRenderer
   } = props;
-  return React$1__default.createElement("doric-list-item", {
+  return React__default.createElement("doric-list-item", {
     "data-index": index
-  }, React$1__default.createElement(ItemRenderer, {
+  }, React__default.createElement(ItemRenderer, {
     item: item,
     propName: propName
   }));
@@ -1999,10 +1996,10 @@ function List(props) {
     onItemHold === null || onItemHold === void 0 ? void 0 : onItemHold(evt);
   };
 
-  return React$1__default.createElement("doric-list", passThrough, React$1__default.createElement("doric-list-header", null, title), React$1__default.createElement("doric-list-content", null, React$1__default.createElement(CustomListeners, {
+  return React__default.createElement("doric-list", passThrough, React__default.createElement("doric-list-header", null, title), React__default.createElement("doric-list-content", null, React__default.createElement(CustomListeners, {
     onTap: onTap,
     onHold: onHold
-  }), React$1__default.createElement(Layout, null, items.map((item, index) => React$1__default.createElement(ListItem, _extends({
+  }), React__default.createElement(Layout, null, items.map((item, index) => React__default.createElement(ListItem, _extends({
     key: index
   }, {
     item,
@@ -2012,7 +2009,7 @@ function List(props) {
   }))))));
 }
 
-var list = React$1.memo(List);
+var list = React.memo(List);
 
 const navbarCSS = ssjs({
   "doric-navbar": {
@@ -2028,21 +2025,24 @@ const navbarCSS = ssjs({
     zIndex: "+100",
     textAlign: "center",
     fontSize: 20,
-    boxShadow: "0px 2px 3px 1px rgba(0, 0, 0, 0.35)"
+    boxShadow: "0px 2px 3px 1px rgba(0, 0, 0, 0.35)",
+    borderWidth: theme => theme.navbar.border.width,
+    borderStyle: theme => theme.navbar.border.style,
+    borderColor: theme => theme.navbar.border.color
   }
 }, {
   name: "doric-navbar"
 });
-navbarCSS.generate(theme);
+api.addCSS(navbarCSS);
 
 function Navbar(props) {
   const {
     title
   } = props;
-  return React$1__default.createElement("doric-navbar", null, title);
+  return React__default.createElement("doric-navbar", null, title);
 }
 
-var navbar = React$1.memo(Navbar);
+var navbar = React.memo(Navbar);
 
 const radioCSS = ssjs({
   "doric-radio": {
@@ -2059,22 +2059,22 @@ const radioCSS = ssjs({
 }, {
   name: "doric-radio"
 });
-radioCSS.generate(theme);
-const DefaultRadioRenderer = React$1.memo(function RadioItem({
+api.addCSS(radioCSS);
+const DefaultRadioRenderer = React.memo(function RadioItem({
   item,
   propName,
   selected
 }) {
-  const icon = React$1__default.createElement("ion-icon", {
+  const icon = React__default.createElement("ion-icon", {
     class: `ion-md-radio-button-${selected === true ? "on" : "off"}`
   });
-  return React$1__default.createElement("div", {
+  return React__default.createElement("div", {
     style: {
       padding: 8
     }
   }, icon, "\xA0", item[propName]);
 });
-const RadioItem = React$1.memo(function RadioItem(props) {
+const RadioItem = React.memo(function RadioItem(props) {
   const {
     index,
     item,
@@ -2082,9 +2082,9 @@ const RadioItem = React$1.memo(function RadioItem(props) {
     ItemRenderer,
     selected
   } = props;
-  return React$1__default.createElement("doric-radio-item", {
+  return React__default.createElement("doric-radio-item", {
     "data-index": index
-  }, React$1__default.createElement(ItemRenderer, {
+  }, React__default.createElement(ItemRenderer, {
     item: item,
     propName: propName,
     selected: selected
@@ -2115,9 +2115,9 @@ function Radio(props) {
   };
 
   const selectedIndex = options.findIndex(item => item.value === value);
-  return React$1__default.createElement("doric-radio", passThrough, React$1__default.createElement(CustomListeners, {
+  return React__default.createElement("doric-radio", passThrough, React__default.createElement(CustomListeners, {
     onTap: onTap
-  }), React$1__default.createElement(Layout, null, options.map((item, index) => React$1__default.createElement(RadioItem, _extends({
+  }), React__default.createElement(Layout, null, options.map((item, index) => React__default.createElement(RadioItem, _extends({
     key: index
   }, {
     item,
@@ -2129,7 +2129,7 @@ function Radio(props) {
   })))));
 }
 
-var radio = React$1.memo(Radio);
+var radio = React.memo(Radio);
 
 let selectCSS = ssjs({
   "doric-select": {
@@ -2141,11 +2141,9 @@ let selectCSS = ssjs({
       padding: 0,
       paddingRight: 1,
       backgroundColor: theme => theme.select.bg.color,
+      color: theme => theme.select.text.color,
       border: theme => `1px solid ${theme.select.border.color}`,
       margin: 0,
-      "&.disabled": {
-        backgroundColor: theme => theme.select.disabled
-      },
       "&.boring": {
         borderWidth: 0,
         backgroundColor: "transparent"
@@ -2170,6 +2168,9 @@ let selectCSS = ssjs({
         borderColor: theme => theme.input.border.focus
       }
     },
+    "&.disabled select": {
+      color: theme => theme.select.disabled
+    },
     "& select": {
       display: "block",
       width: "100%",
@@ -2177,13 +2178,15 @@ let selectCSS = ssjs({
       padding: "0px 12px",
       borderWidth: 0,
       margin: 0,
-      backgroundColor: "transparent",
+      backgroundColor: theme => theme.select.bg.color,
+      color: theme => theme.select.text.color,
       height: 40,
       "&:focus": {
         outline: "none"
       },
-      "&.disabled": {
-        backgroundColor: "transparent"
+      "&[disabled]": {
+        backgroundColor: "transparent",
+        color: theme => theme.select.disabled
       }
     },
     "& fieldset.boring select": {
@@ -2198,7 +2201,7 @@ let selectCSS = ssjs({
 }, {
   name: "doric-select"
 });
-selectCSS.generate(theme);
+api.addCSS(selectCSS);
 
 function Select(props) {
   const {
@@ -2227,7 +2230,7 @@ function Select(props) {
 
     if (Array.isArray(item) === false) {
       lookup[key] = item.value;
-      mapped.push(React$1__default.createElement("option", {
+      mapped.push(React__default.createElement("option", {
         key: key,
         value: key
       }, item.label));
@@ -2236,7 +2239,7 @@ function Select(props) {
         realValue = key;
       }
     } else {
-      mapped.push(React$1__default.createElement("optgroup", {
+      mapped.push(React__default.createElement("optgroup", {
         label: item[0],
         key: index
       }, item.slice(1).map((_item, _index) => {
@@ -2247,7 +2250,7 @@ function Select(props) {
           realValue = _key;
         }
 
-        return React$1__default.createElement("option", {
+        return React__default.createElement("option", {
           key: _key,
           value: _key
         }, _item.label);
@@ -2260,7 +2263,7 @@ function Select(props) {
     };
   }, {
     lookup: {},
-    mapped: placeholder !== undefined ? [React$1__default.createElement("option", {
+    mapped: placeholder !== undefined ? [React__default.createElement("option", {
       key: "-1",
       hidden: true,
       value: "-1"
@@ -2284,10 +2287,10 @@ function Select(props) {
     },
     disabled
   };
-  return React$1__default.createElement("doric-select", wrapProps, React$1__default.createElement("fieldset", labelProps, React$1__default.createElement("legend", null, label), React$1__default.createElement("select", selectProps, mapped)));
+  return React__default.createElement("doric-select", wrapProps, React__default.createElement("fieldset", labelProps, React__default.createElement("legend", null, label), React__default.createElement("select", selectProps, mapped)));
 }
 
-var select = React$1.memo(Select);
+var select = React.memo(Select);
 
 const climbDOM$2 = (start, func) => {
   let current = start;
@@ -2321,11 +2324,11 @@ const removeGlobalListener$1 = (name, elem) => {
   globalListeners$1[type].delete(elem);
 };
 
-const useMounts$2 = effect => React$1.useEffect(effect, []);
+const useMounts$2 = effect => React.useEffect(effect, []);
 
 function CustomListeners$1(props) {
-  const element = React$1.useRef(null);
-  const pRef = React$1.useRef(props);
+  const element = React.useRef(null);
+  const pRef = React.useRef(props);
   pRef.current = props;
   useMounts$2(() => {
     const types = Object.keys(props);
@@ -2345,7 +2348,7 @@ function CustomListeners$1(props) {
       }
     };
   });
-  return React$1__default.createElement("doric-custom-listeners", {
+  return React__default.createElement("doric-custom-listeners", {
     ref: element
   });
 }
@@ -2363,8 +2366,8 @@ const tabCSS = ssjs({
         fontSize: 14,
         ...tappable(theme => theme.highlightColor),
         "&[active='true']": {
-          color: theme => theme.tabs.selected,
-          borderBottomColor: theme => theme.tabs.selected
+          color: theme => theme.tabs.selected.text,
+          borderBottomColor: theme => theme.tabs.selected.border
         }
       }
     },
@@ -2378,7 +2381,7 @@ const tabCSS = ssjs({
 }, {
   name: "doric-tabs"
 });
-tabCSS.generate(theme);
+api.addCSS(tabCSS);
 
 function Tabs(props) {
   const {
@@ -2389,9 +2392,9 @@ function Tabs(props) {
     children: _children,
     ...passThrough
   } = props;
-  const children = React$1.Children.toArray(_children);
+  const children = React.Children.toArray(_children);
   const tabLabelList = children.map(child => child.props.label);
-  const tabs = children.map((child, index) => React$1__default.createElement("doric-tab", {
+  const tabs = children.map((child, index) => React__default.createElement("doric-tab", {
     selected: index === selectedTab,
     key: index
   }, child.props.children));
@@ -2403,14 +2406,14 @@ function Tabs(props) {
     onTabChange === null || onTabChange === void 0 ? void 0 : onTabChange(evt);
   };
 
-  const tabLabels = tabLabelList.map((label, index) => React$1__default.createElement("doric-tab-label", {
+  const tabLabels = tabLabelList.map((label, index) => React__default.createElement("doric-tab-label", {
     key: index,
     "data-index": index,
     active: index == selectedTab
   }, label));
-  return React$1__default.createElement("doric-tabs", passThrough, React$1__default.createElement("doric-tab-bar", null, React$1__default.createElement(CustomListeners$1, {
+  return React__default.createElement("doric-tabs", passThrough, React__default.createElement("doric-tab-bar", null, React__default.createElement(CustomListeners$1, {
     onTap: tabChange
-  }), React$1__default.createElement(Grid, {
+  }), React__default.createElement(Grid, {
     cols: cols
   }, tabLabels)), displayed);
 }
@@ -2445,18 +2448,18 @@ const textareaCSS = ssjs({
       "&:focus": {
         borderColor: theme => theme.input.border.focus
       }
-    },
-    "& fieldset.disabled:not(.boring):not(.minimal)": {
-      backgroundColor: "lightgray"
-    },
-    "& fieldset.disabled textarea": {
-      backgroundColor: "lightgray"
-    }
+    } // "& fieldset.disabled:not(.boring):not(.minimal)": {
+    //     backgroundColor: "lightgray"
+    // },
+    // "& fieldset.disabled textarea": {
+    //     backgroundColor: "lightgray"
+    // }
+
   }
 }, {
-  name: "doric-tetarea"
+  name: "doric-textarea"
 });
-textareaCSS.generate(theme);
+api.addCSS(textareaCSS);
 
 function Textarea(props) {
   let {
@@ -2486,8 +2489,8 @@ function Textarea(props) {
   const taStyle = {
     height
   };
-  const taRef = React$1.useRef();
-  React$1.useImperativeHandle(taRef, () => ({
+  const taRef = React.useRef();
+  React.useImperativeHandle(taRef, () => ({
     focus() {
       inputRef.current.focus();
     },
@@ -2497,7 +2500,7 @@ function Textarea(props) {
     }
 
   }));
-  return React$1__default.createElement("doric-input", wrapProps, React$1__default.createElement("fieldset", fieldProps, React$1__default.createElement("legend", null, label), React$1__default.createElement("textarea", {
+  return React__default.createElement("doric-input", wrapProps, React__default.createElement("fieldset", fieldProps, React__default.createElement("legend", null, label), React__default.createElement("textarea", {
     ref: taRef,
     disabled: disabled,
     value: value,
@@ -2506,12 +2509,13 @@ function Textarea(props) {
   })));
 }
 
-const forward$1 = React$1.forwardRef((props, ref) => React$1__default.createElement(Textarea, _extends({}, props, {
+const forward$1 = React.forwardRef((props, ref) => React__default.createElement(Textarea, _extends({}, props, {
   forwardedRef: ref
 })));
 forward$1.displayName = "Textarea";
-var textarea = React$1.memo(forward$1);
+var textarea = React.memo(forward$1);
 
+var _window$doricTheme;
 let mainCSS = ssjs({
   "*": {
     boxSizing: "border-box",
@@ -2520,17 +2524,12 @@ let mainCSS = ssjs({
       outline: "none"
     }
   },
-  ...(query.mobile === false ? {
-    "*:focus": {
-      outline: theme => theme.focusOutline
-    }
-  } : {}),
   "html body": {
     padding: 0,
     margin: 0,
     width: "100%",
     height: "100%",
-    fontFamily: "Roboto",
+    fontFamily: theme => theme.fontFamily,
     backgroundColor: theme => theme.body.bg.color,
     color: theme => theme.body.text.color
   },
@@ -2546,7 +2545,42 @@ let mainCSS = ssjs({
 }, {
   name: "main-style"
 });
-mainCSS.generate(theme);
+api.addCSS(mainCSS);
+api.generateCSS((_window$doricTheme = window.doricTheme) !== null && _window$doricTheme !== void 0 ? _window$doricTheme : {});
+const {
+  generateCSS
+} = api;
+const tronBlue = "#6fc0ba";
+const tronText = "#00cfda";
+const tronTheme = {
+  "fontFamily": "Inconsolata, monospace",
+  "focusOutline": "2px solid #6fc0ba",
+  "highlightColor": ssjs.color(255, 255, 255, 0.4),
+  "color.primary": "#00aaad",
+  "body.bg.color": "black",
+  "body.text.color": "white",
+  "divider.color": tronBlue,
+  "input.bg.color": "black",
+  "input.border.normal": "white",
+  "input.border.focus": tronBlue,
+  "input.disabled": "#111",
+  "input.text.color": "white",
+  "navbar.bg.color": "black",
+  "navbar.border.width": "0px 0px 1px 0px",
+  "navbar.border.style": "solid",
+  "navbar.border.color": tronBlue,
+  "navbar.text.color": tronText,
+  "panel.bg.color": "black",
+  "panel.border.width": 2,
+  "panel.border.style": "solid",
+  "panel.border.color": tronBlue,
+  "select.bg.color": "black",
+  "select.border.color": "white",
+  "select.text.color": "white",
+  "tabs.selected.text": tronText,
+  "tabs.selected.border": tronBlue,
+  "title.bg.color": "black"
+};
 
 exports.Button = Button$1;
 exports.Checkbox = checkbox;
@@ -2566,3 +2600,5 @@ exports.Tab = Tab;
 exports.Tabs = Tabs;
 exports.Textarea = textarea;
 exports.Title = Title;
+exports.generateCSS = generateCSS;
+exports.tronTheme = tronTheme;

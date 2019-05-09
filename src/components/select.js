@@ -1,7 +1,7 @@
 import React, {memo} from "react";
 import ssjs from "ssjs";
 
-import theme from "@theme";
+import api from "@api";
 import {tappable, classes} from "@css";
 
 let selectCSS = ssjs(
@@ -15,11 +15,9 @@ let selectCSS = ssjs(
                 padding: 0,
                 paddingRight: 1,
                 backgroundColor: theme => theme.select.bg.color,
+                color: theme => theme.select.text.color,
                 border: theme => `1px solid ${theme.select.border.color}`,
                 margin: 0,
-                "&.disabled": {
-                    backgroundColor: theme => theme.select.disabled
-                },
                 "&.boring": {
                     borderWidth: 0,
                     backgroundColor: "transparent"
@@ -44,6 +42,9 @@ let selectCSS = ssjs(
                     borderColor: (theme) => theme.input.border.focus
                 }
             },
+            "&.disabled select": {
+                color: theme => theme.select.disabled
+            },
             "& select": {
                 display: "block",
                 width: "100%",
@@ -51,13 +52,15 @@ let selectCSS = ssjs(
                 padding: "0px 12px",
                 borderWidth: 0,
                 margin: 0,
-                backgroundColor: "transparent",
+                backgroundColor: theme => theme.select.bg.color,
+                color: theme => theme.select.text.color,
                 height: 40,
                 "&:focus": {
                     outline: "none"
                 },
-                "&.disabled": {
-                    backgroundColor: "transparent"
+                "&[disabled]": {
+                    backgroundColor: "transparent",
+                    color: theme => theme.select.disabled
                 }
             },
             "& fieldset.boring select": {
@@ -72,7 +75,7 @@ let selectCSS = ssjs(
     },
     {name: "doric-select"}
 );
-selectCSS.generate(theme);
+api.addCSS(selectCSS);
 
 function Select(props) {
     const {

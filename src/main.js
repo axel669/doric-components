@@ -22,6 +22,7 @@ import Textarea from "@components/textarea.js";
 import Title from "@components/title.js";
 
 import {query} from "@css";
+import api from "@api";
 
 let mainCSS = ssjs(
     {
@@ -32,20 +33,12 @@ let mainCSS = ssjs(
                 outline: "none"
             }
         },
-        ...(query.mobile === false
-            ? {
-                "*:focus": {
-                    outline: theme => theme.focusOutline
-                }
-            }
-            : {}
-        ),
         "html body": {
             padding: 0,
             margin: 0,
             width: "100%",
             height: "100%",
-            fontFamily: "Roboto",
+            fontFamily: theme => theme.fontFamily,
             backgroundColor: theme => theme.body.bg.color,
             color: theme => theme.body.text.color
         },
@@ -61,7 +54,42 @@ let mainCSS = ssjs(
     },
     {name: "main-style"}
 );
-mainCSS.generate(theme);
+api.addCSS(mainCSS);
+
+api.generateCSS(window.doricTheme ?? {});
+const {generateCSS} = api;
+
+const tronBlue = "#6fc0ba";
+const tronText = "#00cfda";
+const tronTheme = {
+    "fontFamily": "Inconsolata, monospace",
+    "focusOutline": "2px solid #6fc0ba",
+    "highlightColor": ssjs.color(255, 255, 255, 0.4),
+    "color.primary": "#00aaad",
+    "body.bg.color": "black",
+    "body.text.color": "white",
+    "divider.color": tronBlue,
+    "input.bg.color": "black",
+    "input.border.normal": "white",
+    "input.border.focus": tronBlue,
+    "input.disabled": "#111",
+    "input.text.color": "white",
+    "navbar.bg.color": "black",
+    "navbar.border.width": "0px 0px 1px 0px",
+    "navbar.border.style": "solid",
+    "navbar.border.color": tronBlue,
+    "navbar.text.color": tronText,
+    "panel.bg.color": "black",
+    "panel.border.width": 2,
+    "panel.border.style": "solid",
+    "panel.border.color": tronBlue,
+    "select.bg.color": "black",
+    "select.border.color": "white",
+    "select.text.color": "white",
+    "tabs.selected.text": tronText,
+    "tabs.selected.border": tronBlue,
+    "title.bg.color": "black",
+};
 
 export {
     Button,
@@ -81,5 +109,7 @@ export {
     Tab,
     Tabs,
     Textarea,
-    Title
+    Title,
+    generateCSS,
+    tronTheme
 };

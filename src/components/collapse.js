@@ -1,7 +1,7 @@
 import React, {useState, memo} from "react";
 import ssjs from "ssjs";
 
-import theme from "@theme";
+import api from "@api";
 import {tappable, classes} from "@css";
 
 import CustomListeners from "@components/customListeners.js"
@@ -39,7 +39,7 @@ let collapseCSS = ssjs(
     },
     {name: "doric-collapse"}
 )
-collapseCSS.generate(theme);
+api.addCSS(collapseCSS);
 
 function Collapse(props) {
     const [hide, toggleVis] = useState(true);

@@ -1,7 +1,7 @@
 import React, {memo} from "react";
 import ssjs from "ssjs";
 
-import theme from "@theme";
+import api from "@api";
 import {tappable, classes} from "@css";
 
 import CustomListeners from "@components/customListeners.js"
@@ -45,7 +45,7 @@ const checkboxCSS = ssjs(
     },
     {name: "doric-checkbox"}
 );
-checkboxCSS.generate(theme);
+api.addCSS(checkboxCSS);
 
 function Checkbox(props) {
     const {

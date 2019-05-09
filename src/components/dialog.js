@@ -1,4 +1,4 @@
-import {useState, useEffect, useImperativeHandle, useRef} from "react";
+import React, {useState, useEffect, useImperativeHandle, useRef} from "react";
 import ReactDOM from "react-dom";
 import ssjs from "ssjs";
 
@@ -9,7 +9,7 @@ import Input from "@components/input.js";
 import Panel from "@components/panel.js";
 import Title from "@components/title.js";
 
-import theme from "@theme";
+import api from "@api";
 
 const dialogCSS = ssjs(
     {
@@ -51,7 +51,7 @@ const dialogCSS = ssjs(
     },
     {name: "doric-dialog"}
 );
-dialogCSS.generate(theme);
+api.addCSS(dialogCSS);
 
 const rootElem = document.createElement("dialog-root");
 

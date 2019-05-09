@@ -1,7 +1,7 @@
 import React, {Children} from "react"
 import ssjs from "ssjs";
 
-import theme from "@theme";
+import api from "@api";
 import {tappable, classes} from "@css";
 
 import CustomListeners from "@components/CustomListeners.js";
@@ -21,8 +21,8 @@ const tabCSS = ssjs(
                     fontSize: 14,
                     ...tappable((theme) => theme.highlightColor),
                     "&[active='true']": {
-                        color: (theme) => theme.tabs.selected,
-                        borderBottomColor: (theme) => theme.tabs.selected
+                        color: (theme) => theme.tabs.selected.text,
+                        borderBottomColor: (theme) => theme.tabs.selected.border
                     }
                 }
             },
@@ -36,7 +36,7 @@ const tabCSS = ssjs(
     },
     {name: "doric-tabs"}
 );
-tabCSS.generate(theme);
+api.addCSS(tabCSS);
 
 function Tabs(props) {
     const {
