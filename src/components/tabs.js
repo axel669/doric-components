@@ -10,10 +10,23 @@ import Grid from "@components/grid.js";
 const tabCSS = ssjs(
     {
         "doric-tabs": {
-            display: "block",
+            display: "flex",
+            flexDirection: "column",
+            "&.horizontal": {
+                flexDirection: "row",
+                "& doric-tab-bar": {
+                    flexDirection: "column",
+                    "& doric-tab-label": {
+                        flexGrow: "unset"
+                    }
+                }
+            },
             "& doric-tab-bar": {
-                display: "block",
+                display: "flex",
+                userSelect: "none",
                 "& doric-tab-label": {
+                    flexGrow: 1,
+                    minWidth: "20%",
                     display: "inline-block",
                     padding: "8px 0px",
                     textAlign: "center",
@@ -27,7 +40,8 @@ const tabCSS = ssjs(
                 }
             },
             "& doric-tab": {
-                display: "block"
+                display: "block",
+                flexGrow: 1
             }
         },
         "doric-tab[selected='false']": {
@@ -41,7 +55,8 @@ api.addCSS(tabCSS);
 function Tabs(props) {
     const {
         selectedTab = 0, cols = 4, onTabChange,
-        liveHidden = false,
+        liveHidden = false, className = null,
+        horizontal = false, tabBarWidth = null,
         children: _children,
         ...passThrough
     } = props;
@@ -72,13 +87,15 @@ function Tabs(props) {
             {label}
         </doric-tab-label>
     );
+    const classNames = classes({
+        className,
+        horizontal
+    })
 
-    return <doric-tabs {...passThrough}>
-        <doric-tab-bar>
+    return <doric-tabs {...passThrough} class={classNames}>
+        <doric-tab-bar style={{width: tabBarWidth}}>
             <CustomListeners onTap={tabChange} />
-            <Grid cols={cols}>
-                {tabLabels}
-            </Grid>
+            {tabLabels}
         </doric-tab-bar>
         {displayed}
     </doric-tabs>

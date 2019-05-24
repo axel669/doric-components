@@ -21,6 +21,9 @@ const buttonSheet = ssjs(
             margin: 2,
             transition: "background-color 150ms linear",
             cursor: "pointer",
+            "& ion-icon:not(:last-child)::before": {
+                marginRight: 4
+            },
             "&:hover": {
                 cursor: "pointer"
             },
@@ -80,7 +83,7 @@ function Button(props) {
 
     return <doric-button {...wrapProps}>
         <CustomListeners onTap={onTap} />
-        {iconElem}{text}{children}
+        {iconElem}{text ? <span>{text}</span> : null}{children}
     </doric-button>
 };
 

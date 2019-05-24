@@ -983,6 +983,9 @@ const buttonSheet = ssjs({
     margin: 2,
     transition: "background-color 150ms linear",
     cursor: "pointer",
+    "& ion-icon:not(:last-child)::before": {
+      marginRight: 4
+    },
     "&:hover": {
       cursor: "pointer"
     },
@@ -1046,7 +1049,7 @@ function Button(props) {
   };
   return React__default.createElement("doric-button", wrapProps, React__default.createElement(CustomListeners, {
     onTap: onTap
-  }), iconElem, text, children);
+  }), iconElem, text ? React__default.createElement("span", null, text) : null, children);
 }
 var Button$1 = React.memo(Button);
 
@@ -2390,10 +2393,23 @@ function CustomListeners$1(props) {
 
 const tabCSS = ssjs({
   "doric-tabs": {
-    display: "block",
+    display: "flex",
+    flexDirection: "column",
+    "&.horizontal": {
+      flexDirection: "row",
+      "& doric-tab-bar": {
+        flexDirection: "column",
+        "& doric-tab-label": {
+          flexGrow: "unset"
+        }
+      }
+    },
     "& doric-tab-bar": {
-      display: "block",
+      display: "flex",
+      userSelect: "none",
       "& doric-tab-label": {
+        flexGrow: 1,
+        minWidth: "20%",
         display: "inline-block",
         padding: "8px 0px",
         textAlign: "center",
@@ -2407,7 +2423,8 @@ const tabCSS = ssjs({
       }
     },
     "& doric-tab": {
-      display: "block"
+      display: "block",
+      flexGrow: 1
     }
   },
   "doric-tab[selected='false']": {
@@ -2424,6 +2441,9 @@ function Tabs(props) {
     cols = 4,
     onTabChange,
     liveHidden = false,
+    className = null,
+    horizontal = false,
+    tabBarWidth = null,
     children: _children,
     ...passThrough
   } = props;
@@ -2446,11 +2466,19 @@ function Tabs(props) {
     "data-index": index,
     active: index == selectedTab
   }, label));
-  return React__default.createElement("doric-tabs", passThrough, React__default.createElement("doric-tab-bar", null, React__default.createElement(CustomListeners$1, {
+  const classNames = classes({
+    className,
+    horizontal
+  });
+  return React__default.createElement("doric-tabs", _extends({}, passThrough, {
+    class: classNames
+  }), React__default.createElement("doric-tab-bar", {
+    style: {
+      width: tabBarWidth
+    }
+  }, React__default.createElement(CustomListeners$1, {
     onTap: tabChange
-  }), React__default.createElement(Grid, {
-    cols: cols
-  }, tabLabels)), displayed);
+  }), tabLabels), displayed);
 }
 
 function Tab(props) {

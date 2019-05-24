@@ -140,60 +140,25 @@
                 )
             );
 
+            const gentab = n => <doric.Tab label={`Tab ${n}`}>
+                <div style={{height: 180, backgroundColor: 'green'}}>Content {n}</div>
+            </doric.Tab>
+
             return <div>
                 <doric.Navbar title="Navbar Test" />
 
-                <doric.Grid cols={3}>
-                    <doric.Button text="Button" onTap={() => doric.generateCSS(doric.tronTheme)}/>
-                    <doric.Button text="Button" primary />
-                    <doric.Button text="Button" secondary />
-                    <doric.Button text="Button" danger />
-                    <doric.Button text="Button" accent />
-                    <doric.Button text="Button" flat primary onTap={alert} />
-                    <doric.Button text="Button" flat secondary onTap={confirm} />
-                    <doric.Button text="Button" flat danger onTap={prompt} />
-                    <doric.Button text="Button" flat accent />
-                </doric.Grid>
+                <doric.Button text="Wat" icon="ion-md-trash" />
+                <doric.Button icon="ion-md-trash" />
 
-                <doric.Checkbox text="Checkbox" />
-                <doric.Checkbox checked text="Checkbox" />
-
-                <doric.Collapse text="Collapse">
-                    Demo
-                </doric.Collapse>
-
-                <doric.Input label="Input" value="Demo" />
-                <doric.Input label="Input" value="Demo" boring />
-                <doric.Input label="Input" value="Demo" minimal />
-                <doric.Input label="Input" value="Demo" disabled />
-                <doric.Input label="Input" value="Demo" disabled boring />
-                <doric.Input label="Input" value="Demo" disabled minimal />
-
-                <doric.List items={options} />
-
-                <doric.Panel>
-                    <doric.Title image="images/cthulhu.jpg" title="Woah" />
-                    <div>wat</div>
-                    <doric.Panel.actions>
-                        <doric.Button text="Wat" block />
-                    </doric.Panel.actions>
-                    <doric.Panel.media>
-                        <doric.Image width="100%" height="100%" source="images/anon.jpg" />
-                    </doric.Panel.media>
-                </doric.Panel>
-
-                <doric.Panel>
-                    <doric.Title title="Divider?" divider />
-                    Testing content
-                </doric.Panel>
-
-                <doric.Select options={options} label="Select" placeholder="Demo" />
-                <doric.Select options={options} label="Select" placeholder="Demo" boring />
-                <doric.Select options={options} label="Select" placeholder="Demo" disabled />
-
-                <doric.Tabs cols={3}>
-                    <doric.Tab label="Tab 1" />
-                    <doric.Tab label="Tab 2" />
+                <doric.Tabs selectedTab={tab} onTabChange={changeTab}>
+                    {gentab(0)}
+                    {gentab(1)}
+                    {gentab(2)}
+                </doric.Tabs>
+                <doric.Tabs selectedTab={tab} onTabChange={changeTab} horizontal tabBarWidth={320}>
+                    {gentab(0)}
+                    {gentab(1)}
+                    {gentab(2)}
                 </doric.Tabs>
             </div>
         }
