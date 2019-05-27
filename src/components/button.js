@@ -80,9 +80,15 @@ function Button(props) {
         style,
         class: css.classes(rest)
     };
+    const wrappedOnTap = evt => {
+        if (disabled === true) {
+            return
+        }
+        onTap(evt)
+    }
 
     return <doric-button {...wrapProps}>
-        <CustomListeners onTap={onTap} />
+        <CustomListeners onTap={wrappedOnTap} />
         {iconElem}{text ? <span>{text}</span> : null}{children}
     </doric-button>
 };

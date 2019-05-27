@@ -1045,8 +1045,17 @@ function Button(props) {
     style,
     class: classes(rest)
   };
+
+  const wrappedOnTap = evt => {
+    if (disabled === true) {
+      return;
+    }
+
+    onTap(evt);
+  };
+
   return React__default.createElement("doric-button", wrapProps, React__default.createElement(CustomListeners, {
-    onTap: onTap
+    onTap: wrappedOnTap
   }), iconElem, text ? React__default.createElement("span", null, text) : null, children);
 }
 var Button$1 = React.memo(Button);
