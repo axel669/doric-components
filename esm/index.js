@@ -1123,7 +1123,7 @@ function Checkbox(props) {
   }));
 }
 
-var checkbox = memo(Checkbox);
+var Checkbox$1 = memo(Checkbox);
 
 function _extends() {
   _extends = Object.assign || function (target) {
@@ -1212,7 +1212,7 @@ function Collapse(props) {
   })), React.createElement("div", null, children));
 }
 
-var collapse = memo(Collapse);
+var Collapse$1 = memo(Collapse);
 
 const range = (start, end = null, step = 1, map = i => i) => {
   	if (typeof end === "function") {
@@ -2040,7 +2040,7 @@ function List(props) {
   }))))));
 }
 
-var list = memo(List);
+var List$1 = memo(List);
 
 const navbarCSS = ssjs({
   "doric-navbar": {
@@ -2073,7 +2073,7 @@ function Navbar(props) {
   return React.createElement("doric-navbar", null, title);
 }
 
-var navbar = memo(Navbar);
+var Navbar$1 = memo(Navbar);
 
 const radioCSS = ssjs({
   "doric-radio": {
@@ -2160,7 +2160,7 @@ function Radio(props) {
   })))));
 }
 
-var radio = memo(Radio);
+var Radio$1 = memo(Radio);
 
 let selectCSS = ssjs({
   "doric-select": {
@@ -2321,7 +2321,7 @@ function Select(props) {
   return React.createElement("doric-select", wrapProps, React.createElement("fieldset", labelProps, React.createElement("legend", null, label), React.createElement("select", selectProps, mapped)));
 }
 
-var select = memo(Select);
+var Select$1 = memo(Select);
 
 const climbDOM$2 = (start, func) => {
   let current = start;
@@ -2569,7 +2569,7 @@ const forward$1 = forwardRef((props, ref) => React.createElement(Textarea, _exte
   forwardedRef: ref
 })));
 forward$1.displayName = "Textarea";
-var textarea = memo(forward$1);
+var Textarea$1 = memo(forward$1);
 
 var _window$doricTheme;
 let mainCSS = ssjs({
@@ -2637,5 +2637,33 @@ const tronTheme = {
   "tabs.selected.border": tronBlue,
   "title.bg.color": "black"
 };
+var main = {
+  Button: Button$1,
+  Checkbox: Checkbox$1,
+  Collapse: Collapse$1,
+  CustomListeners,
+  Dialog: publicAPI,
+  Grid,
+  Image,
+  Input: Input$1,
+  Label,
+  List: List$1,
+  Navbar: Navbar$1,
+  Panel,
+  Radio: Radio$1,
+  Select: Select$1,
+  Tab,
+  Tabs,
+  Textarea: Textarea$1,
+  Title,
+  generateCSS,
+  tronTheme,
 
-export { Button$1 as Button, checkbox as Checkbox, collapse as Collapse, CustomListeners, publicAPI as Dialog, Grid, Image, Input$1 as Input, Label, list as List, navbar as Navbar, Panel, radio as Radio, select as Select, Tab, Tabs, textarea as Textarea, Title, generateCSS, tronTheme };
+  get theme() {
+    return { ...baseTheme
+    };
+  }
+
+};
+
+export default main;

@@ -1,7 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var React = require('react');
@@ -1130,7 +1128,7 @@ function Checkbox(props) {
   }));
 }
 
-var checkbox = React.memo(Checkbox);
+var Checkbox$1 = React.memo(Checkbox);
 
 function _extends() {
   _extends = Object.assign || function (target) {
@@ -1219,7 +1217,7 @@ function Collapse(props) {
   })), React__default.createElement("div", null, children));
 }
 
-var collapse = React.memo(Collapse);
+var Collapse$1 = React.memo(Collapse);
 
 const range = (start, end = null, step = 1, map = i => i) => {
   	if (typeof end === "function") {
@@ -2047,7 +2045,7 @@ function List(props) {
   }))))));
 }
 
-var list = React.memo(List);
+var List$1 = React.memo(List);
 
 const navbarCSS = ssjs({
   "doric-navbar": {
@@ -2080,7 +2078,7 @@ function Navbar(props) {
   return React__default.createElement("doric-navbar", null, title);
 }
 
-var navbar = React.memo(Navbar);
+var Navbar$1 = React.memo(Navbar);
 
 const radioCSS = ssjs({
   "doric-radio": {
@@ -2167,7 +2165,7 @@ function Radio(props) {
   })))));
 }
 
-var radio = React.memo(Radio);
+var Radio$1 = React.memo(Radio);
 
 let selectCSS = ssjs({
   "doric-select": {
@@ -2328,7 +2326,7 @@ function Select(props) {
   return React__default.createElement("doric-select", wrapProps, React__default.createElement("fieldset", labelProps, React__default.createElement("legend", null, label), React__default.createElement("select", selectProps, mapped)));
 }
 
-var select = React.memo(Select);
+var Select$1 = React.memo(Select);
 
 const climbDOM$2 = (start, func) => {
   let current = start;
@@ -2576,7 +2574,7 @@ const forward$1 = React.forwardRef((props, ref) => React__default.createElement(
   forwardedRef: ref
 })));
 forward$1.displayName = "Textarea";
-var textarea = React.memo(forward$1);
+var Textarea$1 = React.memo(forward$1);
 
 var _window$doricTheme;
 let mainCSS = ssjs({
@@ -2644,24 +2642,33 @@ const tronTheme = {
   "tabs.selected.border": tronBlue,
   "title.bg.color": "black"
 };
+var main = {
+  Button: Button$1,
+  Checkbox: Checkbox$1,
+  Collapse: Collapse$1,
+  CustomListeners,
+  Dialog: publicAPI,
+  Grid,
+  Image,
+  Input: Input$1,
+  Label,
+  List: List$1,
+  Navbar: Navbar$1,
+  Panel,
+  Radio: Radio$1,
+  Select: Select$1,
+  Tab,
+  Tabs,
+  Textarea: Textarea$1,
+  Title,
+  generateCSS,
+  tronTheme,
 
-exports.Button = Button$1;
-exports.Checkbox = checkbox;
-exports.Collapse = collapse;
-exports.CustomListeners = CustomListeners;
-exports.Dialog = publicAPI;
-exports.Grid = Grid;
-exports.Image = Image;
-exports.Input = Input$1;
-exports.Label = Label;
-exports.List = list;
-exports.Navbar = navbar;
-exports.Panel = Panel;
-exports.Radio = radio;
-exports.Select = select;
-exports.Tab = Tab;
-exports.Tabs = Tabs;
-exports.Textarea = textarea;
-exports.Title = Title;
-exports.generateCSS = generateCSS;
-exports.tronTheme = tronTheme;
+  get theme() {
+    return { ...baseTheme
+    };
+  }
+
+};
+
+module.exports = main;

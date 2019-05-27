@@ -67,5 +67,5 @@ const merge = (base, updates) => update(
 
 const theme = merge({}, baseTheme);
 
-export {merge};
+export {merge, baseTheme};
 export default theme;

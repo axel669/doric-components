@@ -1,4 +1,4 @@
-var doric = (function (exports, React, ReactDOM) {
+var doric = (function (React, ReactDOM) {
     'use strict';
 
     var React__default = 'default' in React ? React['default'] : React;
@@ -1126,7 +1126,7 @@ var doric = (function (exports, React, ReactDOM) {
       }));
     }
 
-    var checkbox = React.memo(Checkbox);
+    var Checkbox$1 = React.memo(Checkbox);
 
     function _extends() {
       _extends = Object.assign || function (target) {
@@ -1215,7 +1215,7 @@ var doric = (function (exports, React, ReactDOM) {
       })), React__default.createElement("div", null, children));
     }
 
-    var collapse = React.memo(Collapse);
+    var Collapse$1 = React.memo(Collapse);
 
     const range = (start, end = null, step = 1, map = i => i) => {
       	if (typeof end === "function") {
@@ -2043,7 +2043,7 @@ var doric = (function (exports, React, ReactDOM) {
       }))))));
     }
 
-    var list = React.memo(List);
+    var List$1 = React.memo(List);
 
     const navbarCSS = ssjs({
       "doric-navbar": {
@@ -2076,7 +2076,7 @@ var doric = (function (exports, React, ReactDOM) {
       return React__default.createElement("doric-navbar", null, title);
     }
 
-    var navbar = React.memo(Navbar);
+    var Navbar$1 = React.memo(Navbar);
 
     const radioCSS = ssjs({
       "doric-radio": {
@@ -2163,7 +2163,7 @@ var doric = (function (exports, React, ReactDOM) {
       })))));
     }
 
-    var radio = React.memo(Radio);
+    var Radio$1 = React.memo(Radio);
 
     let selectCSS = ssjs({
       "doric-select": {
@@ -2324,7 +2324,7 @@ var doric = (function (exports, React, ReactDOM) {
       return React__default.createElement("doric-select", wrapProps, React__default.createElement("fieldset", labelProps, React__default.createElement("legend", null, label), React__default.createElement("select", selectProps, mapped)));
     }
 
-    var select = React.memo(Select);
+    var Select$1 = React.memo(Select);
 
     const climbDOM$2 = (start, func) => {
       let current = start;
@@ -2572,7 +2572,7 @@ var doric = (function (exports, React, ReactDOM) {
       forwardedRef: ref
     })));
     forward$1.displayName = "Textarea";
-    var textarea = React.memo(forward$1);
+    var Textarea$1 = React.memo(forward$1);
 
     var _window$doricTheme;
     let mainCSS = ssjs({
@@ -2640,28 +2640,35 @@ var doric = (function (exports, React, ReactDOM) {
       "tabs.selected.border": tronBlue,
       "title.bg.color": "black"
     };
+    var main = {
+      Button: Button$1,
+      Checkbox: Checkbox$1,
+      Collapse: Collapse$1,
+      CustomListeners,
+      Dialog: publicAPI,
+      Grid,
+      Image,
+      Input: Input$1,
+      Label,
+      List: List$1,
+      Navbar: Navbar$1,
+      Panel,
+      Radio: Radio$1,
+      Select: Select$1,
+      Tab,
+      Tabs,
+      Textarea: Textarea$1,
+      Title,
+      generateCSS,
+      tronTheme,
 
-    exports.Button = Button$1;
-    exports.Checkbox = checkbox;
-    exports.Collapse = collapse;
-    exports.CustomListeners = CustomListeners;
-    exports.Dialog = publicAPI;
-    exports.Grid = Grid;
-    exports.Image = Image;
-    exports.Input = Input$1;
-    exports.Label = Label;
-    exports.List = list;
-    exports.Navbar = navbar;
-    exports.Panel = Panel;
-    exports.Radio = radio;
-    exports.Select = select;
-    exports.Tab = Tab;
-    exports.Tabs = Tabs;
-    exports.Textarea = textarea;
-    exports.Title = Title;
-    exports.generateCSS = generateCSS;
-    exports.tronTheme = tronTheme;
+      get theme() {
+        return { ...baseTheme
+        };
+      }
 
-    return exports;
+    };
 
-}({}, React, ReactDOM));
+    return main;
+
+}(React, ReactDOM));

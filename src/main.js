@@ -1,7 +1,7 @@
 import "gesturesjs";
 import ssjs from "ssjs";
 
-import theme from "@theme";
+import theme, {baseTheme} from "@theme";
 
 import Button from "@components/button.js";
 import Checkbox from "@components/checkbox.js";
@@ -91,7 +91,7 @@ const tronTheme = {
     "title.bg.color": "black",
 };
 
-export {
+export default {
     Button,
     Checkbox,
     Collapse,
@@ -111,5 +111,8 @@ export {
     Textarea,
     Title,
     generateCSS,
-    tronTheme
+    tronTheme,
+    get theme() {
+        return {...baseTheme}
+    }
 };
