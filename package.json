@@ -1,6 +1,6 @@
 {
   "name": "@axel669/doric-components",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Set of react components",
   "main": "index.js",
   "scripts": {
