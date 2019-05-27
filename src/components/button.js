@@ -81,7 +81,7 @@ function Button(props) {
         class: css.classes(rest)
     };
     const wrappedOnTap = evt => {
-        if (disabled === true) {
+        if (rest.disabled === true) {
             return
         }
         onTap(evt)

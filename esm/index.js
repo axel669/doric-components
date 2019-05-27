@@ -1042,7 +1042,7 @@ function Button(props) {
   };
 
   const wrappedOnTap = evt => {
-    if (disabled === true) {
+    if (rest.disabled === true) {
       return;
     }
 

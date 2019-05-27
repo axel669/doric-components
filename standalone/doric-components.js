@@ -1045,7 +1045,7 @@ var doric = (function (React, ReactDOM) {
       };
 
       const wrappedOnTap = evt => {
-        if (disabled === true) {
+        if (rest.disabled === true) {
           return;
         }
 
