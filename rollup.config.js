@@ -9,7 +9,7 @@ export default {
     input: "./src/main.js",
     output: [
         {
-            file: "./standalone/doric-components.js",
+            file: "./cdn/doric-components.js",
             format: "iife",
             name: "doric",
             globals: {
@@ -18,7 +18,7 @@ export default {
             }
         },
         {
-            file: "./index.js",
+            file: "./doric-components.js",
             format: "cjs"
         },
         {
@@ -42,7 +42,8 @@ export default {
         commonjs()
     ],
     external: [
-        'react',
-        'react-dom'
+        "react",
+        "react-dom",
+        "styled-components",
     ]
 }
