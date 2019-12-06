@@ -47,22 +47,12 @@
         )
         </script>
         <script type="text/custom">
-        const GlobalStyle = styled.createGlobalStyle`
-            body, html {
-                padding: 0px;
-                margin: 0px;
-                width: 100%;
-                height: 100%;
-                background-color: #222;
-                color: white;
-            }
-        `
         function CustomBase(sourceProps) {
             const {className, tag, ...props} = sourceProps
             if (tag === undefined) {
                 console.warn("No tag provided")
             }
-            const Tag = tag || "div"
+            const Tag = tag || "custom-tag"
             return <Tag {...props} class={className} />
         }
         const styledCustom = styled(CustomBase)
@@ -70,78 +60,124 @@
         const Theme = React.createContext(null)
         const propVariant = (name, options) =>
             props => options[props[name] || "default"]
-
-        const Clickable = styledCustom`
-            position: relative;
-            user-select: none;
-            cursor: pointer;
-            transition: background-color 250ms;
-            &.gjs-tap-active {
-                transition: none;
-            }
-            &.gjs-tap-active::after {
-                content: "";
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-color: rgba(${props => props.theme.hlColor}, 0.25);
-            }
-        `
-
-        const typeBGColor = propVariant(
-            "type",
-            {
-                normal: "black",
-                primary: "blue",
-            }
-        )
-        const ButtonBase = styled(Clickable)`
-            display: inline-flex;
-            padding: 4px 12px;
-            border: 1px solid cyan;
-            border-radius: 4px;
-            align-items: center;
-            justify-content: center;
-
-            background-color: ${typeBGColor};
-        `
-        function Button(source) {
-            const props = {
-                type: "normal",
-                theme: darkTheme,
-                ...source,
-            }
-            console.log(props)
-            return <ButtonBase {...props} tag="doric-button" />
-        }
-
+        const propToggle = (name, tru, fals) =>
+            props => props[name] ? tru : fals
         const themed = Component =>
             props => {
                 const theme = React.useContext(Theme)
                 return <Component {...props} theme={theme} />
             }
 
+        const GlobalStyle = themed(styled.createGlobalStyle`
+            body, html {
+                padding: 0px;
+                margin: 0px;
+                width: 100%;
+                height: 100%;
+                font-family: ${props => props.theme.font}, Arial;
+                background-color: ${props => props.theme.mainBG};
+                color: ${props => props.theme.textColor};
+            }
+            * {
+                box-sizing: border-box;
+            }
+        `)
+
+        const Clickable = styledCustom`
+            position: relative;
+            user-select: none;
+            cursor: pointer;
+            &::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                transition: background-color 250ms linear;
+            }
+            &.gjs-tap-active::after {
+                transition: none;
+                background-color: ${props => props.theme.hlColor};
+            }
+        `
+
+        const colorationVariant = {
+            normal: styled.css`
+                background-color: ${props => props.theme.mainBG};
+                color: ${props => props.theme.textColor};
+            `,
+            primary: styled.css`
+                background-color: ${props => props.theme.blue};
+                color: ${props => props.theme.lightText};
+                &.gjs-tap-active::after {
+                    background-color: ${props => props.theme.hlInvert};
+                }
+            `,
+        }
+        const displayVariant = propToggle("block", "flex", "inline-flex")
+        const raisedVariant = propToggle(
+            "raised",
+            "boxShadow: 2px 2px 3px rgba(0, 0, 0, 0.4);",
+            ""
+        )
+        const ButtonBase = styled(Clickable)`
+            padding: 4px 12px;
+            border-radius: 4px;
+            align-items: center;
+            justify-content: center;
+            margin: 4px;
+            overflow: hidden;
+
+            display: ${displayVariant};
+            ${raisedVariant}
+            ${props => colorationVariant[props.type || "normal"]}
+        `
+        function Button(source) {
+            const props = {
+                type: "normal",
+                theme: lightTheme,
+                ...source,
+            }
+            return <ButtonBase {...props} tag="doric-button" />
+        }
+
         const BButton = themed(Button)
 
         const darkTheme = {
-            hlColor: "255, 255, 255",
+            font: "Inconsolata",
+            hlColor: "rgba(255, 255, 255, 0.25)",
+            hlInvert: "rgba(0, 0, 0, 0.25)",
+            mainBG: "#222",
+            textColor: "white",
+            invertText: "black",
+            lightText: "white",
+            darkText: "black",
+            blue: "#1d62d5",
+            lightblue: "#2196F3",
         }
         const lightTheme = {
-            hlColor: "0, 0, 0",
+            font: "Roboto",
+            hlColor: "rgba(0, 0, 0, 0.25)",
+            hlInvert: "rgba(255, 255, 255, 0.25)",
+            mainBG: "white",
+            textColor: "black",
+            invertText: "white",
+            lightText: "white",
+            darkText: "black",
+            blue: "#1d62d5",
+            lightblue: "#2196F3",
         }
 
         function App() {
-            const [theme, setTheme] = React.useState(lightTheme)
-
-            const swapTheme = () => setTheme(darkTheme)
+            const [theme, setTheme] = React.useState(darkTheme)
+            // const [theme, setTheme] = React.useState(lightTheme)
 
             return <Theme.Provider value={theme}>
                 <GlobalStyle />
-                <BButton onClick={swapTheme}>Wat</BButton>
+                <BButton style={{width:100, height: 100}}>Wat</BButton>
                 <Button type="primary">Wat</Button>
-                <Button>Wat</Button>
+                <Button block>Wat</Button>
             </Theme.Provider>
         }
         ReactDOM.render(
