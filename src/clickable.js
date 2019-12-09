@@ -1,16 +1,17 @@
 import customStyled from "./custom-tag-base"
 
-const Clickable = customStyled`
+const Clickable = tag => customStyled(tag).css`
     position: relative;
     user-select: none;
     cursor: pointer;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     &::after {
         content: "";
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        top: -1px;
+        left: -1px;
+        right: -1px;
+        bottom: -1px;
         transition: background-color 250ms linear;
     }
     &.gjs-tap-active:not([disabled="true"])::after {

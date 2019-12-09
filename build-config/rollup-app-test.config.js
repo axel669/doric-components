@@ -4,6 +4,7 @@ import resolve from "rollup-plugin-node-resolve"
 import commonjs from "rollup-plugin-commonjs"
 import babel from "rollup-plugin-babel"
 import alias from "@axel669/rollup-plugin-path-alias"
+import postcss from "rollup-plugin-postcss"
 
 export default {
     input: "./src/app-test.js",
@@ -26,15 +27,17 @@ export default {
             "@components": "components",
         }),
         babel({
-            exclude: "node_modules/**",
-            include: "src/**/*.js",
+            // exclude: "node_modules/**",
+            // include: "src/**/*.js",
             babelrc: false,
             plugins: [
                 "@babel/plugin-transform-react-jsx",
                 "@babel/plugin-proposal-optional-chaining",
                 "@babel/plugin-proposal-nullish-coalescing-operator",
+                "transform-inline-environment-variables",
             ],
         }),
+        postcss(),
         resolve(),
         commonjs(),
     ],

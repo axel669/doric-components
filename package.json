@@ -35,7 +35,10 @@
   },
   "homepage": "https://github.com/axel669/doric-components#readme",
   "dependencies": {
+    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-postcss": "^2.0.3",
+    "simplebar-react": "^2.0.10",
     "styled-components": "^4.4.1"
   },
   "files": [

@@ -1,14 +1,12 @@
 import React from "react"
 import styled from "styled-components"
 
-const CustomBase = (sourceProps) => {
-    const {className, tag, ...props} = sourceProps
-    if (tag === undefined) {
-        console.warn("No tag provided")
+const customStyled = Tag => {
+    const base = source => {
+        const {className, theme, ...props} = source
+        return <Tag class={className} {...props} />
     }
-    const Tag = tag || "custom-tag"
-    return <Tag {...props} class={className} />
+    return {css: styled(base)}
 }
-const customStyled = styled(CustomBase)
 
 export default customStyled
