@@ -5,6 +5,24 @@
   ReactDOM = ReactDOM && ReactDOM.hasOwnProperty('default') ? ReactDOM['default'] : ReactDOM;
   var styled__default = 'default' in styled ? styled['default'] : styled;
 
+  function _extends() {
+    _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    return _extends.apply(this, arguments);
+  }
+
   function styleInject(css, ref) {
     if (ref === void 0) ref = {};
     var insertAt = ref.insertAt;
@@ -36,24 +54,6 @@
 
   var css = "[data-simplebar]{position:relative;flex-direction:column;flex-wrap:wrap;justify-content:flex-start;align-content:flex-start;align-items:flex-start}.simplebar-wrapper{overflow:hidden;width:inherit;height:inherit;max-width:inherit;max-height:inherit}.simplebar-mask{direction:inherit;position:absolute;overflow:hidden;padding:0;margin:0;left:0;top:0;bottom:0;right:0;width:auto!important;height:auto!important;z-index:0}.simplebar-offset{direction:inherit!important;box-sizing:inherit!important;resize:none!important;position:absolute;top:0;left:0;bottom:0;right:0;padding:0;margin:0;-webkit-overflow-scrolling:touch}.simplebar-content-wrapper{direction:inherit;box-sizing:border-box!important;position:relative;display:block;height:100%;width:auto;visibility:visible;max-width:100%;max-height:100%;scrollbar-width:none}.simplebar-content-wrapper::-webkit-scrollbar,.simplebar-hide-scrollbar::-webkit-scrollbar{display:none}.simplebar-content:after,.simplebar-content:before{content:' ';display:table}.simplebar-placeholder{max-height:100%;max-width:100%;width:100%;pointer-events:none}.simplebar-height-auto-observer-wrapper{box-sizing:inherit!important;height:100%;width:100%;max-width:1px;position:relative;float:left;max-height:1px;overflow:hidden;z-index:-1;padding:0;margin:0;pointer-events:none;flex-grow:inherit;flex-shrink:0;flex-basis:0}.simplebar-height-auto-observer{box-sizing:inherit;display:block;opacity:0;position:absolute;top:0;left:0;height:1000%;width:1000%;min-height:1px;min-width:1px;overflow:hidden;pointer-events:none;z-index:-1}.simplebar-track{z-index:1;position:absolute;right:0;bottom:0;pointer-events:none;overflow:hidden}[data-simplebar].simplebar-dragging .simplebar-content{pointer-events:none;user-select:none;-webkit-user-select:none}[data-simplebar].simplebar-dragging .simplebar-track{pointer-events:all}.simplebar-scrollbar{position:absolute;right:2px;width:7px;min-height:10px}.simplebar-scrollbar:before{position:absolute;content:'';background:#000;border-radius:7px;left:0;right:0;opacity:0;transition:opacity .2s linear}.simplebar-scrollbar.simplebar-visible:before{opacity:.5;transition:opacity 0s linear}.simplebar-track.simplebar-vertical{top:0;width:11px}.simplebar-track.simplebar-vertical .simplebar-scrollbar:before{top:2px;bottom:2px}.simplebar-track.simplebar-horizontal{left:0;height:11px}.simplebar-track.simplebar-horizontal .simplebar-scrollbar:before{height:100%;left:2px;right:2px}.simplebar-track.simplebar-horizontal .simplebar-scrollbar{right:auto;left:0;top:2px;height:7px;min-height:0;min-width:10px;width:auto}[data-simplebar-direction=rtl] .simplebar-track.simplebar-vertical{right:auto;left:0}.hs-dummy-scrollbar-size{direction:rtl;position:fixed;opacity:0;visibility:hidden;height:500px;width:500px;overflow-y:hidden;overflow-x:scroll}.simplebar-hide-scrollbar{position:fixed;left:0;visibility:hidden;overflow-y:scroll;scrollbar-width:none}\n";
   styleInject(css);
-
-  function _extends() {
-    _extends = Object.assign || function (target) {
-      for (var i = 1; i < arguments.length; i++) {
-        var source = arguments[i];
-
-        for (var key in source) {
-          if (Object.prototype.hasOwnProperty.call(source, key)) {
-            target[key] = source[key];
-          }
-        }
-      }
-
-      return target;
-    };
-
-    return _extends.apply(this, arguments);
-  }
 
   const customStyled = Tag => {
     const base = source => {
@@ -167,7 +167,8 @@
     darkText: "black",
     blue: "#1d62d5",
     lightblue: "#2196F3",
-    primary: "#1d62d5",
+    // primary: "#1d62d5",
+    primary: "#2196F3",
     danger: "#F44336",
     secondary: "#128f12",
     lightBorder: "#2196F3"
@@ -374,6 +375,10 @@
         font-family: ${props => props.theme.font}, Arial;
         background-color: ${props => props.theme.mainBG};
         color: ${props => props.theme.textColor};
+    }
+    input {
+        color: ${props => props.theme.textColor};
+        font-family: ${props => props.theme.font}, Arial;
     }
     * {
         box-sizing: border-box;
@@ -6374,6 +6379,172 @@
     flex-wrap: wrap;
 `;
 
+  const InputBase = styled__default.input`
+    position: relative;
+    border-width: 0px;
+    padding: 8px 4px;
+    margin-bottom: 2px;
+    background-color: transparent;
+    width: 100%;
+
+    &:focus {
+        outline: none;
+    }
+`;
+  const InputLabel = styled__default.label`
+    input:focus + & {
+        color: ${props => props.theme.primary};
+    }
+`;
+  const BottomBorder = styled__default.div`
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    height: 2px;
+    background-color: lightgray;
+
+    &::after {
+        position: absolute;
+        content: "";
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        background-color: ${props => props.theme.primary};
+        transform: scaleX(0);
+        transition: transform 100ms linear;
+    }
+    input:focus ~ &::after {
+        transform: scaleX(1);
+    }
+`;
+  const InputContiner = styled__default.div`
+    display: flex;
+    flex-direction: column-reverse;
+    position: relative;
+`;
+  const Input = {
+    Text: themedComponent(source => {
+      const {
+        theme,
+        label,
+        ...props
+      } = source;
+      const id = Math.random().toString().slice(2).toString(16);
+      return React__default.createElement(InputContiner, {
+        theme: theme
+      }, React__default.createElement(InputBase, _extends({
+        theme: theme,
+        type: "text",
+        id: id
+      }, props)), React__default.createElement(InputLabel, {
+        theme: theme,
+        htmlFor: id
+      }, label), React__default.createElement(BottomBorder, {
+        theme: theme
+      }));
+    }, "Themed(TextInput)")
+  };
+  const Fieldset = styled__default.fieldset`
+    border-radius: 4px;
+    padding: 2px;
+    border: 1px solid ${props => props.theme.softText};
+
+    &:focus-within {
+        border-color: ${props => props.theme.primary};
+    }
+`;
+  const Legend = styled__default.legend`
+    font-size: 14px;
+    margin-left: 4px;
+    color: ${props => props.normal};
+
+    input:focus + & {
+        color: ${props => {
+  var _props$focus;
+
+  return (_props$focus = props.focus) !== null && _props$focus !== void 0 ? _props$focus : props.theme.primary;
+}};
+    }
+`;
+  const I2B = styled__default.div`
+    position: relative;
+    display: flex;
+    padding: 0px;
+    margin: 2px;
+`;
+  const I2I = styled__default.input`
+    padding: 24px 8px 8px 8px;
+    margin: 0px;
+    border-width: 0px;
+    z-index: +1;
+    background-color: transparent;
+    width: 100%;
+
+    &:focus {
+        outline: none;
+    }
+`;
+  const typeVariant = propToggle("bordered", "16px", "4px");
+  const I2L = styled__default.label`
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    padding-top: 2px;
+
+    padding-left: ${typeVariant};
+
+    input:focus + & {
+        color: ${props => props.theme.primary};
+    }
+`;
+  const I2Bo = styled__default.div`
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    height: 2px;
+
+    background-color: ${props => props.theme.softText};
+
+    &::after {
+        position: absolute;
+        content: "";
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        background-color: ${props => props.theme.primary};
+        transform: scaleX(0);
+        transition: transform 200ms linear;
+    }
+
+    input:focus ~ &::after {
+        transform: scaleX(1);
+    }
+`;
+  const I2F = styled__default.fieldset`
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin: 0px;
+    padding: 0px;
+    padding-left: 13px;
+    border: 1px solid ${props => props.theme.softText};
+    border-radius: 4px;
+
+    input:focus ~ & {
+        border-color: ${props => props.theme.primary};
+    }
+`;
+  const I2FL = styled__default.legend`
+    padding: 2px;
+    color: transparent;
+`;
+
   function App() {
 
     const [theme, cycleTheme] = useCycle(themes);
@@ -6384,20 +6555,84 @@
       type: "title"
     }, i)));
 
-    const onTabChange = evt => changeTab(evt.newTab);
-
     return React__default.createElement(AppWrapper, null, React__default.createElement(doric.ThemeProvider, {
       value: theme
     }, React__default.createElement(doric.GlobalStyle, null), React__default.createElement(CornerDiv, null, React__default.createElement(doric.Button, {
       color: "primary",
       onTap: cycleTheme
-    }, "Cycle Theme")), React__default.createElement(doric.Tabs, {
+    }, "Cycle Theme")), React__default.createElement(Input.Text, {
+      label: "Test"
+    }), React__default.createElement(Fieldset, {
+      theme: theme
+    }, React__default.createElement(InputBase, {
+      type: "text",
+      theme: theme
+    }), React__default.createElement(Legend, {
+      theme: theme,
+      focus: "red"
+    }, "Testing")), React__default.createElement(I2B, {
+      theme: theme
+    }, React__default.createElement(I2I, {
+      theme: theme,
+      type: "text"
+    }), React__default.createElement(I2L, {
+      theme: theme,
+      bordered: false
+    }, "Label"), React__default.createElement(I2Bo, {
+      theme: theme
+    })), React__default.createElement("div", {
       style: {
-        height: 320
-      },
-      selectedTab: currentTab,
-      onChange: onTabChange
-    }, tabs)));
+        display: "grid",
+        gridTemplateColumns: "repeat(2, 1fr)"
+      }
+    }, React__default.createElement(I2B, {
+      theme: theme,
+      style: {
+        height: 100
+      }
+    }, React__default.createElement(I2I, {
+      theme: theme,
+      type: "text"
+    }), React__default.createElement(I2L, {
+      theme: theme,
+      bordered: true
+    }, "Label"), React__default.createElement(I2F, {
+      theme: theme
+    }, React__default.createElement(I2FL, {
+      theme: theme
+    }, "Label"))), React__default.createElement(I2B, {
+      theme: theme
+    }, React__default.createElement(I2I, {
+      theme: theme,
+      type: "text"
+    }), React__default.createElement(I2L, {
+      theme: theme,
+      bordered: false
+    }, "Label"), React__default.createElement(I2Bo, {
+      theme: theme
+    })), React__default.createElement(I2B, {
+      theme: theme
+    }, React__default.createElement(I2I, {
+      theme: theme,
+      type: "text"
+    }), React__default.createElement(I2L, {
+      theme: theme,
+      bordered: true
+    }, "Label"), React__default.createElement(I2F, {
+      theme: theme
+    }, React__default.createElement(I2FL, {
+      theme: theme
+    }, "Label"))), React__default.createElement(I2B, {
+      theme: theme
+    }, React__default.createElement(I2I, {
+      theme: theme,
+      type: "text"
+    }), React__default.createElement(I2L, {
+      theme: theme,
+      bordered: false
+    }, "Label"), React__default.createElement(I2Bo, {
+      theme: theme
+    })))));
   }
 
   ReactDOM.render(React__default.createElement(App, null), document.querySelector("app-root"));
