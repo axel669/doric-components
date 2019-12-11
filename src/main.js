@@ -12,6 +12,7 @@ import {
     CardMedia
 } from "./card.js"
 import GlobalStyle from "./global.js"
+import Input from "./input.js"
 import {
     Tab,
     Tabs
@@ -33,6 +34,7 @@ export default {
     CardMedia,
     FlatButton,
     GlobalStyle,
+    Input,
     Tab,
     Tabs,
     ThemeProvider,

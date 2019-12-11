@@ -4,7 +4,7 @@
   "description": "Set of react components",
   "main": "index.js",
   "scripts": {
-    "build": "rollup -c && rollup -c rollup.config.min.js",
+    "build": "rollup -c build-config/rollup-lib.config.js",
     "dist": "babel src -d dist --ignore \"src/main.js\" --config-file ./babel.dist.config.js",
     "min": "rollup -c rollup.config.min.js",
     "build-app-test": "rollup -c build-config/rollup-app-test.config.js"

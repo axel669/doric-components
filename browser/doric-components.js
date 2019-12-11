@@ -1,8 +1,7 @@
-(function (React, ReactDOM, styled) {
+var doric = (function (React, styled) {
   'use strict';
 
   var React__default = 'default' in React ? React['default'] : React;
-  ReactDOM = ReactDOM && ReactDOM.hasOwnProperty('default') ? ReactDOM['default'] : ReactDOM;
   var styled__default = 'default' in styled ? styled['default'] : styled;
 
   function styleInject(css, ref) {
@@ -6444,7 +6443,7 @@
         ${marginVariant}
     `, "Themed(Text)");
 
-  var doric = {
+  var main = {
     Button,
     Card,
     CardActionArea,
@@ -6463,62 +6462,6 @@
     themedComponent
   };
 
-  const themes = [lightTheme, darkTheme];
-  const AppWrapper = styled__default.div`
-    width: 100%;
-    margin: auto;
-    max-width: 640px;
-`;
-  const CornerDiv = styled__default.div`
-    position: fixed;
-    bottom: 0;
-    right: 0;
-`;
+  return main;
 
-  const useCycle = array => {
-    const [index, setIndex] = React.useState(0);
-    return [array[index], () => {
-      const newIndex = (index + 1) % array.length;
-      setIndex(newIndex);
-    }];
-  };
-
-  const CardGrid = styled__default.div`
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-`;
-
-  const modalRoot = document.createElement("div");
-  modalRoot.style.position = "absolute";
-  modalRoot.dataset.modalRoot = "";
-  document.body.appendChild(modalRoot);
-
-  const useInput = value => {
-    const [current, update] = React.useState(value);
-    return [current, evt => update(evt.target.value)];
-  };
-
-  function App() {
-
-    const [theme, cycleTheme] = useCycle(themes);
-    const [currentTab, changeTab] = React.useState(0);
-    const tabs = range(10, i => React__default.createElement(doric.Tab, {
-      label: `Tab #${i}`
-    }, React__default.createElement(doric.Text, {
-      type: "title"
-    }, i)));
-
-    const [text, updateText] = useInput("");
-    return React__default.createElement(AppWrapper, null, React__default.createElement(doric.ThemeProvider, {
-      value: theme
-    }, React__default.createElement(doric.GlobalStyle, null), React__default.createElement(CornerDiv, null, React__default.createElement(doric.Button, {
-      color: "primary",
-      onTap: cycleTheme
-    }, "Cycle Theme"))));
-  }
-
-  ReactDOM.render(React__default.createElement(App, null), document.querySelector("app-root"));
-
-}(React, ReactDOM, styled));
+}(React, styled));

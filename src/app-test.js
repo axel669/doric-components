@@ -5,7 +5,6 @@ import styled from "styled-components"
 
 import doric from "./main.js"
 import {darkTheme, lightTheme} from "./themes.js"
-import {themedComponent, propToggle} from "./helpers.js"
 
 const themes = [
     lightTheme,
@@ -152,166 +151,29 @@ function Cards() {
     </CardGrid>
 }
 
-const InputBase = styled.input`
-    position: relative;
-    border-width: 0px;
-    padding: 8px 4px;
-    margin-bottom: 2px;
-    background-color: transparent;
-    width: 100%;
-
-    &:focus {
-        outline: none;
+const debounce = (func, time) => {
+    let timeout = null
+    return (...args) => {
+        clearTimeout(timeout)
+        timeout = setTimeout(
+            () => func(...args),
+            time
+        )
     }
-`
-const InputLabel = styled.label`
-    input:focus + & {
-        color: ${props => props.theme.primary};
-    }
-`
-const BottomBorder = styled.div`
-    position: absolute;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    height: 2px;
-    background-color: lightgray;
-
-    &::after {
-        position: absolute;
-        content: "";
-        top: 0px;
-        bottom: 0px;
-        left: 0px;
-        right: 0px;
-        background-color: ${props => props.theme.primary};
-        transform: scaleX(0);
-        transition: transform 100ms linear;
-    }
-    input:focus ~ &::after {
-        transform: scaleX(1);
-    }
-`
-const InputContiner = styled.div`
-    display: flex;
-    flex-direction: column-reverse;
-    position: relative;
-`
-
-const Input = {
-    Text: themedComponent(
-        source => {
-            const {theme, label, ...props} = source
-            const id = Math.random().toString().slice(2).toString(16)
-
-            return <InputContiner theme={theme}>
-                <InputBase theme={theme} type="text" id={id} {...props} />
-                <InputLabel theme={theme} htmlFor={id}>
-                    {label}
-                </InputLabel>
-                <BottomBorder theme={theme} />
-            </InputContiner>
-        },
-        "Themed(TextInput)"
-    )
 }
 
-const Fieldset = styled.fieldset`
-    border-radius: 4px;
-    padding: 2px;
-    border: 1px solid ${props => props.theme.softText};
+const modalRoot = document.createElement("div")
+modalRoot.style.position = "absolute"
+modalRoot.dataset.modalRoot = ""
+document.body.appendChild(modalRoot)
 
-    &:focus-within {
-        border-color: ${props => props.theme.primary};
-    }
-`
-const Legend = styled.legend`
-    font-size: 14px;
-    margin-left: 4px;
-    color: ${props => props.normal};
-
-    input:focus + & {
-        color: ${props => props.focus ?? props.theme.primary};
-    }
-`
-
-const I2B = styled.div`
-    position: relative;
-    display: flex;
-    padding: 0px;
-    margin: 2px;
-`
-const I2I = styled.input`
-    padding: 24px 8px 8px 8px;
-    margin: 0px;
-    border-width: 0px;
-    z-index: +1;
-    background-color: transparent;
-    width: 100%;
-
-    &:focus {
-        outline: none;
-    }
-`
-const typeVariant = propToggle("bordered","16px","4px")
-const I2L = styled.label`
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    padding-top: 2px;
-
-    padding-left: ${typeVariant};
-
-    input:focus + & {
-        color: ${props => props.theme.primary};
-    }
-`
-const I2Bo = styled.div`
-    position: absolute;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
-    height: 2px;
-
-    background-color: ${props => props.theme.softText};
-
-    &::after {
-        position: absolute;
-        content: "";
-        top: 0px;
-        bottom: 0px;
-        left: 0px;
-        right: 0px;
-        background-color: ${props => props.theme.primary};
-        transform: scaleX(0);
-        transition: transform 200ms linear;
-    }
-
-    input:focus ~ &::after {
-        transform: scaleX(1);
-    }
-`
-const I2F = styled.fieldset`
-    position: absolute;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    margin: 0px;
-    padding: 0px;
-    padding-left: 13px;
-    border: 1px solid ${props => props.theme.softText};
-    border-radius: 4px;
-
-    input:focus ~ & {
-        border-color: ${props => props.theme.primary};
-    }
-`
-const I2FL = styled.legend`
-    padding: 2px;
-    color: transparent;
-`
-
+const useInput = value => {
+    const [current, update] = useState(value)
+    return [
+        current,
+        evt => update(evt.target.value)
+    ]
+}
 function App() {
     const tapped = () => console.log("tapped")
     const [theme, cycleTheme] = useCycle(themes)
@@ -323,6 +185,7 @@ function App() {
         </doric.Tab>
     )
     const onTabChange = evt => changeTab(evt.newTab)
+    const [text, updateText] = useInput("")
 
     return <AppWrapper>
         <doric.ThemeProvider value={theme}>
@@ -343,43 +206,14 @@ function App() {
             {/* <doric.Tabs style={{height: 320}} selectedTab={currentTab} onChange={onTabChange}>
                 {tabs}
             </doric.Tabs> */}
-            <Input.Text label="Test" />
-            <Fieldset theme={theme}>
-                <InputBase type="text" theme={theme} />
-                <Legend theme={theme} focus="red">Testing</Legend>
-            </Fieldset>
-            <I2B theme={theme}>
-                <I2I theme={theme} type="text" />
-                <I2L theme={theme} bordered={false}>Label</I2L>
-                <I2Bo theme={theme} />
-            </I2B>
+            {/* <doric.Input.Text label="Wat?" value={text} onChange={updateText} />
             <div style={{display: "grid", gridTemplateColumns: "repeat(2, 1fr)"}}>
-                <I2B theme={theme} style={{height: 100}}>
-                    <I2I theme={theme} type="text" />
-                    <I2L theme={theme} bordered={true}>Label</I2L>
-                    <I2F theme={theme}>
-                        <I2FL theme={theme}>Label</I2FL>
-                    </I2F>
-                </I2B>
-                <I2B theme={theme}>
-                    <I2I theme={theme} type="text" />
-                    <I2L theme={theme} bordered={false}>Label</I2L>
-                    <I2Bo theme={theme} />
-                </I2B>
+                <doric.Input.Text style={{height: 100}} label="Label" value={text} onChange={updateText} />
+                <doric.Input.Text bordered label="Label" value={text} onChange={updateText} />
 
-                <I2B theme={theme}>
-                    <I2I theme={theme} type="text" />
-                    <I2L theme={theme} bordered={true}>Label</I2L>
-                    <I2F theme={theme}>
-                        <I2FL theme={theme}>Label</I2FL>
-                    </I2F>
-                </I2B>
-                <I2B theme={theme}>
-                    <I2I theme={theme} type="text" />
-                    <I2L theme={theme} bordered={false}>Label</I2L>
-                    <I2Bo theme={theme} />
-                </I2B>
-            </div>
+                <doric.Input.Text label="Label"value={text} onChange={updateText}  />
+                <doric.Input.Text bordered label="Label" value={text} onChange={updateText} />
+            </div> */}
         </doric.ThemeProvider>
     </AppWrapper>
 }
