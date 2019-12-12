@@ -13,6 +13,7 @@ import {
 } from "./card.js"
 import GlobalStyle from "./global.js"
 import Input from "./input.js"
+import Select from "./select.js"
 import {
     Tab,
     Tabs
@@ -35,6 +36,7 @@ export default {
     FlatButton,
     GlobalStyle,
     Input,
+    Select,
     Tab,
     Tabs,
     ThemeProvider,

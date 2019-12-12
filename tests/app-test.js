@@ -5,6 +5,24 @@
   ReactDOM = ReactDOM && ReactDOM.hasOwnProperty('default') ? ReactDOM['default'] : ReactDOM;
   var styled__default = 'default' in styled ? styled['default'] : styled;
 
+  function _extends() {
+    _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    return _extends.apply(this, arguments);
+  }
+
   function styleInject(css, ref) {
     if (ref === void 0) ref = {};
     var insertAt = ref.insertAt;
@@ -36,24 +54,6 @@
 
   var css = "[data-simplebar]{position:relative;flex-direction:column;flex-wrap:wrap;justify-content:flex-start;align-content:flex-start;align-items:flex-start}.simplebar-wrapper{overflow:hidden;width:inherit;height:inherit;max-width:inherit;max-height:inherit}.simplebar-mask{direction:inherit;position:absolute;overflow:hidden;padding:0;margin:0;left:0;top:0;bottom:0;right:0;width:auto!important;height:auto!important;z-index:0}.simplebar-offset{direction:inherit!important;box-sizing:inherit!important;resize:none!important;position:absolute;top:0;left:0;bottom:0;right:0;padding:0;margin:0;-webkit-overflow-scrolling:touch}.simplebar-content-wrapper{direction:inherit;box-sizing:border-box!important;position:relative;display:block;height:100%;width:auto;visibility:visible;max-width:100%;max-height:100%;scrollbar-width:none}.simplebar-content-wrapper::-webkit-scrollbar,.simplebar-hide-scrollbar::-webkit-scrollbar{display:none}.simplebar-content:after,.simplebar-content:before{content:' ';display:table}.simplebar-placeholder{max-height:100%;max-width:100%;width:100%;pointer-events:none}.simplebar-height-auto-observer-wrapper{box-sizing:inherit!important;height:100%;width:100%;max-width:1px;position:relative;float:left;max-height:1px;overflow:hidden;z-index:-1;padding:0;margin:0;pointer-events:none;flex-grow:inherit;flex-shrink:0;flex-basis:0}.simplebar-height-auto-observer{box-sizing:inherit;display:block;opacity:0;position:absolute;top:0;left:0;height:1000%;width:1000%;min-height:1px;min-width:1px;overflow:hidden;pointer-events:none;z-index:-1}.simplebar-track{z-index:1;position:absolute;right:0;bottom:0;pointer-events:none;overflow:hidden}[data-simplebar].simplebar-dragging .simplebar-content{pointer-events:none;user-select:none;-webkit-user-select:none}[data-simplebar].simplebar-dragging .simplebar-track{pointer-events:all}.simplebar-scrollbar{position:absolute;right:2px;width:7px;min-height:10px}.simplebar-scrollbar:before{position:absolute;content:'';background:#000;border-radius:7px;left:0;right:0;opacity:0;transition:opacity .2s linear}.simplebar-scrollbar.simplebar-visible:before{opacity:.5;transition:opacity 0s linear}.simplebar-track.simplebar-vertical{top:0;width:11px}.simplebar-track.simplebar-vertical .simplebar-scrollbar:before{top:2px;bottom:2px}.simplebar-track.simplebar-horizontal{left:0;height:11px}.simplebar-track.simplebar-horizontal .simplebar-scrollbar:before{height:100%;left:2px;right:2px}.simplebar-track.simplebar-horizontal .simplebar-scrollbar{right:auto;left:0;top:2px;height:7px;min-height:0;min-width:10px;width:auto}[data-simplebar-direction=rtl] .simplebar-track.simplebar-vertical{right:auto;left:0}.hs-dummy-scrollbar-size{direction:rtl;position:fixed;opacity:0;visibility:hidden;height:500px;width:500px;overflow-y:hidden;overflow-x:scroll}.simplebar-hide-scrollbar{position:fixed;left:0;visibility:hidden;overflow-y:scroll;scrollbar-width:none}\n";
   styleInject(css);
-
-  function _extends() {
-    _extends = Object.assign || function (target) {
-      for (var i = 1; i < arguments.length; i++) {
-        var source = arguments[i];
-
-        for (var key in source) {
-          if (Object.prototype.hasOwnProperty.call(source, key)) {
-            target[key] = source[key];
-          }
-        }
-      }
-
-      return target;
-    };
-
-    return _extends.apply(this, arguments);
-  }
 
   const customStyled = Tag => {
     const base = source => {
@@ -385,41 +385,40 @@
     }
 `);
 
-  const InputWrapper = styled__default.div`
+  const Wrapper = styled__default.div`
     position: relative;
-    display: flex;
     padding: 0px;
     margin: 2px;
 `;
-  const InputElement = styled__default.input`
-    padding: 24px 8px 8px 8px;
-    margin: 0px;
-    border-width: 0px;
-    z-index: +1;
-    background-color: transparent;
+  const VisualArea = styled__default.div`
+    position: relative;
     width: 100%;
-
-    &:focus {
-        outline: none;
-    }
+    display: flex;
 `;
+
+  const errorVariant = props => props.error || props.error === "" ? `color: ${props.theme.danger};` : "";
+
+  const errorColorVariant = props => props.error || props.error === "" ? props.theme.danger : props.theme.primary;
+
   const typeVariant = propToggle("bordered", "16px", "4px");
-  const InputLabel = styled__default.label`
+  const Label = styled__default.label`
     position: absolute;
     top: 0px;
     left: 0px;
     padding-top: 2px;
+    user-select: none;
 
+    ${errorVariant}
     padding-left: ${typeVariant};
 
-    input:focus + & {
-        color: ${props => props.theme.primary};
+    *:focus ~ & {
+        color: ${errorColorVariant};
     }
 `;
-  const InputFlatBorder = styled__default.div`
+  const FlatBorder = styled__default.div`
     position: absolute;
-    left: 0px;
-    right: 0px;
+    left: 4px;
+    right: 4px;
     bottom: 0px;
     height: 2px;
 
@@ -432,16 +431,16 @@
         bottom: 0px;
         left: 0px;
         right: 0px;
-        background-color: ${props => props.theme.primary};
+        background-color: ${errorColorVariant};
         transform: scaleX(0);
         transition: transform 200ms linear;
     }
 
-    input:focus ~ &::after {
+    *:focus ~ &::after {
         transform: scaleX(1);
     }
 `;
-  const InputFullBorder = styled__default.fieldset`
+  const FullBorder = styled__default.fieldset`
     position: absolute;
     top: 0px;
     bottom: 0px;
@@ -453,47 +452,122 @@
     border: 1px solid ${props => props.theme.softText};
     border-radius: 4px;
 
-    input:focus ~ & {
-        border-color: ${props => props.theme.primary};
+    *:focus ~ & {
+        border-color: ${errorColorVariant};
     }
 `;
-  const InputFullBorderLabel = styled__default.legend`
+  const FullBorderLabel = styled__default.legend`
     padding: 2px;
     color: transparent;
 `;
+  const ErrorLabel = styled__default.div`
+    padding: 4px 12px;
+    font-size: 12px;
+    display: none;
 
-  const inputOfType = type => source => {
+    color: ${props => props.theme.danger};
+    padding-left: ${typeVariant};
+
+    &:not(:empty) {
+        display: block;
+    }
+`;
+
+  const ControlBorder = source => {
     const {
       bordered,
       theme,
       label,
       className,
-      ...props
+      error,
+      _,
+      children
     } = source;
-    const border = bordered === true ? React__default.createElement(InputFullBorder, {
-      theme: theme
-    }, React__default.createElement(InputFullBorderLabel, {
-      theme: theme
-    }, label)) : React__default.createElement(InputFlatBorder, {
-      theme: theme
-    });
-    return React__default.createElement(InputWrapper, {
+    const shared = {
+      theme,
+      error
+    };
+    const border = bordered === true ? React__default.createElement(FullBorder, shared, React__default.createElement(FullBorderLabel, shared, label)) : React__default.createElement(FlatBorder, shared);
+    return React__default.createElement(Wrapper, {
       theme: theme,
-      className: className
-    }, React__default.createElement(InputElement, _extends({
-      theme: theme
-    }, props, {
-      type: type
-    })), React__default.createElement(InputLabel, {
-      theme: theme,
+      className: className,
+      style: _
+    }, React__default.createElement(VisualArea, null, children, React__default.createElement(Label, _extends({
       bordered: bordered
-    }, label), border);
+    }, shared), label), border), React__default.createElement(ErrorLabel, {
+      bordered: bordered,
+      theme: theme
+    }, error));
   };
+
+  const InputElement = styled__default.input`
+    padding: 24px 8px 8px 8px;
+    margin: 0px;
+    border-width: 0px;
+    z-index: +1;
+    width: 100%;
+    border-radius: 4px;
+    background-color: transparent;
+
+    &:focus {
+        outline: none;
+    }
+`;
+
+  const inputOfType = type => props => React__default.createElement(ControlBorder, props, React__default.createElement(InputElement, _extends({}, props, {
+    type: type
+  }))); // const inputOfType = type =>
+  //     source => {
+  //         const {
+  //             bordered,
+  //             theme,
+  //             label,
+  //             className,
+  //             error,
+  //             _,
+  //             ...props
+  //         } = source
+  //         const shared = {theme, error}
+  //         const border = (bordered === true)
+  //             ? <InputFullBorder {...shared}>
+  //                 <InputFullBorderLabel {...shared}>
+  //                     {label}
+  //                 </InputFullBorderLabel>
+  //             </InputFullBorder>
+  //             : <InputFlatBorder {...shared} />
+  //
+  //         return <InputWrapper theme={theme} className={className} style={_}>
+  //             <InputVisualArea>
+  //                 <InputElement {...props} {...shared} type={type} />
+  //                 <InputLabel bordered={bordered} {...shared}>
+  //                     {label}
+  //                 </InputLabel>
+  //                 {border}
+  //             </InputVisualArea>
+  //             <ErrorLabel theme={theme}>{error}</ErrorLabel>
+  //         </InputWrapper>
+  //     }
+
 
   const Input = {
     Text: themedComponent(inputOfType("text"), "Themed(TextInput)"),
     Password: themedComponent(inputOfType("password"), "Themed(PasswordInput)")
   };
+
+  const SelectElement = styled__default.select`
+    padding: 24px 8px 8px 8px;
+    margin: 0px;
+    border-width: 0px;
+    z-index: +1;
+    width: 100%;
+    border-radius: 4px;
+    background-color: transparent;
+
+    &:focus {
+        outline: none;
+    }
+`;
+  const Select = themedComponent(props => React__default.createElement(ControlBorder, props, React__default.createElement(SelectElement, props)), "Themed(Select)");
 
   var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -6454,6 +6528,7 @@
     FlatButton,
     GlobalStyle,
     Input,
+    Select,
     Tab,
     Tabs,
     ThemeProvider,
@@ -6494,6 +6569,42 @@
   modalRoot.style.position = "absolute";
   modalRoot.dataset.modalRoot = "";
   document.body.appendChild(modalRoot);
+  const ModalCover = styled__default.div`
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    background-color: rgba(0, 0, 0, 0.2);
+`;
+
+  const Modal = props => {
+    return ReactDOM.createPortal(React__default.createElement(ModalCover, null, props.children), modalRoot);
+  };
+
+  const useModal = Component => {
+    const [displayInfo, updateInfo] = React.useState(null);
+
+    if (displayInfo === null) {
+      return [null, (props = {}) => new Promise(resolve => updateInfo({
+        resolve,
+        props
+      }))];
+    }
+
+    const close = value => {
+      updateInfo(null);
+      displayInfo.resolve(value);
+    };
+
+    return [React__default.createElement(Component, _extends({}, displayInfo.props, {
+      close: close
+    })), () => {}];
+  };
+
+  const TestModal = props => React__default.createElement(Modal, null, React__default.createElement("div", null, "Testing?", React__default.createElement(doric.Button, {
+    onTap: () => props.close(0)
+  }, "Close")));
 
   const useInput = value => {
     const [current, update] = React.useState(value);
@@ -6511,12 +6622,57 @@
     }, i)));
 
     const [text, updateText] = useInput("");
+    const [modal, openModal] = useModal(TestModal);
+
+    const testModal = async () => console.log((await openModal()));
+
     return React__default.createElement(AppWrapper, null, React__default.createElement(doric.ThemeProvider, {
       value: theme
     }, React__default.createElement(doric.GlobalStyle, null), React__default.createElement(CornerDiv, null, React__default.createElement(doric.Button, {
       color: "primary",
       onTap: cycleTheme
-    }, "Cycle Theme"))));
+    }, "Cycle Theme")), modal, React__default.createElement(doric.Button, {
+      onTap: testModal
+    }, "Testing"), React__default.createElement("div", {
+      style: {
+        display: "grid",
+        gridTemplateColumns: "repeat(2, 1fr)"
+      }
+    }, React__default.createElement(doric.Input.Text, {
+      label: "test",
+      _: {
+        gridColumn: "span 2"
+      }
+    }), React__default.createElement(doric.Input.Text, {
+      label: "Error?",
+      error: "Testing?"
+    }), React__default.createElement(doric.Input.Text, {
+      label: "Error?",
+      error: ""
+    }), React__default.createElement(doric.Input.Text, {
+      bordered: true,
+      label: "test"
+    }), React__default.createElement(doric.Input.Text, {
+      bordered: true,
+      label: "Error?",
+      error: "Testing?"
+    }), React__default.createElement(doric.Input.Text, {
+      bordered: true,
+      label: "Error?",
+      error: ""
+    }), React__default.createElement(doric.Select, {
+      label: "SELECT POGGERS"
+    }, React__default.createElement("option", null, "Test 1"), React__default.createElement("option", null, "Test 2"), React__default.createElement("option", null, "Test 3"), React__default.createElement("option", null, "Test 4")), React__default.createElement(doric.Select, {
+      label: "SELECT POGGERS",
+      bordered: true
+    }, React__default.createElement("option", null, "Test 1"), React__default.createElement("option", null, "Test 2"), React__default.createElement("option", null, "Test 3"), React__default.createElement("option", null, "Test 4")), React__default.createElement(doric.Select, {
+      error: "Wat",
+      label: "SELECT POGGERS"
+    }, React__default.createElement("option", null, "Test 1"), React__default.createElement("option", null, "Test 2"), React__default.createElement("option", null, "Test 3"), React__default.createElement("option", null, "Test 4")), React__default.createElement(doric.Select, {
+      error: "Wat Moar",
+      label: "SELECT POGGERS",
+      bordered: true
+    }, React__default.createElement("option", null, "Test 1"), React__default.createElement("option", null, "Test 2"), React__default.createElement("option", null, "Test 3"), React__default.createElement("option", null, "Test 4")))));
   }
 
   ReactDOM.render(React__default.createElement(App, null), document.querySelector("app-root"));

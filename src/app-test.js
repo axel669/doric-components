@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useState, useImperativeHandle} from "react"
 import ReactDOM from "react-dom"
 
 import styled from "styled-components"
@@ -167,6 +167,56 @@ modalRoot.style.position = "absolute"
 modalRoot.dataset.modalRoot = ""
 document.body.appendChild(modalRoot)
 
+const ModalCover = styled.div`
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    background-color: rgba(0, 0, 0, 0.2);
+`
+
+const Modal = props => {
+    return ReactDOM.createPortal(
+        <ModalCover>
+            {props.children}
+        </ModalCover>,
+        modalRoot
+    )
+}
+
+const useModal = (Component) => {
+    const [displayInfo, updateInfo] = useState(null)
+
+    if (displayInfo === null) {
+        return [
+            null,
+            (props = {}) => new Promise(
+                resolve => updateInfo({
+                    resolve,
+                    props,
+                })
+            ),
+        ]
+    }
+
+    const close = value => {
+        updateInfo(null)
+        displayInfo.resolve(value)
+    }
+    return [
+        <Component {...displayInfo.props} close={close} />,
+        () => {},
+    ]
+}
+
+const TestModal = (props) => <Modal>
+    <div>
+        Testing?
+        <doric.Button onTap={() => props.close(0)}>Close</doric.Button>
+    </div>
+</Modal>
+
 const useInput = value => {
     const [current, update] = useState(value)
     return [
@@ -186,6 +236,10 @@ function App() {
     )
     const onTabChange = evt => changeTab(evt.newTab)
     const [text, updateText] = useInput("")
+    const [modal, openModal] = useModal(TestModal)
+    const testModal = async () => console.log(
+        await openModal()
+    )
 
     return <AppWrapper>
         <doric.ThemeProvider value={theme}>
@@ -193,6 +247,41 @@ function App() {
             <CornerDiv>
                 <doric.Button color="primary" onTap={cycleTheme}>Cycle Theme</doric.Button>
             </CornerDiv>
+            {modal}
+            <doric.Button onTap={testModal}>Testing</doric.Button>
+
+            <div style={{display: "grid", gridTemplateColumns: "repeat(2, 1fr)"}}>
+                <doric.Input.Text label="test" _={{gridColumn: "span 2"}} />
+                <doric.Input.Text label="Error?" error="Testing?" />
+                <doric.Input.Text label="Error?" error="" />
+                <doric.Input.Text bordered label="test" />
+                <doric.Input.Text bordered label="Error?" error="Testing?" />
+                <doric.Input.Text bordered label="Error?" error="" />
+                <doric.Select label="SELECT POGGERS">
+                    <option>Test 1</option>
+                    <option>Test 2</option>
+                    <option>Test 3</option>
+                    <option>Test 4</option>
+                </doric.Select>
+                <doric.Select label="SELECT POGGERS" bordered>
+                    <option>Test 1</option>
+                    <option>Test 2</option>
+                    <option>Test 3</option>
+                    <option>Test 4</option>
+                </doric.Select>
+                <doric.Select error="Wat" label="SELECT POGGERS">
+                    <option>Test 1</option>
+                    <option>Test 2</option>
+                    <option>Test 3</option>
+                    <option>Test 4</option>
+                </doric.Select>
+                <doric.Select error="Wat Moar" label="SELECT POGGERS" bordered>
+                    <option>Test 1</option>
+                    <option>Test 2</option>
+                    <option>Test 3</option>
+                    <option>Test 4</option>
+                </doric.Select>
+            </div>
             {/* <doric.Text type="header">
                 Button Styles
             </doric.Text>
