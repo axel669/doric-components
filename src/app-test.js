@@ -263,7 +263,7 @@ function App() {
                     <option>Test 3</option>
                     <option>Test 4</option>
                 </doric.Select>
-                <doric.Select label="SELECT POGGERS" bordered>
+                <doric.Select label="SELECT POGGERS" bordered style={{height: 100}}>
                     <option>Test 1</option>
                     <option>Test 2</option>
                     <option>Test 3</option>

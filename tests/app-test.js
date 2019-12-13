@@ -562,12 +562,26 @@
     width: 100%;
     border-radius: 4px;
     background-color: transparent;
+    -webkit-appearance: none;
+    cursor: pointer;
 
     &:focus {
         outline: none;
     }
 `;
-  const Select = themedComponent(props => React__default.createElement(ControlBorder, props, React__default.createElement(SelectElement, props)), "Themed(Select)");
+  const Icon = styled__default.div`
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    padding: 20px 8px 8px 8px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+`;
+  const Select = themedComponent(props => React__default.createElement(ControlBorder, props, React__default.createElement(Icon, {
+    className: "ion-md-arrow-dropdown"
+  }), React__default.createElement(SelectElement, props)), "Themed(Select)");
 
   var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -6664,7 +6678,10 @@
       label: "SELECT POGGERS"
     }, React__default.createElement("option", null, "Test 1"), React__default.createElement("option", null, "Test 2"), React__default.createElement("option", null, "Test 3"), React__default.createElement("option", null, "Test 4")), React__default.createElement(doric.Select, {
       label: "SELECT POGGERS",
-      bordered: true
+      bordered: true,
+      style: {
+        height: 100
+      }
     }, React__default.createElement("option", null, "Test 1"), React__default.createElement("option", null, "Test 2"), React__default.createElement("option", null, "Test 3"), React__default.createElement("option", null, "Test 4")), React__default.createElement(doric.Select, {
       error: "Wat",
       label: "SELECT POGGERS"
