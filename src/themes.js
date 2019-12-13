@@ -12,7 +12,6 @@ const darkTheme = {
     darkText: "black",
     blue: "#1d62d5",
     lightblue: "#2196F3",
-    // primary: "#1d62d5",
     primary: "#2196F3",
     danger: "#F44336",
     secondary: "#128f12",

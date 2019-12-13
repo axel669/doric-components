@@ -3,6 +3,7 @@ import styled, {css} from "styled-components"
 
 import Clickable from "./clickable.js"
 import CustomListeners from "./custom-listeners.js"
+import Icon from "./icon.js"
 import {themedComponent, propToggle, propVariant} from "./helpers.js"
 
 const displayVariant = propToggle("block", "flex", "inline-flex")
@@ -40,8 +41,8 @@ const ButtonBaseComponent = styled(Clickable("doric-button"))`
     overflow: hidden;
     font-weight: 500;
     text-transform: uppercase;
+    background-color: transparent;
 
-    background-color: ${props => props.theme.mainBG};
     color: ${props => props.theme.textColor};
 
     display: ${displayVariant};
@@ -132,7 +133,25 @@ const FlatButton = themedComponent(
     "Themed(FlatButton)"
 )
 
+const ActionButtonElement = themedComponent(
+    styled(ButtonBase)`
+        border-radius: 50%;
+
+        ${flatColorVariant}
+        width: ${props => props.radius || 30};
+        height: ${props => props.radius || 30};
+    `
+)
+const ActionButton = source => {
+    const {icon, ...props} = source
+
+    return <ActionButtonElement {...props}>
+        <Icon name={icon} />
+    </ActionButtonElement>
+}
+
 export {
+    ActionButton,
     Button,
     FlatButton,
 }

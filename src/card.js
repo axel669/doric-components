@@ -22,16 +22,20 @@ const directionVariant = propToggle(
         ;
     `,
 )
-const Card = customStyled("doric-card").css`
-    display: grid;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-    margin: 4px;
-    border: 1px solid lightgray;
-    border-radius: 4px;
-    overflow: hidden;
+const Card = themedComponent(
+    customStyled("doric-card").css`
+        display: grid;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+        margin: 4px;
+        border: 1px solid lightgray;
+        border-radius: 4px;
+        overflow: hidden;
 
-    ${directionVariant}
-`
+        ${directionVariant}
+        background-color: ${props => props.theme.mainBG};
+    `,
+    "Themed(Card)"
+)
 
 const CardContent = styled.div`
     display: block;

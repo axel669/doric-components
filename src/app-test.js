@@ -1,10 +1,11 @@
-import React, {useState, useImperativeHandle} from "react"
+import React, {useState, useEffect} from "react"
 import ReactDOM from "react-dom"
 
 import styled from "styled-components"
 
 import doric from "./main.js"
 import {darkTheme, lightTheme} from "./themes.js"
+import {themedComponent} from "./helpers.js"
 
 const themes = [
     lightTheme,
@@ -167,20 +168,51 @@ modalRoot.style.position = "absolute"
 modalRoot.dataset.modalRoot = ""
 document.body.appendChild(modalRoot)
 
-const ModalCover = styled.div`
+const DialogCover = styled.div`
     position: fixed;
     top: 0px;
     left: 0px;
     bottom: 0px;
     right: 0px;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.4);
+`
+const DialogPosition = styled.div`
+    position: absolute;
+    top: ${props => props.y};
+    left: ${props => props.x};
+    transform: translate(${props => props.anchorX}, ${props => props.anchorY});
 `
 
-const Modal = props => {
+const invertMeasurement = measure => {
+    if (measure.startsWith("-") === true) {
+        return measure.slice(1)
+    }
+    return `-${measure}`
+}
+const Dialog = props => {
+    const {
+        position = {},
+        children
+    } = props
+    const {
+        x = "50%",
+        y = "50%",
+        anchorX = "50%",
+        anchorY = "50%",
+    } = position
+    const positionInfo = {
+        x,
+        y,
+        anchorX: invertMeasurement(anchorX),
+        anchorY: invertMeasurement(anchorY),
+    }
+
     return ReactDOM.createPortal(
-        <ModalCover>
-            {props.children}
-        </ModalCover>,
+        <DialogCover>
+            <DialogPosition {...positionInfo}>
+                {children}
+            </DialogPosition>
+        </DialogCover>,
         modalRoot
     )
 }
@@ -210,20 +242,19 @@ const useModal = (Component) => {
     ]
 }
 
-const TestModal = (props) => <Modal>
-    <div>
-        Testing?
-        <doric.Button onTap={() => props.close(0)}>Close</doric.Button>
-    </div>
-</Modal>
+const TestModal = (props) => <Dialog>
+    <doric.Card>
+        <doric.CardContent>
+            <doric.Text type="title">
+                Alert
+            </doric.Text>
+        </doric.CardContent>
+        <doric.CardActions style={{textAlign: "right"}}>
+            <doric.Button onTap={() => props.close(0)}>Close</doric.Button>
+        </doric.CardActions>
+    </doric.Card>
+</Dialog>
 
-const useInput = value => {
-    const [current, update] = useState(value)
-    return [
-        current,
-        evt => update(evt.target.value)
-    ]
-}
 function App() {
     const tapped = () => console.log("tapped")
     const [theme, cycleTheme] = useCycle(themes)
@@ -235,11 +266,23 @@ function App() {
         </doric.Tab>
     )
     const onTabChange = evt => changeTab(evt.newTab)
-    const [text, updateText] = useInput("")
+    const [text, updateText] = doric.useInput("")
+    const [select, updateSelect] = doric.useInput("")
+    const [date, setDate] = useState("")
     const [modal, openModal] = useModal(TestModal)
     const testModal = async () => console.log(
         await openModal()
     )
+    const watDate = evt => {
+        setDate(evt.target.value.split("").reverse().join(""))
+    }
+
+    const selectProps = {
+        value: select,
+        onChange: updateSelect,
+    }
+
+    const wat = <doric.ActionButton icon="calendar" />
 
     return <AppWrapper>
         <doric.ThemeProvider value={theme}>
@@ -251,36 +294,38 @@ function App() {
             <doric.Button onTap={testModal}>Testing</doric.Button>
 
             <div style={{display: "grid", gridTemplateColumns: "repeat(2, 1fr)"}}>
-                <doric.Input.Text label="test" _={{gridColumn: "span 2"}} />
-                <doric.Input.Text label="Error?" error="Testing?" />
+                <doric.Input.Text label="test" _={{gridColumn: "span 2"}} action={wat} />
+                <doric.Input.Text disabled label="Error?" error="Testing?" action={wat} style={{height: 100}} />
                 <doric.Input.Text label="Error?" error="" />
                 <doric.Input.Text bordered label="test" />
-                <doric.Input.Text bordered label="Error?" error="Testing?" />
+                <doric.Input.Text disabled bordered label="Error?" error="Testing?" />
                 <doric.Input.Text bordered label="Error?" error="" />
-                <doric.Select label="SELECT POGGERS">
-                    <option>Test 1</option>
-                    <option>Test 2</option>
-                    <option>Test 3</option>
-                    <option>Test 4</option>
+                <doric.Select label="SELECT POGGERS" {...selectProps}>
+                    <option value="1">Test 1</option>
+                    <option value="2">Test 2</option>
+                    <option value="3">Test 3</option>
+                    <option value="4">Test 4</option>
                 </doric.Select>
-                <doric.Select label="SELECT POGGERS" bordered style={{height: 100}}>
-                    <option>Test 1</option>
-                    <option>Test 2</option>
-                    <option>Test 3</option>
-                    <option>Test 4</option>
+                <doric.Select disabled label="SELECT POGGERS" bordered style={{height: 100}} {...selectProps}>
+                    <option value="1">Test 1</option>
+                    <option value="2">Test 2</option>
+                    <option value="3">Test 3</option>
+                    <option value="4">Test 4</option>
                 </doric.Select>
-                <doric.Select error="Wat" label="SELECT POGGERS">
-                    <option>Test 1</option>
-                    <option>Test 2</option>
-                    <option>Test 3</option>
-                    <option>Test 4</option>
+                <doric.Select error="Wat" label="SELECT POGGERS" {...selectProps}>
+                    <option value="1">Test 1</option>
+                    <option value="2">Test 2</option>
+                    <option value="3">Test 3</option>
+                    <option value="4">Test 4</option>
                 </doric.Select>
-                <doric.Select error="Wat Moar" label="SELECT POGGERS" bordered>
-                    <option>Test 1</option>
-                    <option>Test 2</option>
-                    <option>Test 3</option>
-                    <option>Test 4</option>
+                <doric.Select error="Wat Moar" label="SELECT POGGERS" bordered {...selectProps}>
+                    <option value="1">Test 1</option>
+                    <option value="2">Test 2</option>
+                    <option value="3">Test 3</option>
+                    <option value="4">Test 4</option>
                 </doric.Select>
+                <doric.Input.Date value={date} onChange={watDate} label="Start Date" />
+                <doric.Input.Date value={date} onChange={watDate} bordered label="Start Date" />
             </div>
             {/* <doric.Text type="header">
                 Button Styles

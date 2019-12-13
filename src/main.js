@@ -1,6 +1,7 @@
 import "simplebar/dist/simplebar.min.css"
 
 import {
+    ActionButton,
     Button,
     FlatButton
 } from "./button.js"
@@ -12,6 +13,7 @@ import {
     CardMedia
 } from "./card.js"
 import GlobalStyle from "./global.js"
+import Icon from "./icon.js"
 import Input from "./input.js"
 import Select from "./select.js"
 import {
@@ -24,9 +26,12 @@ import {
 } from "./helpers.js"
 import Text from "./text.js"
 
+import * as effects from "./effects.js"
+
 import {lightTheme, darkTheme} from "./themes.js"
 
 export default {
+    ActionButton,
     Button,
     Card,
     CardActionArea,
@@ -35,6 +40,7 @@ export default {
     CardMedia,
     FlatButton,
     GlobalStyle,
+    Icon,
     Input,
     Select,
     Tab,
@@ -46,4 +52,6 @@ export default {
     darkTheme,
 
     themedComponent,
+
+    ...effects,
 }

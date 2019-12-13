@@ -1,7 +1,7 @@
-(function (React, ReactDOM, styled) {
+(function (React$1, ReactDOM, styled) {
   'use strict';
 
-  var React__default = 'default' in React ? React['default'] : React;
+  var React$1__default = 'default' in React$1 ? React$1['default'] : React$1;
   ReactDOM = ReactDOM && ReactDOM.hasOwnProperty('default') ? ReactDOM['default'] : ReactDOM;
   var styled__default = 'default' in styled ? styled['default'] : styled;
 
@@ -62,7 +62,7 @@
         theme,
         ...props
       } = source;
-      return React__default.createElement(Tag, _extends({
+      return React$1__default.createElement(Tag, _extends({
         class: className
       }, props));
     };
@@ -124,11 +124,11 @@
     globalListeners[type].delete(elem);
   };
 
-  const useMounts = effect => React.useEffect(effect, []);
+  const useMounts = effect => React$1.useEffect(effect, []);
 
   function CustomListeners(props) {
-    const element = React.useRef(null);
-    const pRef = React.useRef(props);
+    const element = React$1.useRef(null);
+    const pRef = React$1.useRef(props);
     pRef.current = props;
     useMounts(() => {
       const types = Object.keys(props);
@@ -148,10 +148,28 @@
         }
       };
     });
-    return React__default.createElement("doric-custom-listeners", {
+    return React$1__default.createElement("doric-custom-listeners", {
       ref: element
     });
   }
+
+  const IconElement = styled__default.span`
+    font-size: 18px;
+`;
+
+  const Icon = source => {
+    const {
+      name,
+      className = "",
+      ...props
+    } = source;
+    const iconClass = `${Icon.prefix}${name}`;
+    return React.createElement(IconElement, _extends({}, props, {
+      className: `${className} ${iconClass}`
+    }));
+  };
+
+  Icon.prefix = "ion-md-";
 
   const darkTheme = {
     font: "Inconsolata",
@@ -167,7 +185,6 @@
     darkText: "black",
     blue: "#1d62d5",
     lightblue: "#2196F3",
-    // primary: "#1d62d5",
     primary: "#2196F3",
     danger: "#F44336",
     secondary: "#128f12",
@@ -200,13 +217,13 @@
 
   const propToggle = (name, tru, fals) => props => props[name] ? tru : fals;
 
-  const Theme = React__default.createContext(lightTheme);
+  const Theme = React$1__default.createContext(lightTheme);
   const ThemeProvider = Theme.Provider;
 
   const themedComponent = (Component, displayName) => {
     const f = props => {
-      const theme = React.useContext(Theme) || lightTheme;
-      return React__default.createElement(Component, _extends({}, props, {
+      const theme = React$1.useContext(Theme) || lightTheme;
+      return React$1__default.createElement(Component, _extends({}, props, {
         theme: theme
       }));
     };
@@ -242,8 +259,8 @@
     overflow: hidden;
     font-weight: 500;
     text-transform: uppercase;
+    background-color: transparent;
 
-    background-color: ${props => props.theme.mainBG};
     color: ${props => props.theme.textColor};
 
     display: ${displayVariant};
@@ -266,7 +283,7 @@
       onTap(evt);
     };
 
-    return React__default.createElement(ButtonBaseComponent, props, React__default.createElement(CustomListeners, {
+    return React$1__default.createElement(ButtonBaseComponent, props, React$1__default.createElement(CustomListeners, {
       onTap: wrappedOnTap
     }), children);
   }, "Themed(ButtonBase)");
@@ -318,6 +335,23 @@
         ${flatColorVariant}
         ${outlineVariant}
     `, "Themed(FlatButton)");
+  const ActionButtonElement = themedComponent(styled__default(ButtonBase)`
+        border-radius: 50%;
+
+        ${flatColorVariant}
+        width: ${props => props.radius || 30};
+        height: ${props => props.radius || 30};
+    `);
+
+  const ActionButton = source => {
+    const {
+      icon,
+      ...props
+    } = source;
+    return React$1__default.createElement(ActionButtonElement, props, React$1__default.createElement(Icon, {
+      name: icon
+    }));
+  };
 
   const directionVariant = propToggle("sideMedia", styled__default.css`
         grid-template-columns: auto 150px;
@@ -332,16 +366,17 @@
             "actions"
         ;
     `);
-  const Card = customStyled("doric-card").css`
-    display: grid;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-    margin: 4px;
-    border: 1px solid lightgray;
-    border-radius: 4px;
-    overflow: hidden;
+  const Card = themedComponent(customStyled("doric-card").css`
+        display: grid;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+        margin: 4px;
+        border: 1px solid lightgray;
+        border-radius: 4px;
+        overflow: hidden;
 
-    ${directionVariant}
-`;
+        ${directionVariant}
+        background-color: ${props => props.theme.mainBG};
+    `, "Themed(Card)");
   const CardContent = styled__default.div`
     display: block;
     padding: 12px;
@@ -376,24 +411,43 @@
         background-color: ${props => props.theme.mainBG};
         color: ${props => props.theme.textColor};
     }
-    input {
+    input, select {
         color: ${props => props.theme.textColor};
         font-family: ${props => props.theme.font}, Arial;
+    }
+    option {
+        color: black;
     }
     * {
         box-sizing: border-box;
     }
 `);
 
+  const useInput = value => {
+    const [current, update] = React$1.useState(value);
+    return [current, evt => update(evt.target.value)];
+  };
+
+  var effects = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    useInput: useInput
+  });
+
+  const disabledVariant$1 = propToggle("disabled", styled__default.css`
+        opacity: 0.5;
+    `, "");
   const Wrapper = styled__default.div`
     position: relative;
     padding: 0px;
     margin: 2px;
+
+    ${disabledVariant$1}
 `;
   const VisualArea = styled__default.div`
     position: relative;
     width: 100%;
     display: flex;
+    margin-top: 16px;
 `;
 
   const errorVariant = props => props.error || props.error === "" ? `color: ${props.theme.danger};` : "";
@@ -403,7 +457,7 @@
   const typeVariant = propToggle("bordered", "16px", "4px");
   const Label = styled__default.label`
     position: absolute;
-    top: 0px;
+    top: -16px;
     left: 0px;
     padding-top: 2px;
     user-select: none;
@@ -442,7 +496,7 @@
 `;
   const FullBorder = styled__default.fieldset`
     position: absolute;
-    top: 0px;
+    top: -16px;
     bottom: 0px;
     left: 0px;
     right: 0px;
@@ -481,27 +535,30 @@
       className,
       error,
       _,
-      children
+      children,
+      disabled
     } = source;
     const shared = {
       theme,
       error
     };
-    const border = bordered === true ? React__default.createElement(FullBorder, shared, React__default.createElement(FullBorderLabel, shared, label)) : React__default.createElement(FlatBorder, shared);
-    return React__default.createElement(Wrapper, {
-      theme: theme,
-      className: className,
+    const border = bordered === true ? React$1__default.createElement(FullBorder, shared, React$1__default.createElement(FullBorderLabel, shared, label)) : React$1__default.createElement(FlatBorder, shared);
+    const wrapperProps = {
+      theme,
+      className,
+      disabled,
       style: _
-    }, React__default.createElement(VisualArea, null, children, React__default.createElement(Label, _extends({
+    };
+    return React$1__default.createElement(Wrapper, wrapperProps, React$1__default.createElement(VisualArea, null, children, React$1__default.createElement(Label, _extends({
       bordered: bordered
-    }, shared), label), border), React__default.createElement(ErrorLabel, {
+    }, shared), label), border), React$1__default.createElement(ErrorLabel, {
       bordered: bordered,
       theme: theme
     }, error));
   };
 
   const InputElement = styled__default.input`
-    padding: 24px 8px 8px 8px;
+    padding: 8px 8px 8px 8px;
     margin: 0px;
     border-width: 0px;
     z-index: +1;
@@ -513,49 +570,72 @@
         outline: none;
     }
 `;
+  const disabledVariant$2 = propToggle("disabled", "", styled__default.css`
+        z-index: +2;
+    `);
+  const ActionArea = styled__default.div`
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    display: flex;
+    align-items: center;
 
-  const inputOfType = type => props => React__default.createElement(ControlBorder, props, React__default.createElement(InputElement, _extends({}, props, {
-    type: type
-  }))); // const inputOfType = type =>
-  //     source => {
-  //         const {
-  //             bordered,
-  //             theme,
-  //             label,
-  //             className,
-  //             error,
-  //             _,
-  //             ...props
-  //         } = source
-  //         const shared = {theme, error}
-  //         const border = (bordered === true)
-  //             ? <InputFullBorder {...shared}>
-  //                 <InputFullBorderLabel {...shared}>
-  //                     {label}
-  //                 </InputFullBorderLabel>
-  //             </InputFullBorder>
-  //             : <InputFlatBorder {...shared} />
-  //
-  //         return <InputWrapper theme={theme} className={className} style={_}>
-  //             <InputVisualArea>
-  //                 <InputElement {...props} {...shared} type={type} />
-  //                 <InputLabel bordered={bordered} {...shared}>
-  //                     {label}
-  //                 </InputLabel>
-  //                 {border}
-  //             </InputVisualArea>
-  //             <ErrorLabel theme={theme}>{error}</ErrorLabel>
-  //         </InputWrapper>
-  //     }
+    ${disabledVariant$2}
+`;
 
+  const inputOfType = type => source => {
+    const {
+      action,
+      ...props
+    } = source;
+    return React$1__default.createElement(ControlBorder, props, React$1__default.createElement(ActionArea, {
+      disabled: props.disabled
+    }, action), React$1__default.createElement(InputElement, _extends({}, props, {
+      type: type
+    })));
+  };
 
+  const DateInput = themedComponent(inputOfType("text"), "Themed(DateInput)");
   const Input = {
     Text: themedComponent(inputOfType("text"), "Themed(TextInput)"),
-    Password: themedComponent(inputOfType("password"), "Themed(PasswordInput)")
+    Password: themedComponent(inputOfType("password"), "Themed(PasswordInput)"),
+    Date: source => {
+      const {
+        value,
+        onChange,
+        action,
+        ...props
+      } = source;
+      const [editValue, updateEditValue] = useInput("");
+      React$1.useEffect(() => {
+        updateEditValue({
+          target: {
+            value
+          }
+        });
+      }, [value]);
+
+      const change = evt => {
+        if (value !== editValue) {
+          onChange(evt);
+        }
+      };
+
+      const actions = [action, React$1__default.createElement(ActionButton, {
+        icon: "calendar"
+      })];
+      return React$1__default.createElement(DateInput, _extends({}, props, {
+        value: editValue,
+        onChange: updateEditValue,
+        onBlur: change,
+        action: actions
+      }));
+    }
   };
 
   const SelectElement = styled__default.select`
-    padding: 24px 8px 8px 8px;
+    padding: 8px 8px 8px 8px;
     margin: 0px;
     border-width: 0px;
     z-index: +1;
@@ -568,20 +648,23 @@
     &:focus {
         outline: none;
     }
+
+    &:disabled {
+        cursor: default;
+    }
 `;
-  const Icon = styled__default.div`
+  const IconArea = styled__default.div`
     position: absolute;
     top: 0px;
     bottom: 0px;
     right: 0px;
-    padding: 20px 8px 8px 8px;
-    font-size: 20px;
     display: flex;
     align-items: center;
+    padding-right: 8px;
 `;
-  const Select = themedComponent(props => React__default.createElement(ControlBorder, props, React__default.createElement(Icon, {
-    className: "ion-md-arrow-dropdown"
-  }), React__default.createElement(SelectElement, props)), "Themed(Select)");
+  const Select = themedComponent(props => React$1__default.createElement(ControlBorder, props, React$1__default.createElement(IconArea, null, React$1__default.createElement(Icon, {
+    name: "arrow-dropdown"
+  })), React$1__default.createElement(SelectElement, props)), "Themed(Select)");
 
   var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -6311,16 +6394,16 @@
     return options;
   };
 
-  var SimpleBar$1 = React__default.forwardRef(function (_ref, ref) {
+  var SimpleBar$1 = React$1__default.forwardRef(function (_ref, ref) {
     var children = _ref.children,
         _ref$scrollableNodePr = _ref.scrollableNodeProps,
         scrollableNodeProps = _ref$scrollableNodePr === void 0 ? {} : _ref$scrollableNodePr,
         otherProps = _objectWithoutProperties(_ref, ["children", "scrollableNodeProps"]);
 
     var instance;
-    var scrollableNodeRef = React.useRef();
-    var elRef = React.useRef();
-    var contentNodeRef = React.useRef();
+    var scrollableNodeRef = React$1.useRef();
+    var elRef = React$1.useRef();
+    var contentNodeRef = React$1.useRef();
     var options = {};
     var rest = {};
     var deprecatedOptions = [];
@@ -6341,7 +6424,7 @@
       console.warn("simplebar-react: this way of passing options is deprecated. Pass it like normal props instead:\n        'data-simplebar-auto-hide=\"false\"' \u2014> 'autoHide=\"false\"'\n      ");
     }
 
-    React.useEffect(function () {
+    React$1.useEffect(function () {
       scrollableNodeRef = scrollableNodeProps.ref || scrollableNodeRef;
 
       if (elRef.current) {
@@ -6361,35 +6444,35 @@
         instance = null;
       };
     }, []);
-    return React__default.createElement("div", _extends$1({
+    return React$1__default.createElement("div", _extends$1({
       ref: elRef,
       "data-simplebar": true
-    }, rest), React__default.createElement("div", {
+    }, rest), React$1__default.createElement("div", {
       className: "simplebar-wrapper"
-    }, React__default.createElement("div", {
+    }, React$1__default.createElement("div", {
       className: "simplebar-height-auto-observer-wrapper"
-    }, React__default.createElement("div", {
+    }, React$1__default.createElement("div", {
       className: "simplebar-height-auto-observer"
-    })), React__default.createElement("div", {
+    })), React$1__default.createElement("div", {
       className: "simplebar-mask"
-    }, React__default.createElement("div", {
+    }, React$1__default.createElement("div", {
       className: "simplebar-offset"
     }, typeof children === 'function' ? children({
       scrollableNodeRef: scrollableNodeRef,
       contentNodeRef: contentNodeRef
-    }) : React__default.createElement("div", _extends$1({}, scrollableNodeProps, {
+    }) : React$1__default.createElement("div", _extends$1({}, scrollableNodeProps, {
       className: "simplebar-content-wrapper".concat(scrollableNodeProps.className ? " ".concat(scrollableNodeProps.className) : '')
-    }), React__default.createElement("div", {
+    }), React$1__default.createElement("div", {
       className: "simplebar-content"
-    }, children)))), React__default.createElement("div", {
+    }, children)))), React$1__default.createElement("div", {
       className: "simplebar-placeholder"
-    })), React__default.createElement("div", {
+    })), React$1__default.createElement("div", {
       className: "simplebar-track simplebar-horizontal"
-    }, React__default.createElement("div", {
+    }, React$1__default.createElement("div", {
       className: "simplebar-scrollbar"
-    })), React__default.createElement("div", {
+    })), React$1__default.createElement("div", {
       className: "simplebar-track simplebar-vertical"
-    }, React__default.createElement("div", {
+    }, React$1__default.createElement("div", {
       className: "simplebar-scrollbar"
     })));
   });
@@ -6448,7 +6531,7 @@
       onChange,
       ...props
     } = source;
-    const tabSource = React__default.Children.toArray(children);
+    const tabSource = React$1__default.Children.toArray(children);
 
     const tabChange = evt => {
       const index = parseInt(evt.target.dataset.index, 10);
@@ -6473,12 +6556,12 @@
         "data-index": index,
         onTap: tabChange
       };
-      return React__default.createElement(TabButton, buttonProps, label);
+      return React$1__default.createElement(TabButton, buttonProps, label);
     });
-    const tabPanels = tabSource.map((tabSource, index) => React__default.createElement(TabPanel, {
+    const tabPanels = tabSource.map((tabSource, index) => React$1__default.createElement(TabPanel, {
       selected: selectedTab === index
     }, tabSource.props.children));
-    return React__default.createElement(TabContainer, props, React__default.createElement(TabList, null, tabs), tabPanels);
+    return React$1__default.createElement(TabContainer, props, React$1__default.createElement(TabList, null, tabs), tabPanels);
   };
 
   const Tab = props => {
@@ -6533,6 +6616,7 @@
     `, "Themed(Text)");
 
   var doric = {
+    ActionButton,
     Button,
     Card,
     CardActionArea,
@@ -6541,6 +6625,7 @@
     CardMedia,
     FlatButton,
     GlobalStyle,
+    Icon,
     Input,
     Select,
     Tab,
@@ -6549,7 +6634,8 @@
     Text,
     lightTheme,
     darkTheme,
-    themedComponent
+    themedComponent,
+    ...effects
   };
 
   const themes = [lightTheme, darkTheme];
@@ -6565,7 +6651,7 @@
 `;
 
   const useCycle = array => {
-    const [index, setIndex] = React.useState(0);
+    const [index, setIndex] = React$1.useState(0);
     return [array[index], () => {
       const newIndex = (index + 1) % array.length;
       setIndex(newIndex);
@@ -6583,21 +6669,51 @@
   modalRoot.style.position = "absolute";
   modalRoot.dataset.modalRoot = "";
   document.body.appendChild(modalRoot);
-  const ModalCover = styled__default.div`
+  const DialogCover = styled__default.div`
     position: fixed;
     top: 0px;
     left: 0px;
     bottom: 0px;
     right: 0px;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.4);
+`;
+  const DialogPosition = styled__default.div`
+    position: absolute;
+    top: ${props => props.y};
+    left: ${props => props.x};
+    transform: translate(${props => props.anchorX}, ${props => props.anchorY});
 `;
 
-  const Modal = props => {
-    return ReactDOM.createPortal(React__default.createElement(ModalCover, null, props.children), modalRoot);
+  const invertMeasurement = measure => {
+    if (measure.startsWith("-") === true) {
+      return measure.slice(1);
+    }
+
+    return `-${measure}`;
+  };
+
+  const Dialog = props => {
+    const {
+      position = {},
+      children
+    } = props;
+    const {
+      x = "50%",
+      y = "50%",
+      anchorX = "50%",
+      anchorY = "50%"
+    } = position;
+    const positionInfo = {
+      x,
+      y,
+      anchorX: invertMeasurement(anchorX),
+      anchorY: invertMeasurement(anchorY)
+    };
+    return ReactDOM.createPortal(React$1__default.createElement(DialogCover, null, React$1__default.createElement(DialogPosition, positionInfo, children)), modalRoot);
   };
 
   const useModal = Component => {
-    const [displayInfo, updateInfo] = React.useState(null);
+    const [displayInfo, updateInfo] = React$1.useState(null);
 
     if (displayInfo === null) {
       return [null, (props = {}) => new Promise(resolve => updateInfo({
@@ -6611,87 +6727,146 @@
       displayInfo.resolve(value);
     };
 
-    return [React__default.createElement(Component, _extends({}, displayInfo.props, {
+    return [React$1__default.createElement(Component, _extends({}, displayInfo.props, {
       close: close
     })), () => {}];
   };
 
-  const TestModal = props => React__default.createElement(Modal, null, React__default.createElement("div", null, "Testing?", React__default.createElement(doric.Button, {
+  const TestModal = props => React$1__default.createElement(Dialog, null, React$1__default.createElement(doric.Card, null, React$1__default.createElement(doric.CardContent, null, React$1__default.createElement(doric.Text, {
+    type: "title"
+  }, "Alert")), React$1__default.createElement(doric.CardActions, null, React$1__default.createElement(doric.Button, {
     onTap: () => props.close(0)
-  }, "Close")));
-
-  const useInput = value => {
-    const [current, update] = React.useState(value);
-    return [current, evt => update(evt.target.value)];
-  };
+  }, "Close"))));
 
   function App() {
 
     const [theme, cycleTheme] = useCycle(themes);
-    const [currentTab, changeTab] = React.useState(0);
-    const tabs = range(10, i => React__default.createElement(doric.Tab, {
+    const [currentTab, changeTab] = React$1.useState(0);
+    const tabs = range(10, i => React$1__default.createElement(doric.Tab, {
       label: `Tab #${i}`
-    }, React__default.createElement(doric.Text, {
+    }, React$1__default.createElement(doric.Text, {
       type: "title"
     }, i)));
 
-    const [text, updateText] = useInput("");
+    const [text, updateText] = doric.useInput("");
+    const [select, updateSelect] = doric.useInput("");
+    const [date, setDate] = React$1.useState("");
     const [modal, openModal] = useModal(TestModal);
 
     const testModal = async () => console.log((await openModal()));
 
-    return React__default.createElement(AppWrapper, null, React__default.createElement(doric.ThemeProvider, {
+    const watDate = evt => {
+      setDate(evt.target.value.split("").reverse().join(""));
+    };
+
+    const selectProps = {
+      value: select,
+      onChange: updateSelect
+    };
+    const wat = React$1__default.createElement(doric.ActionButton, {
+      icon: "calendar"
+    });
+    return React$1__default.createElement(AppWrapper, null, React$1__default.createElement(doric.ThemeProvider, {
       value: theme
-    }, React__default.createElement(doric.GlobalStyle, null), React__default.createElement(CornerDiv, null, React__default.createElement(doric.Button, {
+    }, React$1__default.createElement(doric.GlobalStyle, null), React$1__default.createElement(CornerDiv, null, React$1__default.createElement(doric.Button, {
       color: "primary",
       onTap: cycleTheme
-    }, "Cycle Theme")), modal, React__default.createElement(doric.Button, {
+    }, "Cycle Theme")), modal, React$1__default.createElement(doric.Button, {
       onTap: testModal
-    }, "Testing"), React__default.createElement("div", {
+    }, "Testing"), React$1__default.createElement("div", {
       style: {
         display: "grid",
         gridTemplateColumns: "repeat(2, 1fr)"
       }
-    }, React__default.createElement(doric.Input.Text, {
+    }, React$1__default.createElement(doric.Input.Text, {
       label: "test",
       _: {
         gridColumn: "span 2"
-      }
-    }), React__default.createElement(doric.Input.Text, {
+      },
+      action: wat
+    }), React$1__default.createElement(doric.Input.Text, {
+      disabled: true,
       label: "Error?",
-      error: "Testing?"
-    }), React__default.createElement(doric.Input.Text, {
+      error: "Testing?",
+      action: wat,
+      style: {
+        height: 100
+      }
+    }), React$1__default.createElement(doric.Input.Text, {
       label: "Error?",
       error: ""
-    }), React__default.createElement(doric.Input.Text, {
+    }), React$1__default.createElement(doric.Input.Text, {
       bordered: true,
       label: "test"
-    }), React__default.createElement(doric.Input.Text, {
+    }), React$1__default.createElement(doric.Input.Text, {
+      disabled: true,
       bordered: true,
       label: "Error?",
       error: "Testing?"
-    }), React__default.createElement(doric.Input.Text, {
+    }), React$1__default.createElement(doric.Input.Text, {
       bordered: true,
       label: "Error?",
       error: ""
-    }), React__default.createElement(doric.Select, {
+    }), React$1__default.createElement(doric.Select, _extends({
       label: "SELECT POGGERS"
-    }, React__default.createElement("option", null, "Test 1"), React__default.createElement("option", null, "Test 2"), React__default.createElement("option", null, "Test 3"), React__default.createElement("option", null, "Test 4")), React__default.createElement(doric.Select, {
+    }, selectProps), React$1__default.createElement("option", {
+      value: "1"
+    }, "Test 1"), React$1__default.createElement("option", {
+      value: "2"
+    }, "Test 2"), React$1__default.createElement("option", {
+      value: "3"
+    }, "Test 3"), React$1__default.createElement("option", {
+      value: "4"
+    }, "Test 4")), React$1__default.createElement(doric.Select, _extends({
+      disabled: true,
       label: "SELECT POGGERS",
       bordered: true,
       style: {
         height: 100
       }
-    }, React__default.createElement("option", null, "Test 1"), React__default.createElement("option", null, "Test 2"), React__default.createElement("option", null, "Test 3"), React__default.createElement("option", null, "Test 4")), React__default.createElement(doric.Select, {
+    }, selectProps), React$1__default.createElement("option", {
+      value: "1"
+    }, "Test 1"), React$1__default.createElement("option", {
+      value: "2"
+    }, "Test 2"), React$1__default.createElement("option", {
+      value: "3"
+    }, "Test 3"), React$1__default.createElement("option", {
+      value: "4"
+    }, "Test 4")), React$1__default.createElement(doric.Select, _extends({
       error: "Wat",
       label: "SELECT POGGERS"
-    }, React__default.createElement("option", null, "Test 1"), React__default.createElement("option", null, "Test 2"), React__default.createElement("option", null, "Test 3"), React__default.createElement("option", null, "Test 4")), React__default.createElement(doric.Select, {
+    }, selectProps), React$1__default.createElement("option", {
+      value: "1"
+    }, "Test 1"), React$1__default.createElement("option", {
+      value: "2"
+    }, "Test 2"), React$1__default.createElement("option", {
+      value: "3"
+    }, "Test 3"), React$1__default.createElement("option", {
+      value: "4"
+    }, "Test 4")), React$1__default.createElement(doric.Select, _extends({
       error: "Wat Moar",
       label: "SELECT POGGERS",
       bordered: true
-    }, React__default.createElement("option", null, "Test 1"), React__default.createElement("option", null, "Test 2"), React__default.createElement("option", null, "Test 3"), React__default.createElement("option", null, "Test 4")))));
+    }, selectProps), React$1__default.createElement("option", {
+      value: "1"
+    }, "Test 1"), React$1__default.createElement("option", {
+      value: "2"
+    }, "Test 2"), React$1__default.createElement("option", {
+      value: "3"
+    }, "Test 3"), React$1__default.createElement("option", {
+      value: "4"
+    }, "Test 4")), React$1__default.createElement(doric.Input.Date, {
+      value: date,
+      onChange: watDate,
+      label: "Start Date"
+    }), React$1__default.createElement(doric.Input.Date, {
+      value: date,
+      onChange: watDate,
+      bordered: true,
+      label: "Start Date"
+    }))));
   }
 
-  ReactDOM.render(React__default.createElement(App, null), document.querySelector("app-root"));
+  ReactDOM.render(React$1__default.createElement(App, null), document.querySelector("app-root"));
 
 }(React, ReactDOM, styled));

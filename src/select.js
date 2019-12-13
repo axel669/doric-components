@@ -4,9 +4,10 @@ import styled from "styled-components"
 import customStyled from "./custom-tag-base.js"
 import {themedComponent, propToggle} from "./helpers.js"
 import ControlBorder from "./control-border.js"
+import Icon from "./icon.js"
 
 const SelectElement = styled.select`
-    padding: 24px 8px 8px 8px;
+    padding: 8px 8px 8px 8px;
     margin: 0px;
     border-width: 0px;
     z-index: +1;
@@ -19,21 +20,26 @@ const SelectElement = styled.select`
     &:focus {
         outline: none;
     }
+
+    &:disabled {
+        cursor: default;
+    }
 `
-const Icon = styled.div`
+const IconArea = styled.div`
     position: absolute;
     top: 0px;
     bottom: 0px;
     right: 0px;
-    padding: 20px 8px 8px 8px;
-    font-size: 20px;
     display: flex;
     align-items: center;
+    padding-right: 8px;
 `
 
 const Select = themedComponent(
     props => <ControlBorder {...props}>
-        <Icon className="ion-md-arrow-dropdown" />
+        <IconArea>
+            <Icon name="arrow-dropdown" />
+        </IconArea>
         <SelectElement {...props} />
     </ControlBorder>,
     "Themed(Select)"

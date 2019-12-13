@@ -3,15 +3,25 @@ import styled from "styled-components"
 
 import {propToggle} from "./helpers.js"
 
+const disabledVariant = propToggle(
+    "disabled",
+    styled.css`
+        opacity: 0.5;
+    `,
+    ""
+)
 const Wrapper = styled.div`
     position: relative;
     padding: 0px;
     margin: 2px;
+
+    ${disabledVariant}
 `
 const VisualArea = styled.div`
     position: relative;
     width: 100%;
     display: flex;
+    margin-top: 16px;
 `
 const errorVariant = props => (props.error || props.error === "")
     ? `color: ${props.theme.danger};`
@@ -22,7 +32,7 @@ const errorColorVariant = props => (props.error || props.error === "")
 const typeVariant = propToggle("bordered", "16px", "4px")
 const Label = styled.label`
     position: absolute;
-    top: 0px;
+    top: -16px;
     left: 0px;
     padding-top: 2px;
     user-select: none;
@@ -61,7 +71,7 @@ const FlatBorder = styled.div`
 `
 const FullBorder = styled.fieldset`
     position: absolute;
-    top: 0px;
+    top: -16px;
     bottom: 0px;
     left: 0px;
     right: 0px;
@@ -101,6 +111,7 @@ const ControlBorder = source => {
         error,
         _,
         children,
+        disabled,
     } = source
     const shared = {theme, error}
     const border = (bordered === true)
@@ -110,8 +121,14 @@ const ControlBorder = source => {
             </FullBorderLabel>
         </FullBorder>
         : <FlatBorder {...shared} />
+    const wrapperProps = {
+        theme,
+        className,
+        disabled,
+        style: _,
+    }
 
-    return <Wrapper theme={theme} className={className} style={_}>
+    return <Wrapper {...wrapperProps}>
         <VisualArea>
             {children}
             <Label bordered={bordered} {...shared}>

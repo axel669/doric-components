@@ -13,9 +13,12 @@ const GlobalStyle = themedComponent(styled.createGlobalStyle`
         background-color: ${props => props.theme.mainBG};
         color: ${props => props.theme.textColor};
     }
-    input {
+    input, select {
         color: ${props => props.theme.textColor};
         font-family: ${props => props.theme.font}, Arial;
+    }
+    option {
+        color: black;
     }
     * {
         box-sizing: border-box;
