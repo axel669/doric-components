@@ -587,16 +587,27 @@
   const inputOfType = type => source => {
     const {
       action,
+      forwardRef,
+      className,
       ...props
     } = source;
+    const inputProps = {
+      type,
+      className,
+      ref: forwardRef,
+      ...props
+    };
     return React$1__default.createElement(ControlBorder, props, React$1__default.createElement(ActionArea, {
       disabled: props.disabled
-    }, action), React$1__default.createElement(InputElement, _extends({}, props, {
-      type: type
-    })));
+    }, action), React$1__default.createElement(InputElement, inputProps));
   };
 
   const DateInput = themedComponent(inputOfType("text"), "Themed(DateInput)");
+
+  const defaultDateParser = dateString => new Date(dateString);
+
+  const defaultDateFormat = date => date.toLocaleDateString();
+
   const Input = {
     Text: themedComponent(inputOfType("text"), "Themed(TextInput)"),
     Password: themedComponent(inputOfType("password"), "Themed(PasswordInput)"),
@@ -605,27 +616,39 @@
         value,
         onChange,
         action,
+        dateParser = defaultDateParser,
+        dateFormat = defaultDateFormat,
         ...props
       } = source;
+      const inputRef = React$1.useRef();
       const [editValue, updateEditValue] = useInput("");
+      const original = dateFormat(value);
       React$1.useEffect(() => {
         updateEditValue({
           target: {
-            value
+            value: dateFormat(value)
           }
         });
       }, [value]);
 
-      const change = evt => {
-        if (value !== editValue) {
-          onChange(evt);
+      const change = (source, internal = false) => {
+        if (original !== editValue || internal === true) {
+          const [dateString, eventSource] = internal ? [source, "calendar"] : [editValue, "input"];
+          onChange(dateParser(dateString), eventSource);
         }
       };
 
+      const openCalendar = async () => {
+        change("1/1/70", true);
+      };
+
       const actions = [action, React$1__default.createElement(ActionButton, {
-        icon: "calendar"
+        icon: "calendar",
+        onTap: openCalendar
       })];
+
       return React$1__default.createElement(DateInput, _extends({}, props, {
+        forwardRef: inputRef,
         value: editValue,
         onChange: updateEditValue,
         onBlur: change,
@@ -6632,6 +6655,7 @@
     Tabs,
     ThemeProvider,
     Text,
+    SimpleBar: SimpleBar$1,
     lightTheme,
     darkTheme,
     themedComponent,
@@ -6734,9 +6758,17 @@
 
   const TestModal = props => React$1__default.createElement(Dialog, null, React$1__default.createElement(doric.Card, null, React$1__default.createElement(doric.CardContent, null, React$1__default.createElement(doric.Text, {
     type: "title"
-  }, "Alert")), React$1__default.createElement(doric.CardActions, null, React$1__default.createElement(doric.Button, {
+  }, "Alert")), React$1__default.createElement(doric.CardActions, {
+    style: {
+      textAlign: "right"
+    }
+  }, React$1__default.createElement(doric.Button, {
     onTap: () => props.close(0)
   }, "Close"))));
+
+  const OtherInput = styled__default(doric.Input.Date)`
+    border-left: 5px solid green;
+`;
 
   function App() {
 
@@ -6750,13 +6782,13 @@
 
     const [text, updateText] = doric.useInput("");
     const [select, updateSelect] = doric.useInput("");
-    const [date, setDate] = React$1.useState("");
+    const [date, setDate] = React$1.useState(new Date());
     const [modal, openModal] = useModal(TestModal);
 
     const testModal = async () => console.log((await openModal()));
 
-    const watDate = evt => {
-      setDate(evt.target.value.split("").reverse().join(""));
+    const watDate = newDate => {
+      setDate(newDate);
     };
 
     const selectProps = {
@@ -6860,6 +6892,11 @@
       onChange: watDate,
       label: "Start Date"
     }), React$1__default.createElement(doric.Input.Date, {
+      value: date,
+      onChange: watDate,
+      bordered: true,
+      label: "Start Date"
+    }), React$1__default.createElement(OtherInput, {
       value: date,
       onChange: watDate,
       bordered: true,

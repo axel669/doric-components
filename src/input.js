@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback} from "react"
+import React, {useEffect, useCallback, useRef} from "react"
 import styled from "styled-components"
 
 import {themedComponent, propToggle} from "./helpers.js"
@@ -39,12 +39,18 @@ const ActionArea = styled.div`
 
 const inputOfType = type =>
     source => {
-        const {action, ...props} = source
+        const {action, forwardRef, className, ...props} = source
+        const inputProps = {
+            type,
+            className,
+            ref: forwardRef,
+            ...props,
+        }
         return <ControlBorder {...props}>
             <ActionArea disabled={props.disabled}>
                 {action}
             </ActionArea>
-            <InputElement {...props} type={type} />
+            <InputElement {...inputProps} />
         </ControlBorder>
     }
 
@@ -52,6 +58,8 @@ const DateInput = themedComponent(
     inputOfType("text"),
     "Themed(DateInput)"
 )
+const defaultDateParser = dateString => new Date(dateString)
+const defaultDateFormat = date => date.toLocaleDateString()
 
 const Input = {
     Text: themedComponent(
@@ -67,31 +75,50 @@ const Input = {
             value,
             onChange,
             action,
+            dateParser = defaultDateParser,
+            dateFormat = defaultDateFormat,
             ...props
         } = source
+        const inputRef = useRef()
         const [editValue, updateEditValue] = useInput("")
+        const original = dateFormat(value)
 
         useEffect(
             () => {
                 updateEditValue({
                     target: {
-                        value,
+                        value: dateFormat(value),
                     }
                 })
             },
             [value]
         )
-        const change = evt => {
-            if (value !== editValue) {
-                onChange(evt)
+        const change = (source, internal = false) => {
+            if (original !== editValue || internal === true) {
+                const [dateString, eventSource] = internal
+                    ? [source, "calendar"]
+                    : [editValue, "input"]
+                onChange(
+                    dateParser(dateString),
+                    eventSource
+                )
             }
+        }
+        const openCalendar = async () => {
+            change("1/1/70", true)
         }
         const actions = [
             action,
-            <ActionButton icon="calendar" />
+            <ActionButton icon="calendar" onTap={openCalendar} />
         ]
+        const wrap = func =>
+            evt => {
+                console.log(evt.nativeEvent)
+                func(evt)
+            }
 
         return <DateInput {...props}
+            forwardRef={inputRef}
             value={editValue}
             onChange={updateEditValue}
             onBlur={change}

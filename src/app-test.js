@@ -255,6 +255,9 @@ const TestModal = (props) => <Dialog>
     </doric.Card>
 </Dialog>
 
+const OtherInput = styled(doric.Input.Date)`
+    border-left: 5px solid green;
+`
 function App() {
     const tapped = () => console.log("tapped")
     const [theme, cycleTheme] = useCycle(themes)
@@ -268,13 +271,13 @@ function App() {
     const onTabChange = evt => changeTab(evt.newTab)
     const [text, updateText] = doric.useInput("")
     const [select, updateSelect] = doric.useInput("")
-    const [date, setDate] = useState("")
+    const [date, setDate] = useState(new Date())
     const [modal, openModal] = useModal(TestModal)
     const testModal = async () => console.log(
         await openModal()
     )
-    const watDate = evt => {
-        setDate(evt.target.value.split("").reverse().join(""))
+    const watDate = newDate => {
+        setDate(newDate)
     }
 
     const selectProps = {
@@ -326,6 +329,7 @@ function App() {
                 </doric.Select>
                 <doric.Input.Date value={date} onChange={watDate} label="Start Date" />
                 <doric.Input.Date value={date} onChange={watDate} bordered label="Start Date" />
+                <OtherInput value={date} onChange={watDate} bordered label="Start Date" />
             </div>
             {/* <doric.Text type="header">
                 Button Styles

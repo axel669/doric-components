@@ -26,6 +26,8 @@ import {
 } from "./helpers.js"
 import Text from "./text.js"
 
+import SimpleBar from "simplebar-react"
+
 import * as effects from "./effects.js"
 
 import {lightTheme, darkTheme} from "./themes.js"
@@ -47,6 +49,8 @@ export default {
     Tabs,
     ThemeProvider,
     Text,
+
+    SimpleBar,
 
     lightTheme,
     darkTheme,
