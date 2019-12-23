@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react"
+import React, {useState, useEffect, useReducer} from "react"
 import ReactDOM from "react-dom"
 
 import styled from "styled-components"
@@ -8,8 +8,8 @@ import {darkTheme, lightTheme} from "./themes.js"
 import {themedComponent} from "./helpers.js"
 
 const themes = [
-    lightTheme,
     darkTheme,
+    lightTheme,
 ]
 
 const AppWrapper = styled.div`
@@ -22,6 +22,7 @@ const CornerDiv = styled.div`
     position: fixed;
     bottom: 0;
     right: 0;
+    z-index: 1000000;
 `
 const useCycle = array => {
     const [index, setIndex] = useState(0)
@@ -163,86 +164,7 @@ const debounce = (func, time) => {
     }
 }
 
-const modalRoot = document.createElement("div")
-modalRoot.style.position = "absolute"
-modalRoot.dataset.modalRoot = ""
-document.body.appendChild(modalRoot)
-
-const DialogCover = styled.div`
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    bottom: 0px;
-    right: 0px;
-    background-color: rgba(0, 0, 0, 0.4);
-`
-const DialogPosition = styled.div`
-    position: absolute;
-    top: ${props => props.y};
-    left: ${props => props.x};
-    transform: translate(${props => props.anchorX}, ${props => props.anchorY});
-`
-
-const invertMeasurement = measure => {
-    if (measure.startsWith("-") === true) {
-        return measure.slice(1)
-    }
-    return `-${measure}`
-}
-const Dialog = props => {
-    const {
-        position = {},
-        children
-    } = props
-    const {
-        x = "50%",
-        y = "50%",
-        anchorX = "50%",
-        anchorY = "50%",
-    } = position
-    const positionInfo = {
-        x,
-        y,
-        anchorX: invertMeasurement(anchorX),
-        anchorY: invertMeasurement(anchorY),
-    }
-
-    return ReactDOM.createPortal(
-        <DialogCover>
-            <DialogPosition {...positionInfo}>
-                {children}
-            </DialogPosition>
-        </DialogCover>,
-        modalRoot
-    )
-}
-
-const useModal = (Component) => {
-    const [displayInfo, updateInfo] = useState(null)
-
-    if (displayInfo === null) {
-        return [
-            null,
-            (props = {}) => new Promise(
-                resolve => updateInfo({
-                    resolve,
-                    props,
-                })
-            ),
-        ]
-    }
-
-    const close = value => {
-        updateInfo(null)
-        displayInfo.resolve(value)
-    }
-    return [
-        <Component {...displayInfo.props} close={close} />,
-        () => {},
-    ]
-}
-
-const TestModal = (props) => <Dialog>
+const TestModal = (props) => <doric.Modal>
     <doric.Card>
         <doric.CardContent>
             <doric.Text type="title">
@@ -253,39 +175,60 @@ const TestModal = (props) => <Dialog>
             <doric.Button onTap={() => props.close(0)}>Close</doric.Button>
         </doric.CardActions>
     </doric.Card>
-</Dialog>
+</doric.Modal>
+
+const useToggle = value => {
+    const [current, change] = useState(value)
+    return [
+        current,
+        () => change(current === false)
+    ]
+}
+const Checkboxes = () => {
+    const [checked, toggleChecked] = useToggle(false)
+    return <div>
+        <doric.Text type="header">Checkboxes</doric.Text>
+        <doric.Checkbox checked={checked} onChange={toggleChecked} label="test" />
+        <doric.Checkbox checked={checked} onChange={toggleChecked} label="test" noClickLabel />
+        <doric.Checkbox checked={checked} onChange={toggleChecked} color="primary" label="test" />
+        <doric.Checkbox checked={checked} onChange={toggleChecked} color="secondary" label="test" noClickLabel />
+        <doric.Checkbox checked={checked} onChange={toggleChecked} color="danger" icon="heart-empty" checkedIcon="heart" label="test" />
+    </div>
+}
 
 const OtherInput = styled(doric.Input.Date)`
     border-left: 5px solid green;
 `
+
 function App() {
     const tapped = () => console.log("tapped")
     const [theme, cycleTheme] = useCycle(themes)
-    const [currentTab, changeTab] = useState(0)
-    const tabs = range(
-        10,
-        i => <doric.Tab label={`Tab #${i}`}>
-            <doric.Text type="title">{i}</doric.Text>
-        </doric.Tab>
-    )
-    const onTabChange = evt => changeTab(evt.newTab)
-    const [text, updateText] = doric.useInput("")
-    const [select, updateSelect] = doric.useInput("")
-    const [date, setDate] = useState(new Date())
-    const [modal, openModal] = useModal(TestModal)
-    const testModal = async () => console.log(
-        await openModal()
-    )
-    const watDate = newDate => {
-        setDate(newDate)
-    }
-
-    const selectProps = {
-        value: select,
-        onChange: updateSelect,
-    }
-
-    const wat = <doric.ActionButton icon="calendar" />
+    // const [currentTab, changeTab] = useState(0)
+    // const tabs = range(
+    //     10,
+    //     i => <doric.Tab label={`Tab #${i}`}>
+    //         <doric.Text type="title">{i}</doric.Text>
+    //     </doric.Tab>
+    // )
+    // const onTabChange = evt => changeTab(evt.newTab)
+    // const [text, updateText] = doric.useInput("")
+    // const [select, updateSelect] = doric.useInput("")
+    // const [date, setDate] = useState(new Date())
+    // const [modal, openModal] = doric.useModal(TestModal)
+    // const testModal = async () => console.log(
+    //     await openModal()
+    // )
+    // const watDate = (newDate, eventSource) => {
+    //     console.log(newDate, eventSource)
+    //     setDate(newDate)
+    // }
+    //
+    // const selectProps = {
+    //     value: select,
+    //     onChange: updateSelect,
+    // }
+    //
+    // const wat = <doric.ActionButton icon="calendar" />
 
     return <AppWrapper>
         <doric.ThemeProvider value={theme}>
@@ -293,8 +236,10 @@ function App() {
             <CornerDiv>
                 <doric.Button color="primary" onTap={cycleTheme}>Cycle Theme</doric.Button>
             </CornerDiv>
-            {modal}
-            <doric.Button onTap={testModal}>Testing</doric.Button>
+            {/* {modal} */}
+
+            <Checkboxes />
+            {/* <doric.Button onTap={testModal} startIcon={<doric.Icon name="calendar" />}>Testing</doric.Button>
 
             <div style={{display: "grid", gridTemplateColumns: "repeat(2, 1fr)"}}>
                 <doric.Input.Text label="test" _={{gridColumn: "span 2"}} action={wat} />
@@ -329,8 +274,8 @@ function App() {
                 </doric.Select>
                 <doric.Input.Date value={date} onChange={watDate} label="Start Date" />
                 <doric.Input.Date value={date} onChange={watDate} bordered label="Start Date" />
-                <OtherInput value={date} onChange={watDate} bordered label="Start Date" />
-            </div>
+                <OtherInput value={date} onChange={watDate} bordered label="Start Date" dateFormat={date => date.toLocaleDateString("en", {year: "numeric", month: "long", day: "2-digit"})} />
+            </div> */}
             {/* <doric.Text type="header">
                 Button Styles
             </doric.Text>

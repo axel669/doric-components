@@ -14,7 +14,10 @@ const raisedVariant = propToggle(
 )
 const disabledVariant = propToggle(
     "disabled",
-    css`opacity: 0.7;`,
+    css`
+        opacity: 0.7;
+        font-weight: 300;
+    `,
     ""
 )
 const sizeVariant = propVariant(
@@ -34,6 +37,13 @@ const sizeVariant = propVariant(
         `,
     }
 )
+const padPosition = {
+    start: "right",
+    end: "left",
+}
+const IconWrapper = styled.span`
+    padding-${props => padPosition[props.position]}: 4px;
+`
 const ButtonBaseComponent = styled(Clickable("doric-button"))`
     border-radius: 4px;
     align-items: center;
@@ -44,6 +54,7 @@ const ButtonBaseComponent = styled(Clickable("doric-button"))`
     background-color: transparent;
 
     color: ${props => props.theme.textColor};
+    flex-direction: ${props => props.layout || "row"};
 
     display: ${displayVariant};
     ${sizeVariant}
@@ -55,6 +66,9 @@ const ButtonBase = themedComponent(
         const {
             onTap = () => {},
             children,
+            startIcon = null,
+            endIcon = null,
+            text = null,
             ...props
         } = source
         const wrappedOnTap = evt => {
@@ -63,9 +77,18 @@ const ButtonBase = themedComponent(
             }
             onTap(evt)
         }
+        const start = (startIcon !== null)
+            ? <IconWrapper position="start">{startIcon}</IconWrapper>
+            : null
+        const end = (endIcon !== null)
+            ? <IconWrapper position="end">{endIcon}</IconWrapper>
+            : null
         return <ButtonBaseComponent {...props}>
             <CustomListeners onTap={wrappedOnTap} />
+            {start}
+            {text}
             {children}
+            {end}
         </ButtonBaseComponent>
     },
     "Themed(ButtonBase)"
@@ -119,7 +142,7 @@ const flatColorVariant = propVariant(
     }
 )
 const outlineVariant = propToggle(
-    "outline",
+    "bordered",
     styled.css`
         border: 1px solid ${props => props.theme[props.color] || props.theme.textColor};
     `,
@@ -138,16 +161,18 @@ const ActionButtonElement = themedComponent(
         border-radius: 50%;
 
         ${flatColorVariant}
-        width: ${props => props.radius || 30};
-        height: ${props => props.radius || 30};
+        width: ${props => props.size || "30px"};
+        height: ${props => props.size || "30px"};
     `
 )
 const ActionButton = source => {
-    const {icon, ...props} = source
+    const {icon, children, ...props} = source
+    const iconElement = cond(typeof icon === "string")(
+        <Icon name={icon} />,
+        icon
+    )
 
-    return <ActionButtonElement {...props}>
-        <Icon name={icon} />
-    </ActionButtonElement>
+    return <ActionButtonElement {...props} text={iconElement} />
 }
 
 export {

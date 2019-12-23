@@ -1,60 +1,60 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef} from "react"
 
 const climbDOM = (start, func) => {
-    let current = start;
+    let current = start
     while (current !== null && current !== document.documentElement) {
-        func(current);
-        current = current.parentNode;
+        func(current)
+        current = current.parentNode
     }
-};
+}
 
-const globalListeners = {};
+const globalListeners = {}
 const registerGlobalListener = (type, elem, handler) => {
     if (globalListeners[type] === undefined) {
-        globalListeners[type] = new Map();
+        globalListeners[type] = new Map()
 
         window.addEventListener(
             type,
             (evt) => {
-                const handlers = globalListeners[type];
+                const handlers = globalListeners[type]
                 climbDOM(
                     evt.target,
                     (node) => handlers.get(node)?.(evt)
                 )
             }
-        );
+        )
     }
 
-    globalListeners[type].set(elem, handler);
+    globalListeners[type].set(elem, handler)
 }
 const removeGlobalListener = (name, elem) => {
-    const type = name.slice(2).toLowerCase();
-    globalListeners[type].delete(elem);
+    const type = name.slice(2).toLowerCase()
+    globalListeners[type].delete(elem)
 }
 
-const useMounts = effect => useEffect(effect, []);
+const useMounts = effect => useEffect(effect, [])
 function CustomListeners(props) {
-    const element = useRef(null);
-    const pRef = useRef(props);
-    pRef.current = props;
+    const element = useRef(null)
+    const pRef = useRef(props)
+    pRef.current = props
     useMounts(() => {
-        const types = Object.keys(props);
+        const types = Object.keys(props)
         for (const name of types) {
-            const type = name.slice(2).toLowerCase();
+            const type = name.slice(2).toLowerCase()
             registerGlobalListener(
                 type,
                 element.current.parentNode,
                 evt => pRef.current[name]?.(evt)
-            );
+            )
         }
         return () => {
             for (const name of types) {
-                removeGlobalListener(name, element.current.parentNode);
+                removeGlobalListener(name, element.current.parentNode)
             }
-        };
-    });
+        }
+    })
 
-    return <doric-custom-listeners ref={element} />;
+    return <doric-custom-listeners ref={element} />
 }
 
-export default CustomListeners;
+export default CustomListeners

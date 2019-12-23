@@ -1,7 +1,6 @@
 import React from "react"
 import styled from "styled-components"
 
-import customStyled from "./custom-tag-base.js"
 import {themedComponent, propToggle} from "./helpers.js"
 import ControlBorder from "./control-border.js"
 import Icon from "./icon.js"
@@ -14,8 +13,9 @@ const SelectElement = styled.select`
     width: 100%;
     border-radius: 4px;
     background-color: transparent;
-    -webkit-appearance: none;
     cursor: pointer;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
     &:focus {
         outline: none;

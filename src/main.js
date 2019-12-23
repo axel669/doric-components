@@ -12,9 +12,14 @@ import {
     CardContent,
     CardMedia
 } from "./card.js"
+import Checkbox from "./checkbox.js"
 import GlobalStyle from "./global.js"
 import Icon from "./icon.js"
 import Input from "./input.js"
+import {
+    Modal,
+    useModal,
+} from "./modal.js"
 import Select from "./select.js"
 import {
     Tab,
@@ -40,10 +45,12 @@ export default {
     CardActions,
     CardContent,
     CardMedia,
+    Checkbox,
     FlatButton,
     GlobalStyle,
     Icon,
     Input,
+    Modal,
     Select,
     Tab,
     Tabs,
@@ -58,4 +65,5 @@ export default {
     themedComponent,
 
     ...effects,
+    useModal,
 }

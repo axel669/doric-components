@@ -2,6 +2,7 @@ import styled from "styled-components"
 
 const IconElement = styled.span`
     font-size: 18px;
+    padding-top: 2px;
 `
 const Icon = source => {
     const {name, className = "", ...props} = source
