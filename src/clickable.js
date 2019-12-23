@@ -1,6 +1,8 @@
-import customStyled from "./custom-tag-base"
+import styled from "styled-components"
 
-const Clickable = tag => customStyled(tag).css`
+import renderAs from "./render-as.js"
+
+const Clickable = tag => styled(renderAs(tag))`
     position: relative;
     user-select: none;
     cursor: pointer;

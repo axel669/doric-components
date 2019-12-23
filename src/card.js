@@ -2,7 +2,7 @@ import React from "react"
 import styled from "styled-components"
 
 import Clickable from "./clickable.js"
-import customStyled from "./custom-tag-base.js"
+import renderAs from "./render-as.js"
 import {propToggle, themedComponent} from "./helpers.js"
 
 const directionVariant = propToggle(
@@ -23,7 +23,7 @@ const directionVariant = propToggle(
     `,
 )
 const Card = themedComponent(
-    customStyled("doric-card").css`
+    styled(renderAs("doric-card"))`
         display: grid;
         box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
         margin: 4px;
