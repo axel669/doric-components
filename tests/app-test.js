@@ -183,7 +183,8 @@
     dangerLight: "#f88e86",
     secondary: "#128f12",
     secondaryLight: "#70bb70",
-    lightBorder: "#2196F3"
+    lightBorder: "#2196F3",
+    disabledBrightness: "65%"
   };
   const lightTheme = {
     font: "Roboto",
@@ -205,7 +206,8 @@
     dangerLight: "#f88e86",
     secondary: "#128f12",
     secondaryLight: "#70bb70",
-    lightBorder: "lightgray"
+    lightBorder: "lightgray",
+    disabledBrightness: "65%"
   };
 
   const propVariant = ({
@@ -230,11 +232,18 @@
     return f;
   };
 
+  const HiddenControl = styled.div`
+    display: none;
+`;
+
   const displayVariant = propToggle("block", "flex", "inline-flex");
   const raisedVariant = propToggle("raised", styled$1.css`boxShadow: 2px 2px 3px rgba(0, 0, 0, 0.4);`, "");
   const disabledVariant = propToggle("disabled", styled$1.css`
-        opacity: 0.7;
-        font-weight: 300;
+        filter: brightness(${props => props.theme.disabledBrightness});
+        background-color: ${props => props.theme.hlInvert};
+        ${''
+/* font-weight: 300; */
+}
     `, "");
   const sizeVariant = propVariant({
     name: "size",
@@ -431,8 +440,20 @@
     justify-content: center;
     margin: 4px;
     user-select: none;
+    position: relative;
 
-    ${labelClickVariant}
+    ${''
+/* ${labelClickVariant} */
+}
+`;
+  const ClickableArea = styled.div`
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    cursor: pointer;
+
+    width: ${props => props.noClickLabel ? "36px" : "100%"};
 `;
   const defaultIcon = "square-outline";
   const defaultCheckedIcon = "checkbox";
@@ -448,30 +469,34 @@
       noClickLabel,
       ...props
     } = source;
+    const controlRef = React$1.useRef();
     const iconElement = cond(checked)(checkedIcon, icon);
 
-    const wrappedOnTap = evt => {
+    const change = () => {
       if (props.disabled === true) {
         return;
       }
 
-      const tag = evt.target.tagName.toLowerCase();
-
-      if (tag === "doric-checkbox" && noClickLabel === true) {
-        return;
-      }
-
-      onChange === null || onChange === void 0 ? void 0 : onChange(evt);
+      controlRef.current.click();
     };
 
     return React$1__default.createElement(CheckboxContainer, {
       noClickLabel: noClickLabel
+    }, React$1__default.createElement(ClickableArea, {
+      noClickLabel: noClickLabel
     }, React$1__default.createElement(CustomListeners, {
-      onTap: wrappedOnTap
+      onTap: change
+    })), React$1__default.createElement(HiddenControl, {
+      as: "input",
+      type: "checkbox",
+      checked: checked,
+      onChange: onChange,
+      ref: controlRef
     }), React$1__default.createElement(ActionButton, {
       color: color,
       icon: iconElement,
-      size: "36px"
+      size: "36px",
+      onTap: change
     }), label);
   };
 
@@ -503,9 +528,15 @@
     return [current, evt => update(evt.target.value)];
   };
 
+  const useToggle = value => {
+    const [current, set] = React$1.useState(value);
+    return [current, evt => set(evt.target.checked)];
+  };
+
   var effects = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    useInput: useInput
+    useInput: useInput,
+    useToggle: useToggle
   });
 
   const disabledVariant$1 = propToggle("disabled", styled$1__default.css`
@@ -987,6 +1018,120 @@
   const Select = themedComponent(props => React$1__default.createElement(ControlBorder, props, React$1__default.createElement(IconArea, null, React$1__default.createElement(Icon, {
     name: "arrow-dropdown"
   })), React$1__default.createElement(SelectElement, props)), "Themed(Select)");
+
+  const SwitchContainer = styled$1__default(renderAs("doric-switch"))`
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 4px;
+    user-select: none;
+    position: relative;
+
+    opacity: ${props => props.disabled ? 0.7 : 1};
+
+    & > doric-button {
+        position: absolute;
+        top: 0px;
+        transition: left linear 100ms;
+
+        left: ${props => props.checked ? 14 : 0}px;
+    }
+`;
+  const ClickableArea$1 = styled$1__default.div`
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    cursor: pointer;
+
+    width: ${props => props.noClickLabel ? "50px" : "100%"};
+`;
+  const trackColorVariant = propToggle("checked", styled$1__default.css`
+        background-color: ${props => props.theme[`${props.color}Light`]};
+    `, styled$1__default.css`
+        background-color: gray;
+    `);
+  const SwitchArea = styled$1__default.div`
+    display: inline-block;
+    width: 50px;
+    height: 36px;
+    position: relative;
+    margin-right: 4px;
+
+    &::before {
+        position: absolute;
+        content: "";
+        top: 50%;
+        left: 50%;
+        width: 34px;
+        height: 12px;
+        transform: translate(-50%, -50%);
+        border-radius: 20px;
+        background-color: cyan;
+        transition: background-color linear 100ms;
+
+        ${trackColorVariant}
+    }
+`;
+  const colorVariant = propToggle("checked", styled$1__default.css`
+        background-color: ${props => props.theme[props.color]};
+    `, styled$1__default.css`
+        background-color: lightgray;
+    `);
+  const SwitchIcon = styled$1__default.div`
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    transition: background-color linear 100ms;
+
+    ${colorVariant}
+`;
+  const Switch = themedComponent(source => {
+    const {
+      onChange,
+      label,
+      checked,
+      theme,
+      color,
+      noClickLabel,
+      disabled
+    } = source;
+    const controlledProps = {
+      checked,
+      color,
+      theme,
+      disabled
+    };
+    const controlRef = React$1.useRef();
+
+    const change = () => {
+      if (disabled === true) {
+        return;
+      }
+
+      controlRef.current.click();
+    };
+
+    const icon = React$1__default.createElement(SwitchIcon, controlledProps);
+    return React$1__default.createElement(SwitchContainer, {
+      checked: checked
+    }, React$1__default.createElement(HiddenControl, {
+      as: "input",
+      type: "checkbox",
+      checked: checked,
+      onChange: onChange,
+      ref: controlRef
+    }), React$1__default.createElement(SwitchArea, controlledProps), React$1__default.createElement(ClickableArea$1, {
+      noClickLabel: noClickLabel
+    }, React$1__default.createElement(CustomListeners, {
+      onTap: change
+    })), React$1__default.createElement(ActionButton, {
+      icon: icon,
+      size: "36px",
+      onTap: change,
+      disabled: disabled
+    }), React$1__default.createElement(Text, null, label));
+  });
 
   var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -6906,6 +7051,7 @@
     Input,
     Modal,
     Select,
+    Switch,
     Tab,
     Tabs,
     ThemeProvider,
@@ -6918,7 +7064,6 @@
     useModal
   };
 
-  const themes = [darkTheme, lightTheme];
   const AppWrapper = styled$1__default.div`
     width: 100%;
     margin: auto;
@@ -6939,6 +7084,35 @@
     }];
   };
 
+  function Buttons() {
+    const buttonTypes = ["Normal", "Primary", "Danger", "Secondary"];
+    const buttonSizes = ["small", "medium", "large"];
+    return buttonSizes.map(size => React$1__default.createElement(React$1__default.Fragment, null, React$1__default.createElement("div", null, buttonTypes.map(type => React$1__default.createElement(doric.Button, {
+      size: size,
+      color: type.toLowerCase()
+    }, type))), React$1__default.createElement("div", null, buttonTypes.map(type => React$1__default.createElement(doric.FlatButton, {
+      size: size,
+      color: type.toLowerCase()
+    }, type))), React$1__default.createElement("div", null, buttonTypes.map(type => React$1__default.createElement(doric.FlatButton, {
+      size: size,
+      color: type.toLowerCase(),
+      bordered: true
+    }, type))), React$1__default.createElement("div", null, buttonTypes.map(type => React$1__default.createElement(doric.Button, {
+      disabled: true,
+      size: size,
+      color: type.toLowerCase()
+    }, type))), React$1__default.createElement("div", null, buttonTypes.map(type => React$1__default.createElement(doric.FlatButton, {
+      disabled: true,
+      size: size,
+      color: type.toLowerCase()
+    }, type))), React$1__default.createElement("div", null, buttonTypes.map(type => React$1__default.createElement(doric.FlatButton, {
+      disabled: true,
+      size: size,
+      color: type.toLowerCase(),
+      bordered: true
+    }, type)))));
+  }
+
   const CardGrid = styled$1__default.div`
     display: flex;
     align-items: flex-start;
@@ -6946,13 +7120,8 @@
     flex-wrap: wrap;
 `;
 
-  const useToggle = value => {
-    const [current, change] = React$1.useState(value);
-    return [current, () => change(current === false)];
-  };
-
   const Checkboxes = () => {
-    const [checked, toggleChecked] = useToggle(false);
+    const [checked, toggleChecked] = doric.useToggle(false);
     return React$1__default.createElement("div", null, React$1__default.createElement(doric.Text, {
       type: "header"
     }, "Checkboxes"), React$1__default.createElement(doric.Checkbox, {
@@ -6992,53 +7161,12 @@
         height: 30px;
         background-color: ${props => props.theme[props.color]};
     `);
-  const SwitchDisplay = styled$1__default.div`
-    width: 32px;
-    height: 20px;
-    position: relative;
-
-    &::before {
-        position: absolute;
-        content: "";
-        top: 4px;
-        left: 0px;
-        bottom: 4px;
-        right: 0px;
-        border-radius: 20px;
-        background-color: ${props => props.theme[`${props.color}Light`]};
-    }
-
-    &::after {
-        position: absolute;
-        content: "";
-        top: 50%;
-        width: 20px;
-        height: 20px;
-        transform: translate(-50%, -50%);
-        border-radius: 50%;
-        transition: left linear 100ms;
-
-        background-color: ${props => props.theme[props.color]};
-        left: ${props => props.on ? "0" : "100"}%;
-    }
-`;
-  const Switch = doric.themedComponent(source => {
-    const {
-      onChange,
-      ...props
-    } = source;
-
-    const change = () => onChange === null || onChange === void 0 ? void 0 : onChange(props.on === false);
-
-    return React$1__default.createElement(doric.Button, {
-      onTap: change
-    }, React$1__default.createElement(SwitchDisplay, props));
-  });
+  const themes = [darkTheme, lightTheme];
 
   function App() {
 
     const [theme, cycleTheme] = useCycle(themes);
-    const [on, toggle] = React$1.useState(false); // const [currentTab, changeTab] = useState(0)
+    const [on, toggle] = doric.useToggle(false); // const [currentTab, changeTab] = useState(0)
     // const tabs = range(
     //     10,
     //     i => <doric.Tab label={`Tab #${i}`}>
@@ -7070,19 +7198,31 @@
     }, React$1__default.createElement(doric.GlobalStyle, null), React$1__default.createElement(CornerDiv, null, React$1__default.createElement(doric.Button, {
       color: "primary",
       onTap: cycleTheme
-    }, "Cycle Theme")), React$1__default.createElement(Checkboxes, null), React$1__default.createElement(Switch, {
-      on: on,
+    }, "Cycle Theme")), React$1__default.createElement(Checkboxes, null), React$1__default.createElement(doric.Switch, {
+      checked: on,
       onChange: toggle,
-      color: "primary"
-    }), React$1__default.createElement(Switch, {
-      on: on,
+      label: "primary",
+      color: "primary",
+      disabled: true
+    }), React$1__default.createElement(doric.Switch, {
+      checked: on,
       onChange: toggle,
+      label: "secondary",
       color: "secondary"
-    }), React$1__default.createElement(Switch, {
-      on: on,
+    }), React$1__default.createElement(doric.Switch, {
+      checked: on,
       onChange: toggle,
+      label: "danger",
       color: "danger"
-    })));
+    }), React$1__default.createElement(doric.Switch, {
+      checked: on,
+      onChange: toggle,
+      label: "not clikcable",
+      color: "secondary",
+      noClickLabel: true
+    }), React$1__default.createElement(doric.Text, {
+      type: "header"
+    }, "Button Styles"), React$1__default.createElement(Buttons, null)));
   }
 
   ReactDOM.render(React$1__default.createElement(App, null), document.querySelector("app-root"));

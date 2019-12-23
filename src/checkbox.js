@@ -1,11 +1,11 @@
-import React from "react"
+import React, {useRef} from "react"
 
 import {ActionButton} from "./button.js"
 import CustomListeners from "./custom-listeners.js"
 import Icon from "./icon.js"
 
 import renderAs from "./render-as.js"
-import {propToggle} from "./helpers.js"
+import {propToggle, HiddenControl} from "./helpers.js"
 
 const labelClickVariant = propToggle(
     "noClickLabel",
@@ -20,8 +20,18 @@ const CheckboxContainer = styled(renderAs("doric-checkbox"))`
     justify-content: center;
     margin: 4px;
     user-select: none;
+    position: relative;
 
-    ${labelClickVariant}
+    ${'' /* ${labelClickVariant} */}
+`
+const ClickableArea = styled.div`
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    cursor: pointer;
+
+    width: ${props => props.noClickLabel ? "36px" : "100%"};
 `
 const defaultIcon = "square-outline"
 const defaultCheckedIcon = "checkbox"
@@ -37,24 +47,35 @@ const Checkbox = source => {
         ...props
     } = source
 
+    const controlRef = useRef()
     const iconElement = cond(checked)(
         checkedIcon,
         icon,
     )
-    const wrappedOnTap = evt => {
+    const change = () => {
         if (props.disabled === true) {
             return
         }
-        const tag = evt.target.tagName.toLowerCase()
-        if (tag === "doric-checkbox" && noClickLabel === true) {
-            return
-        }
-        onChange?.(evt)
+        controlRef.current.click()
     }
 
     return <CheckboxContainer noClickLabel={noClickLabel}>
-        <CustomListeners onTap={wrappedOnTap} />
-        <ActionButton color={color} icon={iconElement} size="36px" />
+        <ClickableArea noClickLabel={noClickLabel}>
+            <CustomListeners onTap={change} />
+        </ClickableArea>
+        <HiddenControl
+            as="input"
+            type="checkbox"
+            checked={checked}
+            onChange={onChange}
+            ref={controlRef}
+        />
+        <ActionButton
+            color={color}
+            icon={iconElement}
+            size="36px"
+            onTap={change}
+        />
         {label}
     </CheckboxContainer>
 }

@@ -18,7 +18,8 @@ const darkTheme = {
     dangerLight: "#f88e86",
     secondary: "#128f12",
     secondaryLight: "#70bb70",
-    lightBorder: "#2196F3"
+    lightBorder: "#2196F3",
+    disabledBrightness: "65%",
 }
 const lightTheme = {
     font: "Roboto",
@@ -41,6 +42,7 @@ const lightTheme = {
     secondary: "#128f12",
     secondaryLight: "#70bb70",
     lightBorder: "lightgray",
+    disabledBrightness: "65%",
 }
 
 export {

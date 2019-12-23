@@ -21,6 +21,7 @@ import {
     useModal,
 } from "./modal.js"
 import Select from "./select.js"
+import Switch from "./switch.js"
 import {
     Tab,
     Tabs
@@ -52,6 +53,7 @@ export default {
     Input,
     Modal,
     Select,
+    Switch,
     Tab,
     Tabs,
     ThemeProvider,

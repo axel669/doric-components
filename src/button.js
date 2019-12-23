@@ -15,7 +15,7 @@ const raisedVariant = propToggle(
 const disabledVariant = propToggle(
     "disabled",
     css`
-        opacity: 0.7;
+        filter: brightness(${props => props.theme.disabledBrightness});
         font-weight: 300;
     `,
     ""

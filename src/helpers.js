@@ -18,9 +18,14 @@ const themedComponent = (Component, displayName) => {
     return f
 }
 
+const HiddenControl = styled.div`
+    display: none;
+`
+
 export {
     propVariant,
     propToggle,
     themedComponent,
     ThemeProvider,
+    HiddenControl,
 }

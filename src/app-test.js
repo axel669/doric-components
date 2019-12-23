@@ -1,16 +1,12 @@
-import React, {useState, useEffect, useReducer} from "react"
+import React, {useState, useEffect, useReducer, useRef} from "react"
 import ReactDOM from "react-dom"
 
 import styled from "styled-components"
 
 import doric from "./main.js"
 import {darkTheme, lightTheme} from "./themes.js"
-import {themedComponent} from "./helpers.js"
-
-const themes = [
-    darkTheme,
-    lightTheme,
-]
+import {themedComponent, propToggle, propVariant, HiddenControl} from "./helpers.js"
+import renderAs from "./render-as.js"
 
 const AppWrapper = styled.div`
     width: 100%;
@@ -65,7 +61,22 @@ function Buttons() {
         </div>
         <div>
             {buttonTypes.map(
-                type => <doric.FlatButton size={size} color={type.toLowerCase()} outline>{type}</doric.FlatButton>
+                type => <doric.FlatButton size={size} color={type.toLowerCase()} bordered>{type}</doric.FlatButton>
+            )}
+        </div>
+        <div>
+            {buttonTypes.map(
+                type => <doric.Button disabled size={size} color={type.toLowerCase()}>{type}</doric.Button>
+            )}
+        </div>
+        <div>
+            {buttonTypes.map(
+                type => <doric.FlatButton disabled size={size} color={type.toLowerCase()}>{type}</doric.FlatButton>
+            )}
+        </div>
+        <div>
+            {buttonTypes.map(
+                type => <doric.FlatButton disabled size={size} color={type.toLowerCase()} bordered>{type}</doric.FlatButton>
             )}
         </div>
     </>)
@@ -177,15 +188,8 @@ const TestModal = (props) => <doric.Modal>
     </doric.Card>
 </doric.Modal>
 
-const useToggle = value => {
-    const [current, change] = useState(value)
-    return [
-        current,
-        () => change(current === false)
-    ]
-}
 const Checkboxes = () => {
-    const [checked, toggleChecked] = useToggle(false)
+    const [checked, toggleChecked] = doric.useToggle(false)
     return <div>
         <doric.Text type="header">Checkboxes</doric.Text>
         <doric.Checkbox checked={checked} onChange={toggleChecked} label="test" />
@@ -207,51 +211,14 @@ const ColorTester = doric.themedComponent(
     `
 )
 
-const SwitchDisplay = styled.div`
-    width: 32px;
-    height: 20px;
-    position: relative;
-
-    &::before {
-        position: absolute;
-        content: "";
-        top: 4px;
-        left: 0px;
-        bottom: 4px;
-        right: 0px;
-        border-radius: 20px;
-        background-color: ${props => props.theme[`${props.color}Light`]};
-    }
-
-    &::after {
-        position: absolute;
-        content: "";
-        top: 50%;
-        width: 20px;
-        height: 20px;
-        transform: translate(-50%, -50%);
-        border-radius: 50%;
-        transition: left linear 100ms;
-
-        background-color: ${props => props.theme[props.color]};
-        left: ${props => props.on ? "0" : "100"}%;
-    }
-`
-const Switch = doric.themedComponent(
-    source => {
-        const {onChange, ...props} = source
-        const change = () => onChange?.(props.on === false)
-
-        return <doric.Button onTap={change}>
-            <SwitchDisplay {...props} />
-        </doric.Button>
-    }
-)
-
+const themes = [
+    darkTheme,
+    lightTheme,
+]
 function App() {
     const tapped = () => console.log("tapped")
     const [theme, cycleTheme] = useCycle(themes)
-    const [on, toggle] = useState(false)
+    const [on, toggle] = doric.useToggle(false)
     // const [currentTab, changeTab] = useState(0)
     // const tabs = range(
     //     10,
@@ -289,9 +256,10 @@ function App() {
 
             <Checkboxes />
 
-            <Switch on={on} onChange={toggle} color="primary" />
-            <Switch on={on} onChange={toggle} color="secondary" />
-            <Switch on={on} onChange={toggle} color="danger" />
+            <doric.Switch checked={on} onChange={toggle} label="primary" color="primary" disabled />
+            <doric.Switch checked={on} onChange={toggle} label="secondary" color="secondary" />
+            <doric.Switch checked={on} onChange={toggle} label="danger" color="danger" />
+            <doric.Switch checked={on} onChange={toggle} label="not clikcable" color="secondary" noClickLabel />
 
             {/* <ColorTester color="primary" />
             <ColorTester color="primaryLight" />
@@ -336,10 +304,10 @@ function App() {
                 <doric.Input.Date value={date} onChange={watDate} bordered label="Start Date" />
                 <OtherInput value={date} onChange={watDate} bordered label="Start Date" dateFormat={date => date.toLocaleDateString("en", {year: "numeric", month: "long", day: "2-digit"})} />
             </div> */}
-            {/* <doric.Text type="header">
+            <doric.Text type="header">
                 Button Styles
             </doric.Text>
-            <Buttons /> */}
+            <Buttons />
 
             {/* <doric.Text type="header">
                 Card Styles
