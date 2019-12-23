@@ -176,10 +176,13 @@
     lightText: "white",
     darkText: "black",
     blue: "#1d62d5",
-    lightblue: "#2196F3",
+    lightblue: "#77a0e5",
     primary: "#2196F3",
+    primaryLight: "#79c0f7",
     danger: "#F44336",
+    dangerLight: "#f88e86",
     secondary: "#128f12",
+    secondaryLight: "#70bb70",
     lightBorder: "#2196F3"
   };
   const lightTheme = {
@@ -195,10 +198,13 @@
     lightText: "white",
     darkText: "black",
     blue: "#1d62d5",
-    lightblue: "#2196F3",
+    lightblue: "#77a0e5",
     primary: "#1d62d5",
+    primaryLight: "#79c0f7",
     danger: "#F44336",
+    dangerLight: "#f88e86",
     secondary: "#128f12",
+    secondaryLight: "#70bb70",
     lightBorder: "lightgray"
   };
 
@@ -442,10 +448,7 @@
       noClickLabel,
       ...props
     } = source;
-    const iconElement = cond(checked)(checkedIcon, icon); // const wrappedOnTap = evt => cond(props.disabled)(
-    //     null,
-    //     () => onTap?.(evt)
-    // )
+    const iconElement = cond(checked)(checkedIcon, icon);
 
     const wrappedOnTap = evt => {
       if (props.disabled === true) {
@@ -6982,13 +6985,60 @@
     }));
   };
 
-  const OtherInput = styled$1__default(doric.Input.Date)`
+  const OtherInput = styled$1__default(doric.Input.Text)`
     border-left: 5px solid green;
 `;
+  const ColorTester = doric.themedComponent(styled$1__default.div`
+        height: 30px;
+        background-color: ${props => props.theme[props.color]};
+    `);
+  const SwitchDisplay = styled$1__default.div`
+    width: 32px;
+    height: 20px;
+    position: relative;
+
+    &::before {
+        position: absolute;
+        content: "";
+        top: 4px;
+        left: 0px;
+        bottom: 4px;
+        right: 0px;
+        border-radius: 20px;
+        background-color: ${props => props.theme[`${props.color}Light`]};
+    }
+
+    &::after {
+        position: absolute;
+        content: "";
+        top: 50%;
+        width: 20px;
+        height: 20px;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        transition: left linear 100ms;
+
+        background-color: ${props => props.theme[props.color]};
+        left: ${props => props.on ? "0" : "100"}%;
+    }
+`;
+  const Switch = doric.themedComponent(source => {
+    const {
+      onChange,
+      ...props
+    } = source;
+
+    const change = () => onChange === null || onChange === void 0 ? void 0 : onChange(props.on === false);
+
+    return React$1__default.createElement(doric.Button, {
+      onTap: change
+    }, React$1__default.createElement(SwitchDisplay, props));
+  });
 
   function App() {
 
-    const [theme, cycleTheme] = useCycle(themes); // const [currentTab, changeTab] = useState(0)
+    const [theme, cycleTheme] = useCycle(themes);
+    const [on, toggle] = React$1.useState(false); // const [currentTab, changeTab] = useState(0)
     // const tabs = range(
     //     10,
     //     i => <doric.Tab label={`Tab #${i}`}>
@@ -7020,7 +7070,19 @@
     }, React$1__default.createElement(doric.GlobalStyle, null), React$1__default.createElement(CornerDiv, null, React$1__default.createElement(doric.Button, {
       color: "primary",
       onTap: cycleTheme
-    }, "Cycle Theme")), React$1__default.createElement(Checkboxes, null)));
+    }, "Cycle Theme")), React$1__default.createElement(Checkboxes, null), React$1__default.createElement(Switch, {
+      on: on,
+      onChange: toggle,
+      color: "primary"
+    }), React$1__default.createElement(Switch, {
+      on: on,
+      onChange: toggle,
+      color: "secondary"
+    }), React$1__default.createElement(Switch, {
+      on: on,
+      onChange: toggle,
+      color: "danger"
+    })));
   }
 
   ReactDOM.render(React$1__default.createElement(App, null), document.querySelector("app-root"));

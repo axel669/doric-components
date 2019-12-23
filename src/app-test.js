@@ -196,13 +196,62 @@ const Checkboxes = () => {
     </div>
 }
 
-const OtherInput = styled(doric.Input.Date)`
+const OtherInput = styled(doric.Input.Text)`
     border-left: 5px solid green;
 `
+
+const ColorTester = doric.themedComponent(
+    styled.div`
+        height: 30px;
+        background-color: ${props => props.theme[props.color]};
+    `
+)
+
+const SwitchDisplay = styled.div`
+    width: 32px;
+    height: 20px;
+    position: relative;
+
+    &::before {
+        position: absolute;
+        content: "";
+        top: 4px;
+        left: 0px;
+        bottom: 4px;
+        right: 0px;
+        border-radius: 20px;
+        background-color: ${props => props.theme[`${props.color}Light`]};
+    }
+
+    &::after {
+        position: absolute;
+        content: "";
+        top: 50%;
+        width: 20px;
+        height: 20px;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        transition: left linear 100ms;
+
+        background-color: ${props => props.theme[props.color]};
+        left: ${props => props.on ? "0" : "100"}%;
+    }
+`
+const Switch = doric.themedComponent(
+    source => {
+        const {onChange, ...props} = source
+        const change = () => onChange?.(props.on === false)
+
+        return <doric.Button onTap={change}>
+            <SwitchDisplay {...props} />
+        </doric.Button>
+    }
+)
 
 function App() {
     const tapped = () => console.log("tapped")
     const [theme, cycleTheme] = useCycle(themes)
+    const [on, toggle] = useState(false)
     // const [currentTab, changeTab] = useState(0)
     // const tabs = range(
     //     10,
@@ -239,6 +288,17 @@ function App() {
             {/* {modal} */}
 
             <Checkboxes />
+
+            <Switch on={on} onChange={toggle} color="primary" />
+            <Switch on={on} onChange={toggle} color="secondary" />
+            <Switch on={on} onChange={toggle} color="danger" />
+
+            {/* <ColorTester color="primary" />
+            <ColorTester color="primaryLight" />
+            <ColorTester color="secondary" />
+            <ColorTester color="secondaryLight" />
+            <ColorTester color="danger" />
+            <ColorTester color="dangerLight" /> */}
             {/* <doric.Button onTap={testModal} startIcon={<doric.Icon name="calendar" />}>Testing</doric.Button>
 
             <div style={{display: "grid", gridTemplateColumns: "repeat(2, 1fr)"}}>
