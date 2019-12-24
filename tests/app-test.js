@@ -240,10 +240,7 @@
   const raisedVariant = propToggle("raised", styled$1.css`boxShadow: 2px 2px 3px rgba(0, 0, 0, 0.4);`, "");
   const disabledVariant = propToggle("disabled", styled$1.css`
         filter: brightness(${props => props.theme.disabledBrightness});
-        background-color: ${props => props.theme.hlInvert};
-        ${''
-/* font-weight: 300; */
-}
+        font-weight: 300;
     `, "");
   const sizeVariant = propVariant({
     name: "size",
@@ -431,9 +428,52 @@
         grid-area: content;
     `);
 
-  const labelClickVariant = propToggle("noClickLabel", "", styled.css`
-        cursor: pointer;
-    `);
+  const styleVariant = propVariant({
+    name: "type",
+    defaultValue: "body"
+  }, {
+    body: styled$1__default.css`
+            line-height: 1.4;
+        `,
+    "body-small": styled$1__default.css`
+            line-height: 1.2;
+        `,
+    header: styled$1__default.css`
+            display: block;
+            font-size: 26px;
+            font-weight: 500;
+        `,
+    title: styled$1__default.css`
+            display: block;
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        `,
+    subtitle: styled$1__default.css`
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: ${props => props.theme.softText};
+        `
+  });
+  const marginVariant = propToggle("slim", styled$1__default.css`
+        margin-bottom: 0px;
+    `, "");
+  const displayVariant$1 = propToggle("block", styled$1__default.css`
+        display: block;
+    `, "");
+  const Text = themedComponent(styled$1__default.span`
+        padding: 0px;
+        margin: 0px;
+
+        color: ${props => props.theme.textColor};
+
+        ${styleVariant}
+        ${displayVariant$1}
+        ${marginVariant}
+    `, "Themed(Text)");
+
   const CheckboxContainer = styled(renderAs("doric-checkbox"))`
     display: inline-flex;
     align-items: center;
@@ -441,10 +481,6 @@
     margin: 4px;
     user-select: none;
     position: relative;
-
-    ${''
-/* ${labelClickVariant} */
-}
 `;
   const ClickableArea = styled.div`
     position: absolute;
@@ -454,6 +490,9 @@
     cursor: pointer;
 
     width: ${props => props.noClickLabel ? "36px" : "100%"};
+`;
+  const Label = styled(Text)`
+    opacity: ${props => props.disabled ? 0.65 : 1};
 `;
   const defaultIcon = "square-outline";
   const defaultCheckedIcon = "checkbox";
@@ -467,13 +506,14 @@
       color,
       onChange,
       noClickLabel,
+      disabled,
       ...props
     } = source;
     const controlRef = React$1.useRef();
     const iconElement = cond(checked)(checkedIcon, icon);
 
     const change = () => {
-      if (props.disabled === true) {
+      if (disabled === true) {
         return;
       }
 
@@ -496,8 +536,11 @@
       color: color,
       icon: iconElement,
       size: "36px",
-      onTap: change
-    }), label);
+      onTap: change,
+      disabled: disabled
+    }), React$1__default.createElement(Label, {
+      disabled: disabled
+    }, label));
   };
 
   const GlobalStyle = themedComponent(styled$1__default.createGlobalStyle`
@@ -561,7 +604,7 @@
   const errorColorVariant = props => props.error || props.error === "" ? props.theme.danger : props.theme.primary;
 
   const typeVariant = propToggle("bordered", "16px", "4px");
-  const Label = styled$1__default.label`
+  const Label$1 = styled$1__default.label`
     position: absolute;
     top: -16px;
     left: 0px;
@@ -655,7 +698,7 @@
       disabled,
       style: _
     };
-    return React$1__default.createElement(Wrapper, wrapperProps, React$1__default.createElement(VisualArea, null, children, React$1__default.createElement(Label, _extends({
+    return React$1__default.createElement(Wrapper, wrapperProps, React$1__default.createElement(VisualArea, null, children, React$1__default.createElement(Label$1, _extends({
       bordered: bordered
     }, shared), label), border), React$1__default.createElement(ErrorLabel, {
       bordered: bordered,
@@ -722,52 +765,6 @@
       close: close
     })), () => {}];
   };
-
-  const styleVariant = propVariant({
-    name: "type",
-    defaultValue: "body"
-  }, {
-    body: styled$1__default.css`
-            line-height: 1.4;
-        `,
-    "body-small": styled$1__default.css`
-            line-height: 1.2;
-        `,
-    header: styled$1__default.css`
-            display: block;
-            font-size: 26px;
-            font-weight: 500;
-        `,
-    title: styled$1__default.css`
-            display: block;
-            font-size: 20px;
-            font-weight: 500;
-            margin-bottom: 12px;
-        `,
-    subtitle: styled$1__default.css`
-            display: block;
-            font-size: 12px;
-            font-weight: 500;
-            margin-bottom: 8px;
-            color: ${props => props.theme.softText};
-        `
-  });
-  const marginVariant = propToggle("slim", styled$1__default.css`
-        margin-bottom: 0px;
-    `, "");
-  const displayVariant$1 = propToggle("block", styled$1__default.css`
-        display: block;
-    `, "");
-  const Text = themedComponent(styled$1__default.span`
-        padding: 0px;
-        margin: 0px;
-
-        color: ${props => props.theme.textColor};
-
-        ${styleVariant}
-        ${displayVariant$1}
-        ${marginVariant}
-    `, "Themed(Text)");
 
   const InputElement = styled$1__default.input`
     padding: 8px 8px 8px 8px;
@@ -1019,6 +1016,9 @@
     name: "arrow-dropdown"
   })), React$1__default.createElement(SelectElement, props)), "Themed(Select)");
 
+  const disabledVariant$3 = propToggle("disabled", styled$1__default.css`
+        filter: brightness(${props => props.theme.disabledBrightness});
+    `, "");
   const SwitchContainer = styled$1__default(renderAs("doric-switch"))`
     display: inline-flex;
     align-items: center;
@@ -1027,7 +1027,10 @@
     user-select: none;
     position: relative;
 
-    opacity: ${props => props.disabled ? 0.7 : 1};
+    ${''
+/* opacity: ${props => props.disabled ? 0.7 : 1}; */
+}
+    ${disabledVariant$3}
 
     & > doric-button {
         position: absolute;
@@ -1063,7 +1066,7 @@
         content: "";
         top: 50%;
         left: 50%;
-        width: 34px;
+        width: 30px;
         height: 12px;
         transform: translate(-50%, -50%);
         border-radius: 20px;
@@ -1085,6 +1088,9 @@
     transition: background-color linear 100ms;
 
     ${colorVariant}
+`;
+  const Label$2 = styled$1__default(Text)`
+    opacity: ${props => props.disabled ? 0.65 : 1};
 `;
   const Switch = themedComponent(source => {
     const {
@@ -1113,9 +1119,7 @@
     };
 
     const icon = React$1__default.createElement(SwitchIcon, controlledProps);
-    return React$1__default.createElement(SwitchContainer, {
-      checked: checked
-    }, React$1__default.createElement(HiddenControl, {
+    return React$1__default.createElement(SwitchContainer, controlledProps, React$1__default.createElement(HiddenControl, {
       as: "input",
       type: "checkbox",
       checked: checked,
@@ -1130,7 +1134,9 @@
       size: "36px",
       onTap: change,
       disabled: disabled
-    }), React$1__default.createElement(Text, null, label));
+    }), React$1__default.createElement(Label$2, {
+      disabled: disabled
+    }, label));
   });
 
   var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
@@ -7124,7 +7130,7 @@
     const [checked, toggleChecked] = doric.useToggle(false);
     return React$1__default.createElement("div", null, React$1__default.createElement(doric.Text, {
       type: "header"
-    }, "Checkboxes"), React$1__default.createElement(doric.Checkbox, {
+    }, "Checkboxes"), React$1__default.createElement("div", null, React$1__default.createElement(doric.Checkbox, {
       checked: checked,
       onChange: toggleChecked,
       label: "test"
@@ -7151,7 +7157,92 @@
       icon: "heart-empty",
       checkedIcon: "heart",
       label: "test"
-    }));
+    })), React$1__default.createElement("div", null, React$1__default.createElement(doric.Checkbox, {
+      disabled: true,
+      checked: checked,
+      onChange: toggleChecked,
+      label: "test"
+    }), React$1__default.createElement(doric.Checkbox, {
+      disabled: true,
+      checked: checked,
+      onChange: toggleChecked,
+      label: "test",
+      noClickLabel: true
+    }), React$1__default.createElement(doric.Checkbox, {
+      disabled: true,
+      checked: checked,
+      onChange: toggleChecked,
+      color: "primary",
+      label: "test"
+    }), React$1__default.createElement(doric.Checkbox, {
+      disabled: true,
+      checked: checked,
+      onChange: toggleChecked,
+      color: "secondary",
+      label: "test",
+      noClickLabel: true
+    }), React$1__default.createElement(doric.Checkbox, {
+      disabled: true,
+      checked: checked,
+      onChange: toggleChecked,
+      color: "danger",
+      icon: "heart-empty",
+      checkedIcon: "heart",
+      label: "test"
+    })));
+  };
+
+  const Switches = () => {
+    const [on, toggle] = doric.useToggle(false);
+    return React$1__default.createElement("div", null, React$1__default.createElement(doric.Text, {
+      type: "header"
+    }, "Switches"), React$1__default.createElement("div", null, React$1__default.createElement(doric.Switch, {
+      checked: on,
+      onChange: toggle,
+      label: "primary",
+      color: "primary",
+      disabled: true
+    }), React$1__default.createElement(doric.Switch, {
+      checked: on,
+      onChange: toggle,
+      label: "secondary",
+      color: "secondary"
+    }), React$1__default.createElement(doric.Switch, {
+      checked: on,
+      onChange: toggle,
+      label: "danger",
+      color: "danger"
+    }), React$1__default.createElement(doric.Switch, {
+      checked: on,
+      onChange: toggle,
+      label: "not clikcable",
+      color: "secondary",
+      noClickLabel: true
+    })), React$1__default.createElement("div", null, React$1__default.createElement(doric.Switch, {
+      checked: on,
+      onChange: toggle,
+      label: "primary",
+      color: "primary"
+    }), React$1__default.createElement(doric.Switch, {
+      disabled: true,
+      checked: on,
+      onChange: toggle,
+      label: "secondary",
+      color: "secondary"
+    }), React$1__default.createElement(doric.Switch, {
+      disabled: true,
+      checked: on,
+      onChange: toggle,
+      label: "danger",
+      color: "danger"
+    }), React$1__default.createElement(doric.Switch, {
+      disabled: true,
+      checked: on,
+      onChange: toggle,
+      label: "not clikcable",
+      color: "secondary",
+      noClickLabel: true
+    })));
   };
 
   const OtherInput = styled$1__default(doric.Input.Text)`
@@ -7161,12 +7252,11 @@
         height: 30px;
         background-color: ${props => props.theme[props.color]};
     `);
-  const themes = [darkTheme, lightTheme];
+  const themes = [lightTheme, darkTheme];
 
   function App() {
 
-    const [theme, cycleTheme] = useCycle(themes);
-    const [on, toggle] = doric.useToggle(false); // const [currentTab, changeTab] = useState(0)
+    const [theme, cycleTheme] = useCycle(themes); // const [currentTab, changeTab] = useState(0)
     // const tabs = range(
     //     10,
     //     i => <doric.Tab label={`Tab #${i}`}>
@@ -7198,29 +7288,7 @@
     }, React$1__default.createElement(doric.GlobalStyle, null), React$1__default.createElement(CornerDiv, null, React$1__default.createElement(doric.Button, {
       color: "primary",
       onTap: cycleTheme
-    }, "Cycle Theme")), React$1__default.createElement(Checkboxes, null), React$1__default.createElement(doric.Switch, {
-      checked: on,
-      onChange: toggle,
-      label: "primary",
-      color: "primary",
-      disabled: true
-    }), React$1__default.createElement(doric.Switch, {
-      checked: on,
-      onChange: toggle,
-      label: "secondary",
-      color: "secondary"
-    }), React$1__default.createElement(doric.Switch, {
-      checked: on,
-      onChange: toggle,
-      label: "danger",
-      color: "danger"
-    }), React$1__default.createElement(doric.Switch, {
-      checked: on,
-      onChange: toggle,
-      label: "not clikcable",
-      color: "secondary",
-      noClickLabel: true
-    }), React$1__default.createElement(doric.Text, {
+    }, "Cycle Theme")), React$1__default.createElement(Checkboxes, null), React$1__default.createElement(Switches, null), React$1__default.createElement(doric.Text, {
       type: "header"
     }, "Button Styles"), React$1__default.createElement(Buttons, null)));
   }

@@ -8,6 +8,13 @@ import Text from "./text.js"
 import renderAs from "./render-as.js"
 import {propToggle, HiddenControl, themedComponent} from "./helpers.js"
 
+const disabledVariant = propToggle(
+    "disabled",
+    styled.css`
+        filter: brightness(${props => props.theme.disabledBrightness});
+    `,
+    ""
+)
 const SwitchContainer = styled(renderAs("doric-switch"))`
     display: inline-flex;
     align-items: center;
@@ -16,7 +23,8 @@ const SwitchContainer = styled(renderAs("doric-switch"))`
     user-select: none;
     position: relative;
 
-    opacity: ${props => props.disabled ? 0.7 : 1};
+    ${'' /* opacity: ${props => props.disabled ? 0.7 : 1}; */}
+    ${disabledVariant}
 
     & > doric-button {
         position: absolute;
@@ -56,7 +64,7 @@ const SwitchArea = styled.div`
         content: "";
         top: 50%;
         left: 50%;
-        width: 34px;
+        width: 30px;
         height: 12px;
         transform: translate(-50%, -50%);
         border-radius: 20px;
@@ -82,6 +90,9 @@ const SwitchIcon = styled.div`
     transition: background-color linear 100ms;
 
     ${colorVariant}
+`
+const Label = styled(Text)`
+    opacity: ${props => props.disabled ? 0.65 : 1};
 `
 const Switch = themedComponent(
     source => {
@@ -109,7 +120,7 @@ const Switch = themedComponent(
         }
 
         const icon = <SwitchIcon {...controlledProps} />
-        return <SwitchContainer checked={checked}>
+        return <SwitchContainer {...controlledProps}>
             <HiddenControl
                 as="input"
                 type="checkbox"
@@ -127,7 +138,7 @@ const Switch = themedComponent(
                 onTap={change}
                 disabled={disabled}
             />
-            <Text>{label}</Text>
+            <Label disabled={disabled}>{label}</Label>
         </SwitchContainer>
     }
 )

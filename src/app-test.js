@@ -192,11 +192,40 @@ const Checkboxes = () => {
     const [checked, toggleChecked] = doric.useToggle(false)
     return <div>
         <doric.Text type="header">Checkboxes</doric.Text>
-        <doric.Checkbox checked={checked} onChange={toggleChecked} label="test" />
-        <doric.Checkbox checked={checked} onChange={toggleChecked} label="test" noClickLabel />
-        <doric.Checkbox checked={checked} onChange={toggleChecked} color="primary" label="test" />
-        <doric.Checkbox checked={checked} onChange={toggleChecked} color="secondary" label="test" noClickLabel />
-        <doric.Checkbox checked={checked} onChange={toggleChecked} color="danger" icon="heart-empty" checkedIcon="heart" label="test" />
+        <div>
+            <doric.Checkbox checked={checked} onChange={toggleChecked} label="test" />
+            <doric.Checkbox checked={checked} onChange={toggleChecked} label="test" noClickLabel />
+            <doric.Checkbox checked={checked} onChange={toggleChecked} color="primary" label="test" />
+            <doric.Checkbox checked={checked} onChange={toggleChecked} color="secondary" label="test" noClickLabel />
+            <doric.Checkbox checked={checked} onChange={toggleChecked} color="danger" icon="heart-empty" checkedIcon="heart" label="test" />
+        </div>
+        <div>
+            <doric.Checkbox disabled checked={checked} onChange={toggleChecked} label="test" />
+            <doric.Checkbox disabled checked={checked} onChange={toggleChecked} label="test" noClickLabel />
+            <doric.Checkbox disabled checked={checked} onChange={toggleChecked} color="primary" label="test" />
+            <doric.Checkbox disabled checked={checked} onChange={toggleChecked} color="secondary" label="test" noClickLabel />
+            <doric.Checkbox disabled checked={checked} onChange={toggleChecked} color="danger" icon="heart-empty" checkedIcon="heart" label="test" />
+        </div>
+    </div>
+}
+
+const Switches = () => {
+    const [on, toggle] = doric.useToggle(false)
+
+    return <div>
+        <doric.Text type="header">Switches</doric.Text>
+        <div>
+            <doric.Switch checked={on} onChange={toggle} label="primary" color="primary" disabled />
+            <doric.Switch checked={on} onChange={toggle} label="secondary" color="secondary" />
+            <doric.Switch checked={on} onChange={toggle} label="danger" color="danger" />
+            <doric.Switch checked={on} onChange={toggle} label="not clikcable" color="secondary" noClickLabel />
+        </div>
+        <div>
+            <doric.Switch checked={on} onChange={toggle} label="primary" color="primary" />
+            <doric.Switch disabled checked={on} onChange={toggle} label="secondary" color="secondary" />
+            <doric.Switch disabled checked={on} onChange={toggle} label="danger" color="danger" />
+            <doric.Switch disabled checked={on} onChange={toggle} label="not clikcable" color="secondary" noClickLabel />
+        </div>
     </div>
 }
 
@@ -212,13 +241,12 @@ const ColorTester = doric.themedComponent(
 )
 
 const themes = [
-    darkTheme,
     lightTheme,
+    darkTheme,
 ]
 function App() {
     const tapped = () => console.log("tapped")
     const [theme, cycleTheme] = useCycle(themes)
-    const [on, toggle] = doric.useToggle(false)
     // const [currentTab, changeTab] = useState(0)
     // const tabs = range(
     //     10,
@@ -256,10 +284,7 @@ function App() {
 
             <Checkboxes />
 
-            <doric.Switch checked={on} onChange={toggle} label="primary" color="primary" disabled />
-            <doric.Switch checked={on} onChange={toggle} label="secondary" color="secondary" />
-            <doric.Switch checked={on} onChange={toggle} label="danger" color="danger" />
-            <doric.Switch checked={on} onChange={toggle} label="not clikcable" color="secondary" noClickLabel />
+            <Switches />
 
             {/* <ColorTester color="primary" />
             <ColorTester color="primaryLight" />

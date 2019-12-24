@@ -3,17 +3,11 @@ import React, {useRef} from "react"
 import {ActionButton} from "./button.js"
 import CustomListeners from "./custom-listeners.js"
 import Icon from "./icon.js"
+import Text from "./text.js"
 
 import renderAs from "./render-as.js"
 import {propToggle, HiddenControl} from "./helpers.js"
 
-const labelClickVariant = propToggle(
-    "noClickLabel",
-    "",
-    styled.css`
-        cursor: pointer;
-    `
-)
 const CheckboxContainer = styled(renderAs("doric-checkbox"))`
     display: inline-flex;
     align-items: center;
@@ -21,8 +15,6 @@ const CheckboxContainer = styled(renderAs("doric-checkbox"))`
     margin: 4px;
     user-select: none;
     position: relative;
-
-    ${'' /* ${labelClickVariant} */}
 `
 const ClickableArea = styled.div`
     position: absolute;
@@ -33,8 +25,12 @@ const ClickableArea = styled.div`
 
     width: ${props => props.noClickLabel ? "36px" : "100%"};
 `
+const Label = styled(Text)`
+    opacity: ${props => props.disabled ? 0.65 : 1};
+`
 const defaultIcon = "square-outline"
 const defaultCheckedIcon = "checkbox"
+
 const Checkbox = source => {
     const {
         icon = defaultIcon,
@@ -44,6 +40,7 @@ const Checkbox = source => {
         color,
         onChange,
         noClickLabel,
+        disabled,
         ...props
     } = source
 
@@ -53,7 +50,7 @@ const Checkbox = source => {
         icon,
     )
     const change = () => {
-        if (props.disabled === true) {
+        if (disabled === true) {
             return
         }
         controlRef.current.click()
@@ -75,8 +72,9 @@ const Checkbox = source => {
             icon={iconElement}
             size="36px"
             onTap={change}
+            disabled={disabled}
         />
-        {label}
+        <Label disabled={disabled}>{label}</Label>
     </CheckboxContainer>
 }
 
