@@ -28,7 +28,7 @@ const errorVariant = props => (props.error || props.error === "")
     : ""
 const errorColorVariant = props => (props.error || props.error === "")
     ? props.theme.danger
-    : props.theme.primary
+    : props.theme.focusColor
 const typeVariant = propToggle("bordered", "16px", "4px")
 const Label = styled.label`
     position: absolute;
@@ -36,6 +36,7 @@ const Label = styled.label`
     left: 0px;
     padding-top: 2px;
     user-select: none;
+    font-size: 12px;
 
     ${errorVariant}
     padding-left: ${typeVariant};
@@ -88,6 +89,7 @@ const FullBorder = styled.fieldset`
 const FullBorderLabel = styled.legend`
     padding: 2px;
     color: transparent;
+    font-size: 12px;
 `
 const ErrorLabel = styled.div`
     padding: 4px 12px;

@@ -50,7 +50,6 @@ const ButtonBaseComponent = styled(Clickable("doric-button"))`
     justify-content: center;
     overflow: hidden;
     font-weight: 500;
-    ${'' /* text-transform: uppercase; */}
     background-color: transparent;
 
     color: ${props => props.theme.textColor};

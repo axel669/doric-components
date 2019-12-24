@@ -177,14 +177,16 @@
     darkText: "black",
     blue: "#1d62d5",
     lightblue: "#77a0e5",
-    primary: "#2196F3",
+    // primary: "#2196F3",
+    primary: "#1d62d5",
     primaryLight: "#79c0f7",
     danger: "#F44336",
     dangerLight: "#f88e86",
     secondary: "#128f12",
     secondaryLight: "#70bb70",
     lightBorder: "#2196F3",
-    disabledBrightness: "65%"
+    disabledBrightness: "65%",
+    focusColor: "#79c0f7"
   };
   const lightTheme = {
     font: "Roboto",
@@ -207,7 +209,8 @@
     secondary: "#128f12",
     secondaryLight: "#70bb70",
     lightBorder: "lightgray",
-    disabledBrightness: "65%"
+    disabledBrightness: "65%",
+    focusColor: "#1d62d5"
   };
 
   const propVariant = ({
@@ -272,9 +275,6 @@
     justify-content: center;
     overflow: hidden;
     font-weight: 500;
-    ${''
-/* text-transform: uppercase; */
-}
     background-color: transparent;
 
     color: ${props => props.theme.textColor};
@@ -561,7 +561,11 @@
         font-family: ${props => props.theme.font}, Arial;
     }
     option {
-        color: black;
+        ${''
+/* color: black; */
+}
+        background-color: ${props => props.theme.mainBG};
+        color: ${props => props.theme.textColor};
     }
     * {
         box-sizing: border-box;
@@ -603,7 +607,7 @@
 
   const errorVariant = props => props.error || props.error === "" ? `color: ${props.theme.danger};` : "";
 
-  const errorColorVariant = props => props.error || props.error === "" ? props.theme.danger : props.theme.primary;
+  const errorColorVariant = props => props.error || props.error === "" ? props.theme.danger : props.theme.focusColor;
 
   const typeVariant = propToggle("bordered", "16px", "4px");
   const Label$1 = styled$1__default.label`
@@ -612,6 +616,7 @@
     left: 0px;
     padding-top: 2px;
     user-select: none;
+    font-size: 12px;
 
     ${errorVariant}
     padding-left: ${typeVariant};
@@ -664,6 +669,7 @@
   const FullBorderLabel = styled$1__default.legend`
     padding: 2px;
     color: transparent;
+    font-size: 12px;
 `;
   const ErrorLabel = styled$1__default.div`
     padding: 4px 12px;
@@ -7073,7 +7079,7 @@
   const AppWrapper = styled$1__default.div`
     width: 100%;
     margin: auto;
-    max-width: 1024px;
+    max-width: 1280px;
 `;
   const CornerDiv = styled$1__default.div`
     position: fixed;
@@ -7104,6 +7110,11 @@
         height: 30px;
         background-color: ${props => props.theme[props.color]};
     `);
+  const AppStyle = styled$1__default.createGlobalStyle`
+    input, select {
+        font-size: 16px;
+    }
+`;
   const Grid = styled$1__default.div`
     display: grid;
     grid-template-columns: repeat(${props => props.cols || 12}, 1fr);
@@ -7111,6 +7122,46 @@
   const GridItem = styled$1__default.div`
     grid-column: span ${props => props.span};
 `;
+  const GridItemContainer = styled$1__default(GridItem)`
+    display: flex;
+    align-items: center;
+    justify-content: stretch;
+
+    & > * {
+        flex-grow: 1;
+    }
+`;
+
+  const BannerContainer = styled$1__default.div`
+    background-color: rgb(31, 63, 127);
+    color: white;
+    padding: 8px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+`;
+  const BannerUserText = styled$1__default.div`
+    grid-column: span 2;
+    font-size: 18px;
+`;
+  const testUser = {
+    "name": "Axel669",
+    "email": "axel@axel669.net"
+  };
+
+  const Banner = props => {
+    const {
+      user,
+      date
+    } = props;
+    const dateString = date.toLocaleDateString("en-US", {
+      month: "long",
+      year: "numeric",
+      day: "numeric",
+      weekday: "long"
+    });
+    return React$1__default.createElement(BannerContainer, null, React$1__default.createElement(BannerUserText, null, React$1__default.createElement("div", null, dateString), React$1__default.createElement("div", null, "Welcome, ", user.name)));
+  };
+
   const themes = [lightTheme, darkTheme];
 
   function App() {
@@ -7142,12 +7193,15 @@
     //
     // const wat = <doric.ActionButton icon="calendar" />
 
-    return React$1__default.createElement(AppWrapper, null, React$1__default.createElement(doric.ThemeProvider, {
+    return React$1__default.createElement(AppWrapper, null, React$1__default.createElement(AppStyle, null), React$1__default.createElement(doric.ThemeProvider, {
       value: theme
     }, React$1__default.createElement(doric.GlobalStyle, null), React$1__default.createElement(CornerDiv, null, React$1__default.createElement(doric.Button, {
       color: "primary",
       onTap: cycleTheme
-    }, "Cycle Theme")), React$1__default.createElement(Grid, null, React$1__default.createElement(GridItem, {
+    }, "Cycle Theme")), React$1__default.createElement(Banner, {
+      date: new Date(),
+      user: testUser
+    }), React$1__default.createElement(doric.Card, null, React$1__default.createElement(doric.CardContent, null, React$1__default.createElement(Grid, null, React$1__default.createElement(GridItem, {
       as: doric.Input.Text,
       span: 3,
       autoComplete: "none",
@@ -7168,12 +7222,14 @@
       value: "SR"
     }, "SR - See Routing"), React$1__default.createElement("option", {
       value: "00"
-    }, "00 - Other")), React$1__default.createElement(GridItem, {
-      as: doric.Button,
-      span: 3,
+    }, "00 - Other")), React$1__default.createElement(GridItemContainer, {
+      span: 3
+    }, React$1__default.createElement(doric.Button, {
       text: "Addresses Selected: 0",
-      color: "primary"
-    }), React$1__default.createElement(GridItem, {
+      color: "primary",
+      block: true,
+      size: "large"
+    })), React$1__default.createElement(GridItem, {
       as: doric.Input.Text,
       span: 2,
       autoComplete: "none",
@@ -7187,9 +7243,53 @@
       autoComplete: "none",
       bordered: true,
       label: "Purchase Order"
-    }))));
+    }), React$1__default.createElement(GridItem, {
+      as: doric.Select,
+      span: 3,
+      bordered: true,
+      label: "Terms"
+    }, React$1__default.createElement("option", {
+      value: "02"
+    }, "02 - NET 45")), React$1__default.createElement(GridItem, {
+      as: doric.Input.Text,
+      span: 2,
+      autoComplete: "none",
+      bordered: true,
+      label: "Rep 2"
+    }), React$1__default.createElement(GridItem, {
+      span: 4
+    }), React$1__default.createElement(GridItem, {
+      as: doric.Input.Text,
+      span: 3,
+      autoComplete: "none",
+      bordered: true,
+      label: "Discount"
+    }), React$1__default.createElement(GridItem, {
+      as: doric.Input.Text,
+      span: 3,
+      autoComplete: "none",
+      bordered: true,
+      label: "Promotional Code"
+    }), React$1__default.createElement(GridItem, {
+      span: 3
+    }), React$1__default.createElement(GridItem, {
+      as: doric.Button,
+      span: 3,
+      size: "large",
+      color: "secondary",
+      text: "Submit"
+    }), React$1__default.createElement(GridItem, {
+      as: doric.Button,
+      span: 3,
+      size: "large",
+      color: "danger",
+      text: "Clear Form"
+    }), React$1__default.createElement(GridItem, {
+      span: 3
+    }))))));
   }
 
   ReactDOM.render(React$1__default.createElement(App, null), document.querySelector("app-root"));
+  console.log(new Date());
 
 }(React, ReactDOM, styled));

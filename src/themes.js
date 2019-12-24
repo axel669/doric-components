@@ -12,7 +12,8 @@ const darkTheme = {
     darkText: "black",
     blue: "#1d62d5",
     lightblue: "#77a0e5",
-    primary: "#2196F3",
+    // primary: "#2196F3",
+    primary: "#1d62d5",
     primaryLight: "#79c0f7",
     danger: "#F44336",
     dangerLight: "#f88e86",
@@ -20,6 +21,7 @@ const darkTheme = {
     secondaryLight: "#70bb70",
     lightBorder: "#2196F3",
     disabledBrightness: "65%",
+    focusColor: "#79c0f7",
 }
 const lightTheme = {
     font: "Roboto",
@@ -43,6 +45,7 @@ const lightTheme = {
     secondaryLight: "#70bb70",
     lightBorder: "lightgray",
     disabledBrightness: "65%",
+    focusColor: "#1d62d5",
 }
 
 export {

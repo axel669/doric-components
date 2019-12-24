@@ -18,7 +18,9 @@ const GlobalStyle = themedComponent(styled.createGlobalStyle`
         font-family: ${props => props.theme.font}, Arial;
     }
     option {
-        color: black;
+        ${'' /* color: black; */}
+        background-color: ${props => props.theme.mainBG};
+        color: ${props => props.theme.textColor};
     }
     * {
         box-sizing: border-box;

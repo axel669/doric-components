@@ -11,7 +11,7 @@ import renderAs from "./render-as.js"
 const AppWrapper = styled.div`
     width: 100%;
     margin: auto;
-    max-width: 1024px;
+    max-width: 1280px;
 `
 
 const CornerDiv = styled.div`
@@ -245,6 +245,12 @@ const ColorTester = doric.themedComponent(
     `
 )
 
+const AppStyle = styled.createGlobalStyle`
+    input, select {
+        font-size: 16px;
+    }
+`
+
 const Grid = styled.div`
     display: grid;
     grid-template-columns: repeat(${props => props.cols || 12}, 1fr);
@@ -252,6 +258,55 @@ const Grid = styled.div`
 const GridItem = styled.div`
     grid-column: span ${props => props.span};
 `
+const GridItemContainer = styled(GridItem)`
+    display: flex;
+    align-items: center;
+    justify-content: stretch;
+
+    & > * {
+        flex-grow: 1;
+    }
+`
+
+const DebounceInput = props => {
+}
+
+const BannerContainer = styled.div`
+    background-color: rgb(31, 63, 127);
+    color: white;
+    padding: 8px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+`
+const BannerUserText = styled.div`
+    grid-column: span 2;
+    font-size: 18px;
+`
+
+const testUser = {
+    "name": "Axel669",
+    "email": "axel@axel669.net",
+}
+
+const Banner = props => {
+    const {user, date} = props
+    const dateString = date.toLocaleDateString(
+        "en-US",
+        {
+            month: "long",
+            year: "numeric",
+            day: "numeric",
+            weekday: "long",
+        }
+    )
+
+    return <BannerContainer>
+        <BannerUserText>
+            <div>{dateString}</div>
+            <div>Welcome, {user.name}</div>
+        </BannerUserText>
+    </BannerContainer>
+}
 
 const themes = [
     lightTheme,
@@ -288,6 +343,7 @@ function App() {
     // const wat = <doric.ActionButton icon="calendar" />
 
     return <AppWrapper>
+        <AppStyle />
         <doric.ThemeProvider value={theme}>
             <doric.GlobalStyle />
             <CornerDiv>
@@ -295,19 +351,40 @@ function App() {
             </CornerDiv>
             {/* {modal} */}
 
-            <Grid>
-                <GridItem as={doric.Input.Text} span={3} autoComplete="none" bordered label="Customer ID" />
-                <GridItem as={doric.Input.Text} span={3} autoComplete="none" bordered label="Customer Name" />
-                <GridItem as={doric.Select} span={3} bordered label="Shipping Method">
-                    <option value="SR">SR - See Routing</option>
-                    <option value="00">00 - Other</option>
-                </GridItem>
-                <GridItem as={doric.Button} span={3} text="Addresses Selected: 0" color="primary" />
+            <Banner date={new Date()} user={testUser} />
 
-                <GridItem as={doric.Input.Text} span={2} autoComplete="none" bordered label="Rep 1" />
-                <GridItem span={4} />
-                <GridItem as={doric.Input.Text} span={3} autoComplete="none" bordered label="Purchase Order" />
-            </Grid>
+            <doric.Card>
+                <doric.CardContent>
+                    <Grid>
+                        <GridItem as={doric.Input.Text} span={3} autoComplete="none" bordered label="Customer ID" />
+                        <GridItem as={doric.Input.Text} span={3} autoComplete="none" bordered label="Customer Name" />
+                        <GridItem as={doric.Select} span={3} bordered label="Shipping Method">
+                            <option value="SR">SR - See Routing</option>
+                            <option value="00">00 - Other</option>
+                        </GridItem>
+                        <GridItemContainer span={3}>
+                            <doric.Button text="Addresses Selected: 0" color="primary" block size="large" />
+                        </GridItemContainer>
+
+                        <GridItem as={doric.Input.Text} span={2} autoComplete="none" bordered label="Rep 1" />
+                        <GridItem span={4} />
+                        <GridItem as={doric.Input.Text} span={3} autoComplete="none" bordered label="Purchase Order" />
+                        <GridItem as={doric.Select} span={3} bordered label="Terms">
+                            <option value="02">02 - NET 45</option>
+                        </GridItem>
+
+                        <GridItem as={doric.Input.Text} span={2} autoComplete="none" bordered label="Rep 2" />
+                        <GridItem span={4} />
+                        <GridItem as={doric.Input.Text} span={3} autoComplete="none" bordered label="Discount" />
+                        <GridItem as={doric.Input.Text} span={3} autoComplete="none" bordered label="Promotional Code" />
+
+                        <GridItem span={3} />
+                        <GridItem as={doric.Button} span={3} size="large" color="secondary" text="Submit" />
+                        <GridItem as={doric.Button} span={3} size="large" color="danger" text="Clear Form" />
+                        <GridItem span={3} />
+                    </Grid>
+                </doric.CardContent>
+            </doric.Card>
 
             {/* <Checkboxes />
 
@@ -383,3 +460,5 @@ ReactDOM.render(
     <App />,
     document.querySelector("app-root")
 )
+
+console.log(new Date())
