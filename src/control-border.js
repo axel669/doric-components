@@ -13,7 +13,7 @@ const disabledVariant = propToggle(
 const Wrapper = styled.div`
     position: relative;
     padding: 0px;
-    margin: 2px;
+    margin: 4px;
 
     ${disabledVariant}
 `

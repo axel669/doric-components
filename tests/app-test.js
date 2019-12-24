@@ -169,7 +169,7 @@
     hlInvert: "rgba(0, 0, 0, 0.35)",
     hlLight: "rgba(255, 255, 255, 0.35)",
     hlDark: "rgba(0, 0, 0, 0.35)",
-    mainBG: "#222",
+    mainBG: "#111",
     textColor: "white",
     invertText: "black",
     softText: "lightgray",
@@ -272,7 +272,9 @@
     justify-content: center;
     overflow: hidden;
     font-weight: 500;
-    text-transform: uppercase;
+    ${''
+/* text-transform: uppercase; */
+}
     background-color: transparent;
 
     color: ${props => props.theme.textColor};
@@ -588,7 +590,7 @@
   const Wrapper = styled$1__default.div`
     position: relative;
     padding: 0px;
-    margin: 2px;
+    margin: 4px;
 
     ${disabledVariant$1}
 `;
@@ -797,12 +799,10 @@
     const {
       action,
       forwardRef,
-      className,
       ...props
     } = source;
     const inputProps = {
       type,
-      className,
       ref: forwardRef,
       ...props
     };
@@ -7073,7 +7073,7 @@
   const AppWrapper = styled$1__default.div`
     width: 100%;
     margin: auto;
-    max-width: 640px;
+    max-width: 1024px;
 `;
   const CornerDiv = styled$1__default.div`
     position: fixed;
@@ -7090,160 +7090,12 @@
     }];
   };
 
-  function Buttons() {
-    const buttonTypes = ["Normal", "Primary", "Danger", "Secondary"];
-    const buttonSizes = ["small", "medium", "large"];
-    return buttonSizes.map(size => React$1__default.createElement(React$1__default.Fragment, null, React$1__default.createElement("div", null, buttonTypes.map(type => React$1__default.createElement(doric.Button, {
-      size: size,
-      color: type.toLowerCase()
-    }, type))), React$1__default.createElement("div", null, buttonTypes.map(type => React$1__default.createElement(doric.FlatButton, {
-      size: size,
-      color: type.toLowerCase()
-    }, type))), React$1__default.createElement("div", null, buttonTypes.map(type => React$1__default.createElement(doric.FlatButton, {
-      size: size,
-      color: type.toLowerCase(),
-      bordered: true
-    }, type))), React$1__default.createElement("div", null, buttonTypes.map(type => React$1__default.createElement(doric.Button, {
-      disabled: true,
-      size: size,
-      color: type.toLowerCase()
-    }, type))), React$1__default.createElement("div", null, buttonTypes.map(type => React$1__default.createElement(doric.FlatButton, {
-      disabled: true,
-      size: size,
-      color: type.toLowerCase()
-    }, type))), React$1__default.createElement("div", null, buttonTypes.map(type => React$1__default.createElement(doric.FlatButton, {
-      disabled: true,
-      size: size,
-      color: type.toLowerCase(),
-      bordered: true
-    }, type)))));
-  }
-
   const CardGrid = styled$1__default.div`
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
     flex-wrap: wrap;
 `;
-
-  const Checkboxes = () => {
-    const [checked, toggleChecked] = doric.useToggle(false);
-    return React$1__default.createElement("div", null, React$1__default.createElement(doric.Text, {
-      type: "header"
-    }, "Checkboxes"), React$1__default.createElement("div", null, React$1__default.createElement(doric.Checkbox, {
-      checked: checked,
-      onChange: toggleChecked,
-      label: "test"
-    }), React$1__default.createElement(doric.Checkbox, {
-      checked: checked,
-      onChange: toggleChecked,
-      label: "test",
-      noClickLabel: true
-    }), React$1__default.createElement(doric.Checkbox, {
-      checked: checked,
-      onChange: toggleChecked,
-      color: "primary",
-      label: "test"
-    }), React$1__default.createElement(doric.Checkbox, {
-      checked: checked,
-      onChange: toggleChecked,
-      color: "secondary",
-      label: "test",
-      noClickLabel: true
-    }), React$1__default.createElement(doric.Checkbox, {
-      checked: checked,
-      onChange: toggleChecked,
-      color: "danger",
-      icon: "heart-empty",
-      checkedIcon: "heart",
-      label: "test"
-    })), React$1__default.createElement("div", null, React$1__default.createElement(doric.Checkbox, {
-      disabled: true,
-      checked: checked,
-      onChange: toggleChecked,
-      label: "test"
-    }), React$1__default.createElement(doric.Checkbox, {
-      disabled: true,
-      checked: checked,
-      onChange: toggleChecked,
-      label: "test",
-      noClickLabel: true
-    }), React$1__default.createElement(doric.Checkbox, {
-      disabled: true,
-      checked: checked,
-      onChange: toggleChecked,
-      color: "primary",
-      label: "test"
-    }), React$1__default.createElement(doric.Checkbox, {
-      disabled: true,
-      checked: checked,
-      onChange: toggleChecked,
-      color: "secondary",
-      label: "test",
-      noClickLabel: true
-    }), React$1__default.createElement(doric.Checkbox, {
-      disabled: true,
-      checked: checked,
-      onChange: toggleChecked,
-      color: "danger",
-      icon: "heart-empty",
-      checkedIcon: "heart",
-      label: "test"
-    })));
-  };
-
-  const Switches = () => {
-    const [on, toggle] = doric.useToggle(false);
-    return React$1__default.createElement("div", null, React$1__default.createElement(doric.Text, {
-      type: "header"
-    }, "Switches"), React$1__default.createElement("div", null, React$1__default.createElement(doric.Switch, {
-      checked: on,
-      onChange: toggle,
-      label: "primary",
-      color: "primary",
-      disabled: true
-    }), React$1__default.createElement(doric.Switch, {
-      checked: on,
-      onChange: toggle,
-      label: "secondary",
-      color: "secondary"
-    }), React$1__default.createElement(doric.Switch, {
-      checked: on,
-      onChange: toggle,
-      label: "danger",
-      color: "danger"
-    }), React$1__default.createElement(doric.Switch, {
-      checked: on,
-      onChange: toggle,
-      label: "not clikcable",
-      color: "secondary",
-      noClickLabel: true
-    })), React$1__default.createElement("div", null, React$1__default.createElement(doric.Switch, {
-      checked: on,
-      onChange: toggle,
-      label: "primary",
-      color: "primary"
-    }), React$1__default.createElement(doric.Switch, {
-      disabled: true,
-      checked: on,
-      onChange: toggle,
-      label: "secondary",
-      color: "secondary"
-    }), React$1__default.createElement(doric.Switch, {
-      disabled: true,
-      checked: on,
-      onChange: toggle,
-      label: "danger",
-      color: "danger"
-    }), React$1__default.createElement(doric.Switch, {
-      disabled: true,
-      checked: on,
-      onChange: toggle,
-      label: "not clikcable",
-      color: "secondary",
-      noClickLabel: true
-    })));
-  };
 
   const OtherInput = styled$1__default(doric.Input.Text)`
     border-left: 5px solid green;
@@ -7252,6 +7104,13 @@
         height: 30px;
         background-color: ${props => props.theme[props.color]};
     `);
+  const Grid = styled$1__default.div`
+    display: grid;
+    grid-template-columns: repeat(${props => props.cols || 12}, 1fr);
+`;
+  const GridItem = styled$1__default.div`
+    grid-column: span ${props => props.span};
+`;
   const themes = [lightTheme, darkTheme];
 
   function App() {
@@ -7288,9 +7147,47 @@
     }, React$1__default.createElement(doric.GlobalStyle, null), React$1__default.createElement(CornerDiv, null, React$1__default.createElement(doric.Button, {
       color: "primary",
       onTap: cycleTheme
-    }, "Cycle Theme")), React$1__default.createElement(Checkboxes, null), React$1__default.createElement(Switches, null), React$1__default.createElement(doric.Text, {
-      type: "header"
-    }, "Button Styles"), React$1__default.createElement(Buttons, null)));
+    }, "Cycle Theme")), React$1__default.createElement(Grid, null, React$1__default.createElement(GridItem, {
+      as: doric.Input.Text,
+      span: 3,
+      autoComplete: "none",
+      bordered: true,
+      label: "Customer ID"
+    }), React$1__default.createElement(GridItem, {
+      as: doric.Input.Text,
+      span: 3,
+      autoComplete: "none",
+      bordered: true,
+      label: "Customer Name"
+    }), React$1__default.createElement(GridItem, {
+      as: doric.Select,
+      span: 3,
+      bordered: true,
+      label: "Shipping Method"
+    }, React$1__default.createElement("option", {
+      value: "SR"
+    }, "SR - See Routing"), React$1__default.createElement("option", {
+      value: "00"
+    }, "00 - Other")), React$1__default.createElement(GridItem, {
+      as: doric.Button,
+      span: 3,
+      text: "Addresses Selected: 0",
+      color: "primary"
+    }), React$1__default.createElement(GridItem, {
+      as: doric.Input.Text,
+      span: 2,
+      autoComplete: "none",
+      bordered: true,
+      label: "Rep 1"
+    }), React$1__default.createElement(GridItem, {
+      span: 4
+    }), React$1__default.createElement(GridItem, {
+      as: doric.Input.Text,
+      span: 3,
+      autoComplete: "none",
+      bordered: true,
+      label: "Purchase Order"
+    }))));
   }
 
   ReactDOM.render(React$1__default.createElement(App, null), document.querySelector("app-root"));

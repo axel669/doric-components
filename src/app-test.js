@@ -11,7 +11,7 @@ import renderAs from "./render-as.js"
 const AppWrapper = styled.div`
     width: 100%;
     margin: auto;
-    max-width: 640px;
+    max-width: 1024px;
 `
 
 const CornerDiv = styled.div`
@@ -48,38 +48,43 @@ function Buttons() {
         "medium",
         "large",
     ]
-    return buttonSizes.map(size => <>
-        <div>
-            {buttonTypes.map(
-                type => <doric.Button size={size} color={type.toLowerCase()}>{type}</doric.Button>
-            )}
-        </div>
-        <div>
-            {buttonTypes.map(
-                type => <doric.FlatButton size={size} color={type.toLowerCase()}>{type}</doric.FlatButton>
-            )}
-        </div>
-        <div>
-            {buttonTypes.map(
-                type => <doric.FlatButton size={size} color={type.toLowerCase()} bordered>{type}</doric.FlatButton>
-            )}
-        </div>
-        <div>
-            {buttonTypes.map(
-                type => <doric.Button disabled size={size} color={type.toLowerCase()}>{type}</doric.Button>
-            )}
-        </div>
-        <div>
-            {buttonTypes.map(
-                type => <doric.FlatButton disabled size={size} color={type.toLowerCase()}>{type}</doric.FlatButton>
-            )}
-        </div>
-        <div>
-            {buttonTypes.map(
-                type => <doric.FlatButton disabled size={size} color={type.toLowerCase()} bordered>{type}</doric.FlatButton>
-            )}
-        </div>
-    </>)
+    return <div>
+        <doric.Text type="header">
+            Button Styles
+        </doric.Text>
+        {buttonSizes.map(size => <>
+            <div>
+                {buttonTypes.map(
+                    type => <doric.Button size={size} color={type.toLowerCase()}>{type}</doric.Button>
+                )}
+            </div>
+            <div>
+                {buttonTypes.map(
+                    type => <doric.FlatButton size={size} color={type.toLowerCase()}>{type}</doric.FlatButton>
+                )}
+            </div>
+            <div>
+                {buttonTypes.map(
+                    type => <doric.FlatButton size={size} color={type.toLowerCase()} bordered>{type}</doric.FlatButton>
+                )}
+            </div>
+            <div>
+                {buttonTypes.map(
+                    type => <doric.Button disabled size={size} color={type.toLowerCase()}>{type}</doric.Button>
+                )}
+            </div>
+            <div>
+                {buttonTypes.map(
+                    type => <doric.FlatButton disabled size={size} color={type.toLowerCase()}>{type}</doric.FlatButton>
+                )}
+            </div>
+            <div>
+                {buttonTypes.map(
+                    type => <doric.FlatButton disabled size={size} color={type.toLowerCase()} bordered>{type}</doric.FlatButton>
+                )}
+            </div>
+        </>)}
+    </div>
 }
 
 const CardGrid = styled.div`
@@ -240,6 +245,14 @@ const ColorTester = doric.themedComponent(
     `
 )
 
+const Grid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(${props => props.cols || 12}, 1fr);
+`
+const GridItem = styled.div`
+    grid-column: span ${props => props.span};
+`
+
 const themes = [
     lightTheme,
     darkTheme,
@@ -282,9 +295,25 @@ function App() {
             </CornerDiv>
             {/* {modal} */}
 
-            <Checkboxes />
+            <Grid>
+                <GridItem as={doric.Input.Text} span={3} autoComplete="none" bordered label="Customer ID" />
+                <GridItem as={doric.Input.Text} span={3} autoComplete="none" bordered label="Customer Name" />
+                <GridItem as={doric.Select} span={3} bordered label="Shipping Method">
+                    <option value="SR">SR - See Routing</option>
+                    <option value="00">00 - Other</option>
+                </GridItem>
+                <GridItem as={doric.Button} span={3} text="Addresses Selected: 0" color="primary" />
+
+                <GridItem as={doric.Input.Text} span={2} autoComplete="none" bordered label="Rep 1" />
+                <GridItem span={4} />
+                <GridItem as={doric.Input.Text} span={3} autoComplete="none" bordered label="Purchase Order" />
+            </Grid>
+
+            {/* <Checkboxes />
 
             <Switches />
+
+            <Buttons /> */}
 
             {/* <ColorTester color="primary" />
             <ColorTester color="primaryLight" />
@@ -329,10 +358,6 @@ function App() {
                 <doric.Input.Date value={date} onChange={watDate} bordered label="Start Date" />
                 <OtherInput value={date} onChange={watDate} bordered label="Start Date" dateFormat={date => date.toLocaleDateString("en", {year: "numeric", month: "long", day: "2-digit"})} />
             </div> */}
-            <doric.Text type="header">
-                Button Styles
-            </doric.Text>
-            <Buttons />
 
             {/* <doric.Text type="header">
                 Card Styles

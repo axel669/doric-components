@@ -4,7 +4,7 @@ const darkTheme = {
     hlInvert: "rgba(0, 0, 0, 0.35)",
     hlLight: "rgba(255, 255, 255, 0.35)",
     hlDark: "rgba(0, 0, 0, 0.35)",
-    mainBG: "#222",
+    mainBG: "#111",
     textColor: "white",
     invertText: "black",
     softText: "lightgray",

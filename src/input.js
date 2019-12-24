@@ -43,10 +43,9 @@ const ActionArea = styled.div`
 
 const inputOfType = type =>
     source => {
-        const {action, forwardRef, className, ...props} = source
+        const {action, forwardRef, ...props} = source
         const inputProps = {
             type,
-            className,
             ref: forwardRef,
             ...props,
         }
