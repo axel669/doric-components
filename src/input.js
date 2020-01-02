@@ -2,7 +2,7 @@ import React, {useEffect, useCallback, useRef, useState} from "react"
 import styled from "styled-components"
 
 import {themedComponent, propToggle} from "./helpers.js"
-import {useInput} from "./effects.js"
+import {useInput} from "./hooks.js"
 import {ActionButton, Button, FlatButton} from "./button.js"
 import {Card, CardContent} from "./card.js"
 import ControlBorder from "./control-border.js"
@@ -43,17 +43,51 @@ const ActionArea = styled.div`
 
 const inputOfType = type =>
     source => {
-        const {action, forwardRef, ...props} = source
+        const {
+            action,
+            forwardRef,
+            onKeyDown,
+            prevTabRef = null,
+            nextTabRef = null,
+            tabDirection = null,
+            ...props
+        } = source
         const inputProps = {
             type,
             ref: forwardRef,
             ...props,
         }
+        const tabTarget = evt => {
+            const userTarget = tabDirection?.(evt)
+
+            if (userTarget !== undefined) {
+                return userTarget
+            }
+
+            if (evt.key === "Tab") {
+                return evt.shiftKey ? "prev" : "next"
+            }
+            return null
+        }
+        const wrappedOnKeyDown = evt => {
+            const target = tabTarget(evt)
+            if (target === "next" && nextTabRef !== null) {
+                evt.preventDefault()
+                nextTabRef.current.focus()
+                return
+            }
+            if (target === "prev" && prevTabRef !== null) {
+                evt.preventDefault()
+                prevTabRef.current.focus()
+                return
+            }
+            onKeyDown?.(evt)
+        }
         return <ControlBorder {...props}>
             <ActionArea disabled={props.disabled}>
                 {action}
             </ActionArea>
-            <InputElement {...inputProps} />
+            <InputElement {...inputProps} onKeyDown={wrappedOnKeyDown} />
         </ControlBorder>
     }
 

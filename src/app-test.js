@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useReducer, useRef} from "react"
+import React, {useState, useEffect, useReducer, useRef, useLayoutEffect} from "react"
 import ReactDOM from "react-dom"
 
 import styled from "styled-components"
@@ -11,7 +11,7 @@ import renderAs from "./render-as.js"
 const AppWrapper = styled.div`
     width: 100%;
     margin: auto;
-    max-width: 1280px;
+    max-width: 640px;
 `
 
 const CornerDiv = styled.div`
@@ -180,21 +180,28 @@ const debounce = (func, time) => {
     }
 }
 
-const TestModal = (props) => <doric.Modal>
-    <doric.Card>
-        <doric.CardContent>
-            <doric.Text type="title">
-                Alert
-            </doric.Text>
-        </doric.CardContent>
-        <doric.CardActions style={{textAlign: "right"}}>
-            <doric.Button onTap={() => props.close(0)}>Close</doric.Button>
-        </doric.CardActions>
-    </doric.Card>
-</doric.Modal>
+const TestModal = (props) => {
+    const {close, num, inc} = props
+    const closeAlert = () => close(null)
+
+    return <doric.Modal>
+        <doric.Card>
+            <doric.CardContent>
+                <doric.Text type="title">
+                    Alert
+                </doric.Text>
+                Number: {num}
+            </doric.CardContent>
+            <doric.CardActions style={{textAlign: "right"}}>
+                <doric.FlatButton onTap={inc} text="Increment" color="secondary" />
+                <doric.Button onTap={closeAlert} text="Close" />
+            </doric.CardActions>
+        </doric.Card>
+    </doric.Modal>
+}
 
 const Checkboxes = () => {
-    const [checked, toggleChecked] = doric.useToggle(false)
+    const [checked, toggleChecked] = doric.useInputToggle(false)
     return <div>
         <doric.Text type="header">Checkboxes</doric.Text>
         <div>
@@ -215,7 +222,7 @@ const Checkboxes = () => {
 }
 
 const Switches = () => {
-    const [on, toggle] = doric.useToggle(false)
+    const [on, toggle] = doric.useInputToggle(false)
 
     return <div>
         <doric.Text type="header">Switches</doric.Text>
@@ -245,72 +252,27 @@ const ColorTester = doric.themedComponent(
     `
 )
 
-const AppStyle = styled.createGlobalStyle`
-    input, select {
-        font-size: 16px;
-    }
-`
-
-const Grid = styled.div`
-    display: grid;
-    grid-template-columns: repeat(${props => props.cols || 12}, 1fr);
-`
-const GridItem = styled.div`
-    grid-column: span ${props => props.span};
-`
-const GridItemContainer = styled(GridItem)`
-    display: flex;
-    align-items: center;
-    justify-content: stretch;
-
-    & > * {
-        flex-grow: 1;
-    }
-`
-
 const DebounceInput = props => {
 }
 
-const BannerContainer = styled.div`
-    background-color: rgb(31, 63, 127);
-    color: white;
-    padding: 8px;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-`
-const BannerUserText = styled.div`
-    grid-column: span 2;
-    font-size: 18px;
-`
+const useThing = thing => {
+    const [show, update] = useState(false)
 
-const testUser = {
-    "name": "Axel669",
-    "email": "axel@axel669.net",
+    const element = show ? thing : null
+    return [element, update]
 }
+const useCounter = start => {
+    const [current, update] = useState(start)
 
-const Banner = props => {
-    const {user, date} = props
-    const dateString = date.toLocaleDateString(
-        "en-US",
-        {
-            month: "long",
-            year: "numeric",
-            day: "numeric",
-            weekday: "long",
-        }
-    )
-
-    return <BannerContainer>
-        <BannerUserText>
-            <div>{dateString}</div>
-            <div>Welcome, {user.name}</div>
-        </BannerUserText>
-    </BannerContainer>
+    return [
+        current,
+        () => update(current + 1)
+    ]
 }
 
 const themes = [
-    lightTheme,
     darkTheme,
+    lightTheme,
 ]
 function App() {
     const tapped = () => console.log("tapped")
@@ -341,50 +303,66 @@ function App() {
     // }
     //
     // const wat = <doric.ActionButton icon="calendar" />
+    const [num, inc] = useCounter(0)
+    const [alert, showAlert] = doric.useModal(
+        close => <TestModal close={close} {...{num, inc}} />
+    )
+    const [thing, showThing] = useThing(<div>Thing count: {num}</div>)
+    const toggleThing = () => showThing(thing === null)
+
+    const showModal = async () => {
+        // const result = await showAlert()
+        const result = await doric.dialog.alert()
+        console.log(result)
+    }
+    const popoverConfirm = React.useCallback(
+        close => <doric.Card sideMedia>
+            <doric.CardMedia image={bunny.bulma} />
+            <doric.CardContent>
+                Confirm?
+            </doric.CardContent>
+            <doric.CardActions>
+                <doric.Button text="Cancel" color="danger" onTap={close} />
+                <doric.Button text="Confirm" color="secondary" onTap={close} />
+            </doric.CardActions>
+        </doric.Card>,
+        []
+    )
+
+    const arrowMove = evt => {
+        if (evt.key === "ArrowRight") {
+            return "next"
+        }
+    }
+    const refs = doric.useArrayRef(4)
 
     return <AppWrapper>
-        <AppStyle />
         <doric.ThemeProvider value={theme}>
             <doric.GlobalStyle />
             <CornerDiv>
                 <doric.Button color="primary" onTap={cycleTheme}>Cycle Theme</doric.Button>
             </CornerDiv>
+
+            <doric.Menu title="App Title">
+                <doric.Button color="secondary" text="Logout?" />
+                <doric.Button color="danger" text="Boom!" />
+            </doric.Menu>
+
+            <doric.Button onTap={toggleThing} text="Toggle" />
+            <doric.Button onTap={inc} text="Increment" />
+            {thing}
+
+            <doric.Button color="primary">
+                Alert
+                <doric.Popover content={popoverConfirm} ty="-25%" />
+            </doric.Button>
+            {alert}
+
+            <doric.Input.Text forwardRef={refs[0]} nextTabRef={refs[2]} prevTabRef={refs[-1]} />
+            <doric.Input.Text forwardRef={refs[1]} nextTabRef={refs[0]} tabDirection={arrowMove} />
+            <doric.Input.Text forwardRef={refs[2]} nextTabRef={refs[0]} prevTabRef={refs[3]} />
+            <doric.Input.Text forwardRef={refs[3]} />
             {/* {modal} */}
-
-            <Banner date={new Date()} user={testUser} />
-
-            <doric.Card>
-                <doric.CardContent>
-                    <Grid>
-                        <GridItem as={doric.Input.Text} span={3} autoComplete="none" bordered label="Customer ID" />
-                        <GridItem as={doric.Input.Text} span={3} autoComplete="none" bordered label="Customer Name" />
-                        <GridItem as={doric.Select} span={3} bordered label="Shipping Method">
-                            <option value="SR">SR - See Routing</option>
-                            <option value="00">00 - Other</option>
-                        </GridItem>
-                        <GridItemContainer span={3}>
-                            <doric.Button text="Addresses Selected: 0" color="primary" block size="large" />
-                        </GridItemContainer>
-
-                        <GridItem as={doric.Input.Text} span={2} autoComplete="none" bordered label="Rep 1" />
-                        <GridItem span={4} />
-                        <GridItem as={doric.Input.Text} span={3} autoComplete="none" bordered label="Purchase Order" />
-                        <GridItem as={doric.Select} span={3} bordered label="Terms">
-                            <option value="02">02 - NET 45</option>
-                        </GridItem>
-
-                        <GridItem as={doric.Input.Text} span={2} autoComplete="none" bordered label="Rep 2" />
-                        <GridItem span={4} />
-                        <GridItem as={doric.Input.Text} span={3} autoComplete="none" bordered label="Discount" />
-                        <GridItem as={doric.Input.Text} span={3} autoComplete="none" bordered label="Promotional Code" />
-
-                        <GridItem span={3} />
-                        <GridItem as={doric.Button} span={3} size="large" color="secondary" text="Submit" />
-                        <GridItem as={doric.Button} span={3} size="large" color="danger" text="Clear Form" />
-                        <GridItem span={3} />
-                    </Grid>
-                </doric.CardContent>
-            </doric.Card>
 
             {/* <Checkboxes />
 
@@ -436,10 +414,7 @@ function App() {
                 <OtherInput value={date} onChange={watDate} bordered label="Start Date" dateFormat={date => date.toLocaleDateString("en", {year: "numeric", month: "long", day: "2-digit"})} />
             </div> */}
 
-            {/* <doric.Text type="header">
-                Card Styles
-            </doric.Text>
-            <Cards /> */}
+            <Cards />
 
             {/* <doric.Tabs style={{height: 320}} selectedTab={currentTab} onChange={onTabChange}>
                 {tabs}

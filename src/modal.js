@@ -22,13 +22,6 @@ const ModalPosition = styled.div`
     left: ${props => props.x};
     transform: translate(${props => props.tx}, ${props => props.ty});
 `
-
-const invertMeasurement = measure => {
-    if (measure.startsWith("-") === true) {
-        return measure.slice(1)
-    }
-    return `-${measure}`
-}
 const Modal = props => {
     const {
         position = {},
@@ -52,28 +45,25 @@ const Modal = props => {
     )
 }
 
-const useModal = (Component) => {
-    const [displayInfo, updateInfo] = useState(null)
+const useModal = (component) => {
+    const [callback, setCallback] = useState(null)
+    const close = (value) => {
+        setCallback(null)
+        callback(value)
+    }
 
-    if (displayInfo === null) {
+    if (callback !== null) {
         return [
-            null,
-            (props = {}) => new Promise(
-                resolve => updateInfo({
-                    resolve,
-                    props,
-                })
-            ),
+            component(close),
+            () => {},
         ]
     }
 
-    const close = value => {
-        updateInfo(null)
-        displayInfo.resolve(value)
-    }
     return [
-        <Component {...displayInfo.props} close={close} />,
-        () => {},
+        null,
+        () => new Promise(
+            resolve => setCallback(() => resolve)
+        ),
     ]
 }
 

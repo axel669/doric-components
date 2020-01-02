@@ -1140,12 +1140,10 @@ generic-names@^1.0.3:
   dependencies:
     loader-utils "^0.2.16"
 
-gesturesjs@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/gesturesjs/-/gesturesjs-1.0.1.tgz#9d9684cddcb40768ed9d34f71a8c0153d5678aef"
-  integrity sha512-vXlwx5C7b4geBaU4cU+RNCx9daXmN/kbgo+IcNzY75TyMk/r8tRMSdUw3NuPSsQTEHU64s9TSVxeHfzg9qkUiw==
-  dependencies:
-    rollup-plugin-terser "^4.0.2"
+gesturesjs@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/gesturesjs/-/gesturesjs-1.1.1.tgz#d5f9a1ba3159ec7a5ee8e71f3323d90060f88a0f"
+  integrity sha512-JGsqg1t2bqHlMyQmEneCV2LW90pMwE5BCFlOAMp3SkNQ/rolLEU0WsYRxepUuFuQos1OEfihlOjL9znpVx/SsQ==
 
 get-value@^2.0.3, get-value@^2.0.6:
   version "2.0.6"
@@ -1990,6 +1988,16 @@ osenv@^0.1.4:
     os-homedir "^1.0.0"
     os-tmpdir "^1.0.0"
 
+overlayscrollbars-react@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/overlayscrollbars-react/-/overlayscrollbars-react-0.2.0.tgz#5f30f25abb22db94433269256e22cc4a5f1a360e"
+  integrity sha512-pjqEeVrwqpGm0e8LV87CR5AhPj6XdEP4K69WI8xx9zK/MXkwand+ng55ztO22QLHL3fVxzf4l7wlq640b0iQUw==
+
+overlayscrollbars@^1.10.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/overlayscrollbars/-/overlayscrollbars-1.10.0.tgz#f63c6c76f25416c821e0347797b573b351ce87ea"
+  integrity sha512-SFGaq9wmR6jkwb5L7Wx0JIyGrQOT2/7ZD4F0srMN0KyYRbsdQ1nzdLF+JLp7QIQT2U1lsG1c16aMjxMtwzHA3Q==
+
 p-queue@^2.4.2:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/p-queue/-/p-queue-2.4.2.tgz#03609826682b743be9a22dba25051bd46724fc34"
@@ -2600,7 +2608,7 @@ rollup-plugin-postcss@^2.0.3:
     rollup-pluginutils "^2.0.1"
     style-inject "^0.3.0"
 
-rollup-plugin-terser@^4.0.2, rollup-plugin-terser@^4.0.4:
+rollup-plugin-terser@^4.0.4:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/rollup-plugin-terser/-/rollup-plugin-terser-4.0.4.tgz#6f661ef284fa7c27963d242601691dc3d23f994e"
   integrity sha512-wPANT5XKVJJ8RDUN0+wIr7UPd0lIXBo4UdJ59VmlPCtlFsE20AM+14pe+tk7YunCsWEiuzkDBY3QIkSCjtrPXg==

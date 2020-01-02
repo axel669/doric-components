@@ -5,6 +5,24 @@
   ReactDOM = ReactDOM && ReactDOM.hasOwnProperty('default') ? ReactDOM['default'] : ReactDOM;
   var styled$1__default = 'default' in styled$1 ? styled$1['default'] : styled$1;
 
+  function _extends() {
+    _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    return _extends.apply(this, arguments);
+  }
+
   function styleInject(css, ref) {
     if (ref === void 0) ref = {};
     var insertAt = ref.insertAt;
@@ -37,23 +55,310 @@
   var css = "[data-simplebar]{position:relative;flex-direction:column;flex-wrap:wrap;justify-content:flex-start;align-content:flex-start;align-items:flex-start}.simplebar-wrapper{overflow:hidden;width:inherit;height:inherit;max-width:inherit;max-height:inherit}.simplebar-mask{direction:inherit;position:absolute;overflow:hidden;padding:0;margin:0;left:0;top:0;bottom:0;right:0;width:auto!important;height:auto!important;z-index:0}.simplebar-offset{direction:inherit!important;box-sizing:inherit!important;resize:none!important;position:absolute;top:0;left:0;bottom:0;right:0;padding:0;margin:0;-webkit-overflow-scrolling:touch}.simplebar-content-wrapper{direction:inherit;box-sizing:border-box!important;position:relative;display:block;height:100%;width:auto;visibility:visible;max-width:100%;max-height:100%;scrollbar-width:none}.simplebar-content-wrapper::-webkit-scrollbar,.simplebar-hide-scrollbar::-webkit-scrollbar{display:none}.simplebar-content:after,.simplebar-content:before{content:' ';display:table}.simplebar-placeholder{max-height:100%;max-width:100%;width:100%;pointer-events:none}.simplebar-height-auto-observer-wrapper{box-sizing:inherit!important;height:100%;width:100%;max-width:1px;position:relative;float:left;max-height:1px;overflow:hidden;z-index:-1;padding:0;margin:0;pointer-events:none;flex-grow:inherit;flex-shrink:0;flex-basis:0}.simplebar-height-auto-observer{box-sizing:inherit;display:block;opacity:0;position:absolute;top:0;left:0;height:1000%;width:1000%;min-height:1px;min-width:1px;overflow:hidden;pointer-events:none;z-index:-1}.simplebar-track{z-index:1;position:absolute;right:0;bottom:0;pointer-events:none;overflow:hidden}[data-simplebar].simplebar-dragging .simplebar-content{pointer-events:none;user-select:none;-webkit-user-select:none}[data-simplebar].simplebar-dragging .simplebar-track{pointer-events:all}.simplebar-scrollbar{position:absolute;right:2px;width:7px;min-height:10px}.simplebar-scrollbar:before{position:absolute;content:'';background:#000;border-radius:7px;left:0;right:0;opacity:0;transition:opacity .2s linear}.simplebar-scrollbar.simplebar-visible:before{opacity:.5;transition:opacity 0s linear}.simplebar-track.simplebar-vertical{top:0;width:11px}.simplebar-track.simplebar-vertical .simplebar-scrollbar:before{top:2px;bottom:2px}.simplebar-track.simplebar-horizontal{left:0;height:11px}.simplebar-track.simplebar-horizontal .simplebar-scrollbar:before{height:100%;left:2px;right:2px}.simplebar-track.simplebar-horizontal .simplebar-scrollbar{right:auto;left:0;top:2px;height:7px;min-height:0;min-width:10px;width:auto}[data-simplebar-direction=rtl] .simplebar-track.simplebar-vertical{right:auto;left:0}.hs-dummy-scrollbar-size{direction:rtl;position:fixed;opacity:0;visibility:hidden;height:500px;width:500px;overflow-y:hidden;overflow-x:scroll}.simplebar-hide-scrollbar{position:fixed;left:0;visibility:hidden;overflow-y:scroll;scrollbar-width:none}\n";
   styleInject(css);
 
-  function _extends() {
-    _extends = Object.assign || function (target) {
-      for (var i = 1; i < arguments.length; i++) {
-        var source = arguments[i];
+  const isMobile = typeof orientation !== "undefined" || navigator.userAgent.indexOf("Mobile") !== -1;
+  const handlers = new Map();
+  const touchVars = {};
 
-        for (var key in source) {
-          if (Object.prototype.hasOwnProperty.call(source, key)) {
-            target[key] = source[key];
-          }
-        }
-      }
+  const addHandler = (name, handler) => {
+    if (typeof handler === "function") {
+      handler = handler();
+    }
 
-      return target;
+    handlers.set(name, handler);
+    touchVars[name] = {};
+  };
+
+  const createEvent = (type, source) => {
+    var ref0;
+    const newEvt = new CustomEvent(type, {
+      bubbles: true,
+      cancelable: true
+    });
+
+    for (const prop of Object.keys(ref0 = source)) {
+      const value = ref0[prop];
+      newEvt[prop] = value;
+    }
+
+    return newEvt;
+  };
+
+  const copyTouchEvent = touch => ({
+    clientX: touch.clientX,
+    clientY: touch.clientY,
+    pageX: touch.pageX,
+    pageY: touch.pageY,
+    screenX: touch.screenX,
+    screenY: touch.screenY,
+    identifier: touch.identifier,
+    target: touch.target,
+    sourceElement: touch.sourceElement,
+    id: touch.identifier,
+    timestamp: touch.timestamp
+  });
+
+  const copyForSynth = touch => ({
+    clientX: touch.clientX,
+    clientY: touch.clientY,
+    pageX: touch.pageX,
+    pageY: touch.pageY,
+    screenX: touch.screenX,
+    screenY: touch.screenY,
+    identifier: touch.identifier,
+    id: touch.identifier
+  });
+
+  const delay = func => setTimeout(func, 0);
+
+  const polarVector = (a, b) => {
+    const dx = b.clientX - a.clientX;
+    const dy = b.clientY - a.clientY;
+    const angle = (Math.atan2(dy, dx) * (180 / Math.PI) + 450) % 360;
+    const magnitude = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+    return {
+      angle: angle,
+      magnitude: magnitude
+    };
+  };
+
+  const sharedVars = {};
+
+  const touchMapper = (name, reset = false) => touch => {
+    if (reset === true) {
+      touchVars[name][touch.identifier] = {};
+    }
+
+    touchVars[name][touch.identifier] = { ...touchVars[name][touch.identifier],
+      ...sharedVars[touch.identifier]
+    };
+    return { ...copyTouchEvent(touch),
+      vars: touchVars[name][touch.identifier]
+    };
+  };
+
+  const handleTouchList = (list, individual, touches, evt) => {
+    if (list !== undefined) {
+      list(touches, evt);
+    }
+
+    if (individual === undefined) {
+      return;
+    }
+
+    for (const touch of touches) {
+      individual(touch, evt);
+    }
+  };
+
+  window.addEventListener("touchstart", evt => {
+    const touches = [...evt.changedTouches];
+
+    for (const touch of touches) {
+      touch.timestamp = Date.now();
+      sharedVars[touch.identifier] = {
+        start: touch
+      };
+    }
+
+    for (const [name, handler] of handlers) {
+      handleTouchList(handler.start, handler.startItem, touches.map(touchMapper(name, true)), evt);
+    }
+  }, false);
+  window.addEventListener("touchmove", evt => {
+    const touches = [...evt.changedTouches];
+
+    for (const touch of touches) {
+      const shared = sharedVars[touch.identifier];
+      touch.timestamp = Date.now();
+      shared.vector = polarVector(shared.start, touch);
+    }
+
+    for (const [name, handler] of handlers) {
+      handleTouchList(handler.move, handler.moveItem, touches.map(touchMapper(name)), evt);
+    }
+  });
+  window.addEventListener("touchend", evt => {
+    const touches = [...evt.changedTouches];
+
+    for (const touch of touches) {
+      const shared = sharedVars[touch.identifier];
+      touch.timestamp = Date.now();
+      shared.vector = polarVector(shared.start, touch);
+    }
+
+    for (const [name, handler] of handlers) {
+      handleTouchList(handler.end, handler.endItem, touches.map(touchMapper(name)), evt);
+    }
+  });
+
+  if (isMobile === false) {
+    console.log("GesturesJS will attach non-mobile listeners");
+
+    const createSynthTouch = mouseEvt => ({ ...copyTouchEvent(mouseEvt),
+      identifier: -10,
+      id: -10,
+      target: currentMouseTarget,
+      suorceElement: currentMouseTarget
+    });
+
+    let currentMouseTarget = null;
+    let mouseIsDown = false;
+
+    const dispatchSyntheticEvent = (evt, type) => {
+      const changedTouches = [createSynthTouch(evt)];
+      currentMouseTarget.dispatchEvent(createEvent(type, {
+        changedTouches: changedTouches,
+        touches: changedTouches,
+        syntheticEvent: true
+      }));
     };
 
-    return _extends.apply(this, arguments);
+    const checkNoFire = start => {
+      let current = start;
+
+      while (current !== null && current !== document.documentElement) {
+        if (current.dataset.gjsNoFire !== undefined) {
+          return true;
+        }
+
+        current = current.parentNode;
+      }
+
+      return false;
+    };
+
+    window.addEventListener("mousedown", evt => {
+      if (checkNoFire(evt.target) === true) {
+        return;
+      }
+
+      if (evt.button === 0) {
+        mouseIsDown = true;
+        currentMouseTarget = evt.target;
+        dispatchSyntheticEvent(evt, "touchstart");
+      }
+    }, true);
+    window.addEventListener("mousemove", evt => {
+      if (mouseIsDown === true) {
+        dispatchSyntheticEvent(evt, "touchmove");
+      }
+    }, true);
+    window.addEventListener("mouseup", evt => {
+      if (evt.button === 0 && mouseIsDown === true) {
+        mouseIsDown = false;
+        dispatchSyntheticEvent(evt, "touchend");
+        currentMouseTarget = null;
+      }
+    }, true);
   }
+
+  const climbDOM = (start, func) => {
+    let current = start;
+
+    while (current !== null && current !== document.documentElement) {
+      func(current);
+      current = current.parentNode;
+    }
+  };
+
+  addHandler("active-touch", () => {
+    const className = "gjs-touch-active";
+    const activeTouches = new WeakMap();
+
+    const inc = elem => {
+      var nullref0;
+      const count = (nullref0 = activeTouches.get(elem)) != null ? nullref0 : 0;
+      activeTouches.set(elem, count + 1);
+    };
+
+    const dec = elem => {
+      const newCount = activeTouches.get(elem) - 1;
+      activeTouches.set(elem, newCount);
+      return newCount;
+    };
+
+    return {
+      startItem: touch => climbDOM(touch.target, node => {
+        node.classList.add(className);
+        inc(node);
+      }),
+      endItem: touch => climbDOM(touch.target, node => {
+        if (dec(node) === 0) {
+          node.classList.remove(className);
+        }
+      })
+    };
+  });
+  addHandler("tap", () => {
+    const className = "gjs-tap-active";
+
+    const addClass = node => {
+      node.classList.add(className);
+    };
+
+    const removeClass = node => {
+      node.classList.remove(className);
+    };
+
+    return {
+      startItem: touch => {
+        if (touch.target.classList.contains(className) === false) {
+          touch.vars.valid = true;
+          touch.vars.active = true;
+          climbDOM(touch.target, addClass);
+        }
+      },
+      moveItem: touch => {
+        if (touch.vars.active === true && touch.vars.vector.magnitude > 20) {
+          touch.vars.valid = false;
+          climbDOM(touch.target, removeClass);
+        }
+      },
+      endItem: touch => {
+        if (touch.vars.active === true) {
+          climbDOM(touch.target, removeClass);
+        }
+
+        const duration = touch.timestamp - touch.vars.start.timestamp;
+
+        if (touch.vars.vector.magnitude > 20 || duration > 600) {
+          return;
+        }
+
+        const synthEvent = createEvent("tap", copyForSynth(touch));
+        delay(() => {
+          if (touch.target.dispatchEvent(synthEvent) === true) {
+            touch.target.focus();
+          }
+        });
+      }
+    };
+  });
+  addHandler("hold", () => {
+    const timers = {};
+
+    const schedule = touch => {
+      timers[touch.id] = setTimeout(() => {
+        timers[touch.id] = null;
+        touch.target.dispatchEvent(createEvent("hold", copyForSynth(touch)));
+      }, 1500);
+    };
+
+    const clear = touch => {
+      clearTimeout(timers[touch.id]);
+      timers[touch.id] = null;
+    };
+
+    return {
+      startItem: touch => schedule(touch),
+      moveItem: touch => {
+        if (touch.vars.vector.magnitude > 20) {
+          clear(touch);
+        }
+      },
+      endItem: touch => clear(touch)
+    };
+  });
 
   const renderAs = Tag => ({
     className,
@@ -83,7 +388,7 @@
     }
 `;
 
-  const climbDOM = (start, func) => {
+  const climbDOM$1 = (start, func) => {
     let current = start;
 
     while (current !== null && current !== document.documentElement) {
@@ -99,7 +404,7 @@
       globalListeners[type] = new Map();
       window.addEventListener(type, evt => {
         const handlers = globalListeners[type];
-        climbDOM(evt.target, node => {
+        climbDOM$1(evt.target, node => {
           var _handlers$get;
 
           return (_handlers$get = handlers.get(node)) === null || _handlers$get === void 0 ? void 0 : _handlers$get(evt);
@@ -556,19 +861,24 @@
         background-color: ${props => props.theme.mainBG};
         color: ${props => props.theme.textColor};
     }
+
     input, select {
         color: ${props => props.theme.textColor};
         font-family: ${props => props.theme.font}, Arial;
     }
     option {
-        ${''
-/* color: black; */
-}
         background-color: ${props => props.theme.mainBG};
         color: ${props => props.theme.textColor};
     }
     * {
         box-sizing: border-box;
+    }
+
+    .simplebar-scrollbar::before {
+        background-color: ${props => props.theme.textColor};
+    }
+    .simplebar-visible.simplebar-scrollbar::before {
+        opacity: 0.75;
     }
 `);
 
@@ -577,14 +887,45 @@
     return [current, evt => update(evt.target.value)];
   };
 
-  const useToggle = value => {
+  const useInputToggle = value => {
     const [current, set] = React$1.useState(value);
     return [current, evt => set(evt.target.checked)];
   };
 
-  var effects = /*#__PURE__*/Object.freeze({
+  const useToggle = value => {
+    const [current, set] = React$1.useState(value);
+    return [current, () => set(current === false)];
+  };
+
+  const genRefs = length => Array.from({
+    length
+  }, () => ({
+    current: null
+  }));
+
+  const adjustRefs = (current, target) => {
+    if (current.length === target) {
+      return current;
+    }
+
+    if (current.length > target) {
+      return current.slice(0, target);
+    }
+
+    return [...current, ...genRefs(target - current.length)];
+  };
+
+  const useArrayRef = size => {
+    const ref = React.useRef(null);
+    ref.current = ref.current === null ? genRefs(size) : adjustRefs(ref.current, size);
+    return ref.current;
+  };
+
+  var hooks = /*#__PURE__*/Object.freeze({
     __proto__: null,
+    useArrayRef: useArrayRef,
     useInput: useInput,
+    useInputToggle: useInputToggle,
     useToggle: useToggle
   });
 
@@ -754,24 +1095,19 @@
     return ReactDOM.createPortal(React$1__default.createElement(ModalCover, null, React$1__default.createElement(ModalPosition, positionInfo, children)), modalRoot);
   };
 
-  const useModal = Component => {
-    const [displayInfo, updateInfo] = React$1.useState(null);
-
-    if (displayInfo === null) {
-      return [null, (props = {}) => new Promise(resolve => updateInfo({
-        resolve,
-        props
-      }))];
-    }
+  const useModal = component => {
+    const [callback, setCallback] = React$1.useState(null);
 
     const close = value => {
-      updateInfo(null);
-      displayInfo.resolve(value);
+      setCallback(null);
+      callback(value);
     };
 
-    return [React$1__default.createElement(Component, _extends({}, displayInfo.props, {
-      close: close
-    })), () => {}];
+    if (callback !== null) {
+      return [component(close), () => {}];
+    }
+
+    return [null, () => new Promise(resolve => setCallback(() => resolve))];
   };
 
   const InputElement = styled$1__default.input`
@@ -805,6 +1141,10 @@
     const {
       action,
       forwardRef,
+      onKeyDown,
+      prevTabRef = null,
+      nextTabRef = null,
+      tabDirection = null,
       ...props
     } = source;
     const inputProps = {
@@ -812,9 +1152,44 @@
       ref: forwardRef,
       ...props
     };
+
+    const tabTarget = evt => {
+      const userTarget = tabDirection === null || tabDirection === void 0 ? void 0 : tabDirection(evt);
+
+      if (userTarget !== undefined) {
+        return userTarget;
+      }
+
+      if (evt.key === "Tab") {
+        return evt.shiftKey ? "prev" : "next";
+      }
+
+      return null;
+    };
+
+    const wrappedOnKeyDown = evt => {
+      const target = tabTarget(evt);
+
+      if (target === "next" && nextTabRef !== null) {
+        evt.preventDefault();
+        nextTabRef.current.focus();
+        return;
+      }
+
+      if (target === "prev" && prevTabRef !== null) {
+        evt.preventDefault();
+        prevTabRef.current.focus();
+        return;
+      }
+
+      onKeyDown === null || onKeyDown === void 0 ? void 0 : onKeyDown(evt);
+    };
+
     return React$1__default.createElement(ControlBorder, props, React$1__default.createElement(ActionArea, {
       disabled: props.disabled
-    }, action), React$1__default.createElement(InputElement, inputProps));
+    }, action), React$1__default.createElement(InputElement, _extends({}, inputProps, {
+      onKeyDown: wrappedOnKeyDown
+    })));
   };
 
   const DateInput = themedComponent(inputOfType("text"), "Themed(DateInput)");
@@ -988,162 +1363,6 @@
       }));
     }
   };
-
-  const SelectElement = styled$1__default.select`
-    padding: 8px 8px 8px 8px;
-    margin: 0px;
-    border-width: 0px;
-    z-index: +1;
-    width: 100%;
-    border-radius: 4px;
-    background-color: transparent;
-    cursor: pointer;
-    -webkit-appearance: none;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-    &:focus {
-        outline: none;
-    }
-
-    &:disabled {
-        cursor: default;
-    }
-`;
-  const IconArea = styled$1__default.div`
-    position: absolute;
-    top: 0px;
-    bottom: 0px;
-    right: 0px;
-    display: flex;
-    align-items: center;
-    padding-right: 8px;
-`;
-  const Select = themedComponent(props => React$1__default.createElement(ControlBorder, props, React$1__default.createElement(IconArea, null, React$1__default.createElement(Icon, {
-    name: "arrow-dropdown"
-  })), React$1__default.createElement(SelectElement, props)), "Themed(Select)");
-
-  const disabledVariant$3 = propToggle("disabled", styled$1__default.css`
-        filter: brightness(${props => props.theme.disabledBrightness});
-    `, "");
-  const SwitchContainer = styled$1__default(renderAs("doric-switch"))`
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding-right: 4px;
-    user-select: none;
-    position: relative;
-
-    ${''
-/* opacity: ${props => props.disabled ? 0.7 : 1}; */
-}
-    ${disabledVariant$3}
-
-    & > doric-button {
-        position: absolute;
-        top: 0px;
-        transition: left linear 100ms;
-
-        left: ${props => props.checked ? 14 : 0}px;
-    }
-`;
-  const ClickableArea$1 = styled$1__default.div`
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    bottom: 0px;
-    cursor: pointer;
-
-    width: ${props => props.noClickLabel ? "50px" : "100%"};
-`;
-  const trackColorVariant = propToggle("checked", styled$1__default.css`
-        background-color: ${props => props.theme[`${props.color}Light`]};
-    `, styled$1__default.css`
-        background-color: gray;
-    `);
-  const SwitchArea = styled$1__default.div`
-    display: inline-block;
-    width: 50px;
-    height: 36px;
-    position: relative;
-    margin-right: 4px;
-
-    &::before {
-        position: absolute;
-        content: "";
-        top: 50%;
-        left: 50%;
-        width: 30px;
-        height: 12px;
-        transform: translate(-50%, -50%);
-        border-radius: 20px;
-        background-color: cyan;
-        transition: background-color linear 100ms;
-
-        ${trackColorVariant}
-    }
-`;
-  const colorVariant = propToggle("checked", styled$1__default.css`
-        background-color: ${props => props.theme[props.color]};
-    `, styled$1__default.css`
-        background-color: lightgray;
-    `);
-  const SwitchIcon = styled$1__default.div`
-    width: 20px;
-    height: 20px;
-    border-radius: 10px;
-    transition: background-color linear 100ms;
-
-    ${colorVariant}
-`;
-  const Label$2 = styled$1__default(Text)`
-    opacity: ${props => props.disabled ? 0.65 : 1};
-`;
-  const Switch = themedComponent(source => {
-    const {
-      onChange,
-      label,
-      checked,
-      theme,
-      color,
-      noClickLabel,
-      disabled
-    } = source;
-    const controlledProps = {
-      checked,
-      color,
-      theme,
-      disabled
-    };
-    const controlRef = React$1.useRef();
-
-    const change = () => {
-      if (disabled === true) {
-        return;
-      }
-
-      controlRef.current.click();
-    };
-
-    const icon = React$1__default.createElement(SwitchIcon, controlledProps);
-    return React$1__default.createElement(SwitchContainer, controlledProps, React$1__default.createElement(HiddenControl, {
-      as: "input",
-      type: "checkbox",
-      checked: checked,
-      onChange: onChange,
-      ref: controlRef
-    }), React$1__default.createElement(SwitchArea, controlledProps), React$1__default.createElement(ClickableArea$1, {
-      noClickLabel: noClickLabel
-    }, React$1__default.createElement(CustomListeners, {
-      onTap: change
-    })), React$1__default.createElement(ActionButton, {
-      icon: icon,
-      size: "36px",
-      onTap: change,
-      disabled: disabled
-    }), React$1__default.createElement(Label$2, {
-      disabled: disabled
-    }, label));
-  });
 
   var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -6961,6 +7180,348 @@
     scrollableNodeProps: propTypes.object
   };
 
+  const itemDisplayToggle = props => props.show ? styled$1__default.css`
+            & > [data-menu-item-area] {
+                display: block;
+                height: calc(100vh - 35px);
+            }
+        ` : styled$1__default.css`
+            & > [data-menu-item-area] {
+                display: none;
+            }
+        `;
+
+  const MenuContainer = styled$1__default.div`
+    left: 0px;
+    top: 0px;
+    z-index: 5000;
+    display: grid;
+
+    background-color: ${props => props.theme.primary};
+    color: ${props => props.theme.lightText};
+
+    @media (max-width: 640px) {
+        position: sticky;
+        height: 35px;
+        right: 0px;
+
+        grid-template-columns: 35px 1fr 35px;
+        grid-template-rows: 35px auto;
+        grid-template-areas:
+            "toggle title balance"
+            "content content content"
+        ;
+
+        ${itemDisplayToggle}
+    }
+    @media (min-width: 640px) {
+        position: fixed;
+        width: 240px;
+        bottom: 0px;
+        grid-template-columns: 1fr;
+        grid-template-rows: max-content 0px auto;
+        grid-template-areas:
+            "title"
+            "toggle"
+            "content"
+        ;
+
+        border-right: 1px solid ${props => props.theme.textColor};
+
+        & > menu-toggle {
+            display: none;
+        }
+
+        & > [data-menu-item-area] {
+            height: 100%;
+        }
+    }
+`;
+  const MenuItemArea = styled$1__default(SimpleBar$1)`
+    grid-area: content;
+    overflow: auto;
+
+    background-color: ${props => props.theme.mainBG};
+`;
+  const MenuItems = styled$1__default.div`
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+`;
+  const MenuToggleArea = styled$1__default(renderAs("menu-toggle"))`
+    grid-area: toggle;
+`;
+  const MenuToggleButton = styled$1__default(ActionButton)`
+    color: ${props => props.theme.lightText};
+`;
+  const MenuTitle = styled$1__default.div`
+    grid-area: title;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    height: 35px;
+
+    &:empty {
+        display: none;
+    }
+`;
+  const Menu = themedComponent(props => {
+    const {
+      children,
+      theme,
+      title,
+      itemWrapper = MenuItems
+    } = props;
+    const [show, toggleView] = useToggle(false);
+    const ItemWrapper = itemWrapper;
+    return React$1__default.createElement(MenuContainer, {
+      show: show,
+      theme: theme
+    }, React$1__default.createElement(MenuTitle, null, title), React$1__default.createElement(MenuToggleArea, null, React$1__default.createElement(MenuToggleButton, {
+      onTap: toggleView,
+      icon: "menu",
+      size: "35px",
+      theme: theme
+    })), React$1__default.createElement(MenuItemArea, {
+      theme: theme,
+      "data-menu-item-area": true
+    }, React$1__default.createElement(ItemWrapper, null, children)));
+  });
+
+  const portalRoot = document.createElement("div");
+  portalRoot.style.position = "absolute";
+  portalRoot.style.top = 0;
+  portalRoot.style.left = 0;
+  portalRoot.dataset.portalRoot = "";
+  document.body.appendChild(portalRoot);
+
+  const Portal = props => ReactDOM.createPortal(props.children, portalRoot);
+
+  const PopoverContainer = styled$1__default.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: +1;
+`;
+  const PopoverContent = styled$1__default.div`
+    position: absolute;
+    transform: translate(${props => props.tx}, ${props => props.ty});
+    z-index: 10000;
+
+    top: ${props => props.position.y}px;
+    left: ${props => props.position.x}px;
+`;
+
+  const Popover = props => {
+    const {
+      content,
+      tx = "-50%",
+      ty = "-50%"
+    } = props;
+    const [state, setState] = React$1.useState({
+      visible: false,
+      position: {
+        x: 0,
+        y: 0
+      }
+    });
+    const container = React$1.useRef();
+    const {
+      visible,
+      position
+    } = state;
+
+    const show = evt => {
+      const {
+        left,
+        right,
+        top,
+        bottom
+      } = container.current.getBoundingClientRect();
+      setState({
+        visible: true,
+        position: {
+          x: (left + right) / 2,
+          y: (top + bottom) / 2
+        }
+      });
+    };
+
+    const close = () => setState({
+      visible: false,
+      position
+    });
+
+    return React$1__default.createElement(PopoverContainer, {
+      ref: container
+    }, React$1__default.createElement(CustomListeners, {
+      onTap: show
+    }), visible && React$1__default.createElement(Portal, null, React$1__default.createElement(Modal, null), React$1__default.createElement(PopoverContent, {
+      position: position,
+      tx: tx,
+      ty: ty
+    }, content === null || content === void 0 ? void 0 : content(close))));
+  };
+
+  const SelectElement = styled$1__default.select`
+    padding: 8px 8px 8px 8px;
+    margin: 0px;
+    border-width: 0px;
+    z-index: +1;
+    width: 100%;
+    border-radius: 4px;
+    background-color: transparent;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+    &:focus {
+        outline: none;
+    }
+
+    &:disabled {
+        cursor: default;
+    }
+`;
+  const IconArea = styled$1__default.div`
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    display: flex;
+    align-items: center;
+    padding-right: 8px;
+`;
+  const Select = themedComponent(props => React$1__default.createElement(ControlBorder, props, React$1__default.createElement(IconArea, null, React$1__default.createElement(Icon, {
+    name: "arrow-dropdown"
+  })), React$1__default.createElement(SelectElement, props)), "Themed(Select)");
+
+  const disabledVariant$3 = propToggle("disabled", styled$1__default.css`
+        filter: brightness(${props => props.theme.disabledBrightness});
+    `, "");
+  const SwitchContainer = styled$1__default(renderAs("doric-switch"))`
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 4px;
+    user-select: none;
+    position: relative;
+
+    ${''
+/* opacity: ${props => props.disabled ? 0.7 : 1}; */
+}
+    ${disabledVariant$3}
+
+    & > doric-button {
+        position: absolute;
+        top: 0px;
+        transition: left linear 100ms;
+
+        left: ${props => props.checked ? 14 : 0}px;
+    }
+`;
+  const ClickableArea$1 = styled$1__default.div`
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    cursor: pointer;
+
+    width: ${props => props.noClickLabel ? "50px" : "100%"};
+`;
+  const trackColorVariant = propToggle("checked", styled$1__default.css`
+        background-color: ${props => props.theme[`${props.color}Light`]};
+    `, styled$1__default.css`
+        background-color: gray;
+    `);
+  const SwitchArea = styled$1__default.div`
+    display: inline-block;
+    width: 50px;
+    height: 36px;
+    position: relative;
+    margin-right: 4px;
+
+    &::before {
+        position: absolute;
+        content: "";
+        top: 50%;
+        left: 50%;
+        width: 30px;
+        height: 12px;
+        transform: translate(-50%, -50%);
+        border-radius: 20px;
+        background-color: cyan;
+        transition: background-color linear 100ms;
+
+        ${trackColorVariant}
+    }
+`;
+  const colorVariant = propToggle("checked", styled$1__default.css`
+        background-color: ${props => props.theme[props.color]};
+    `, styled$1__default.css`
+        background-color: lightgray;
+    `);
+  const SwitchIcon = styled$1__default.div`
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    transition: background-color linear 100ms;
+
+    ${colorVariant}
+`;
+  const Label$2 = styled$1__default(Text)`
+    opacity: ${props => props.disabled ? 0.65 : 1};
+`;
+  const Switch = themedComponent(source => {
+    const {
+      onChange,
+      label,
+      checked,
+      theme,
+      color,
+      noClickLabel,
+      disabled
+    } = source;
+    const controlledProps = {
+      checked,
+      color,
+      theme,
+      disabled
+    };
+    const controlRef = React$1.useRef();
+
+    const change = () => {
+      if (disabled === true) {
+        return;
+      }
+
+      controlRef.current.click();
+    };
+
+    const icon = React$1__default.createElement(SwitchIcon, controlledProps);
+    return React$1__default.createElement(SwitchContainer, controlledProps, React$1__default.createElement(HiddenControl, {
+      as: "input",
+      type: "checkbox",
+      checked: checked,
+      onChange: onChange,
+      ref: controlRef
+    }), React$1__default.createElement(SwitchArea, controlledProps), React$1__default.createElement(ClickableArea$1, {
+      noClickLabel: noClickLabel
+    }, React$1__default.createElement(CustomListeners, {
+      onTap: change
+    })), React$1__default.createElement(ActionButton, {
+      icon: icon,
+      size: "36px",
+      onTap: change,
+      disabled: disabled
+    }), React$1__default.createElement(Label$2, {
+      disabled: disabled
+    }, label));
+  });
+
   const TabContainer = styled$1__default.div`
     display: grid;
     grid-template-columns: 150px auto;
@@ -7048,6 +7609,96 @@
     return null;
   };
 
+  const listeners = {};
+
+  const send = (type, data) => {
+    var _listeners$type;
+
+    const handlers = (_listeners$type = listeners[type]) !== null && _listeners$type !== void 0 ? _listeners$type : [];
+
+    for (const handler of handlers) {
+      handler(data, type);
+    }
+  };
+
+  const recv = (type, handler) => {
+    var _listeners$type2;
+
+    const handlers = (_listeners$type2 = listeners[type]) !== null && _listeners$type2 !== void 0 ? _listeners$type2 : [];
+
+    const remove = () => {
+      listeners[type] = listeners[type].filter(h => h !== handler);
+    };
+
+    handlers.push(handler);
+    listeners[type] = handlers;
+    return remove;
+  };
+
+  var bridge = {
+    send,
+    recv
+  };
+
+  const dialogRoot = document.createElement("dialog-root");
+  document.body.appendChild(dialogRoot);
+
+  const Dialogs = () => {
+    const [dialogs, updateDialogs] = React$1.useState([]);
+    React$1.useEffect(() => {
+      bridge.recv("dialog.open", info => updateDialogs([...dialogs, info]));
+      bridge.recv("dialog.close", id => updateDialogs(dialogs.filter(dialog => dialog.id !== id)));
+    }, []);
+    return React$1__default.createElement(React$1__default.Fragment, null, dialogs.map(info => info.component));
+  };
+
+  const openDialog = (Component, props) => new Promise(resolve => {
+    const id = `${Date.now()}:${Math.random.toString(16)}`;
+
+    const close = value => {
+      bridge.send("dialog.close", id);
+      resolve(value);
+    };
+
+    bridge.send("dialog.open", {
+      id,
+      component: React$1__default.createElement(Component, _extends({}, props, {
+        close: close
+      }))
+    });
+  });
+
+  const Alert = props => {
+    const {
+      message,
+      close,
+      title = "Alert"
+    } = props;
+
+    const closeAlert = () => close(null);
+
+    return React$1__default.createElement(Modal, null, React$1__default.createElement(Card, null, React$1__default.createElement(CardContent, null, React$1__default.createElement(Text, {
+      type: "title"
+    }, title), React$1__default.createElement("div", null, message)), React$1__default.createElement(CardActions, null, React$1__default.createElement(Button, {
+      block: true,
+      text: "Ok",
+      onTap: closeAlert,
+      color: "primary"
+    }))));
+  };
+
+  const alert = async props => {
+    const alertProps = cond(typeof props === "string", {
+      message: props
+    }, props);
+    return await openDialog(Alert, alertProps);
+  };
+
+  ReactDOM.render(React$1__default.createElement(Dialogs, null), dialogRoot);
+  var dialog = {
+    alert
+  };
+
   var doric = {
     ActionButton,
     Button,
@@ -7057,11 +7708,15 @@
     CardContent,
     CardMedia,
     Checkbox,
+    CustomListeners,
     FlatButton,
     GlobalStyle,
     Icon,
     Input,
+    Menu,
     Modal,
+    Popover,
+    Portal,
     Select,
     Switch,
     Tab,
@@ -7069,17 +7724,20 @@
     ThemeProvider,
     Text,
     SimpleBar: SimpleBar$1,
+    // OverlayScrollbars,
+    // OverlayScrollbarsComponent,
     lightTheme,
     darkTheme,
     themedComponent,
-    ...effects,
+    ...hooks,
+    dialog,
     useModal
   };
 
   const AppWrapper = styled$1__default.div`
     width: 100%;
     margin: auto;
-    max-width: 1280px;
+    max-width: 640px;
 `;
   const CornerDiv = styled$1__default.div`
     position: fixed;
@@ -7096,12 +7754,82 @@
     }];
   };
 
+  const bunny = {
+    bulma: "https://thedaoofdragonball.com/wp-content/uploads/2019/09/bunny-girl-bulma-pyon-pyon.jpg",
+    senpai: "https://cdn.takanodan.net/wp-content/uploads/2019/03/cover.jpg"
+  };
+
   const CardGrid = styled$1__default.div`
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
     flex-wrap: wrap;
 `;
+
+  function Cards() {
+    return React$1__default.createElement(CardGrid, null, React$1__default.createElement(doric.Card, {
+      sideMedia: true
+    }, React$1__default.createElement(doric.CardMedia, {
+      image: bunny.senpai
+    }), React$1__default.createElement(doric.CardContent, null, React$1__default.createElement(doric.Text, {
+      type: "title"
+    }, "This is a title"), React$1__default.createElement(doric.Text, null, "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos blanditiis tenetur unde suscipit, quam beatae rerum inventore consectetur, neque doloribus, cupiditate numquam dignissimos laborum fugiat deleniti? Eum quasi quidem quibusdam."), React$1__default.createElement(doric.Text, null, "Content!"), React$1__default.createElement(doric.Text, {
+      block: true
+    }, "Content!"), React$1__default.createElement(doric.Text, {
+      block: true
+    }, "Content!"), React$1__default.createElement(doric.Text, null, "Content!")), React$1__default.createElement(doric.CardActions, null, React$1__default.createElement(doric.Button, {
+      size: "small"
+    }, "Bunnify!"))), React$1__default.createElement(doric.Card, null, React$1__default.createElement(doric.CardContent, null, React$1__default.createElement("div", null, "Content!"), React$1__default.createElement("div", null, "Content!"), React$1__default.createElement("div", null, "Content!"), React$1__default.createElement("div", null, "Content!"), React$1__default.createElement("div", null, "Content!")), React$1__default.createElement(doric.CardActions, null, React$1__default.createElement(doric.Button, {
+      size: "small"
+    }, "Bunnify!"))), React$1__default.createElement(doric.Card, {
+      sideMedia: true
+    }, React$1__default.createElement(doric.CardMedia, {
+      image: bunny.bulma
+    }), React$1__default.createElement(doric.CardContent, null, React$1__default.createElement(doric.Text, {
+      type: "title",
+      slim: true
+    }, "Dragon, Dragon"), React$1__default.createElement(doric.Text, {
+      type: "subtitle"
+    }, "Rock the dragon"), React$1__default.createElement(doric.Text, null, "Dragon Ball Z")), React$1__default.createElement(doric.CardActions, null, React$1__default.createElement(doric.Button, {
+      size: "small"
+    }, "Find Dragon Balls"))), React$1__default.createElement(doric.Card, null, React$1__default.createElement(doric.CardActionArea, null, React$1__default.createElement(doric.CardMedia, {
+      image: bunny.senpai,
+      height: 150
+    }), React$1__default.createElement(doric.CardContent, null, "Content!")), React$1__default.createElement(doric.CardActions, null, React$1__default.createElement(doric.Button, {
+      size: "small"
+    }, "Bunnify!"), React$1__default.createElement(doric.FlatButton, {
+      size: "small",
+      color: "danger"
+    }, "Debunnify!"))), React$1__default.createElement(doric.Card, null, React$1__default.createElement(doric.CardMedia, {
+      image: bunny.bulma,
+      height: 150
+    }), React$1__default.createElement(doric.CardContent, null, "Content!")));
+  }
+
+  const TestModal = props => {
+    const {
+      close,
+      num,
+      inc
+    } = props;
+
+    const closeAlert = () => close(null);
+
+    return React$1__default.createElement(doric.Modal, null, React$1__default.createElement(doric.Card, null, React$1__default.createElement(doric.CardContent, null, React$1__default.createElement(doric.Text, {
+      type: "title"
+    }, "Alert"), "Number: ", num), React$1__default.createElement(doric.CardActions, {
+      style: {
+        textAlign: "right"
+      }
+    }, React$1__default.createElement(doric.FlatButton, {
+      onTap: inc,
+      text: "Increment",
+      color: "secondary"
+    }), React$1__default.createElement(doric.Button, {
+      onTap: closeAlert,
+      text: "Close"
+    }))));
+  };
 
   const OtherInput = styled$1__default(doric.Input.Text)`
     border-left: 5px solid green;
@@ -7110,59 +7838,19 @@
         height: 30px;
         background-color: ${props => props.theme[props.color]};
     `);
-  const AppStyle = styled$1__default.createGlobalStyle`
-    input, select {
-        font-size: 16px;
-    }
-`;
-  const Grid = styled$1__default.div`
-    display: grid;
-    grid-template-columns: repeat(${props => props.cols || 12}, 1fr);
-`;
-  const GridItem = styled$1__default.div`
-    grid-column: span ${props => props.span};
-`;
-  const GridItemContainer = styled$1__default(GridItem)`
-    display: flex;
-    align-items: center;
-    justify-content: stretch;
 
-    & > * {
-        flex-grow: 1;
-    }
-`;
-
-  const BannerContainer = styled$1__default.div`
-    background-color: rgb(31, 63, 127);
-    color: white;
-    padding: 8px;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-`;
-  const BannerUserText = styled$1__default.div`
-    grid-column: span 2;
-    font-size: 18px;
-`;
-  const testUser = {
-    "name": "Axel669",
-    "email": "axel@axel669.net"
+  const useThing = thing => {
+    const [show, update] = React$1.useState(false);
+    const element = show ? thing : null;
+    return [element, update];
   };
 
-  const Banner = props => {
-    const {
-      user,
-      date
-    } = props;
-    const dateString = date.toLocaleDateString("en-US", {
-      month: "long",
-      year: "numeric",
-      day: "numeric",
-      weekday: "long"
-    });
-    return React$1__default.createElement(BannerContainer, null, React$1__default.createElement(BannerUserText, null, React$1__default.createElement("div", null, dateString), React$1__default.createElement("div", null, "Welcome, ", user.name)));
+  const useCounter = start => {
+    const [current, update] = React$1.useState(start);
+    return [current, () => update(current + 1)];
   };
 
-  const themes = [lightTheme, darkTheme];
+  const themes = [darkTheme, lightTheme];
 
   function App() {
 
@@ -7193,100 +7881,77 @@
     //
     // const wat = <doric.ActionButton icon="calendar" />
 
-    return React$1__default.createElement(AppWrapper, null, React$1__default.createElement(AppStyle, null), React$1__default.createElement(doric.ThemeProvider, {
+    const [num, inc] = useCounter(0);
+    const [alert, showAlert] = doric.useModal(close => React$1__default.createElement(TestModal, _extends({
+      close: close
+    }, {
+      num,
+      inc
+    })));
+    const [thing, showThing] = useThing(React$1__default.createElement("div", null, "Thing count: ", num));
+
+    const toggleThing = () => showThing(thing === null);
+
+    const popoverConfirm = React$1__default.useCallback(close => React$1__default.createElement(doric.Card, {
+      sideMedia: true
+    }, React$1__default.createElement(doric.CardMedia, {
+      image: bunny.bulma
+    }), React$1__default.createElement(doric.CardContent, null, "Confirm?"), React$1__default.createElement(doric.CardActions, null, React$1__default.createElement(doric.Button, {
+      text: "Cancel",
+      color: "danger",
+      onTap: close
+    }), React$1__default.createElement(doric.Button, {
+      text: "Confirm",
+      color: "secondary",
+      onTap: close
+    }))), []);
+
+    const arrowMove = evt => {
+      if (evt.key === "ArrowRight") {
+        return "next";
+      }
+    };
+
+    const refs = doric.useArrayRef(4);
+    return React$1__default.createElement(AppWrapper, null, React$1__default.createElement(doric.ThemeProvider, {
       value: theme
     }, React$1__default.createElement(doric.GlobalStyle, null), React$1__default.createElement(CornerDiv, null, React$1__default.createElement(doric.Button, {
       color: "primary",
       onTap: cycleTheme
-    }, "Cycle Theme")), React$1__default.createElement(Banner, {
-      date: new Date(),
-      user: testUser
-    }), React$1__default.createElement(doric.Card, null, React$1__default.createElement(doric.CardContent, null, React$1__default.createElement(Grid, null, React$1__default.createElement(GridItem, {
-      as: doric.Input.Text,
-      span: 3,
-      autoComplete: "none",
-      bordered: true,
-      label: "Customer ID"
-    }), React$1__default.createElement(GridItem, {
-      as: doric.Input.Text,
-      span: 3,
-      autoComplete: "none",
-      bordered: true,
-      label: "Customer Name"
-    }), React$1__default.createElement(GridItem, {
-      as: doric.Select,
-      span: 3,
-      bordered: true,
-      label: "Shipping Method"
-    }, React$1__default.createElement("option", {
-      value: "SR"
-    }, "SR - See Routing"), React$1__default.createElement("option", {
-      value: "00"
-    }, "00 - Other")), React$1__default.createElement(GridItemContainer, {
-      span: 3
+    }, "Cycle Theme")), React$1__default.createElement(doric.Menu, {
+      title: "App Title"
     }, React$1__default.createElement(doric.Button, {
-      text: "Addresses Selected: 0",
-      color: "primary",
-      block: true,
-      size: "large"
-    })), React$1__default.createElement(GridItem, {
-      as: doric.Input.Text,
-      span: 2,
-      autoComplete: "none",
-      bordered: true,
-      label: "Rep 1"
-    }), React$1__default.createElement(GridItem, {
-      span: 4
-    }), React$1__default.createElement(GridItem, {
-      as: doric.Input.Text,
-      span: 3,
-      autoComplete: "none",
-      bordered: true,
-      label: "Purchase Order"
-    }), React$1__default.createElement(GridItem, {
-      as: doric.Select,
-      span: 3,
-      bordered: true,
-      label: "Terms"
-    }, React$1__default.createElement("option", {
-      value: "02"
-    }, "02 - NET 45")), React$1__default.createElement(GridItem, {
-      as: doric.Input.Text,
-      span: 2,
-      autoComplete: "none",
-      bordered: true,
-      label: "Rep 2"
-    }), React$1__default.createElement(GridItem, {
-      span: 4
-    }), React$1__default.createElement(GridItem, {
-      as: doric.Input.Text,
-      span: 3,
-      autoComplete: "none",
-      bordered: true,
-      label: "Discount"
-    }), React$1__default.createElement(GridItem, {
-      as: doric.Input.Text,
-      span: 3,
-      autoComplete: "none",
-      bordered: true,
-      label: "Promotional Code"
-    }), React$1__default.createElement(GridItem, {
-      span: 3
-    }), React$1__default.createElement(GridItem, {
-      as: doric.Button,
-      span: 3,
-      size: "large",
       color: "secondary",
-      text: "Submit"
-    }), React$1__default.createElement(GridItem, {
-      as: doric.Button,
-      span: 3,
-      size: "large",
+      text: "Logout?"
+    }), React$1__default.createElement(doric.Button, {
       color: "danger",
-      text: "Clear Form"
-    }), React$1__default.createElement(GridItem, {
-      span: 3
-    }))))));
+      text: "Boom!"
+    })), React$1__default.createElement(doric.Button, {
+      onTap: toggleThing,
+      text: "Toggle"
+    }), React$1__default.createElement(doric.Button, {
+      onTap: inc,
+      text: "Increment"
+    }), thing, React$1__default.createElement(doric.Button, {
+      color: "primary"
+    }, "Alert", React$1__default.createElement(doric.Popover, {
+      content: popoverConfirm,
+      ty: "-25%"
+    })), alert, React$1__default.createElement(doric.Input.Text, {
+      forwardRef: refs[0],
+      nextTabRef: refs[2],
+      prevTabRef: refs[-1]
+    }), React$1__default.createElement(doric.Input.Text, {
+      forwardRef: refs[1],
+      nextTabRef: refs[0],
+      tabDirection: arrowMove
+    }), React$1__default.createElement(doric.Input.Text, {
+      forwardRef: refs[2],
+      nextTabRef: refs[0],
+      prevTabRef: refs[3]
+    }), React$1__default.createElement(doric.Input.Text, {
+      forwardRef: refs[3]
+    }), React$1__default.createElement(Cards, null)));
   }
 
   ReactDOM.render(React$1__default.createElement(App, null), document.querySelector("app-root"));

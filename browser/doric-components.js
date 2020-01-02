@@ -1,8 +1,9 @@
-var doric = (function (React$1, styled) {
+var doric = (function (React$1, styled$1, ReactDOM) {
   'use strict';
 
   var React$1__default = 'default' in React$1 ? React$1['default'] : React$1;
-  var styled__default = 'default' in styled ? styled['default'] : styled;
+  var styled$1__default = 'default' in styled$1 ? styled$1['default'] : styled$1;
+  ReactDOM = ReactDOM && ReactDOM.hasOwnProperty('default') ? ReactDOM['default'] : ReactDOM;
 
   function styleInject(css, ref) {
     if (ref === void 0) ref = {};
@@ -36,6 +37,311 @@ var doric = (function (React$1, styled) {
   var css = "[data-simplebar]{position:relative;flex-direction:column;flex-wrap:wrap;justify-content:flex-start;align-content:flex-start;align-items:flex-start}.simplebar-wrapper{overflow:hidden;width:inherit;height:inherit;max-width:inherit;max-height:inherit}.simplebar-mask{direction:inherit;position:absolute;overflow:hidden;padding:0;margin:0;left:0;top:0;bottom:0;right:0;width:auto!important;height:auto!important;z-index:0}.simplebar-offset{direction:inherit!important;box-sizing:inherit!important;resize:none!important;position:absolute;top:0;left:0;bottom:0;right:0;padding:0;margin:0;-webkit-overflow-scrolling:touch}.simplebar-content-wrapper{direction:inherit;box-sizing:border-box!important;position:relative;display:block;height:100%;width:auto;visibility:visible;max-width:100%;max-height:100%;scrollbar-width:none}.simplebar-content-wrapper::-webkit-scrollbar,.simplebar-hide-scrollbar::-webkit-scrollbar{display:none}.simplebar-content:after,.simplebar-content:before{content:' ';display:table}.simplebar-placeholder{max-height:100%;max-width:100%;width:100%;pointer-events:none}.simplebar-height-auto-observer-wrapper{box-sizing:inherit!important;height:100%;width:100%;max-width:1px;position:relative;float:left;max-height:1px;overflow:hidden;z-index:-1;padding:0;margin:0;pointer-events:none;flex-grow:inherit;flex-shrink:0;flex-basis:0}.simplebar-height-auto-observer{box-sizing:inherit;display:block;opacity:0;position:absolute;top:0;left:0;height:1000%;width:1000%;min-height:1px;min-width:1px;overflow:hidden;pointer-events:none;z-index:-1}.simplebar-track{z-index:1;position:absolute;right:0;bottom:0;pointer-events:none;overflow:hidden}[data-simplebar].simplebar-dragging .simplebar-content{pointer-events:none;user-select:none;-webkit-user-select:none}[data-simplebar].simplebar-dragging .simplebar-track{pointer-events:all}.simplebar-scrollbar{position:absolute;right:2px;width:7px;min-height:10px}.simplebar-scrollbar:before{position:absolute;content:'';background:#000;border-radius:7px;left:0;right:0;opacity:0;transition:opacity .2s linear}.simplebar-scrollbar.simplebar-visible:before{opacity:.5;transition:opacity 0s linear}.simplebar-track.simplebar-vertical{top:0;width:11px}.simplebar-track.simplebar-vertical .simplebar-scrollbar:before{top:2px;bottom:2px}.simplebar-track.simplebar-horizontal{left:0;height:11px}.simplebar-track.simplebar-horizontal .simplebar-scrollbar:before{height:100%;left:2px;right:2px}.simplebar-track.simplebar-horizontal .simplebar-scrollbar{right:auto;left:0;top:2px;height:7px;min-height:0;min-width:10px;width:auto}[data-simplebar-direction=rtl] .simplebar-track.simplebar-vertical{right:auto;left:0}.hs-dummy-scrollbar-size{direction:rtl;position:fixed;opacity:0;visibility:hidden;height:500px;width:500px;overflow-y:hidden;overflow-x:scroll}.simplebar-hide-scrollbar{position:fixed;left:0;visibility:hidden;overflow-y:scroll;scrollbar-width:none}\n";
   styleInject(css);
 
+  const isMobile = typeof orientation !== "undefined" || navigator.userAgent.indexOf("Mobile") !== -1;
+  const handlers = new Map();
+  const touchVars = {};
+
+  const addHandler = (name, handler) => {
+    if (typeof handler === "function") {
+      handler = handler();
+    }
+
+    handlers.set(name, handler);
+    touchVars[name] = {};
+  };
+
+  const createEvent = (type, source) => {
+    var ref0;
+    const newEvt = new CustomEvent(type, {
+      bubbles: true,
+      cancelable: true
+    });
+
+    for (const prop of Object.keys(ref0 = source)) {
+      const value = ref0[prop];
+      newEvt[prop] = value;
+    }
+
+    return newEvt;
+  };
+
+  const copyTouchEvent = touch => ({
+    clientX: touch.clientX,
+    clientY: touch.clientY,
+    pageX: touch.pageX,
+    pageY: touch.pageY,
+    screenX: touch.screenX,
+    screenY: touch.screenY,
+    identifier: touch.identifier,
+    target: touch.target,
+    sourceElement: touch.sourceElement,
+    id: touch.identifier,
+    timestamp: touch.timestamp
+  });
+
+  const copyForSynth = touch => ({
+    clientX: touch.clientX,
+    clientY: touch.clientY,
+    pageX: touch.pageX,
+    pageY: touch.pageY,
+    screenX: touch.screenX,
+    screenY: touch.screenY,
+    identifier: touch.identifier,
+    id: touch.identifier
+  });
+
+  const delay = func => setTimeout(func, 0);
+
+  const polarVector = (a, b) => {
+    const dx = b.clientX - a.clientX;
+    const dy = b.clientY - a.clientY;
+    const angle = (Math.atan2(dy, dx) * (180 / Math.PI) + 450) % 360;
+    const magnitude = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+    return {
+      angle: angle,
+      magnitude: magnitude
+    };
+  };
+
+  const sharedVars = {};
+
+  const touchMapper = (name, reset = false) => touch => {
+    if (reset === true) {
+      touchVars[name][touch.identifier] = {};
+    }
+
+    touchVars[name][touch.identifier] = { ...touchVars[name][touch.identifier],
+      ...sharedVars[touch.identifier]
+    };
+    return { ...copyTouchEvent(touch),
+      vars: touchVars[name][touch.identifier]
+    };
+  };
+
+  const handleTouchList = (list, individual, touches, evt) => {
+    if (list !== undefined) {
+      list(touches, evt);
+    }
+
+    if (individual === undefined) {
+      return;
+    }
+
+    for (const touch of touches) {
+      individual(touch, evt);
+    }
+  };
+
+  window.addEventListener("touchstart", evt => {
+    const touches = [...evt.changedTouches];
+
+    for (const touch of touches) {
+      touch.timestamp = Date.now();
+      sharedVars[touch.identifier] = {
+        start: touch
+      };
+    }
+
+    for (const [name, handler] of handlers) {
+      handleTouchList(handler.start, handler.startItem, touches.map(touchMapper(name, true)), evt);
+    }
+  }, false);
+  window.addEventListener("touchmove", evt => {
+    const touches = [...evt.changedTouches];
+
+    for (const touch of touches) {
+      const shared = sharedVars[touch.identifier];
+      touch.timestamp = Date.now();
+      shared.vector = polarVector(shared.start, touch);
+    }
+
+    for (const [name, handler] of handlers) {
+      handleTouchList(handler.move, handler.moveItem, touches.map(touchMapper(name)), evt);
+    }
+  });
+  window.addEventListener("touchend", evt => {
+    const touches = [...evt.changedTouches];
+
+    for (const touch of touches) {
+      const shared = sharedVars[touch.identifier];
+      touch.timestamp = Date.now();
+      shared.vector = polarVector(shared.start, touch);
+    }
+
+    for (const [name, handler] of handlers) {
+      handleTouchList(handler.end, handler.endItem, touches.map(touchMapper(name)), evt);
+    }
+  });
+
+  if (isMobile === false) {
+    console.log("GesturesJS will attach non-mobile listeners");
+
+    const createSynthTouch = mouseEvt => ({ ...copyTouchEvent(mouseEvt),
+      identifier: -10,
+      id: -10,
+      target: currentMouseTarget,
+      suorceElement: currentMouseTarget
+    });
+
+    let currentMouseTarget = null;
+    let mouseIsDown = false;
+
+    const dispatchSyntheticEvent = (evt, type) => {
+      const changedTouches = [createSynthTouch(evt)];
+      currentMouseTarget.dispatchEvent(createEvent(type, {
+        changedTouches: changedTouches,
+        touches: changedTouches,
+        syntheticEvent: true
+      }));
+    };
+
+    const checkNoFire = start => {
+      let current = start;
+
+      while (current !== null && current !== document.documentElement) {
+        if (current.dataset.gjsNoFire !== undefined) {
+          return true;
+        }
+
+        current = current.parentNode;
+      }
+
+      return false;
+    };
+
+    window.addEventListener("mousedown", evt => {
+      if (checkNoFire(evt.target) === true) {
+        return;
+      }
+
+      if (evt.button === 0) {
+        mouseIsDown = true;
+        currentMouseTarget = evt.target;
+        dispatchSyntheticEvent(evt, "touchstart");
+      }
+    }, true);
+    window.addEventListener("mousemove", evt => {
+      if (mouseIsDown === true) {
+        dispatchSyntheticEvent(evt, "touchmove");
+      }
+    }, true);
+    window.addEventListener("mouseup", evt => {
+      if (evt.button === 0 && mouseIsDown === true) {
+        mouseIsDown = false;
+        dispatchSyntheticEvent(evt, "touchend");
+        currentMouseTarget = null;
+      }
+    }, true);
+  }
+
+  const climbDOM = (start, func) => {
+    let current = start;
+
+    while (current !== null && current !== document.documentElement) {
+      func(current);
+      current = current.parentNode;
+    }
+  };
+
+  addHandler("active-touch", () => {
+    const className = "gjs-touch-active";
+    const activeTouches = new WeakMap();
+
+    const inc = elem => {
+      var nullref0;
+      const count = (nullref0 = activeTouches.get(elem)) != null ? nullref0 : 0;
+      activeTouches.set(elem, count + 1);
+    };
+
+    const dec = elem => {
+      const newCount = activeTouches.get(elem) - 1;
+      activeTouches.set(elem, newCount);
+      return newCount;
+    };
+
+    return {
+      startItem: touch => climbDOM(touch.target, node => {
+        node.classList.add(className);
+        inc(node);
+      }),
+      endItem: touch => climbDOM(touch.target, node => {
+        if (dec(node) === 0) {
+          node.classList.remove(className);
+        }
+      })
+    };
+  });
+  addHandler("tap", () => {
+    const className = "gjs-tap-active";
+
+    const addClass = node => {
+      node.classList.add(className);
+    };
+
+    const removeClass = node => {
+      node.classList.remove(className);
+    };
+
+    return {
+      startItem: touch => {
+        if (touch.target.classList.contains(className) === false) {
+          touch.vars.valid = true;
+          touch.vars.active = true;
+          climbDOM(touch.target, addClass);
+        }
+      },
+      moveItem: touch => {
+        if (touch.vars.active === true && touch.vars.vector.magnitude > 20) {
+          touch.vars.valid = false;
+          climbDOM(touch.target, removeClass);
+        }
+      },
+      endItem: touch => {
+        if (touch.vars.active === true) {
+          climbDOM(touch.target, removeClass);
+        }
+
+        const duration = touch.timestamp - touch.vars.start.timestamp;
+
+        if (touch.vars.vector.magnitude > 20 || duration > 600) {
+          return;
+        }
+
+        const synthEvent = createEvent("tap", copyForSynth(touch));
+        delay(() => {
+          if (touch.target.dispatchEvent(synthEvent) === true) {
+            touch.target.focus();
+          }
+        });
+      }
+    };
+  });
+  addHandler("hold", () => {
+    const timers = {};
+
+    const schedule = touch => {
+      timers[touch.id] = setTimeout(() => {
+        timers[touch.id] = null;
+        touch.target.dispatchEvent(createEvent("hold", copyForSynth(touch)));
+      }, 1500);
+    };
+
+    const clear = touch => {
+      clearTimeout(timers[touch.id]);
+      timers[touch.id] = null;
+    };
+
+    return {
+      startItem: touch => schedule(touch),
+      moveItem: touch => {
+        if (touch.vars.vector.magnitude > 20) {
+          clear(touch);
+        }
+      },
+      endItem: touch => clear(touch)
+    };
+  });
+
   function _extends() {
     _extends = Object.assign || function (target) {
       for (var i = 1; i < arguments.length; i++) {
@@ -54,24 +360,15 @@ var doric = (function (React$1, styled) {
     return _extends.apply(this, arguments);
   }
 
-  const customStyled = Tag => {
-    const base = source => {
-      const {
-        className,
-        theme,
-        ...props
-      } = source;
-      return React$1__default.createElement(Tag, _extends({
-        class: className
-      }, props));
-    };
+  const renderAs = Tag => ({
+    className,
+    theme,
+    ...props
+  }) => React$1__default.createElement(Tag, _extends({}, props, {
+    class: className
+  }));
 
-    return {
-      css: styled__default(base)
-    };
-  };
-
-  const Clickable = tag => customStyled(tag).css`
+  const Clickable = tag => styled$1__default(renderAs(tag))`
     position: relative;
     user-select: none;
     cursor: pointer;
@@ -91,7 +388,7 @@ var doric = (function (React$1, styled) {
     }
 `;
 
-  const climbDOM = (start, func) => {
+  const climbDOM$1 = (start, func) => {
     let current = start;
 
     while (current !== null && current !== document.documentElement) {
@@ -107,7 +404,7 @@ var doric = (function (React$1, styled) {
       globalListeners[type] = new Map();
       window.addEventListener(type, evt => {
         const handlers = globalListeners[type];
-        climbDOM(evt.target, node => {
+        climbDOM$1(evt.target, node => {
           var _handlers$get;
 
           return (_handlers$get = handlers.get(node)) === null || _handlers$get === void 0 ? void 0 : _handlers$get(evt);
@@ -152,8 +449,9 @@ var doric = (function (React$1, styled) {
     });
   }
 
-  const IconElement = styled__default.span`
+  const IconElement = styled$1__default.span`
     font-size: 18px;
+    padding-top: 2px;
 `;
 
   const Icon = source => {
@@ -176,18 +474,24 @@ var doric = (function (React$1, styled) {
     hlInvert: "rgba(0, 0, 0, 0.35)",
     hlLight: "rgba(255, 255, 255, 0.35)",
     hlDark: "rgba(0, 0, 0, 0.35)",
-    mainBG: "#222",
+    mainBG: "#111",
     textColor: "white",
     invertText: "black",
     softText: "lightgray",
     lightText: "white",
     darkText: "black",
     blue: "#1d62d5",
-    lightblue: "#2196F3",
-    primary: "#2196F3",
+    lightblue: "#77a0e5",
+    // primary: "#2196F3",
+    primary: "#1d62d5",
+    primaryLight: "#79c0f7",
     danger: "#F44336",
+    dangerLight: "#f88e86",
     secondary: "#128f12",
-    lightBorder: "#2196F3"
+    secondaryLight: "#70bb70",
+    lightBorder: "#2196F3",
+    disabledBrightness: "65%",
+    focusColor: "#79c0f7"
   };
   const lightTheme = {
     font: "Roboto",
@@ -202,11 +506,16 @@ var doric = (function (React$1, styled) {
     lightText: "white",
     darkText: "black",
     blue: "#1d62d5",
-    lightblue: "#2196F3",
+    lightblue: "#77a0e5",
     primary: "#1d62d5",
+    primaryLight: "#79c0f7",
     danger: "#F44336",
+    dangerLight: "#f88e86",
     secondary: "#128f12",
-    lightBorder: "lightgray"
+    secondaryLight: "#70bb70",
+    lightBorder: "lightgray",
+    disabledBrightness: "65%",
+    focusColor: "#1d62d5"
   };
 
   const propVariant = ({
@@ -231,36 +540,50 @@ var doric = (function (React$1, styled) {
     return f;
   };
 
+  const HiddenControl = styled.div`
+    display: none;
+`;
+
   const displayVariant = propToggle("block", "flex", "inline-flex");
-  const raisedVariant = propToggle("raised", styled.css`boxShadow: 2px 2px 3px rgba(0, 0, 0, 0.4);`, "");
-  const disabledVariant = propToggle("disabled", styled.css`opacity: 0.7;`, "");
+  const raisedVariant = propToggle("raised", styled$1.css`boxShadow: 2px 2px 3px rgba(0, 0, 0, 0.4);`, "");
+  const disabledVariant = propToggle("disabled", styled$1.css`
+        filter: brightness(${props => props.theme.disabledBrightness});
+        font-weight: 300;
+    `, "");
   const sizeVariant = propVariant({
     name: "size",
     defaultValue: "medium"
   }, {
-    small: styled__default.css`
+    small: styled$1__default.css`
             padding: 6px;
             margin: 2px;
         `,
-    medium: styled__default.css`
+    medium: styled$1__default.css`
             padding: 8px 12px;
             margin: 4px;
         `,
-    large: styled__default.css`
+    large: styled$1__default.css`
             padding: 12px 16px;
             margin: 4px;
         `
   });
-  const ButtonBaseComponent = styled__default(Clickable("doric-button"))`
+  const padPosition = {
+    start: "right",
+    end: "left"
+  };
+  const IconWrapper = styled$1__default.span`
+    padding-${props => padPosition[props.position]}: 4px;
+`;
+  const ButtonBaseComponent = styled$1__default(Clickable("doric-button"))`
     border-radius: 4px;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     font-weight: 500;
-    text-transform: uppercase;
     background-color: transparent;
 
     color: ${props => props.theme.textColor};
+    flex-direction: ${props => props.layout || "row"};
 
     display: ${displayVariant};
     ${sizeVariant}
@@ -271,6 +594,9 @@ var doric = (function (React$1, styled) {
     const {
       onTap = () => {},
       children,
+      startIcon = null,
+      endIcon = null,
+      text = null,
       ...props
     } = source;
 
@@ -282,28 +608,34 @@ var doric = (function (React$1, styled) {
       onTap(evt);
     };
 
+    const start = startIcon !== null ? React$1__default.createElement(IconWrapper, {
+      position: "start"
+    }, startIcon) : null;
+    const end = endIcon !== null ? React$1__default.createElement(IconWrapper, {
+      position: "end"
+    }, endIcon) : null;
     return React$1__default.createElement(ButtonBaseComponent, props, React$1__default.createElement(CustomListeners, {
       onTap: wrappedOnTap
-    }), children);
+    }), start, text, children, end);
   }, "Themed(ButtonBase)");
   const normalColorVariant = propVariant({
     name: "color"
   }, {
-    primary: styled__default.css`
+    primary: styled$1__default.css`
             background-color: ${props => props.theme.primary};
             color: ${props => props.theme.lightText};
             &.gjs-tap-active:not([disabled="true"])::after {
                 background-color: ${props => props.theme.hlLight};
             }
         `,
-    danger: styled__default.css`
+    danger: styled$1__default.css`
             background-color: ${props => props.theme.danger};
             color: ${props => props.theme.lightText};
             &.gjs-tap-active:not([disabled="true"])::after {
                 background-color: ${props => props.theme.hlLight};
             }
         `,
-    secondary: styled__default.css`
+    secondary: styled$1__default.css`
             background-color: ${props => props.theme.secondary};
             color: ${props => props.theme.lightText};
             &.gjs-tap-active:not([disabled="true"])::after {
@@ -311,61 +643,65 @@ var doric = (function (React$1, styled) {
             }
         `
   });
-  const Button = themedComponent(styled__default(ButtonBase)`
+  const Button = themedComponent(styled$1__default(ButtonBase)`
         ${normalColorVariant}
     `, "Themed(Button)");
   const flatColorVariant = propVariant({
     name: "color"
   }, {
-    primary: styled__default.css`
+    primary: styled$1__default.css`
             color: ${props => props.theme.primary};
         `,
-    secondary: styled__default.css`
+    secondary: styled$1__default.css`
             color: ${props => props.theme.secondary};
         `,
-    danger: styled__default.css`
+    danger: styled$1__default.css`
             color: ${props => props.theme.danger};
         `
   });
-  const outlineVariant = propToggle("outline", styled__default.css`
+  const outlineVariant = propToggle("bordered", styled$1__default.css`
         border: 1px solid ${props => props.theme[props.color] || props.theme.textColor};
     `, "");
-  const FlatButton = themedComponent(styled__default(ButtonBase)`
+  const FlatButton = themedComponent(styled$1__default(ButtonBase)`
         ${flatColorVariant}
         ${outlineVariant}
     `, "Themed(FlatButton)");
-  const ActionButtonElement = themedComponent(styled__default(ButtonBase)`
+  const ActionButtonElement = themedComponent(styled$1__default(ButtonBase)`
         border-radius: 50%;
 
         ${flatColorVariant}
-        width: ${props => props.radius || 30};
-        height: ${props => props.radius || 30};
+        width: ${props => props.size || "30px"};
+        height: ${props => props.size || "30px"};
     `);
 
   const ActionButton = source => {
     const {
       icon,
+      children,
       ...props
     } = source;
-    return React$1__default.createElement(ActionButtonElement, props, React$1__default.createElement(Icon, {
+    const iconElement = cond(typeof icon === "string")(React$1__default.createElement(Icon, {
       name: icon
+    }), icon);
+    return React$1__default.createElement(ActionButtonElement, _extends({}, props, {
+      text: iconElement
     }));
   };
 
-  const directionVariant = propToggle("sideMedia", styled__default.css`
+  const directionVariant = propToggle("sideMedia", styled$1__default.css`
         grid-template-columns: auto 150px;
         grid-template-areas:
             "content media"
             "actions media"
         ;
-    `, styled__default.css`
+    `, styled$1__default.css`
         grid-template-areas:
             "media"
             "content"
             "actions"
         ;
     `);
-  const Card = themedComponent(customStyled("doric-card").css`
+  const Card = themedComponent(styled$1__default(renderAs("doric-card"))`
         display: grid;
         box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
         margin: 4px;
@@ -376,17 +712,17 @@ var doric = (function (React$1, styled) {
         ${directionVariant}
         background-color: ${props => props.theme.mainBG};
     `, "Themed(Card)");
-  const CardContent = styled__default.div`
+  const CardContent = styled$1__default.div`
     display: block;
     padding: 12px;
     grid-area: content;
 `;
-  const CardActions = styled__default.div`
+  const CardActions = styled$1__default.div`
     display: block;
     padding: 4px;
     grid-area: actions;
 `;
-  const CardMedia = styled__default.div`
+  const CardMedia = styled$1__default.div`
     display: block;
     grid-area: media;
     background-image: url(${props => props.image});
@@ -395,11 +731,126 @@ var doric = (function (React$1, styled) {
     background-size: cover;
     height: ${props => props.height}px;
 `;
-  const CardActionArea = themedComponent(styled__default(Clickable("doric-card-action-area"))`
+  const CardActionArea = themedComponent(styled$1__default(Clickable("doric-card-action-area"))`
         grid-area: content;
     `);
 
-  const GlobalStyle = themedComponent(styled__default.createGlobalStyle`
+  const styleVariant = propVariant({
+    name: "type",
+    defaultValue: "body"
+  }, {
+    body: styled$1__default.css`
+            line-height: 1.4;
+        `,
+    "body-small": styled$1__default.css`
+            line-height: 1.2;
+        `,
+    header: styled$1__default.css`
+            display: block;
+            font-size: 26px;
+            font-weight: 500;
+        `,
+    title: styled$1__default.css`
+            display: block;
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        `,
+    subtitle: styled$1__default.css`
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: ${props => props.theme.softText};
+        `
+  });
+  const marginVariant = propToggle("slim", styled$1__default.css`
+        margin-bottom: 0px;
+    `, "");
+  const displayVariant$1 = propToggle("block", styled$1__default.css`
+        display: block;
+    `, "");
+  const Text = themedComponent(styled$1__default.span`
+        padding: 0px;
+        margin: 0px;
+
+        color: ${props => props.theme.textColor};
+
+        ${styleVariant}
+        ${displayVariant$1}
+        ${marginVariant}
+    `, "Themed(Text)");
+
+  const CheckboxContainer = styled(renderAs("doric-checkbox"))`
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 4px;
+    user-select: none;
+    position: relative;
+`;
+  const ClickableArea = styled.div`
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    cursor: pointer;
+
+    width: ${props => props.noClickLabel ? "36px" : "100%"};
+`;
+  const Label = styled(Text)`
+    opacity: ${props => props.disabled ? 0.65 : 1};
+`;
+  const defaultIcon = "square-outline";
+  const defaultCheckedIcon = "checkbox";
+
+  const Checkbox = source => {
+    const {
+      icon = defaultIcon,
+      checkedIcon = defaultCheckedIcon,
+      label,
+      checked,
+      color,
+      onChange,
+      noClickLabel,
+      disabled,
+      ...props
+    } = source;
+    const controlRef = React$1.useRef();
+    const iconElement = cond(checked)(checkedIcon, icon);
+
+    const change = () => {
+      if (disabled === true) {
+        return;
+      }
+
+      controlRef.current.click();
+    };
+
+    return React$1__default.createElement(CheckboxContainer, {
+      noClickLabel: noClickLabel
+    }, React$1__default.createElement(ClickableArea, {
+      noClickLabel: noClickLabel
+    }, React$1__default.createElement(CustomListeners, {
+      onTap: change
+    })), React$1__default.createElement(HiddenControl, {
+      as: "input",
+      type: "checkbox",
+      checked: checked,
+      onChange: onChange,
+      ref: controlRef
+    }), React$1__default.createElement(ActionButton, {
+      color: color,
+      icon: iconElement,
+      size: "36px",
+      onTap: change,
+      disabled: disabled
+    }), React$1__default.createElement(Label, {
+      disabled: disabled
+    }, label));
+  };
+
+  const GlobalStyle = themedComponent(styled$1__default.createGlobalStyle`
     body, html {
         padding: 0px;
         margin: 0px;
@@ -410,15 +861,24 @@ var doric = (function (React$1, styled) {
         background-color: ${props => props.theme.mainBG};
         color: ${props => props.theme.textColor};
     }
+
     input, select {
         color: ${props => props.theme.textColor};
         font-family: ${props => props.theme.font}, Arial;
     }
     option {
-        color: black;
+        background-color: ${props => props.theme.mainBG};
+        color: ${props => props.theme.textColor};
     }
     * {
         box-sizing: border-box;
+    }
+
+    .simplebar-scrollbar::before {
+        background-color: ${props => props.theme.textColor};
+    }
+    .simplebar-visible.simplebar-scrollbar::before {
+        opacity: 0.75;
     }
 `);
 
@@ -427,22 +887,59 @@ var doric = (function (React$1, styled) {
     return [current, evt => update(evt.target.value)];
   };
 
-  var effects = /*#__PURE__*/Object.freeze({
+  const useInputToggle = value => {
+    const [current, set] = React$1.useState(value);
+    return [current, evt => set(evt.target.checked)];
+  };
+
+  const useToggle = value => {
+    const [current, set] = React$1.useState(value);
+    return [current, () => set(current === false)];
+  };
+
+  const genRefs = length => Array.from({
+    length
+  }, () => ({
+    current: null
+  }));
+
+  const adjustRefs = (current, target) => {
+    if (current.length === target) {
+      return current;
+    }
+
+    if (current.length > target) {
+      return current.slice(0, target);
+    }
+
+    return [...current, ...genRefs(target - current.length)];
+  };
+
+  const useArrayRef = size => {
+    const ref = React.useRef(null);
+    ref.current = ref.current === null ? genRefs(size) : adjustRefs(ref.current, size);
+    return ref.current;
+  };
+
+  var hooks = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    useInput: useInput
+    useArrayRef: useArrayRef,
+    useInput: useInput,
+    useInputToggle: useInputToggle,
+    useToggle: useToggle
   });
 
-  const disabledVariant$1 = propToggle("disabled", styled__default.css`
+  const disabledVariant$1 = propToggle("disabled", styled$1__default.css`
         opacity: 0.5;
     `, "");
-  const Wrapper = styled__default.div`
+  const Wrapper = styled$1__default.div`
     position: relative;
     padding: 0px;
-    margin: 2px;
+    margin: 4px;
 
     ${disabledVariant$1}
 `;
-  const VisualArea = styled__default.div`
+  const VisualArea = styled$1__default.div`
     position: relative;
     width: 100%;
     display: flex;
@@ -451,15 +948,16 @@ var doric = (function (React$1, styled) {
 
   const errorVariant = props => props.error || props.error === "" ? `color: ${props.theme.danger};` : "";
 
-  const errorColorVariant = props => props.error || props.error === "" ? props.theme.danger : props.theme.primary;
+  const errorColorVariant = props => props.error || props.error === "" ? props.theme.danger : props.theme.focusColor;
 
   const typeVariant = propToggle("bordered", "16px", "4px");
-  const Label = styled__default.label`
+  const Label$1 = styled$1__default.label`
     position: absolute;
     top: -16px;
     left: 0px;
     padding-top: 2px;
     user-select: none;
+    font-size: 12px;
 
     ${errorVariant}
     padding-left: ${typeVariant};
@@ -468,7 +966,7 @@ var doric = (function (React$1, styled) {
         color: ${errorColorVariant};
     }
 `;
-  const FlatBorder = styled__default.div`
+  const FlatBorder = styled$1__default.div`
     position: absolute;
     left: 4px;
     right: 4px;
@@ -493,7 +991,7 @@ var doric = (function (React$1, styled) {
         transform: scaleX(1);
     }
 `;
-  const FullBorder = styled__default.fieldset`
+  const FullBorder = styled$1__default.fieldset`
     position: absolute;
     top: -16px;
     bottom: 0px;
@@ -509,11 +1007,12 @@ var doric = (function (React$1, styled) {
         border-color: ${errorColorVariant};
     }
 `;
-  const FullBorderLabel = styled__default.legend`
+  const FullBorderLabel = styled$1__default.legend`
     padding: 2px;
     color: transparent;
+    font-size: 12px;
 `;
-  const ErrorLabel = styled__default.div`
+  const ErrorLabel = styled$1__default.div`
     padding: 4px 12px;
     font-size: 12px;
     display: none;
@@ -548,7 +1047,7 @@ var doric = (function (React$1, styled) {
       disabled,
       style: _
     };
-    return React$1__default.createElement(Wrapper, wrapperProps, React$1__default.createElement(VisualArea, null, children, React$1__default.createElement(Label, _extends({
+    return React$1__default.createElement(Wrapper, wrapperProps, React$1__default.createElement(VisualArea, null, children, React$1__default.createElement(Label$1, _extends({
       bordered: bordered
     }, shared), label), border), React$1__default.createElement(ErrorLabel, {
       bordered: bordered,
@@ -556,7 +1055,62 @@ var doric = (function (React$1, styled) {
     }, error));
   };
 
-  const InputElement = styled__default.input`
+  const modalRoot = document.createElement("div");
+  modalRoot.style.position = "absolute";
+  modalRoot.dataset.modalRoot = "";
+  document.body.appendChild(modalRoot);
+  const ModalCover = styled$1__default.div`
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 10000;
+`;
+  const ModalPosition = styled$1__default.div`
+    position: absolute;
+    top: ${props => props.y};
+    left: ${props => props.x};
+    transform: translate(${props => props.tx}, ${props => props.ty});
+`;
+
+  const Modal = props => {
+    const {
+      position = {},
+      children
+    } = props;
+    const {
+      x = "50%",
+      y = "50%",
+      tx = "-50%",
+      ty = "-50%"
+    } = position;
+    const positionInfo = {
+      x,
+      y,
+      tx,
+      ty
+    };
+    return ReactDOM.createPortal(React$1__default.createElement(ModalCover, null, React$1__default.createElement(ModalPosition, positionInfo, children)), modalRoot);
+  };
+
+  const useModal = component => {
+    const [callback, setCallback] = React$1.useState(null);
+
+    const close = value => {
+      setCallback(null);
+      callback(value);
+    };
+
+    if (callback !== null) {
+      return [component(close), () => {}];
+    }
+
+    return [null, () => new Promise(resolve => setCallback(() => resolve))];
+  };
+
+  const InputElement = styled$1__default.input`
     padding: 8px 8px 8px 8px;
     margin: 0px;
     border-width: 0px;
@@ -569,10 +1123,10 @@ var doric = (function (React$1, styled) {
         outline: none;
     }
 `;
-  const disabledVariant$2 = propToggle("disabled", "", styled__default.css`
+  const disabledVariant$2 = propToggle("disabled", "", styled$1__default.css`
         z-index: +2;
     `);
-  const ActionArea = styled__default.div`
+  const ActionArea = styled$1__default.div`
     position: absolute;
     top: 0px;
     bottom: 0px;
@@ -587,17 +1141,173 @@ var doric = (function (React$1, styled) {
     const {
       action,
       forwardRef,
+      onKeyDown,
+      prevTabRef = null,
+      nextTabRef = null,
+      tabDirection = null,
       ...props
     } = source;
+    const inputProps = {
+      type,
+      ref: forwardRef,
+      ...props
+    };
+
+    const tabTarget = evt => {
+      const userTarget = tabDirection === null || tabDirection === void 0 ? void 0 : tabDirection(evt);
+
+      if (userTarget !== undefined) {
+        return userTarget;
+      }
+
+      if (evt.key === "Tab") {
+        return evt.shiftKey ? "prev" : "next";
+      }
+
+      return null;
+    };
+
+    const wrappedOnKeyDown = evt => {
+      const target = tabTarget(evt);
+
+      if (target === "next" && nextTabRef !== null) {
+        evt.preventDefault();
+        nextTabRef.current.focus();
+        return;
+      }
+
+      if (target === "prev" && prevTabRef !== null) {
+        evt.preventDefault();
+        prevTabRef.current.focus();
+        return;
+      }
+
+      onKeyDown === null || onKeyDown === void 0 ? void 0 : onKeyDown(evt);
+    };
+
     return React$1__default.createElement(ControlBorder, props, React$1__default.createElement(ActionArea, {
       disabled: props.disabled
-    }, action), React$1__default.createElement(InputElement, _extends({}, props, {
-      type: type,
-      ref: forwardRef
+    }, action), React$1__default.createElement(InputElement, _extends({}, inputProps, {
+      onKeyDown: wrappedOnKeyDown
     })));
   };
 
   const DateInput = themedComponent(inputOfType("text"), "Themed(DateInput)");
+
+  const defaultDateParser = dateString => new Date(dateString);
+
+  const defaultDateFormat = date => date.toLocaleDateString();
+
+  const CalendarLayout = styled$1__default.div`
+    display: grid;
+    grid-template-areas:
+        "prev current next"
+        "calendar calendar calendar"
+        "cancel cancel cancel"
+    ;
+    grid-template-columns: 40px auto 40px;
+`;
+  const DateDisplay = styled$1__default.div`
+    display: flex;
+    padding: 4px;
+    align-items: center;
+    justify-content: center;
+    grid-area: current;
+`;
+  const CalendarGrid = styled$1__default.div`
+    display: grid;
+    grid-template-columns: repeat(7, 40px);
+    grid-template-rows: repeat(6, 40px);
+    grid-area: calendar;
+
+    & > doric-button {
+        margin: 0px;
+    }
+`;
+
+  const Calendar = props => {
+    const {
+      year,
+      month,
+      today,
+      onDateSelected
+    } = props;
+    const start = new Date(year, month);
+    start.setDate(start.getDate() - start.getDay());
+    const days = Array.from({
+      length: 42
+    }, (_, i) => {
+      const date = new Date(start);
+      date.setDate(date.getDate() + i);
+
+      const select = () => onDateSelected(date);
+
+      const isToday = date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth() && date.getDate() === today.getDate();
+      const color = isToday ? "primary" : "normal";
+      return React$1__default.createElement(Button, {
+        key: i,
+        text: date.getDate(),
+        color: color,
+        onTap: select
+      });
+    });
+    return React$1__default.createElement(CalendarGrid, null, days);
+  };
+
+  const CalendarModal = props => {
+    const {
+      close,
+      currentDate
+    } = props;
+    const [date, setDate] = React$1.useState(new Date(currentDate.getFullYear(), currentDate.getMonth()));
+
+    const cancel = () => close(currentDate);
+
+    const select = date => close(date);
+
+    const next = () => setDate(new Date(date.getFullYear(), date.getMonth() + 1));
+
+    const prev = () => setDate(new Date(date.getFullYear(), date.getMonth() - 1));
+
+    const monthString = date.toLocaleDateString("en-US", {
+      month: "long",
+      year: "numeric"
+    });
+    return React$1__default.createElement(Modal, null, React$1__default.createElement(Card, null, React$1__default.createElement(CardContent, null, React$1__default.createElement(CalendarLayout, null, React$1__default.createElement(Button, {
+      style: {
+        gridArea: "prev"
+      },
+      startIcon: React$1__default.createElement(Icon, {
+        name: "arrow-dropleft"
+      }),
+      onTap: prev
+    }), React$1__default.createElement(DateDisplay, null, React$1__default.createElement(Text, {
+      type: "title"
+    }, monthString)), React$1__default.createElement(Button, {
+      style: {
+        gridArea: "next"
+      },
+      startIcon: React$1__default.createElement(Icon, {
+        name: "arrow-dropright"
+      }),
+      onTap: next
+    }), React$1__default.createElement(Calendar, {
+      year: date.getFullYear(),
+      month: date.getMonth(),
+      today: currentDate,
+      onDateSelected: select
+    }), React$1__default.createElement(FlatButton, {
+      style: {
+        gridArea: "cancel"
+      },
+      startIcon: React$1__default.createElement(Icon, {
+        name: "close"
+      }),
+      onTap: cancel,
+      text: "Cancel"
+    })))));
+  };
+
   const Input = {
     Text: themedComponent(inputOfType("text"), "Themed(TextInput)"),
     Password: themedComponent(inputOfType("password"), "Themed(PasswordInput)"),
@@ -606,33 +1316,44 @@ var doric = (function (React$1, styled) {
         value,
         onChange,
         action,
+        dateParser = defaultDateParser,
+        dateFormat = defaultDateFormat,
         ...props
       } = source;
       const inputRef = React$1.useRef();
       const [editValue, updateEditValue] = useInput("");
+      const [calendar, calendarSelectDate] = useModal(CalendarModal);
+      const original = dateFormat(value);
       React$1.useEffect(() => {
-        console.log(inputRef);
         updateEditValue({
           target: {
-            value
+            value: dateFormat(value)
           }
         });
       }, [value]);
 
-      const change = evt => {
-        if (value !== editValue) {
-          onChange(evt);
+      const change = source => {
+        if (original !== editValue) {
+          onChange(dateParser(editValue), "input");
         }
       };
 
       const openCalendar = async () => {
-        console.log("calendar");
+        const currentDate = dateParser(editValue) || value;
+        const newDate = await calendarSelectDate({
+          currentDate
+        });
+
+        if (newDate !== currentDate) {
+          onChange(newDate, "calendar");
+        }
       };
 
-      const actions = [action, React$1__default.createElement(ActionButton, {
+      const actions = [action, calendar, React$1__default.createElement(ActionButton, {
         icon: "calendar",
         onTap: openCalendar
       })];
+
       return React$1__default.createElement(DateInput, _extends({}, props, {
         forwardRef: inputRef,
         value: editValue,
@@ -642,38 +1363,6 @@ var doric = (function (React$1, styled) {
       }));
     }
   };
-
-  const SelectElement = styled__default.select`
-    padding: 8px 8px 8px 8px;
-    margin: 0px;
-    border-width: 0px;
-    z-index: +1;
-    width: 100%;
-    border-radius: 4px;
-    background-color: transparent;
-    -webkit-appearance: none;
-    cursor: pointer;
-
-    &:focus {
-        outline: none;
-    }
-
-    &:disabled {
-        cursor: default;
-    }
-`;
-  const IconArea = styled__default.div`
-    position: absolute;
-    top: 0px;
-    bottom: 0px;
-    right: 0px;
-    display: flex;
-    align-items: center;
-    padding-right: 8px;
-`;
-  const Select = themedComponent(props => React$1__default.createElement(ControlBorder, props, React$1__default.createElement(IconArea, null, React$1__default.createElement(Icon, {
-    name: "arrow-dropdown"
-  })), React$1__default.createElement(SelectElement, props)), "Themed(Select)");
 
   var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -6491,7 +7180,281 @@ var doric = (function (React$1, styled) {
     scrollableNodeProps: propTypes.object
   };
 
-  const TabContainer = styled__default.div`
+  const itemDisplayToggle = props => props.show ? styled$1__default.css`
+            & > [data-menu-item-area] {
+                display: block;
+                height: calc(100vh - 35px);
+            }
+        ` : styled$1__default.css`
+            & > [data-menu-item-area] {
+                display: none;
+            }
+        `;
+
+  const MenuContainer = styled$1__default.div`
+    left: 0px;
+    top: 0px;
+    z-index: 5000;
+    display: grid;
+
+    background-color: ${props => props.theme.primary};
+    color: ${props => props.theme.lightText};
+
+    @media (max-width: 640px) {
+        position: sticky;
+        height: 35px;
+        right: 0px;
+
+        grid-template-columns: 35px 1fr 35px;
+        grid-template-rows: 35px auto;
+        grid-template-areas:
+            "toggle title balance"
+            "content content content"
+        ;
+
+        ${itemDisplayToggle}
+    }
+    @media (min-width: 640px) {
+        position: fixed;
+        width: 240px;
+        bottom: 0px;
+        grid-template-columns: 1fr;
+        grid-template-rows: max-content 0px auto;
+        grid-template-areas:
+            "title"
+            "toggle"
+            "content"
+        ;
+
+        border-right: 1px solid ${props => props.theme.textColor};
+
+        & > menu-toggle {
+            display: none;
+        }
+
+        & > [data-menu-item-area] {
+            height: 100%;
+        }
+    }
+`;
+  const MenuItemArea = styled$1__default(SimpleBar$1)`
+    grid-area: content;
+    overflow: auto;
+
+    background-color: ${props => props.theme.mainBG};
+`;
+  const MenuItems = styled$1__default.div`
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+`;
+  const MenuToggleArea = styled$1__default(renderAs("menu-toggle"))`
+    grid-area: toggle;
+`;
+  const MenuToggleButton = styled$1__default(ActionButton)`
+    color: ${props => props.theme.lightText};
+`;
+  const MenuTitle = styled$1__default.div`
+    grid-area: title;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    height: 35px;
+
+    &:empty {
+        display: none;
+    }
+`;
+  const Menu = themedComponent(props => {
+    const {
+      children,
+      theme,
+      title,
+      itemWrapper = MenuItems
+    } = props;
+    const [show, toggleView] = useToggle(false);
+    const ItemWrapper = itemWrapper;
+    return React$1__default.createElement(MenuContainer, {
+      show: show,
+      theme: theme
+    }, React$1__default.createElement(MenuTitle, null, title), React$1__default.createElement(MenuToggleArea, null, React$1__default.createElement(MenuToggleButton, {
+      onTap: toggleView,
+      icon: "menu",
+      size: "35px",
+      theme: theme
+    })), React$1__default.createElement(MenuItemArea, {
+      theme: theme,
+      "data-menu-item-area": true
+    }, React$1__default.createElement(ItemWrapper, null, children)));
+  });
+
+  const portalRoot = document.createElement("div");
+  portalRoot.style.position = "absolute";
+  portalRoot.style.top = 0;
+  portalRoot.style.left = 0;
+  portalRoot.dataset.portalRoot = "";
+  document.body.appendChild(portalRoot);
+
+  const Portal = props => ReactDOM.createPortal(props.children, portalRoot);
+
+  const SelectElement = styled$1__default.select`
+    padding: 8px 8px 8px 8px;
+    margin: 0px;
+    border-width: 0px;
+    z-index: +1;
+    width: 100%;
+    border-radius: 4px;
+    background-color: transparent;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+    &:focus {
+        outline: none;
+    }
+
+    &:disabled {
+        cursor: default;
+    }
+`;
+  const IconArea = styled$1__default.div`
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    display: flex;
+    align-items: center;
+    padding-right: 8px;
+`;
+  const Select = themedComponent(props => React$1__default.createElement(ControlBorder, props, React$1__default.createElement(IconArea, null, React$1__default.createElement(Icon, {
+    name: "arrow-dropdown"
+  })), React$1__default.createElement(SelectElement, props)), "Themed(Select)");
+
+  const disabledVariant$3 = propToggle("disabled", styled$1__default.css`
+        filter: brightness(${props => props.theme.disabledBrightness});
+    `, "");
+  const SwitchContainer = styled$1__default(renderAs("doric-switch"))`
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 4px;
+    user-select: none;
+    position: relative;
+
+    ${''
+/* opacity: ${props => props.disabled ? 0.7 : 1}; */
+}
+    ${disabledVariant$3}
+
+    & > doric-button {
+        position: absolute;
+        top: 0px;
+        transition: left linear 100ms;
+
+        left: ${props => props.checked ? 14 : 0}px;
+    }
+`;
+  const ClickableArea$1 = styled$1__default.div`
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    cursor: pointer;
+
+    width: ${props => props.noClickLabel ? "50px" : "100%"};
+`;
+  const trackColorVariant = propToggle("checked", styled$1__default.css`
+        background-color: ${props => props.theme[`${props.color}Light`]};
+    `, styled$1__default.css`
+        background-color: gray;
+    `);
+  const SwitchArea = styled$1__default.div`
+    display: inline-block;
+    width: 50px;
+    height: 36px;
+    position: relative;
+    margin-right: 4px;
+
+    &::before {
+        position: absolute;
+        content: "";
+        top: 50%;
+        left: 50%;
+        width: 30px;
+        height: 12px;
+        transform: translate(-50%, -50%);
+        border-radius: 20px;
+        background-color: cyan;
+        transition: background-color linear 100ms;
+
+        ${trackColorVariant}
+    }
+`;
+  const colorVariant = propToggle("checked", styled$1__default.css`
+        background-color: ${props => props.theme[props.color]};
+    `, styled$1__default.css`
+        background-color: lightgray;
+    `);
+  const SwitchIcon = styled$1__default.div`
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    transition: background-color linear 100ms;
+
+    ${colorVariant}
+`;
+  const Label$2 = styled$1__default(Text)`
+    opacity: ${props => props.disabled ? 0.65 : 1};
+`;
+  const Switch = themedComponent(source => {
+    const {
+      onChange,
+      label,
+      checked,
+      theme,
+      color,
+      noClickLabel,
+      disabled
+    } = source;
+    const controlledProps = {
+      checked,
+      color,
+      theme,
+      disabled
+    };
+    const controlRef = React$1.useRef();
+
+    const change = () => {
+      if (disabled === true) {
+        return;
+      }
+
+      controlRef.current.click();
+    };
+
+    const icon = React$1__default.createElement(SwitchIcon, controlledProps);
+    return React$1__default.createElement(SwitchContainer, controlledProps, React$1__default.createElement(HiddenControl, {
+      as: "input",
+      type: "checkbox",
+      checked: checked,
+      onChange: onChange,
+      ref: controlRef
+    }), React$1__default.createElement(SwitchArea, controlledProps), React$1__default.createElement(ClickableArea$1, {
+      noClickLabel: noClickLabel
+    }, React$1__default.createElement(CustomListeners, {
+      onTap: change
+    })), React$1__default.createElement(ActionButton, {
+      icon: icon,
+      size: "36px",
+      onTap: change,
+      disabled: disabled
+    }), React$1__default.createElement(Label$2, {
+      disabled: disabled
+    }, label));
+  });
+
+  const TabContainer = styled$1__default.div`
     display: grid;
     grid-template-columns: 150px auto;
     grid-auto-rows: 100%;
@@ -6499,11 +7462,11 @@ var doric = (function (React$1, styled) {
         "tabs panel"
     ;
 `;
-  const TabList = styled__default(SimpleBar$1)`
+  const TabList = styled$1__default(SimpleBar$1)`
     grid-area: tabs;
     border-right: 1px solid gray;
 `;
-  const buttonSelectedVariant = propToggle("selected", styled__default.css`
+  const buttonSelectedVariant = propToggle("selected", styled$1__default.css`
         position: sticky;
         top: 0px;
         bottom: 0px;
@@ -6518,7 +7481,7 @@ var doric = (function (React$1, styled) {
             background-color: ${props => props.theme.primary};
         }
     `, "");
-  const TabButton = themedComponent(styled__default(FlatButton)`
+  const TabButton = themedComponent(styled$1__default(FlatButton)`
         margin: 0px;
         border-radius: 0px;
         height: 40px;
@@ -6526,7 +7489,7 @@ var doric = (function (React$1, styled) {
         ${buttonSelectedVariant}
     `, "Themed(TabButton)");
   const panelDisplayVariant = propToggle("selected", "block", "none");
-  const TabPanel = styled__default.div`
+  const TabPanel = styled$1__default.div`
     grid-area: panel;
     overflow: auto;
     display: ${panelDisplayVariant}
@@ -6578,51 +7541,95 @@ var doric = (function (React$1, styled) {
     return null;
   };
 
-  const styleVariant = propVariant({
-    name: "type",
-    defaultValue: "body"
-  }, {
-    body: styled__default.css`
-            line-height: 1.4;
-        `,
-    "body-small": styled__default.css`
-            line-height: 1.2;
-        `,
-    header: styled__default.css`
-            display: block;
-            font-size: 26px;
-            font-weight: 500;
-        `,
-    title: styled__default.css`
-            display: block;
-            font-size: 20px;
-            font-weight: 500;
-            margin-bottom: 12px;
-        `,
-    subtitle: styled__default.css`
-            display: block;
-            font-size: 12px;
-            font-weight: 500;
-            margin-bottom: 8px;
-            color: ${props => props.theme.softText};
-        `
+  const listeners = {};
+
+  const send = (type, data) => {
+    var _listeners$type;
+
+    const handlers = (_listeners$type = listeners[type]) !== null && _listeners$type !== void 0 ? _listeners$type : [];
+
+    for (const handler of handlers) {
+      handler(data, type);
+    }
+  };
+
+  const recv = (type, handler) => {
+    var _listeners$type2;
+
+    const handlers = (_listeners$type2 = listeners[type]) !== null && _listeners$type2 !== void 0 ? _listeners$type2 : [];
+
+    const remove = () => {
+      listeners[type] = listeners[type].filter(h => h !== handler);
+    };
+
+    handlers.push(handler);
+    listeners[type] = handlers;
+    return remove;
+  };
+
+  var bridge = {
+    send,
+    recv
+  };
+
+  const dialogRoot = document.createElement("dialog-root");
+  document.body.appendChild(dialogRoot);
+
+  const Dialogs = () => {
+    const [dialogs, updateDialogs] = React$1.useState([]);
+    React$1.useEffect(() => {
+      bridge.recv("dialog.open", info => updateDialogs([...dialogs, info]));
+      bridge.recv("dialog.close", id => updateDialogs(dialogs.filter(dialog => dialog.id !== id)));
+    }, []);
+    return React$1__default.createElement(React$1__default.Fragment, null, dialogs.map(info => info.component));
+  };
+
+  const openDialog = (Component, props) => new Promise(resolve => {
+    const id = `${Date.now()}:${Math.random.toString(16)}`;
+
+    const close = value => {
+      bridge.send("dialog.close", id);
+      resolve(value);
+    };
+
+    bridge.send("dialog.open", {
+      id,
+      component: React$1__default.createElement(Component, _extends({}, props, {
+        close: close
+      }))
+    });
   });
-  const marginVariant = propToggle("slim", styled__default.css`
-        margin-bottom: 0px;
-    `, "");
-  const displayVariant$1 = propToggle("block", styled__default.css`
-        display: block;
-    `, "");
-  const Text = themedComponent(styled__default.span`
-        padding: 0px;
-        margin: 0px;
 
-        color: ${props => props.theme.textColor};
+  const Alert = props => {
+    const {
+      message,
+      close,
+      title = "Alert"
+    } = props;
 
-        ${styleVariant}
-        ${displayVariant$1}
-        ${marginVariant}
-    `, "Themed(Text)");
+    const closeAlert = () => close(null);
+
+    return React$1__default.createElement(Modal, null, React$1__default.createElement(Card, null, React$1__default.createElement(CardContent, null, React$1__default.createElement(Text, {
+      type: "title"
+    }, title), React$1__default.createElement("div", null, message)), React$1__default.createElement(CardActions, null, React$1__default.createElement(Button, {
+      block: true,
+      text: "Ok",
+      onTap: closeAlert,
+      color: "primary"
+    }))));
+  };
+
+  const alert = async props => {
+    const alertProps = cond(typeof props === "string", {
+      message: props
+    }, props);
+    return await openDialog(Alert, alertProps);
+  };
+
+  ReactDOM.render(React$1__default.createElement(Dialogs, null), dialogRoot);
+  var dialog = {
+    alert
+  };
 
   var main = {
     ActionButton,
@@ -6632,22 +7639,32 @@ var doric = (function (React$1, styled) {
     CardActions,
     CardContent,
     CardMedia,
+    Checkbox,
+    CustomListeners,
     FlatButton,
     GlobalStyle,
     Icon,
     Input,
+    Menu,
+    Modal,
+    Portal,
     Select,
+    Switch,
     Tab,
     Tabs,
     ThemeProvider,
     Text,
     SimpleBar: SimpleBar$1,
+    // OverlayScrollbars,
+    // OverlayScrollbarsComponent,
     lightTheme,
     darkTheme,
     themedComponent,
-    ...effects
+    ...hooks,
+    dialog,
+    useModal
   };
 
   return main;
 
-}(React, styled));
+}(React, styled, ReactDOM));

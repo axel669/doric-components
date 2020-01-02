@@ -19,7 +19,6 @@
     "@babel/plugin-proposal-optional-chaining": "^7.2.0",
     "@babel/plugin-transform-react-jsx": "^7.3.0",
     "babel-plugin-search-and-replace": "^1.0.0",
-    "gesturesjs": "^1.0.1",
     "rollup": "^1.9.0",
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-commonjs": "^9.2.0",
@@ -36,6 +35,9 @@
   "homepage": "https://github.com/axel669/doric-components#readme",
   "dependencies": {
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
+    "gesturesjs": "1.1.1",
+    "overlayscrollbars": "^1.10.0",
+    "overlayscrollbars-react": "^0.2.0",
     "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-postcss": "^2.0.3",
     "simplebar-react": "^2.0.10",
