@@ -52,7 +52,7 @@ const CardActions = styled.div`
 const CardMedia = styled.div`
     display: block;
     grid-area: media;
-    background-image: url(${props => props.image});
+    background-image: url("${props => props.image}");
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;

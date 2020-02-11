@@ -32,8 +32,10 @@ const useCycle = array => {
 }
 
 const bunny = {
-    bulma: "https://thedaoofdragonball.com/wp-content/uploads/2019/09/bunny-girl-bulma-pyon-pyon.jpg",
-    senpai: "https://cdn.takanodan.net/wp-content/uploads/2019/03/cover.jpg",
+    // bulma: "https://thedaoofdragonball.com/wp-content/uploads/2019/09/bunny-girl-bulma-pyon-pyon.jpg",
+    // senpai: "https://cdn.takanodan.net/wp-content/uploads/2019/03/cover.jpg",
+    bulma: "/images/cthulhu icon.jpg",
+    senpai: "/images/laughing man.gif",
 }
 
 function Buttons() {
@@ -270,6 +272,17 @@ const useCounter = start => {
     ]
 }
 
+const BadgeContainer = styled.div`
+    position: absolute;
+    top: 0;
+    right: 0;
+`
+const Badge = props => {
+    return <BadgeContainer>
+        100
+    </BadgeContainer>
+}
+
 const themes = [
     darkTheme,
     lightTheme,
@@ -355,13 +368,26 @@ function App() {
             <doric.Button color="primary">
                 Alert
                 <doric.Popover content={popoverConfirm} ty="-25%" />
+                <Badge />
             </doric.Button>
             {alert}
 
-            <doric.Input.Text forwardRef={refs[0]} nextTabRef={refs[2]} prevTabRef={refs[-1]} />
+            <doric.Card>
+                <doric.CardActionArea>
+                    <doric.CardMedia height={150} image={bunny.bulma} />
+                    <doric.CardContent>
+                        <doric.Text>
+                            This is some text
+                        </doric.Text>
+                    </doric.CardContent>
+                    <doric.Popover content={popoverConfirm} />
+                </doric.CardActionArea>
+            </doric.Card>
+
+            {/* <doric.Input.Text forwardRef={refs[0]} nextTabRef={refs[2]} prevTabRef={refs[-1]} />
             <doric.Input.Text forwardRef={refs[1]} nextTabRef={refs[0]} tabDirection={arrowMove} />
             <doric.Input.Text forwardRef={refs[2]} nextTabRef={refs[0]} prevTabRef={refs[3]} />
-            <doric.Input.Text forwardRef={refs[3]} />
+            <doric.Input.Text forwardRef={refs[3]} /> */}
             {/* {modal} */}
 
             {/* <Checkboxes />
@@ -414,7 +440,7 @@ function App() {
                 <OtherInput value={date} onChange={watDate} bordered label="Start Date" dateFormat={date => date.toLocaleDateString("en", {year: "numeric", month: "long", day: "2-digit"})} />
             </div> */}
 
-            <Cards />
+            {/* <Cards /> */}
 
             {/* <doric.Tabs style={{height: 320}} selectedTab={currentTab} onChange={onTabChange}>
                 {tabs}

@@ -24,6 +24,7 @@ const GlobalStyle = themedComponent(styled.createGlobalStyle`
     }
     * {
         box-sizing: border-box;
+        position: relative;
     }
 
     .simplebar-scrollbar::before {
