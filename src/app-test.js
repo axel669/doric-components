@@ -273,15 +273,52 @@ const useCounter = start => {
 }
 
 const BadgeContainer = styled.div`
-    position: absolute;
-    top: 0;
-    right: 0;
+    position: relative;
+    display: ${props => props.block ? "grid" : "inline-grid"};
 `
+const BadgeDisplay = doric.themedComponent(
+    styled.div`
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border-radius: 20px;
+        display: flex;
+        z-index: +10;
+        align-items: center;
+        justify-content: center;
+
+        top: ${props => props.x ?? "0%"};
+        left: ${props => props.y ?? "100%"};
+        transform: translate(
+            ${props => props.tx ?? "-75%"},
+            ${props => props.ty ?? "-50%"}
+        );
+
+        font-size: ${props => props.theme.smallFontSize};
+        background-color: ${props => props.theme[props.color]};
+    `
+)
 const Badge = props => {
-    return <BadgeContainer>
-        100
+    const {
+        value,
+        color,
+        block,
+        position = {},
+        children,
+    } = props
+
+    return <BadgeContainer block={block}>
+        <BadgeDisplay color={color} {...position}>
+            {value}
+        </BadgeDisplay>
+        {children}
     </BadgeContainer>
 }
+
+const Griddy = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+`
 
 const themes = [
     darkTheme,
@@ -368,7 +405,7 @@ function App() {
             <doric.Button color="primary">
                 Alert
                 <doric.Popover content={popoverConfirm} ty="-25%" />
-                <Badge />
+                {/* <Badge value={100} color="secondary" /> */}
             </doric.Button>
             {alert}
 
@@ -383,6 +420,26 @@ function App() {
                     <doric.Popover content={popoverConfirm} />
                 </doric.CardActionArea>
             </doric.Card>
+
+            <Griddy>
+                <Badge value={100} color="secondary">
+                    <doric.Button color="primary">
+                        Alert
+                        {/* <doric.Popover content={popoverConfirm} ty="-25%" /> */}
+                    </doric.Button>
+                </Badge>
+                <Badge value={100} color="secondary" block>
+                    <doric.Button color="primary">
+                        Alert
+                        {/* <doric.Popover content={popoverConfirm} ty="-25%" /> */}
+                    </doric.Button>
+                </Badge>
+            </Griddy>
+
+            {Array.from(
+                {length: 100},
+                (_, i) => <div>{i}</div>
+            )}
 
             {/* <doric.Input.Text forwardRef={refs[0]} nextTabRef={refs[2]} prevTabRef={refs[-1]} />
             <doric.Input.Text forwardRef={refs[1]} nextTabRef={refs[0]} tabDirection={arrowMove} />

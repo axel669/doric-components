@@ -473,7 +473,9 @@
     secondaryLight: "#70bb70",
     lightBorder: "#2196F3",
     disabledBrightness: "65%",
-    focusColor: "#79c0f7"
+    focusColor: "#79c0f7",
+    fontSize: "14px",
+    smallFontSize: "10px"
   };
   const lightTheme = {
     font: "Roboto",
@@ -497,7 +499,9 @@
     secondaryLight: "#70bb70",
     lightBorder: "lightgray",
     disabledBrightness: "65%",
-    focusColor: "#1d62d5"
+    focusColor: "#1d62d5",
+    fontSize: "14px",
+    smallFontSize: "8px"
   };
 
   const propVariant = ({
@@ -838,7 +842,8 @@
         margin: 0px;
         width: 100%;
         height: 100%;
-        font-size: 14px;
+
+        font-size: ${props => props.theme.fontSize};
         font-family: ${props => props.theme.font}, Arial;
         background-color: ${props => props.theme.mainBG};
         color: ${props => props.theme.textColor};
@@ -8338,8 +8343,10 @@
     transform: translate(${props => props.tx}, ${props => props.ty});
     z-index: 10000;
 
-    top: ${props => props.position.y}px;
-    left: ${props => props.position.x}px;
+    ${''
+/* top: ${props => props.position.y}px;
+left: ${props => props.position.x}px; */
+}
 `;
 
   const Popover = props => {
@@ -8840,15 +8847,65 @@
   };
 
   const BadgeContainer = styled$1__default.div`
-    position: absolute;
-    top: 0;
-    right: 0;
+    position: relative;
+    display: ${props => props.block ? "grid" : "inline-grid"};
 `;
+  const BadgeDisplay = doric.themedComponent(styled$1__default.div`
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border-radius: 20px;
+        display: flex;
+        z-index: +10;
+        align-items: center;
+        justify-content: center;
+
+        top: ${props => {
+  var _props$x;
+
+  return (_props$x = props.x) !== null && _props$x !== void 0 ? _props$x : "0%";
+}};
+        left: ${props => {
+  var _props$y;
+
+  return (_props$y = props.y) !== null && _props$y !== void 0 ? _props$y : "100%";
+}};
+        transform: translate(
+            ${props => {
+  var _props$tx;
+
+  return (_props$tx = props.tx) !== null && _props$tx !== void 0 ? _props$tx : "-75%";
+}},
+            ${props => {
+  var _props$ty;
+
+  return (_props$ty = props.ty) !== null && _props$ty !== void 0 ? _props$ty : "-50%";
+}}
+        );
+
+        font-size: ${props => props.theme.smallFontSize};
+        background-color: ${props => props.theme[props.color]};
+    `);
 
   const Badge = props => {
-    return React$1__default.createElement(BadgeContainer, null, "100");
+    const {
+      value,
+      color,
+      block,
+      position = {},
+      children
+    } = props;
+    return React$1__default.createElement(BadgeContainer, {
+      block: block
+    }, React$1__default.createElement(BadgeDisplay, _extends({
+      color: color
+    }, position), value), children);
   };
 
+  const Griddy = styled$1__default.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+`;
   const themes = [darkTheme, lightTheme];
 
   function App() {
@@ -8930,12 +8987,25 @@
     }, "Alert", React$1__default.createElement(doric.Popover, {
       content: popoverConfirm,
       ty: "-25%"
-    }), React$1__default.createElement(Badge, null)), alert, React$1__default.createElement(doric.Card, null, React$1__default.createElement(doric.CardActionArea, null, React$1__default.createElement(doric.CardMedia, {
+    })), alert, React$1__default.createElement(doric.Card, null, React$1__default.createElement(doric.CardActionArea, null, React$1__default.createElement(doric.CardMedia, {
       height: 150,
       image: bunny.bulma
     }), React$1__default.createElement(doric.CardContent, null, React$1__default.createElement(doric.Text, null, "This is some text")), React$1__default.createElement(doric.Popover, {
       content: popoverConfirm
-    })))));
+    }))), React$1__default.createElement(Griddy, null, React$1__default.createElement(Badge, {
+      value: 100,
+      color: "secondary"
+    }, React$1__default.createElement(doric.Button, {
+      color: "primary"
+    }, "Alert")), React$1__default.createElement(Badge, {
+      value: 100,
+      color: "secondary",
+      block: true
+    }, React$1__default.createElement(doric.Button, {
+      color: "primary"
+    }, "Alert"))), Array.from({
+      length: 100
+    }, (_, i) => React$1__default.createElement("div", null, i))));
   }
 
   ReactDOM.render(React$1__default.createElement(App, null), document.querySelector("app-root"));

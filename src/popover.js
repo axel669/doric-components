@@ -18,8 +18,8 @@ const PopoverContent = styled.div`
     transform: translate(${props => props.tx}, ${props => props.ty});
     z-index: 10000;
 
-    top: ${props => props.position.y}px;
-    left: ${props => props.position.x}px;
+    ${'' /* top: ${props => props.position.y}px;
+    left: ${props => props.position.x}px; */}
 `
 const Popover = props => {
     const {

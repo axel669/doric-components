@@ -22,6 +22,8 @@ const darkTheme = {
     lightBorder: "#2196F3",
     disabledBrightness: "65%",
     focusColor: "#79c0f7",
+    fontSize: "14px",
+    smallFontSize: "10px",
 }
 const lightTheme = {
     font: "Roboto",
@@ -46,6 +48,8 @@ const lightTheme = {
     lightBorder: "lightgray",
     disabledBrightness: "65%",
     focusColor: "#1d62d5",
+    fontSize: "14px",
+    smallFontSize: "8px",
 }
 
 export {
