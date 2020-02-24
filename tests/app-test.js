@@ -355,14 +355,25 @@
     user-select: none;
     cursor: pointer;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+    border-radius: ${props => props.borderRadius};
+
     &::after {
         content: "";
         position: absolute;
-        top: -1px;
-        left: -1px;
-        right: -1px;
-        bottom: -1px;
+        ${''
+/* top: -1px;
+left: -1px;
+right: -1px;
+bottom: -1px; */
+}
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
         transition: background-color 250ms linear;
+
+        border-radius: ${props => props.borderRadius};
     }
     &.gjs-tap-active:not([disabled="true"])::after {
         transition: none;
@@ -515,10 +526,14 @@
   const ThemeProvider = Theme.Provider;
 
   const themedComponent = (Component, displayName) => {
-    const f = props => {
+    const f = ({
+      forwardRef,
+      ...props
+    }) => {
       const theme = React$1.useContext(Theme) || lightTheme;
       return React$1__default.createElement(Component, _extends({}, props, {
-        theme: theme
+        theme: theme,
+        ref: forwardRef
       }));
     };
 
@@ -561,10 +576,11 @@
     padding-${props => padPosition[props.position]}: 4px;
 `;
   const ButtonBaseComponent = styled$1__default(Clickable("doric-button"))`
-    border-radius: 4px;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    ${''
+/* overflow: hidden; */
+}
     font-weight: 500;
     background-color: transparent;
 
@@ -600,7 +616,9 @@
     const end = endIcon !== null ? React$1__default.createElement(IconWrapper, {
       position: "end"
     }, endIcon) : null;
-    return React$1__default.createElement(ButtonBaseComponent, props, React$1__default.createElement(CustomListeners, {
+    return React$1__default.createElement(ButtonBaseComponent, _extends({}, props, {
+      borderRadius: "4px"
+    }), React$1__default.createElement(CustomListeners, {
       onTap: wrappedOnTap
     }), start, text, children, end);
   }, "Themed(ButtonBase)");
@@ -8846,60 +8864,111 @@ left: ${props => props.position.x}px; */
     return [current, () => update(current + 1)];
   };
 
-  const BadgeContainer = styled$1__default.div`
+  const OverlayContainer = styled$1__default.div`
     position: relative;
     display: ${props => props.block ? "grid" : "inline-grid"};
 `;
-  const BadgeDisplay = doric.themedComponent(styled$1__default.div`
+
+  const overlayFontSize = props => {
+    if (props.fontSize === "small") {
+      return props.theme.smallFontSize;
+    }
+
+    if (props.fontSize !== undefined) {
+      return props.fontSize;
+    }
+
+    return "";
+  };
+
+  const OverlayDisplay = doric.themedComponent(styled$1__default.div`
         position: absolute;
-        width: 20px;
-        height: 20px;
-        border-radius: 20px;
         display: flex;
-        z-index: +10;
         align-items: center;
         justify-content: center;
 
-        top: ${props => {
-  var _props$x;
-
-  return (_props$x = props.x) !== null && _props$x !== void 0 ? _props$x : "0%";
-}};
-        left: ${props => {
-  var _props$y;
-
-  return (_props$y = props.y) !== null && _props$y !== void 0 ? _props$y : "100%";
-}};
+        z-index: +${props => props.modal ? 10001 : 10};
+        top: ${props => props.y};
+        left: ${props => props.x};
         transform: translate(
-            ${props => {
-  var _props$tx;
-
-  return (_props$tx = props.tx) !== null && _props$tx !== void 0 ? _props$tx : "-75%";
-}},
-            ${props => {
-  var _props$ty;
-
-  return (_props$ty = props.ty) !== null && _props$ty !== void 0 ? _props$ty : "-50%";
-}}
+            ${props => props.tx},
+            ${props => props.ty}
         );
 
-        font-size: ${props => props.theme.smallFontSize};
+        color: ${props => props.theme.lightText};
+        font-size: ${overlayFontSize};
         background-color: ${props => props.theme[props.color]};
     `);
+  const BadgeDisplay = styled$1__default(OverlayDisplay)`
+    border-radius: 20px;
+    width: 20px;
+    height: 20px;
+`;
 
   const Badge = props => {
     const {
       value,
       color,
-      block,
-      position = {},
+      x = "100%",
+      y = "0%",
+      tx = "-50%",
+      ty = "-50%"
+    } = props;
+    const badgeDisplayProps = {
+      color,
+      x,
+      y,
+      tx,
+      ty
+    };
+    return React$1__default.createElement(BadgeDisplay, _extends({}, badgeDisplayProps, {
+      fontSize: "small"
+    }), value);
+  };
+
+  const Popover$1 = props => {
+    const {
+      content,
+      color,
+      modal,
+      x = "50%",
+      y = "50%",
+      tx = "-50%",
+      ty = "-50%",
       children
     } = props;
-    return React$1__default.createElement(BadgeContainer, {
-      block: block
-    }, React$1__default.createElement(BadgeDisplay, _extends({
-      color: color
-    }, position), value), children);
+    const [visible, setVisible] = React$1__default.useState(false);
+    const displayRef = React$1__default.useRef();
+
+    const showPopover = () => {
+      const ref = displayRef.current;
+
+      if (ref !== null && ref !== undefined) {
+        return;
+      }
+
+      setVisible(true);
+    };
+
+    const close = () => setVisible(false);
+
+    const popoverDisplayProps = {
+      color,
+      x,
+      y,
+      tx,
+      ty
+    };
+    const popover = content(close);
+    const element = modal ? React$1__default.createElement(React$1__default.Fragment, null, React$1__default.createElement(doric.Modal, null), React$1__default.createElement(OverlayDisplay, _extends({}, popoverDisplayProps, {
+      modal: true,
+      forwardRef: displayRef
+    }), popover)) : React$1__default.createElement(OverlayDisplay, _extends({}, popoverDisplayProps, {
+      forwardRef: displayRef
+    }), popover);
+    return React$1__default.createElement(React$1__default.Fragment, null, React$1__default.createElement(doric.CustomListeners, {
+      onTap: showPopover
+    }), visible && element);
   };
 
   const Griddy = styled$1__default.div`
@@ -8990,20 +9059,23 @@ left: ${props => props.position.x}px; */
     })), alert, React$1__default.createElement(doric.Card, null, React$1__default.createElement(doric.CardActionArea, null, React$1__default.createElement(doric.CardMedia, {
       height: 150,
       image: bunny.bulma
-    }), React$1__default.createElement(doric.CardContent, null, React$1__default.createElement(doric.Text, null, "This is some text")), React$1__default.createElement(doric.Popover, {
-      content: popoverConfirm
-    }))), React$1__default.createElement(Griddy, null, React$1__default.createElement(Badge, {
+    }), React$1__default.createElement(doric.CardContent, null, React$1__default.createElement(doric.Text, null, "This is some text")), React$1__default.createElement(Popover$1, {
+      content: popoverConfirm,
+      modal: true
+    }))), React$1__default.createElement(Griddy, null, React$1__default.createElement(doric.Button, {
+      color: "primary"
+    }, "Alert", React$1__default.createElement(Badge, {
       value: 100,
       color: "secondary"
-    }, React$1__default.createElement(doric.Button, {
+    })), React$1__default.createElement(doric.Button, {
       color: "primary"
-    }, "Alert")), React$1__default.createElement(Badge, {
+    }, "Alert", React$1__default.createElement(Badge, {
       value: 100,
-      color: "secondary",
-      block: true
-    }, React$1__default.createElement(doric.Button, {
-      color: "primary"
-    }, "Alert"))), Array.from({
+      color: "danger"
+    }), React$1__default.createElement(Popover$1, {
+      content: popoverConfirm,
+      ty: "-25%"
+    }))), Array.from({
       length: 100
     }, (_, i) => React$1__default.createElement("div", null, i))));
   }

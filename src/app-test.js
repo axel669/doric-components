@@ -272,47 +272,111 @@ const useCounter = start => {
     ]
 }
 
-const BadgeContainer = styled.div`
+const OverlayContainer = styled.div`
     position: relative;
     display: ${props => props.block ? "grid" : "inline-grid"};
 `
-const BadgeDisplay = doric.themedComponent(
+const overlayFontSize = props => {
+    if (props.fontSize === "small") {
+        return props.theme.smallFontSize
+    }
+    if (props.fontSize !== undefined) {
+        return props.fontSize
+    }
+    return ""
+}
+const OverlayDisplay = doric.themedComponent(
     styled.div`
         position: absolute;
-        width: 20px;
-        height: 20px;
-        border-radius: 20px;
         display: flex;
-        z-index: +10;
         align-items: center;
         justify-content: center;
 
-        top: ${props => props.x ?? "0%"};
-        left: ${props => props.y ?? "100%"};
+        z-index: +${props => props.modal ? 10001 : 10};
+        top: ${props => props.y};
+        left: ${props => props.x};
         transform: translate(
-            ${props => props.tx ?? "-75%"},
-            ${props => props.ty ?? "-50%"}
+            ${props => props.tx},
+            ${props => props.ty}
         );
 
-        font-size: ${props => props.theme.smallFontSize};
+        color: ${props => props.theme.lightText};
+        font-size: ${overlayFontSize};
         background-color: ${props => props.theme[props.color]};
     `
 )
+
+const BadgeDisplay = styled(OverlayDisplay)`
+    border-radius: 20px;
+    width: 20px;
+    height: 20px;
+`
 const Badge = props => {
     const {
         value,
         color,
-        block,
-        position = {},
-        children,
+        x = "100%",
+        y = "0%",
+        tx = "-50%",
+        ty = "-50%",
     } = props
 
-    return <BadgeContainer block={block}>
-        <BadgeDisplay color={color} {...position}>
-            {value}
-        </BadgeDisplay>
-        {children}
-    </BadgeContainer>
+    const badgeDisplayProps = {
+        color,
+        x, y, tx, ty
+    }
+
+    return <BadgeDisplay {...badgeDisplayProps} fontSize="small">
+        {value}
+    </BadgeDisplay>
+}
+
+const Popover = props => {
+    const {
+        content,
+        color,
+        modal,
+        x = "50%",
+        y = "50%",
+        tx = "-50%",
+        ty = "-50%",
+        children,
+    } = props
+    const [visible, setVisible] = React.useState(false)
+    const displayRef = React.useRef()
+    const showPopover = () => {
+        const ref = displayRef.current
+        if (ref !== null && ref !== undefined) {
+            return
+        }
+        setVisible(true)
+    }
+    const close = () => setVisible(false)
+    const popoverDisplayProps = {
+        color,
+        x, y, tx, ty
+    }
+
+    const popover = content(close)
+    const element = modal
+        ? (
+            <React.Fragment>
+                <doric.Modal />
+                <OverlayDisplay {...popoverDisplayProps} modal forwardRef={displayRef}>
+                    {popover}
+                </OverlayDisplay>
+            </React.Fragment>
+        )
+        : (
+            <OverlayDisplay {...popoverDisplayProps} forwardRef={displayRef}>
+                {popover}
+            </OverlayDisplay>
+        )
+
+    return <React.Fragment>
+        <doric.CustomListeners onTap={showPopover} />
+        {visible && element}
+    </React.Fragment>
 }
 
 const Griddy = styled.div`
@@ -417,24 +481,27 @@ function App() {
                             This is some text
                         </doric.Text>
                     </doric.CardContent>
-                    <doric.Popover content={popoverConfirm} />
+                    <Popover content={popoverConfirm} modal />
                 </doric.CardActionArea>
             </doric.Card>
 
             <Griddy>
-                <Badge value={100} color="secondary">
-                    <doric.Button color="primary">
-                        Alert
-                        {/* <doric.Popover content={popoverConfirm} ty="-25%" /> */}
-                    </doric.Button>
-                </Badge>
-                <Badge value={100} color="secondary" block>
-                    <doric.Button color="primary">
-                        Alert
-                        {/* <doric.Popover content={popoverConfirm} ty="-25%" /> */}
-                    </doric.Button>
-                </Badge>
+                <doric.Button color="primary">
+                    Alert
+                    <Badge value={100} color="secondary" />
+                    {/* <doric.Popover content={popoverConfirm} ty="-25%" /> */}
+                </doric.Button>
+                <doric.Button color="primary">
+                    Alert
+                    <Badge value={100} color="danger" />
+                    <Popover content={popoverConfirm} ty="-25%" />
+                </doric.Button>
             </Griddy>
+            {/* <Popover display={popoverConfirm}>
+                <doric.Button color="primary" text="Alert?">
+                    <div style={{position: "absolute", top: -10, left: -10, width: 20, height: 20, backgroundColor: "cyan"}} />
+                </doric.Button>
+            </Popover> */}
 
             {Array.from(
                 {length: 100},

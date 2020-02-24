@@ -10,9 +10,9 @@ const propToggle = (name, tru, fals) =>
 const Theme = React.createContext(lightTheme)
 const ThemeProvider = Theme.Provider
 const themedComponent = (Component, displayName) => {
-    const f = props => {
+    const f = ({forwardRef, ...props}) => {
         const theme = useContext(Theme) || lightTheme
-        return <Component {...props} theme={theme} />
+        return <Component {...props} theme={theme} ref={forwardRef} />
     }
     f.displayName = displayName
     return f

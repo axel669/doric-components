@@ -45,10 +45,9 @@ const IconWrapper = styled.span`
     padding-${props => padPosition[props.position]}: 4px;
 `
 const ButtonBaseComponent = styled(Clickable("doric-button"))`
-    border-radius: 4px;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    ${'' /* overflow: hidden; */}
     font-weight: 500;
     background-color: transparent;
 
@@ -82,7 +81,7 @@ const ButtonBase = themedComponent(
         const end = (endIcon !== null)
             ? <IconWrapper position="end">{endIcon}</IconWrapper>
             : null
-        return <ButtonBaseComponent {...props}>
+        return <ButtonBaseComponent {...props} borderRadius="4px">
             <CustomListeners onTap={wrappedOnTap} />
             {start}
             {text}
