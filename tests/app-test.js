@@ -237,7 +237,7 @@
   const climbDOM = (start, func) => {
     let current = start;
 
-    while (current !== null && current !== document.documentElement) {
+    while (current !== null && current !== document.documentElement && current.dataset.gjsStop === undefined) {
       func(current);
       current = current.parentNode;
     }
@@ -8962,8 +8962,10 @@ left: ${props => props.position.x}px; */
     const popover = content(close);
     const element = modal ? React$1__default.createElement(React$1__default.Fragment, null, React$1__default.createElement(doric.Modal, null), React$1__default.createElement(OverlayDisplay, _extends({}, popoverDisplayProps, {
       modal: true,
+      "data-gjs-stop": true,
       forwardRef: displayRef
     }), popover)) : React$1__default.createElement(OverlayDisplay, _extends({}, popoverDisplayProps, {
+      "data-gjs-stop": true,
       forwardRef: displayRef
     }), popover);
     return React$1__default.createElement(React$1__default.Fragment, null, React$1__default.createElement(doric.CustomListeners, {
@@ -9021,7 +9023,7 @@ left: ${props => props.position.x}px; */
       sideMedia: true
     }, React$1__default.createElement(doric.CardMedia, {
       image: bunny.bulma
-    }), React$1__default.createElement(doric.CardContent, null, "Confirm?"), React$1__default.createElement(doric.CardActions, null, React$1__default.createElement(doric.Button, {
+    }), React$1__default.createElement(doric.CardContent, null, React$1__default.createElement(doric.Text, null, "Confirm?")), React$1__default.createElement(doric.CardActions, null, React$1__default.createElement(doric.Button, {
       text: "Cancel",
       color: "danger",
       onTap: close

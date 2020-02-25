@@ -362,13 +362,13 @@ const Popover = props => {
         ? (
             <React.Fragment>
                 <doric.Modal />
-                <OverlayDisplay {...popoverDisplayProps} modal forwardRef={displayRef}>
+                <OverlayDisplay {...popoverDisplayProps} modal data-gjs-stop forwardRef={displayRef}>
                     {popover}
                 </OverlayDisplay>
             </React.Fragment>
         )
         : (
-            <OverlayDisplay {...popoverDisplayProps} forwardRef={displayRef}>
+            <OverlayDisplay {...popoverDisplayProps} data-gjs-stop forwardRef={displayRef}>
                 {popover}
             </OverlayDisplay>
         )
@@ -433,7 +433,9 @@ function App() {
         close => <doric.Card sideMedia>
             <doric.CardMedia image={bunny.bulma} />
             <doric.CardContent>
-                Confirm?
+                <doric.Text>
+                    Confirm?
+                </doric.Text>
             </doric.CardContent>
             <doric.CardActions>
                 <doric.Button text="Cancel" color="danger" onTap={close} />
